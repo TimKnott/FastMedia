@@ -3,6 +3,7 @@ import DemoLayout from '@/components/DemoLayout';
 const DrywallDemo = () => {
   return (
     <DemoLayout
+      tradeId="drywall"
       tradeName="SDK Montáže"
       tradeIcon="🧱"
       heroTitle={{

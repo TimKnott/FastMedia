@@ -3,6 +3,7 @@ import DemoLayout from '@/components/DemoLayout';
 const SolarDemo = () => {
   return (
     <DemoLayout
+      tradeId="solar"
       tradeName="Solar Energy CZ"
       tradeIcon="☀️"
       heroTitle={{
