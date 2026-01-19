@@ -3,6 +3,7 @@ import DemoLayout from '@/components/DemoLayout';
 const PlumbingDemo = () => {
   return (
     <DemoLayout
+      tradeId="plumbing"
       tradeName="Instalatér Praha"
       tradeIcon="🔧"
       heroTitle={{

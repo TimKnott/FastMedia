@@ -3,6 +3,7 @@ import DemoLayout from '@/components/DemoLayout';
 const InteriorDemo = () => {
   return (
     <DemoLayout
+      tradeId="interior"
       tradeName="Interiér Studio"
       tradeIcon="🛋️"
       heroTitle={{

@@ -3,6 +3,7 @@ import DemoLayout from '@/components/DemoLayout';
 const HeatpumpsDemo = () => {
   return (
     <DemoLayout
+      tradeId="heatpumps"
       tradeName="Tepelná Čerpadla Plus"
       tradeIcon="♨️"
       heroTitle={{
