@@ -1,178 +1,27 @@
 import { useState } from 'react';
-import { Search, Filter, MoreHorizontal, Phone, Mail, MapPin, StickyNote, Calendar, Clock } from 'lucide-react';
+import { Search, Filter, MoreHorizontal, Phone, Mail, MapPin, StickyNote, Calendar, Clock, LayoutGrid, List } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
+  Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
 } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import type { Booking, BookingStatus } from '@/types/bookings';
+import { statusConfig, priorityConfig, sourceLabel, pipelineStages } from '@/types/bookings';
+import { placeholderBookings as initialBookings } from '@/data/bookings';
+import BookingsKanban from '@/components/admin/BookingsKanban';
 
-type BookingStatus = 'neu' | 'kontaktiert' | 'angebot_gesendet' | 'in_bearbeitung' | 'abgeschlossen' | 'storniert';
-type BookingPriority = 'niedrig' | 'mittel' | 'hoch' | 'dringend';
-type BookingSource = 'website' | 'telefon' | 'empfehlung' | 'google' | 'social_media';
-
-interface Booking {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  service: string;
-  status: BookingStatus;
-  priority: BookingPriority;
-  source: BookingSource;
-  requestedDate: string;
-  createdAt: string;
-  estimatedValue: string;
-  notes: string;
-  assignedTo: string;
-}
-
-const statusConfig: Record<BookingStatus, { label: string; variant: string; dot: string }> = {
-  neu: { label: 'Neu', variant: 'default', dot: 'bg-primary' },
-  kontaktiert: { label: 'Kontaktiert', variant: 'secondary', dot: 'bg-accent' },
-  angebot_gesendet: { label: 'Angebot gesendet', variant: 'outline', dot: 'bg-muted-foreground' },
-  in_bearbeitung: { label: 'In Bearbeitung', variant: 'secondary', dot: 'bg-accent' },
-  abgeschlossen: { label: 'Abgeschlossen', variant: 'outline', dot: 'bg-primary' },
-  storniert: { label: 'Storniert', variant: 'destructive', dot: 'bg-destructive' },
-};
-
-const priorityConfig: Record<BookingPriority, { label: string; variant: string }> = {
-  niedrig: { label: 'Niedrig', variant: 'outline' },
-  mittel: { label: 'Mittel', variant: 'secondary' },
-  hoch: { label: 'Hoch', variant: 'default' },
-  dringend: { label: 'Dringend', variant: 'destructive' },
-};
-
-const sourceLabel: Record<BookingSource, string> = {
-  website: 'Website',
-  telefon: 'Telefon',
-  empfehlung: 'Empfehlung',
-  google: 'Google',
-  social_media: 'Social Media',
-};
-
-const placeholderBookings: Booking[] = [
-  {
-    id: 'B-001',
-    name: 'Thomas Müller',
-    email: 'thomas@beispiel.de',
-    phone: '+49 170 1234567',
-    address: 'Hauptstraße 12, 10115 Berlin',
-    service: 'Sanitär – Rohrleitungsinstallation',
-    status: 'neu',
-    priority: 'hoch',
-    source: 'website',
-    requestedDate: '15.03.2026',
-    createdAt: '08.02.2026, 09:14',
-    estimatedValue: '2.500 €',
-    notes: 'Kunde wünscht Beratung vor Ort. Altbau, evtl. Asbest.',
-    assignedTo: '—',
-  },
-  {
-    id: 'B-002',
-    name: 'Anna Schmidt',
-    email: 'anna.schmidt@email.de',
-    phone: '+49 151 9876543',
-    address: 'Lindenweg 4, 80331 München',
-    service: 'Elektro – Komplettinstallation',
-    status: 'kontaktiert',
-    priority: 'mittel',
-    source: 'empfehlung',
-    requestedDate: '22.03.2026',
-    createdAt: '06.02.2026, 14:30',
-    estimatedValue: '8.000 €',
-    notes: 'Neubau, 4 Zimmer. Smarthome-Integration gewünscht.',
-    assignedTo: 'Max B.',
-  },
-  {
-    id: 'B-003',
-    name: 'Klaus Weber',
-    email: 'k.weber@firma.de',
-    phone: '+49 160 5551234',
-    address: 'Industriestr. 88, 60327 Frankfurt',
-    service: 'Heizung – Wärmepumpe',
-    status: 'angebot_gesendet',
-    priority: 'hoch',
-    source: 'google',
-    requestedDate: '01.04.2026',
-    createdAt: '03.02.2026, 11:00',
-    estimatedValue: '15.000 €',
-    notes: 'Gewerbegebäude, 200m². Fördermittelberatung angefragt.',
-    assignedTo: 'Lisa M.',
-  },
-  {
-    id: 'B-004',
-    name: 'Maria Fischer',
-    email: 'maria.f@web.de',
-    phone: '+49 172 3334444',
-    address: 'Gartenstr. 7, 50667 Köln',
-    service: 'Dach – Reparatur',
-    status: 'in_bearbeitung',
-    priority: 'dringend',
-    source: 'telefon',
-    requestedDate: '10.02.2026',
-    createdAt: '01.02.2026, 08:45',
-    estimatedValue: '3.200 €',
-    notes: 'Wasserschaden durch undichtes Dach. Sofortmaßnahme nötig.',
-    assignedTo: 'Max B.',
-  },
-  {
-    id: 'B-005',
-    name: 'Stefan Braun',
-    email: 'stefan.braun@mail.de',
-    phone: '+49 155 7778899',
-    address: 'Am Markt 3, 01067 Dresden',
-    service: 'Malerei – Innenanstrich',
-    status: 'abgeschlossen',
-    priority: 'niedrig',
-    source: 'social_media',
-    requestedDate: '20.01.2026',
-    createdAt: '10.01.2026, 16:20',
-    estimatedValue: '1.800 €',
-    notes: 'Abgeschlossen, Rechnung versendet.',
-    assignedTo: 'Lisa M.',
-  },
-  {
-    id: 'B-006',
-    name: 'Julia Hoffmann',
-    email: 'j.hoffmann@gmx.de',
-    phone: '+49 176 1112233',
-    address: 'Schlossallee 15, 70173 Stuttgart',
-    service: 'Solar – PV-Anlage',
-    status: 'storniert',
-    priority: 'mittel',
-    source: 'website',
-    requestedDate: '—',
-    createdAt: '28.01.2026, 10:00',
-    estimatedValue: '22.000 €',
-    notes: 'Storniert – Kundin hat sich für anderen Anbieter entschieden.',
-    assignedTo: '—',
-  },
-];
+type ViewMode = 'table' | 'kanban';
 
 const statCounts = (bookings: Booking[]) => {
   const counts: Record<BookingStatus, number> = {
@@ -214,11 +63,7 @@ const BookingsTable = ({
           </TableRow>
         )}
         {bookings.map((b) => (
-          <TableRow
-            key={b.id}
-            className="cursor-pointer hover:bg-muted/50"
-            onClick={() => onSelect(b)}
-          >
+          <TableRow key={b.id} className="cursor-pointer hover:bg-muted/50" onClick={() => onSelect(b)}>
             <TableCell className="text-xs text-muted-foreground font-mono">{b.id}</TableCell>
             <TableCell>
               <div>
@@ -255,11 +100,13 @@ const BookingsTable = ({
 );
 
 const AdminBookings = () => {
+  const [bookings, setBookings] = useState<Booking[]>(initialBookings);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [search, setSearch] = useState('');
-  const counts = statCounts(placeholderBookings);
+  const [viewMode, setViewMode] = useState<ViewMode>('table');
+  const counts = statCounts(bookings);
 
-  const filtered = placeholderBookings.filter(b =>
+  const filtered = bookings.filter(b =>
     b.name.toLowerCase().includes(search.toLowerCase()) ||
     b.email.toLowerCase().includes(search.toLowerCase()) ||
     b.service.toLowerCase().includes(search.toLowerCase()) ||
@@ -268,19 +115,40 @@ const AdminBookings = () => {
 
   const filterByStatus = (status: BookingStatus) => filtered.filter(b => b.status === status);
 
-  const pipelineStages: { key: BookingStatus; label: string }[] = [
-    { key: 'neu', label: 'Neu' },
-    { key: 'kontaktiert', label: 'Kontaktiert' },
-    { key: 'angebot_gesendet', label: 'Angebot' },
-    { key: 'in_bearbeitung', label: 'In Arbeit' },
-    { key: 'abgeschlossen', label: 'Fertig' },
-  ];
+  const handleStatusChange = (bookingId: string, newStatus: BookingStatus) => {
+    setBookings(prev =>
+      prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b)
+    );
+  };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Buchungen & Leads</h1>
-        <p className="text-muted-foreground mt-1">Verwalten Sie eingehende Anfragen und den Workflow.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-foreground">Buchungen & Leads</h1>
+          <p className="text-muted-foreground mt-1">Verwalten Sie eingehende Anfragen und den Workflow.</p>
+        </div>
+        {/* View toggle */}
+        <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+          <Button
+            variant={viewMode === 'table' ? 'secondary' : 'ghost'}
+            size="sm"
+            className="h-8 gap-1.5"
+            onClick={() => setViewMode('table')}
+          >
+            <List className="w-4 h-4" />
+            <span className="hidden sm:inline">Tabelle</span>
+          </Button>
+          <Button
+            variant={viewMode === 'kanban' ? 'secondary' : 'ghost'}
+            size="sm"
+            className="h-8 gap-1.5"
+            onClick={() => setViewMode('kanban')}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span className="hidden sm:inline">Kanban</span>
+          </Button>
+        </div>
       </div>
 
       {/* Pipeline summary */}
@@ -298,53 +166,62 @@ const AdminBookings = () => {
         ))}
       </div>
 
-      {/* Main table card */}
-      <Card className="shadow-card">
-        <CardHeader className="pb-4">
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
-            <div>
-              <CardTitle className="text-lg font-display">Alle Buchungen</CardTitle>
-              <CardDescription>{filtered.length} Einträge</CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Suche nach Name, E-Mail, Service…"
-                  className="pl-9 h-9 w-72"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-              <Button variant="outline" size="sm" className="h-9">
-                <Filter className="w-4 h-4 mr-1" />
-                Filtern
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="all">
-            <TabsList className="flex-wrap">
-              <TabsTrigger value="all">Alle ({filtered.length})</TabsTrigger>
-              <TabsTrigger value="neu">Neu ({counts.neu})</TabsTrigger>
-              <TabsTrigger value="kontaktiert">Kontaktiert ({counts.kontaktiert})</TabsTrigger>
-              <TabsTrigger value="angebot_gesendet">Angebot ({counts.angebot_gesendet})</TabsTrigger>
-              <TabsTrigger value="in_bearbeitung">In Arbeit ({counts.in_bearbeitung})</TabsTrigger>
-              <TabsTrigger value="abgeschlossen">Fertig ({counts.abgeschlossen})</TabsTrigger>
-              <TabsTrigger value="storniert">Storniert ({counts.storniert})</TabsTrigger>
-            </TabsList>
-            <TabsContent value="all" className="mt-4">
-              <BookingsTable bookings={filtered} onSelect={setSelectedBooking} />
-            </TabsContent>
-            {(['neu', 'kontaktiert', 'angebot_gesendet', 'in_bearbeitung', 'abgeschlossen', 'storniert'] as BookingStatus[]).map(status => (
-              <TabsContent key={status} value={status} className="mt-4">
-                <BookingsTable bookings={filterByStatus(status)} onSelect={setSelectedBooking} />
+      {/* Search bar */}
+      <div className="flex gap-2">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Suche nach Name, E-Mail, Service…"
+            className="pl-9 h-9"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Button variant="outline" size="sm" className="h-9">
+          <Filter className="w-4 h-4 mr-1" />
+          Filtern
+        </Button>
+      </div>
+
+      {/* Kanban view */}
+      {viewMode === 'kanban' && (
+        <BookingsKanban
+          bookings={filtered}
+          onSelect={setSelectedBooking}
+          onStatusChange={handleStatusChange}
+        />
+      )}
+
+      {/* Table view */}
+      {viewMode === 'table' && (
+        <Card className="shadow-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-display">Alle Buchungen</CardTitle>
+            <CardDescription>{filtered.length} Einträge</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="all">
+              <TabsList className="flex-wrap">
+                <TabsTrigger value="all">Alle ({filtered.length})</TabsTrigger>
+                <TabsTrigger value="neu">Neu ({counts.neu})</TabsTrigger>
+                <TabsTrigger value="kontaktiert">Kontaktiert ({counts.kontaktiert})</TabsTrigger>
+                <TabsTrigger value="angebot_gesendet">Angebot ({counts.angebot_gesendet})</TabsTrigger>
+                <TabsTrigger value="in_bearbeitung">In Arbeit ({counts.in_bearbeitung})</TabsTrigger>
+                <TabsTrigger value="abgeschlossen">Fertig ({counts.abgeschlossen})</TabsTrigger>
+                <TabsTrigger value="storniert">Storniert ({counts.storniert})</TabsTrigger>
+              </TabsList>
+              <TabsContent value="all" className="mt-4">
+                <BookingsTable bookings={filtered} onSelect={setSelectedBooking} />
               </TabsContent>
-            ))}
-          </Tabs>
-        </CardContent>
-      </Card>
+              {(['neu', 'kontaktiert', 'angebot_gesendet', 'in_bearbeitung', 'abgeschlossen', 'storniert'] as BookingStatus[]).map(status => (
+                <TabsContent key={status} value={status} className="mt-4">
+                  <BookingsTable bookings={filterByStatus(status)} onSelect={setSelectedBooking} />
+                </TabsContent>
+              ))}
+            </Tabs>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Detail Sheet */}
       <Sheet open={!!selectedBooking} onOpenChange={(open) => !open && setSelectedBooking(null)}>
@@ -357,7 +234,6 @@ const AdminBookings = () => {
               </SheetHeader>
 
               <div className="mt-6 space-y-6">
-                {/* Contact info */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
                   <div className="space-y-2 text-sm">
@@ -376,7 +252,6 @@ const AdminBookings = () => {
                   </div>
                 </div>
 
-                {/* Booking details */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-semibold text-foreground">Buchungsdetails</h3>
                   <div className="grid grid-cols-2 gap-3 text-sm">
@@ -413,16 +288,13 @@ const AdminBookings = () => {
                   </div>
                 </div>
 
-                {/* Workflow controls */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-semibold text-foreground">Workflow</h3>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label className="text-xs">Status ändern</Label>
                       <Select defaultValue={selectedBooking.status}>
-                        <SelectTrigger className="h-9">
-                          <SelectValue />
-                        </SelectTrigger>
+                        <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="neu">Neu</SelectItem>
                           <SelectItem value="kontaktiert">Kontaktiert</SelectItem>
@@ -436,9 +308,7 @@ const AdminBookings = () => {
                     <div className="space-y-1.5">
                       <Label className="text-xs">Priorität ändern</Label>
                       <Select defaultValue={selectedBooking.priority}>
-                        <SelectTrigger className="h-9">
-                          <SelectValue />
-                        </SelectTrigger>
+                        <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="niedrig">Niedrig</SelectItem>
                           <SelectItem value="mittel">Mittel</SelectItem>
@@ -450,26 +320,17 @@ const AdminBookings = () => {
                   </div>
                 </div>
 
-                {/* Notes */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                     <StickyNote className="w-4 h-4" />
                     Notizen
                   </h3>
-                  <Textarea
-                    defaultValue={selectedBooking.notes}
-                    rows={4}
-                    placeholder="Notizen hinzufügen…"
-                  />
+                  <Textarea defaultValue={selectedBooking.notes} rows={4} placeholder="Notizen hinzufügen…" />
                 </div>
 
                 <div className="flex gap-2 pt-2">
-                  <Button className="gradient-primary text-primary-foreground flex-1">
-                    Speichern
-                  </Button>
-                  <Button variant="outline" onClick={() => setSelectedBooking(null)}>
-                    Schließen
-                  </Button>
+                  <Button className="gradient-primary text-primary-foreground flex-1">Speichern</Button>
+                  <Button variant="outline" onClick={() => setSelectedBooking(null)}>Schließen</Button>
                 </div>
               </div>
             </>
