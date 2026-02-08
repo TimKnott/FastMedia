@@ -16,6 +16,8 @@ export const translations: Translations = {
   'nav.demos': { cs: 'Ukázky', en: 'Demos', de: 'Demos' },
   'nav.services': { cs: 'Služby', en: 'Services', de: 'Dienstleistungen' },
   'nav.reviews': { cs: 'Recenze', en: 'Reviews', de: 'Bewertungen' },
+  'nav.pricing': { cs: 'Ceník', en: 'Pricing', de: 'Preise' },
+  'nav.faq': { cs: 'FAQ', en: 'FAQ', de: 'FAQ' },
   'nav.contact': { cs: 'Kontakt', en: 'Contact', de: 'Kontakt' },
   'nav.book': { cs: 'Rezervovat konzultaci', en: 'Book Consultation', de: 'Beratung buchen' },
 
