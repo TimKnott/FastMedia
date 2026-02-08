@@ -7,6 +7,15 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
+// Admin pages
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminSettings from "./pages/admin/AdminSettings";
+
 // Demo pages
 import PlumbingDemo from "./pages/demos/PlumbingDemo";
 import ElectricalDemo from "./pages/demos/ElectricalDemo";
@@ -52,6 +61,15 @@ const App = () => (
             <Route path="/demo/cleaning" element={<CleaningDemo />} />
             <Route path="/demo/locksmith" element={<LocksmithDemo />} />
             <Route path="/demo/carpentry" element={<CarpentryDemo />} />
+            {/* Admin routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="audit-logs" element={<AdminAuditLogs />} />
+              <Route path="bookings" element={<AdminBookings />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
