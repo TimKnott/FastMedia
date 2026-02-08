@@ -12,7 +12,7 @@ const FAQSection = () => {
   const faqKeys = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section id="faq" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-12">
           <span className="text-sm font-semibold tracking-widest uppercase text-primary">
