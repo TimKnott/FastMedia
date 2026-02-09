@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Blog from "./pages/Blog";
+import BlogArticle from "./pages/BlogArticle";
 
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -45,6 +47,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/demo/plumbing" element={<PlumbingDemo />} />
             <Route path="/demo/electrical" element={<ElectricalDemo />} />
             <Route path="/demo/building" element={<BuildingDemo />} />
