@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { blogPosts, categoryLabels, type ContentBlock } from '@/data/blogPosts';
 import BlogCard from '@/components/blog/BlogCard';
+import BlogSidebar from '@/components/blog/BlogSidebar';
 import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -106,96 +107,106 @@ const BlogArticle = () => {
         </div>
       </div>
 
-      {/* Article content */}
-      <article className="container mx-auto px-4 lg:px-8 -mt-24 relative z-10">
-        <div className="max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-card rounded-2xl shadow-elegant p-6 sm:p-10 border border-border"
-          >
-            <Link to="/blog">
-              <Button variant="ghost" size="sm" className="gap-1.5 mb-6 -ml-2 text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="w-4 h-4" />
-                {labels.back[language]}
-              </Button>
-            </Link>
-
-            <div className="flex items-center gap-3 mb-4 flex-wrap">
-              <Badge className="gradient-accent text-accent-foreground">{categoryLabels[post.category][language]}</Badge>
-              <span className="text-sm text-muted-foreground flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" /> {formattedDate}
-              </span>
-              <span className="text-sm text-muted-foreground flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> {post.readTime} min
-              </span>
-            </div>
-
-            <h1 className="font-display font-bold text-2xl sm:text-4xl text-foreground leading-tight mb-6">
-              {post.title[language]}
-            </h1>
-
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-                {post.author.split(' ').map((n) => n[0]).join('')}
-              </div>
-              <div>
-                <p className="text-sm font-medium text-foreground">{post.author}</p>
-                <p className="text-xs text-muted-foreground">{post.authorRole[language]}</p>
-              </div>
-            </div>
-
-            {/* Video embed */}
-            {post.videoUrl && (
-              <div className="aspect-video rounded-xl overflow-hidden mb-8 bg-muted">
-                <iframe
-                  src={post.videoUrl.replace('watch?v=', 'embed/')}
-                  title={post.title[language]}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            )}
-
-            {/* Excerpt lead */}
-            <p className="text-lg leading-relaxed text-muted-foreground mb-6">{post.excerpt[language]}</p>
-            <Separator className="my-6" />
-
-            {/* Rich article body */}
-            <RichContentRenderer sections={post.sections} language={language} />
-
-            {/* Tags */}
-            <div className="flex items-center gap-2 mt-10 flex-wrap">
-              <Tag className="w-4 h-4 text-muted-foreground" />
-              {post.tags.map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
-              ))}
-            </div>
-
-            {/* Share */}
-            <Separator className="my-6" />
-            <div className="flex items-center justify-between">
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={() => navigator.clipboard?.writeText(window.location.href)}
-              >
-                <Share2 className="w-4 h-4" />
-                {labels.share[language]}
-              </Button>
+      {/* Article content + sidebar */}
+      <div className="container mx-auto px-4 lg:px-8 -mt-24 relative z-10">
+        <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+          {/* Main article */}
+          <article className="flex-1 min-w-0">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-card rounded-2xl shadow-elegant p-6 sm:p-10 border border-border"
+            >
               <Link to="/blog">
-                <Button variant="ghost" size="sm" className="gap-1.5">
+                <Button variant="ghost" size="sm" className="gap-1.5 mb-6 -ml-2 text-muted-foreground hover:text-foreground">
                   <ArrowLeft className="w-4 h-4" />
                   {labels.back[language]}
                 </Button>
               </Link>
+
+              <div className="flex items-center gap-3 mb-4 flex-wrap">
+                <Badge className="gradient-accent text-accent-foreground">{categoryLabels[post.category][language]}</Badge>
+                <span className="text-sm text-muted-foreground flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" /> {formattedDate}
+                </span>
+                <span className="text-sm text-muted-foreground flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" /> {post.readTime} min
+                </span>
+              </div>
+
+              <h1 className="font-display font-bold text-2xl sm:text-4xl text-foreground leading-tight mb-6">
+                {post.title[language]}
+              </h1>
+
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+                  {post.author.split(' ').map((n) => n[0]).join('')}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{post.author}</p>
+                  <p className="text-xs text-muted-foreground">{post.authorRole[language]}</p>
+                </div>
+              </div>
+
+              {/* Video embed */}
+              {post.videoUrl && (
+                <div className="aspect-video rounded-xl overflow-hidden mb-8 bg-muted">
+                  <iframe
+                    src={post.videoUrl.replace('watch?v=', 'embed/')}
+                    title={post.title[language]}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              )}
+
+              {/* Excerpt lead */}
+              <p className="text-lg leading-relaxed text-muted-foreground mb-6">{post.excerpt[language]}</p>
+              <Separator className="my-6" />
+
+              {/* Rich article body */}
+              <RichContentRenderer sections={post.sections} language={language} />
+
+              {/* Tags */}
+              <div className="flex items-center gap-2 mt-10 flex-wrap">
+                <Tag className="w-4 h-4 text-muted-foreground" />
+                {post.tags.map((tag) => (
+                  <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                ))}
+              </div>
+
+              {/* Share */}
+              <Separator className="my-6" />
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => navigator.clipboard?.writeText(window.location.href)}
+                >
+                  <Share2 className="w-4 h-4" />
+                  {labels.share[language]}
+                </Button>
+                <Link to="/blog">
+                  <Button variant="ghost" size="sm" className="gap-1.5">
+                    <ArrowLeft className="w-4 h-4" />
+                    {labels.back[language]}
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          </article>
+
+          {/* Sidebar - desktop only sticky, mobile below */}
+          <div className="w-full lg:w-80 shrink-0">
+            <div className="lg:sticky lg:top-24">
+              <BlogSidebar currentSlug={post.slug} />
             </div>
-          </motion.div>
+          </div>
         </div>
-      </article>
+      </div>
 
       {/* Related articles */}
       {related.length > 0 && (
