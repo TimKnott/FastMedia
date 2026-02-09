@@ -27,6 +27,7 @@ const Navbar = () => {
     { href: '#reviews', label: t('nav.reviews') },
     { href: '#pricing', label: t('nav.pricing') },
     { href: '#faq', label: t('nav.faq') },
+    { href: '/blog', label: 'Blog', isRoute: true },
     { href: '#contact', label: t('nav.contact') },
   ];
 
@@ -51,16 +52,27 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-muted-foreground hover:text-foreground font-medium transition-colors relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all group-hover:w-full" />
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-muted-foreground hover:text-foreground font-medium transition-colors relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all group-hover:w-full" />
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground font-medium transition-colors relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all group-hover:w-full" />
+                </a>
+              )
+            )}
           </div>
 
           {/* Right side */}
@@ -117,16 +129,27 @@ const Navbar = () => {
             className="lg:hidden bg-card border-t border-border"
           >
             <div className="container mx-auto px-4 py-4 space-y-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block py-2 text-foreground font-medium hover:text-accent transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                link.isRoute ? (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="block py-2 text-foreground font-medium hover:text-accent transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="block py-2 text-foreground font-medium hover:text-accent transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                )
+              )}
               <a href="#contact" onClick={() => setIsOpen(false)}>
                 <Button className="w-full gradient-accent text-accent-foreground font-semibold">
                   {t('nav.book')}
