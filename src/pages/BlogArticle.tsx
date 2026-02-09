@@ -1,15 +1,74 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Calendar, Tag, Share2 } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Tag, Share2, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { blogPosts, categoryLabels } from '@/data/blogPosts';
+import { blogPosts, categoryLabels, type ContentBlock } from '@/data/blogPosts';
 import BlogCard from '@/components/blog/BlogCard';
 import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
+type Language = 'cs' | 'en' | 'de';
+
+const RichContentRenderer = ({ sections, language }: { sections: ContentBlock[]; language: Language }) => (
+  <div className="space-y-6">
+    {sections.map((block, i) => {
+      switch (block.type) {
+        case 'paragraph':
+          return <p key={i} className="leading-relaxed text-foreground/90">{block.text[language]}</p>;
+
+        case 'heading':
+          return <h2 key={i} className="font-display font-bold text-xl sm:text-2xl text-foreground mt-8 mb-2">{block.text[language]}</h2>;
+
+        case 'list':
+          return (
+            <ul key={i} className="space-y-2 pl-1">
+              {block.items.map((item, j) => (
+                <li key={j} className="flex items-start gap-3 text-foreground/90">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-2.5" />
+                  <span>{item[language]}</span>
+                </li>
+              ))}
+            </ul>
+          );
+
+        case 'image':
+          return (
+            <figure key={i} className="my-8">
+              <div className="rounded-xl overflow-hidden border border-border">
+                <img src={block.src} alt={block.alt[language]} className="w-full h-auto" loading="lazy" />
+              </div>
+              {block.caption && (
+                <figcaption className="text-xs text-muted-foreground mt-2 text-center italic">{block.caption[language]}</figcaption>
+              )}
+            </figure>
+          );
+
+        case 'quote':
+          return (
+            <blockquote key={i} className="relative my-8 pl-6 border-l-4 border-accent bg-accent/5 rounded-r-xl py-5 pr-6">
+              <Quote className="absolute top-4 right-4 w-8 h-8 text-accent/20" />
+              <p className="text-foreground italic leading-relaxed">&ldquo;{block.text[language]}&rdquo;</p>
+              {block.author && <cite className="block mt-3 text-sm font-medium text-muted-foreground not-italic">— {block.author}</cite>}
+            </blockquote>
+          );
+
+        case 'callout':
+          return (
+            <div key={i} className="my-6 rounded-xl bg-primary/5 border border-primary/20 p-5">
+              <p className="text-sm leading-relaxed text-foreground">{block.text[language]}</p>
+            </div>
+          );
+
+        default:
+          return null;
+      }
+    })}
+  </div>
+);
 
 const BlogArticle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -100,22 +159,15 @@ const BlogArticle = () => {
               </div>
             )}
 
-            {/* Article body */}
-            <div className="prose prose-lg max-w-none text-foreground">
-              <p className="text-lg leading-relaxed text-muted-foreground mb-6">{post.excerpt[language]}</p>
-              <Separator className="my-6" />
-              <p className="leading-relaxed">{post.content[language]}</p>
-              <p className="leading-relaxed mt-4">
-                {language === 'cs'
-                  ? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-                  : language === 'de'
-                  ? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-                  : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'}
-              </p>
-            </div>
+            {/* Excerpt lead */}
+            <p className="text-lg leading-relaxed text-muted-foreground mb-6">{post.excerpt[language]}</p>
+            <Separator className="my-6" />
+
+            {/* Rich article body */}
+            <RichContentRenderer sections={post.sections} language={language} />
 
             {/* Tags */}
-            <div className="flex items-center gap-2 mt-8 flex-wrap">
+            <div className="flex items-center gap-2 mt-10 flex-wrap">
               <Tag className="w-4 h-4 text-muted-foreground" />
               {post.tags.map((tag) => (
                 <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
