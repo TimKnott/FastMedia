@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TrendingUp, Tags, Mail, Clock, ArrowRight } from 'lucide-react';
+import { TrendingUp, Tags, Mail, Clock, ArrowRight, ListOrdered } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 type Language = 'cs' | 'en' | 'de';
 
 const labels = {
+  toc: { cs: 'Obsah článku', en: 'Table of Contents', de: 'Inhaltsverzeichnis' },
   popular: { cs: 'Populární články', en: 'Popular Articles', de: 'Beliebte Artikel' },
   categories: { cs: 'Kategorie', en: 'Categories', de: 'Kategorien' },
   newsletter: { cs: 'Newsletter', en: 'Newsletter', de: 'Newsletter' },
@@ -36,11 +37,17 @@ const categoryCounts = blogPosts.reduce<Record<BlogCategory, number>>((acc, post
   return acc;
 }, {} as Record<BlogCategory, number>);
 
-interface BlogSidebarProps {
-  currentSlug?: string;
+export interface TocItem {
+  id: string;
+  text: string;
 }
 
-const BlogSidebar = ({ currentSlug }: BlogSidebarProps) => {
+interface BlogSidebarProps {
+  currentSlug?: string;
+  toc?: TocItem[];
+}
+
+const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
   const { language } = useLanguage();
   const [email, setEmail] = useState('');
 
@@ -56,6 +63,33 @@ const BlogSidebar = ({ currentSlug }: BlogSidebarProps) => {
 
   return (
     <aside className="space-y-8">
+      {/* Table of contents */}
+      {toc.length > 0 && (
+        <nav className="bg-card rounded-2xl border border-border p-5">
+          <h3 className="font-display font-bold text-base text-foreground flex items-center gap-2 mb-3">
+            <ListOrdered className="w-4 h-4 text-accent" />
+            {labels.toc[language]}
+          </h3>
+          <ol className="space-y-1.5">
+            {toc.map((item, idx) => (
+              <li key={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  className="text-sm text-muted-foreground hover:text-accent transition-colors flex items-start gap-2 py-0.5"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  <span className="text-xs text-accent/60 font-mono mt-0.5 shrink-0">{String(idx + 1).padStart(2, '0')}</span>
+                  <span className="line-clamp-2">{item.text}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
       {/* Popular articles */}
       <div className="bg-card rounded-2xl border border-border p-5">
         <h3 className="font-display font-bold text-base text-foreground flex items-center gap-2 mb-4">

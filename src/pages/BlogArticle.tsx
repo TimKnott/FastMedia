@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { blogPosts, categoryLabels, type ContentBlock } from '@/data/blogPosts';
 import BlogCard from '@/components/blog/BlogCard';
-import BlogSidebar from '@/components/blog/BlogSidebar';
+import BlogSidebar, { type TocItem } from '@/components/blog/BlogSidebar';
 import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -21,8 +21,10 @@ const RichContentRenderer = ({ sections, language }: { sections: ContentBlock[];
         case 'paragraph':
           return <p key={i} className="leading-relaxed text-foreground/90">{block.text[language]}</p>;
 
-        case 'heading':
-          return <h2 key={i} className="font-display font-bold text-xl sm:text-2xl text-foreground mt-8 mb-2">{block.text[language]}</h2>;
+        case 'heading': {
+          const id = `heading-${i}`;
+          return <h2 key={i} id={id} className="font-display font-bold text-xl sm:text-2xl text-foreground mt-8 mb-2 scroll-mt-24">{block.text[language]}</h2>;
+        }
 
         case 'list':
           return (
@@ -87,6 +89,10 @@ const BlogArticle = () => {
   const related = blogPosts
     .filter((p) => p.id !== post.id && (p.category === post.category || p.tags.some((t) => post.tags.includes(t))))
     .slice(0, 3);
+
+  const toc: TocItem[] = post.sections
+    .map((block, i) => block.type === 'heading' ? { id: `heading-${i}`, text: block.text[language] } : null)
+    .filter(Boolean) as TocItem[];
 
   const labels = {
     back: { cs: 'Zpět na blog', en: 'Back to blog', de: 'Zurück zum Blog' },
@@ -202,7 +208,7 @@ const BlogArticle = () => {
           {/* Sidebar - desktop only sticky, mobile below */}
           <div className="w-full lg:w-80 shrink-0">
             <div className="lg:sticky lg:top-24">
-              <BlogSidebar currentSlug={post.slug} />
+              <BlogSidebar currentSlug={post.slug} toc={toc} />
             </div>
           </div>
         </div>
