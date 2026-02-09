@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, Tags, Mail, Clock, ArrowRight, ListOrdered } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -50,6 +50,25 @@ interface BlogSidebarProps {
 const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
   const { language } = useLanguage();
   const [email, setEmail] = useState('');
+  const [activeId, setActiveId] = useState<string>('');
+
+  useEffect(() => {
+    if (toc.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) {
+          setActiveId(visible[0].target.id);
+        }
+      },
+      { rootMargin: '-80px 0px -60% 0px', threshold: 0 }
+    );
+    toc.forEach((item) => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [toc]);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,13 +94,17 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
-                  className="text-sm text-muted-foreground hover:text-accent transition-colors flex items-start gap-2 py-0.5"
+                  className={`text-sm flex items-start gap-2 py-1 px-2 -mx-2 rounded-lg transition-all ${
+                    activeId === item.id
+                      ? 'text-accent font-medium bg-accent/10'
+                      : 'text-muted-foreground hover:text-accent'
+                  }`}
                   onClick={(e) => {
                     e.preventDefault();
                     document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  <span className="text-xs text-accent/60 font-mono mt-0.5 shrink-0">{String(idx + 1).padStart(2, '0')}</span>
+                  <span className={`text-xs font-mono mt-0.5 shrink-0 ${activeId === item.id ? 'text-accent' : 'text-accent/60'}`}>{String(idx + 1).padStart(2, '0')}</span>
                   <span className="line-clamp-2">{item.text}</span>
                 </a>
               </li>
