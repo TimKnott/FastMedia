@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, LayoutGrid, List, ArrowLeft, Filter } from 'lucide-react';
+import { Search, LayoutGrid, List, ArrowLeft, Filter, ChevronDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,11 +15,14 @@ import Footer from '@/components/Footer';
 
 type ViewMode = 'grid' | 'list';
 
+const POSTS_PER_PAGE = 6;
+
 const Blog = () => {
   const { language, t } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
+  const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
   const labels = {
     title: { cs: 'Blog', en: 'Blog', de: 'Blog' },
@@ -37,12 +40,17 @@ const Blog = () => {
       de: 'Keine Artikel gefunden.',
     },
     back: { cs: 'Zpět na hlavní stránku', en: 'Back to homepage', de: 'Zurück zur Startseite' },
+    loadMore: { cs: 'Načíst další články', en: 'Load more articles', de: 'Weitere Artikel laden' },
+    showing: { cs: 'Zobrazeno', en: 'Showing', de: 'Angezeigt' },
+    of: { cs: 'z', en: 'of', de: 'von' },
+    articles: { cs: 'článků', en: 'articles', de: 'Artikel' },
   };
 
   const featuredPosts = blogPosts.filter((p) => p.featured);
   const heroPost = featuredPosts[0];
 
   const filtered = useMemo(() => {
+    setVisibleCount(POSTS_PER_PAGE);
     return blogPosts.filter((post) => {
       const matchesCategory = activeCategory === 'all' || post.category === activeCategory;
       const matchesSearch =
@@ -53,6 +61,9 @@ const Blog = () => {
       return matchesCategory && matchesSearch;
     });
   }, [search, activeCategory, language]);
+
+  const visiblePosts = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
   const categories = Object.entries(categoryLabels) as [BlogCategory, typeof categoryLabels[BlogCategory]][];
 
@@ -157,15 +168,49 @@ const Blog = () => {
             <p className="text-center text-muted-foreground py-16">{labels.noResults[language]}</p>
           ) : viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((post) => (
-                <BlogCard key={post.id} post={post} layout="grid" />
+              {visiblePosts.map((post, index) => (
+                <motion.div
+                  key={post.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index >= visibleCount - POSTS_PER_PAGE ? (index % POSTS_PER_PAGE) * 0.05 : 0 }}
+                >
+                  <BlogCard post={post} layout="grid" />
+                </motion.div>
               ))}
             </div>
           ) : (
             <div className="space-y-4 max-w-4xl mx-auto">
-              {filtered.map((post) => (
-                <BlogCard key={post.id} post={post} layout="list" />
+              {visiblePosts.map((post, index) => (
+                <motion.div
+                  key={post.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index >= visibleCount - POSTS_PER_PAGE ? (index % POSTS_PER_PAGE) * 0.05 : 0 }}
+                >
+                  <BlogCard post={post} layout="list" />
+                </motion.div>
               ))}
+            </div>
+          )}
+
+          {/* Pagination info & load more */}
+          {filtered.length > 0 && (
+            <div className="mt-10 flex flex-col items-center gap-4">
+              <p className="text-sm text-muted-foreground">
+                {labels.showing[language]} {Math.min(visibleCount, filtered.length)} {labels.of[language]} {filtered.length} {labels.articles[language]}
+              </p>
+              {hasMore && (
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="gap-2"
+                  onClick={() => setVisibleCount((c) => c + POSTS_PER_PAGE)}
+                >
+                  <ChevronDown className="w-4 h-4" />
+                  {labels.loadMore[language]}
+                </Button>
+              )}
             </div>
           )}
         </div>
