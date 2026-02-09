@@ -6,16 +6,17 @@ import { Button } from '@/components/ui/button';
 interface PricingTier {
   nameKey: string;
   priceKey: string;
+  hostingKey: string;
   descKey: string;
   featuresKey: string;
   popular?: boolean;
 }
 
 const tiers: PricingTier[] = [
-  { nameKey: 'pricing.starter.name', priceKey: 'pricing.starter.price', descKey: 'pricing.starter.desc', featuresKey: 'pricing.starter.features' },
-  { nameKey: 'pricing.basic.name', priceKey: 'pricing.basic.price', descKey: 'pricing.basic.desc', featuresKey: 'pricing.basic.features' },
-  { nameKey: 'pricing.pro.name', priceKey: 'pricing.pro.price', descKey: 'pricing.pro.desc', featuresKey: 'pricing.pro.features', popular: true },
-  { nameKey: 'pricing.enterprise.name', priceKey: 'pricing.enterprise.price', descKey: 'pricing.enterprise.desc', featuresKey: 'pricing.enterprise.features' },
+  { nameKey: 'pricing.starter.name', priceKey: 'pricing.starter.price', hostingKey: 'pricing.starter.hosting', descKey: 'pricing.starter.desc', featuresKey: 'pricing.starter.features' },
+  { nameKey: 'pricing.basic.name', priceKey: 'pricing.basic.price', hostingKey: 'pricing.basic.hosting', descKey: 'pricing.basic.desc', featuresKey: 'pricing.basic.features' },
+  { nameKey: 'pricing.pro.name', priceKey: 'pricing.pro.price', hostingKey: 'pricing.pro.hosting', descKey: 'pricing.pro.desc', featuresKey: 'pricing.pro.features', popular: true },
+  { nameKey: 'pricing.enterprise.name', priceKey: 'pricing.enterprise.price', hostingKey: 'pricing.enterprise.hosting', descKey: 'pricing.enterprise.desc', featuresKey: 'pricing.enterprise.features' },
 ];
 
 const PricingSection = () => {
@@ -75,6 +76,9 @@ const PricingSection = () => {
 
                 <div className="mb-6">
                   <span className="text-3xl font-display font-bold">{t(tier.priceKey)}</span>
+                  <div className={`text-xs mt-1 ${tier.popular ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                    + {t('pricing.hosting.label')}: <span className="font-semibold">{t(tier.hostingKey)}</span>
+                  </div>
                 </div>
 
                 <ul className="space-y-3 mb-8 flex-1">
