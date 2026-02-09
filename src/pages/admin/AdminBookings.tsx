@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter, MoreHorizontal, Phone, Mail, MapPin, StickyNote, Calendar, Clock, LayoutGrid, List } from 'lucide-react';
+import { Search, Filter, MoreHorizontal, Phone, Mail, MapPin, StickyNote, Calendar as CalendarIcon, Clock, LayoutGrid, List, CalendarDays } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -20,8 +20,9 @@ import type { Booking, BookingStatus } from '@/types/bookings';
 import { statusConfig, priorityConfig, sourceLabel, pipelineStages } from '@/types/bookings';
 import { placeholderBookings as initialBookings } from '@/data/bookings';
 import BookingsKanban from '@/components/admin/BookingsKanban';
+import BookingsCalendar from '@/components/admin/BookingsCalendar';
 
-type ViewMode = 'table' | 'kanban';
+type ViewMode = 'table' | 'kanban' | 'calendar';
 
 const statCounts = (bookings: Booking[]) => {
   const counts: Record<BookingStatus, number> = {
@@ -148,6 +149,15 @@ const AdminBookings = () => {
             <LayoutGrid className="w-4 h-4" />
             <span className="hidden sm:inline">Kanban</span>
           </Button>
+          <Button
+            variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
+            size="sm"
+            className="h-8 gap-1.5"
+            onClick={() => setViewMode('calendar')}
+          >
+            <CalendarDays className="w-4 h-4" />
+            <span className="hidden sm:inline">Kalender</span>
+          </Button>
         </div>
       </div>
 
@@ -182,6 +192,11 @@ const AdminBookings = () => {
           Filtern
         </Button>
       </div>
+
+      {/* Calendar view */}
+      {viewMode === 'calendar' && (
+        <BookingsCalendar bookings={filtered} onSelect={setSelectedBooking} />
+      )}
 
       {/* Kanban view */}
       {viewMode === 'kanban' && (
@@ -264,7 +279,7 @@ const AdminBookings = () => {
                       <p className="font-medium">{selectedBooking.estimatedValue}</p>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                      <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground" />
                       <div>
                         <p className="text-muted-foreground text-xs">Wunschtermin</p>
                         <p className="font-medium">{selectedBooking.requestedDate}</p>
