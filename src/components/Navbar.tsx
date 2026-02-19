@@ -40,10 +40,10 @@ const Navbar = () => {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
     >
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+      <div className="container mx-auto px-6 lg:px-10">
+        <div className="flex items-center justify-between h-16 lg:h-[72px]">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2.5 group mr-8 lg:mr-12 shrink-0">
             <div className="w-10 h-10 gradient-accent rounded-lg flex items-center justify-center shadow-glow transition-transform group-hover:scale-110">
               <span className="text-accent-foreground font-bold text-lg">F</span>
             </div>
@@ -52,8 +52,11 @@ const Navbar = () => {
             </span>
           </Link>
 
+          {/* Separator */}
+          <div className="hidden lg:block w-px h-8 bg-border/60 mr-6 shrink-0" />
+
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-5">
             {navLinks.map((link) =>
               link.isRoute ? (
                 <Link
@@ -78,7 +81,7 @@ const Navbar = () => {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ml-auto pl-6">
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

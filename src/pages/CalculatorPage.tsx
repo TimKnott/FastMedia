@@ -2,9 +2,15 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -21,7 +27,13 @@ type SelectedFeature = { id: string; quantity: number };
 type Step = 'trade' | 'features' | 'special' | 'summary';
 
 const CalculatorPage = () => {
-  const { language, t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
+
+  const languages = [
+    { code: 'cs' as const, label: 'Čeština', flag: '🇨🇿' },
+    { code: 'en' as const, label: 'English', flag: '🇬🇧' },
+    { code: 'de' as const, label: 'Deutsch', flag: '🇩🇪' },
+  ];
   const [step, setStep] = useState<Step>('trade');
   const [selectedTrade, setSelectedTrade] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
@@ -320,7 +332,28 @@ const CalculatorPage = () => {
             </h1>
             <p className="text-primary-foreground/70 text-sm mt-1">{l.subtitle}</p>
           </div>
-          <div className="w-24" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-2 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {languages.find((l) => l.code === language)?.flag}
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {languages.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code)}
+                  className={language === lang.code ? 'bg-accent/10' : ''}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  {lang.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
