@@ -20,6 +20,7 @@ export const translations: Translations = {
   'nav.faq': { cs: 'FAQ', en: 'FAQ', de: 'FAQ' },
   'nav.contact': { cs: 'Kontakt', en: 'Contact', de: 'Kontakt' },
   'nav.book': { cs: 'Rezervovat konzultaci', en: 'Book Consultation', de: 'Beratung buchen' },
+  'nav.consultant': { cs: 'Konzultantka', en: 'Consultant', de: 'Beraterin' },
 
   // Hero
   'hero.title': { cs: 'Profesionální weby pro řemeslníky', en: 'Professional Websites for Tradespeople', de: 'Professionelle Websites für Handwerker' },

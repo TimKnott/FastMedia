@@ -28,6 +28,7 @@ const Navbar = () => {
     { href: '#pricing', label: t('nav.pricing') },
     { href: '#faq', label: t('nav.faq') },
     { href: '/blog', label: 'Blog', isRoute: true },
+    { href: '/consultant/jitka', label: t('nav.consultant'), isRoute: true },
     { href: '#contact', label: t('nav.contact') },
   ];
 
