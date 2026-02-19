@@ -100,6 +100,17 @@ export const translations: Translations = {
   'faq.q8': { cs: 'Jak probíhá platba?', en: 'How does payment work?', de: 'Wie funktioniert die Bezahlung?' },
   'faq.a8': { cs: 'Platba probíhá ve dvou částech – 50 % záloha před zahájením a 50 % po dokončení a schválení webu. Akceptujeme bankovní převod i fakturu.', en: 'Payment is split in two – 50% deposit before starting and 50% upon completion and approval. We accept bank transfer and invoice.', de: 'Die Zahlung erfolgt in zwei Teilen – 50 % Anzahlung vor Beginn und 50 % nach Fertigstellung und Freigabe. Wir akzeptieren Banküberweisung und Rechnung.' },
 
+  // Consultant Section
+  'consultant.label': { cs: 'Váš konzultant', en: 'Your Consultant', de: 'Ihr Berater' },
+  'consultant.title': { cs: 'Seznamte se s vaší konzultantkou', en: 'Meet Your Consultant', de: 'Lernen Sie Ihre Beraterin kennen' },
+  'consultant.subtitle': { cs: 'Osobní přístup a profesionální poradenství pro váš úspěch online', en: 'Personal approach and professional guidance for your online success', de: 'Persönlicher Ansatz und professionelle Beratung für Ihren Online-Erfolg' },
+  'consultant.role': { cs: 'Webová konzultantka & obchodní manažerka', en: 'Web Consultant & Business Manager', de: 'Web-Beraterin & Geschäftsleiterin' },
+  'consultant.bio': { cs: 'Jitka vám pomůže najít ideální řešení pro vaše podnikání. S bohatými zkušenostmi v digitálním marketingu a webovém designu zajistí, že váš web bude nejen krásný, ale i efektivní.', en: 'Jitka will help you find the ideal solution for your business. With extensive experience in digital marketing and web design, she ensures your website is not only beautiful but also effective.', de: 'Jitka hilft Ihnen, die ideale Lösung für Ihr Unternehmen zu finden. Mit umfassender Erfahrung in digitalem Marketing und Webdesign sorgt sie dafür, dass Ihre Website nicht nur schön, sondern auch effektiv ist.' },
+  'consultant.stat1': { cs: '50+ spokojených klientů', en: '50+ happy clients', de: '50+ zufriedene Kunden' },
+  'consultant.stat2': { cs: 'Odpověď do 24h', en: 'Reply within 24h', de: 'Antwort innerhalb 24h' },
+  'consultant.cta': { cs: 'Zobrazit profil', en: 'View Profile', de: 'Profil ansehen' },
+  'consultant.call': { cs: 'Zavolat', en: 'Call Now', de: 'Jetzt anrufen' },
+
   // Footer
   'footer.rights': { cs: 'Všechna práva vyhrazena', en: 'All rights reserved', de: 'Alle Rechte vorbehalten' },
   'footer.privacy': { cs: 'Ochrana osobních údajů', en: 'Privacy Policy', de: 'Datenschutz' },
