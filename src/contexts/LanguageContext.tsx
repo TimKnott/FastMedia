@@ -21,6 +21,7 @@ export const translations: Translations = {
   'nav.contact': { cs: 'Kontakt', en: 'Contact', de: 'Kontakt' },
   'nav.book': { cs: 'Rezervovat konzultaci', en: 'Book Consultation', de: 'Beratung buchen' },
   'nav.consultant': { cs: 'Konzultantka', en: 'Consultant', de: 'Beraterin' },
+  'nav.calculator': { cs: 'Kalkulačka', en: 'Calculator', de: 'Kalkulator' },
 
   // Hero
   'hero.title': { cs: 'Profesionální weby pro řemeslníky', en: 'Professional Websites for Tradespeople', de: 'Professionelle Websites für Handwerker' },

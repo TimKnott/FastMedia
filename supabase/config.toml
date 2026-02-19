@@ -1,1 +1,4 @@
 project_id = "aivnnjsrupmubcjsgulb"
+
+[functions.calculator-ai]
+verify_jwt = false
