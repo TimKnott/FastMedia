@@ -166,7 +166,7 @@ serve(async (req) => {
     }
 
     // Insert lead
-    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    const leadIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
     const userAgent = req.headers.get("user-agent")?.substring(0, 500);
 
     const { data: lead, error: insertError } = await supabaseAdmin
@@ -188,7 +188,7 @@ serve(async (req) => {
         ai_analysis: aiAnalysis,
         source: "calculator",
         language: body.language || "en",
-        ip_address: clientIp || null,
+        ip_address: leadIp || null,
         user_agent: userAgent || null,
       })
       .select("id, score, classification")
