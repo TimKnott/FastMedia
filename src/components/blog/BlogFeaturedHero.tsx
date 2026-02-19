@@ -49,15 +49,15 @@ const BlogFeaturedHero = ({ post }: BlogFeaturedHeroProps) => {
             <Badge className="gradient-accent text-accent-foreground text-xs">
               {categoryLabels[post.category][language]}
             </Badge>
-            <span className="text-sm text-white/80">{formattedDate}</span>
-            <span className="text-sm text-white/80 flex items-center gap-1">
+            <span className="text-sm text-primary-foreground/80">{formattedDate}</span>
+            <span className="text-sm text-primary-foreground/80 flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" /> {post.readTime} min
             </span>
           </div>
-          <h2 className="font-display font-bold text-2xl sm:text-4xl text-white mb-3 max-w-3xl leading-tight">
+          <h2 className="font-display font-bold text-2xl sm:text-4xl text-primary-foreground mb-3 max-w-3xl leading-tight">
             {post.title[language]}
           </h2>
-          <p className="text-white/80 text-sm sm:text-base max-w-2xl mb-4 line-clamp-2">
+          <p className="text-primary-foreground/80 text-sm sm:text-base max-w-2xl mb-4 line-clamp-2">
             {post.excerpt[language]}
           </p>
           <Button variant="secondary" className="gap-2 font-semibold group-hover:gap-3 transition-all">

@@ -322,7 +322,7 @@ const CalculatorPage = () => {
             </h1>
             <p className="text-primary-foreground/70 text-sm mt-1">{l.subtitle}</p>
           </div>
-          <LanguageSwitcher triggerClassName="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10" />
+          <LanguageSwitcher triggerClassName="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10" />
         </div>
       </div>
 

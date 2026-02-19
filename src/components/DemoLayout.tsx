@@ -88,7 +88,7 @@ const DemoLayout = ({
             {language === 'cs' ? 'Toto je ukázkový web – může být váš!' : language === 'en' ? 'This is a demo website – it could be yours!' : 'Dies ist eine Demo-Website – sie könnte Ihnen gehören!'}
           </span>
         </div>
-        <LanguageSwitcher triggerClassName="text-background/80 hover:text-background hover:bg-white/10 h-7 px-2" />
+        <LanguageSwitcher triggerClassName="text-background/80 hover:text-background hover:bg-primary-foreground/10 h-7 px-2" />
       </div>
 
       {/* Demo Navbar */}
@@ -111,7 +111,7 @@ const DemoLayout = ({
             </a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">{t('demo.contact')}</a>
           </div>
-          <Button className={`${gradientClass} text-white font-semibold shadow-md`}>
+          <Button className={`${gradientClass} text-primary-foreground font-semibold shadow-md`}>
             <Phone className="w-4 h-4 mr-2" />
             {t('demo.callnow')}
           </Button>
@@ -126,30 +126,30 @@ const DemoLayout = ({
             alt={tradeName}
             className="w-full h-full object-cover"
           />
-          <div className={`absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent`} />
+          <div className={`absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/60 to-transparent`} />
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-2xl text-white"
+            className="max-w-2xl text-primary-foreground"
           >
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+            <div className="inline-flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
               <span className="text-2xl">{tradeIcon}</span>
               <span className="font-medium">{tradeName}</span>
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 leading-tight">
               {heroTitle[language]}
             </h1>
-            <p className="text-xl text-white/90 mb-8 leading-relaxed">
+            <p className="text-xl text-primary-foreground/90 mb-8 leading-relaxed">
               {heroSubtitle[language]}
             </p>
             
             {/* Trust indicators */}
             <div className="flex flex-wrap gap-4 mb-8">
               {features.slice(0, 3).map((feature, index) => (
-                <div key={index} className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-lg">
+                <div key={index} className="flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm px-3 py-2 rounded-lg">
                   <feature.icon className="w-4 h-4" />
                   <span className="text-sm">{feature.text[language]}</span>
                 </div>
@@ -157,11 +157,11 @@ const DemoLayout = ({
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-white text-foreground hover:bg-white/90 font-semibold text-lg px-8 group">
+              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8 group">
                 <Phone className="w-5 h-5 mr-2" />
                 +420 123 456 789
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-semibold text-lg px-8">
+              <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
                 {t('demo.getquote')}
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
@@ -175,8 +175,8 @@ const DemoLayout = ({
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
         >
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center pt-2">
-            <div className="w-1.5 h-3 bg-white/70 rounded-full" />
+          <div className="w-6 h-10 border-2 border-primary-foreground/50 rounded-full flex justify-center pt-2">
+            <div className="w-1.5 h-3 bg-primary-foreground/70 rounded-full" />
           </div>
         </motion.div>
       </section>
@@ -192,10 +192,10 @@ const DemoLayout = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center text-white"
+                className="text-center text-primary-foreground"
               >
                 <div className="text-3xl sm:text-4xl font-display font-bold">{stat.value}</div>
-                <div className="text-white/80 text-sm mt-1">{stat.label[language]}</div>
+                <div className="text-primary-foreground/80 text-sm mt-1">{stat.label[language]}</div>
               </motion.div>
             ))}
           </div>
@@ -233,7 +233,7 @@ const DemoLayout = ({
                 {features.map((feature, index) => (
                   <div key={index} className="flex items-center gap-3 p-3 bg-secondary/50 rounded-xl">
                     <div className={`w-10 h-10 ${gradientClass} rounded-lg flex items-center justify-center`}>
-                      <feature.icon className="w-5 h-5 text-white" />
+                      <feature.icon className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <span className="text-foreground font-medium">{feature.text[language]}</span>
                   </div>
@@ -251,16 +251,16 @@ const DemoLayout = ({
                 alt="Our team at work"
                 className="rounded-3xl shadow-2xl w-full aspect-[4/3] object-cover"
               />
-              <div className={`absolute -bottom-6 -left-6 ${gradientClass} rounded-2xl p-6 text-white shadow-xl`}>
+              <div className={`absolute -bottom-6 -left-6 ${gradientClass} rounded-2xl p-6 text-primary-foreground shadow-xl`}>
                 <div className="flex items-center gap-3 mb-2">
                   <Award className="w-8 h-8" />
                   <span className="font-display font-bold text-2xl">15+</span>
                 </div>
-                <span className="text-white/90">
+                <span className="text-primary-foreground/90">
                   {language === 'cs' ? 'let zkušeností' : language === 'en' ? 'years of experience' : 'Jahre Erfahrung'}
                 </span>
               </div>
-              <div className="absolute -top-4 -right-4 bg-white rounded-2xl p-4 shadow-xl">
+              <div className="absolute -top-4 -right-4 bg-background rounded-2xl p-4 shadow-xl">
                 <div className="flex gap-1 mb-1">
                   {[1,2,3,4,5].map(i => <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
                 </div>
@@ -299,7 +299,7 @@ const DemoLayout = ({
                 transition={{ delay: index * 0.1 }}
                 className="group bg-card rounded-2xl p-6 shadow-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
-                <div className={`w-14 h-14 ${gradientClass} rounded-xl flex items-center justify-center text-white text-2xl mb-4 group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 ${gradientClass} rounded-xl flex items-center justify-center text-primary-foreground text-2xl mb-4 group-hover:scale-110 transition-transform`}>
                   {tradeIcon}
                 </div>
                 <h3 className="font-display font-bold text-lg text-foreground mb-2">{service.title[language]}</h3>
@@ -345,7 +345,7 @@ const DemoLayout = ({
                   <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-muted to-secondary flex items-center justify-center text-5xl overflow-hidden group-hover:scale-105 transition-transform">
                     👷
                   </div>
-                  <div className={`absolute bottom-0 right-0 w-10 h-10 ${gradientClass} rounded-full flex items-center justify-center text-white text-xs font-bold`}>
+                  <div className={`absolute bottom-0 right-0 w-10 h-10 ${gradientClass} rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold`}>
                     {member.experience}+
                   </div>
                 </div>
@@ -392,14 +392,14 @@ const DemoLayout = ({
                   alt={image.title[language]}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                  <div className="text-white">
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <div className="text-primary-foreground">
                     <p className="font-semibold">{image.title[language]}</p>
-                    <p className="text-sm text-white/80">{language === 'cs' ? 'Zobrazit detail' : language === 'en' ? 'View details' : 'Details anzeigen'}</p>
+                    <p className="text-sm text-primary-foreground/80">{language === 'cs' ? 'Zobrazit detail' : language === 'en' ? 'View details' : 'Details anzeigen'}</p>
                   </div>
                 </div>
-                <div className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Play className="w-5 h-5 text-white" />
+                <div className="absolute top-4 right-4 w-10 h-10 bg-primary-foreground/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Play className="w-5 h-5 text-primary-foreground" />
                 </div>
               </motion.div>
             ))}
@@ -462,7 +462,7 @@ const DemoLayout = ({
               <span className="text-sm text-foreground font-medium">4.9 na Google</span>
             </div>
             <div className="flex items-center gap-2 bg-card px-4 py-2 rounded-full shadow-sm">
-              <Facebook className="w-4 h-4 text-blue-600" />
+              <Facebook className="w-4 h-4 text-primary" />
               <span className="text-sm text-foreground font-medium">98% doporučení</span>
             </div>
           </div>
@@ -479,20 +479,20 @@ const DemoLayout = ({
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto text-white"
+            className="text-center max-w-3xl mx-auto text-primary-foreground"
           >
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-6">
               {language === 'cs' ? 'Potřebujete pomoc s projektem?' : language === 'en' ? 'Need Help With a Project?' : 'Brauchen Sie Hilfe bei einem Projekt?'}
             </h2>
-            <p className="text-xl text-white/90 mb-8">
+            <p className="text-xl text-primary-foreground/90 mb-8">
               {language === 'cs' ? 'Kontaktujte nás pro bezplatnou konzultaci a cenovou nabídku' : language === 'en' ? 'Contact us for a free consultation and quote' : 'Kontaktieren Sie uns für eine kostenlose Beratung und ein Angebot'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-foreground hover:bg-white/90 font-semibold text-lg px-8">
+              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8">
                 <Phone className="w-5 h-5 mr-2" />
                 +420 123 456 789
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-semibold text-lg px-8">
+              <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
                 <Mail className="w-5 h-5 mr-2" />
                 info@example.cz
               </Button>
@@ -518,7 +518,7 @@ const DemoLayout = ({
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 ${gradientClass} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <MapPin className="w-6 h-6 text-white" />
+                    <MapPin className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">
@@ -530,7 +530,7 @@ const DemoLayout = ({
 
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 ${gradientClass} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Phone className="w-6 h-6 text-white" />
+                    <Phone className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">
@@ -543,7 +543,7 @@ const DemoLayout = ({
 
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 ${gradientClass} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Mail className="w-6 h-6 text-white" />
+                    <Mail className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Email</h3>
@@ -553,7 +553,7 @@ const DemoLayout = ({
 
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 ${gradientClass} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Clock className="w-6 h-6 text-white" />
+                    <Clock className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">
@@ -578,7 +578,7 @@ const DemoLayout = ({
                     <a 
                       key={index} 
                       href="#" 
-                      className={`w-10 h-10 rounded-xl ${gradientClass} flex items-center justify-center text-white hover:opacity-80 transition-opacity`}
+                      className={`w-10 h-10 rounded-xl ${gradientClass} flex items-center justify-center text-primary-foreground hover:opacity-80 transition-opacity`}
                     >
                       <Icon className="w-5 h-5" />
                     </a>
@@ -634,7 +634,7 @@ const DemoLayout = ({
                     rows={4}
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
                   />
-                  <Button className={`w-full ${gradientClass} text-white font-semibold py-6`}>
+                  <Button className={`w-full ${gradientClass} text-primary-foreground font-semibold py-6`}>
                     {language === 'cs' ? 'Odeslat zprávu' : language === 'en' ? 'Send Message' : 'Nachricht senden'}
                   </Button>
                 </form>

@@ -50,13 +50,13 @@ const BookingSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-white"
+            className="text-primary-foreground"
           >
             <span className="text-accent font-semibold text-sm uppercase tracking-wider">Contact</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mt-3 mb-4">
               {t('booking.title')}
             </h2>
-            <p className="text-white/80 text-lg mb-10">
+            <p className="text-primary-foreground/80 text-lg mb-10">
               {t('booking.subtitle')}
             </p>
 
@@ -64,12 +64,12 @@ const BookingSection = () => {
             <div className="space-y-6">
               {contactInfo.map((info, index) => (
                 <div key={index} className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-primary-foreground/10 flex items-center justify-center">
                     <info.icon className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">{info.label[language]}</p>
-                    <p className="text-white font-medium">{info.value}</p>
+                    <p className="text-primary-foreground/60 text-sm">{info.label[language]}</p>
+                    <p className="text-primary-foreground font-medium">{info.value}</p>
                   </div>
                 </div>
               ))}
@@ -93,7 +93,7 @@ const BookingSection = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-12"
                 >
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                  <CheckCircle className="w-16 h-16 text-accent mx-auto mb-4" />
                   <p className="text-foreground font-display font-bold text-xl">
                     {t('booking.success')}
                   </p>

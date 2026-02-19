@@ -55,17 +55,17 @@ const DemosSection = () => {
                 <div className={`absolute inset-0 ${trade.gradient} opacity-75 group-hover:opacity-85 transition-opacity`} />
                 
                 {/* Dark overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/20 to-transparent" />
                 
                 {/* Content */}
                 <div className="relative p-6 h-48 flex flex-col justify-between">
                   <span className="text-5xl drop-shadow-lg">{trade.icon}</span>
                   
                   <div>
-                    <h3 className="text-white font-display font-bold text-xl mb-2 drop-shadow-md">
+                    <h3 className="text-primary-foreground font-display font-bold text-xl mb-2 drop-shadow-md">
                       {t(trade.nameKey)}
                     </h3>
-                    <div className="flex items-center gap-2 text-white/90 text-sm font-medium group-hover:text-white transition-colors">
+                    <div className="flex items-center gap-2 text-primary-foreground/90 text-sm font-medium group-hover:text-primary-foreground transition-colors">
                       {t('demos.explore')}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -73,7 +73,7 @@ const DemosSection = () => {
                 </div>
 
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-primary-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
             </motion.div>
           ))}

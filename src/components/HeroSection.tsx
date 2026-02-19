@@ -42,13 +42,13 @@ const AnimatedStat = ({ icon: Icon, value, label, delay }: {
       initial={{ opacity: 0, y: 30, scale: 0.9 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ duration: 0.6, delay, ease: 'easeOut' }}
-      className="flex flex-col items-center p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 group hover:bg-white/10 transition-colors duration-300"
+      className="flex flex-col items-center p-6 rounded-2xl bg-primary-foreground/5 backdrop-blur-sm border border-primary-foreground/10 group hover:bg-primary-foreground/10 transition-colors duration-300"
     >
       <Icon className="w-8 h-8 text-accent mb-3 group-hover:scale-110 transition-transform duration-300" />
-      <span className="text-3xl font-display font-bold text-white tabular-nums">
+      <span className="text-3xl font-display font-bold text-primary-foreground tabular-nums">
         {isInView ? animatedValue : 0}{suffix}
       </span>
-      <span className="text-white/70 text-sm mt-1">{label}</span>
+      <span className="text-primary-foreground/70 text-sm mt-1">{label}</span>
     </motion.div>
   );
 };
@@ -90,7 +90,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 text-primary-foreground/90 text-sm font-medium mb-8"
           >
             <Sparkles className="w-4 h-4 text-accent" />
             FastMedia.Pro
@@ -101,7 +101,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-white leading-tight mb-6"
+            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-primary-foreground leading-tight mb-6"
           >
             {t('hero.title')}
           </motion.h1>
@@ -111,7 +111,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto mb-10"
+            className="text-lg sm:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-10"
           >
             {t('hero.subtitle')}
           </motion.p>
@@ -130,7 +130,7 @@ const HeroSection = () => {
               </Button>
             </a>
             <a href="#contact">
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 font-semibold text-lg px-8 py-6">
+              <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8 py-6">
                 {t('hero.cta2')}
               </Button>
             </a>

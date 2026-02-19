@@ -141,16 +141,16 @@ const ConsultantJitka = () => {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-center lg:text-left max-w-2xl"
             >
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-semibold mb-4">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-semibold mb-4">
                 Your Personal Consultant
               </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 text-white">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 text-primary-foreground">
                 Hi, I'm Jitka Listanská
               </h1>
-              <p className="text-lg lg:text-xl text-white/90 leading-relaxed mb-4">
+              <p className="text-lg lg:text-xl text-primary-foreground/90 leading-relaxed mb-4">
                 Welcome! I'm here to guide you through every step of creating the perfect website for your business. Whether you're starting from scratch or refreshing an existing site, I'll help you choose the right features, design, and strategy — so your online presence truly works for you.
               </p>
-              <p className="text-white/80 leading-relaxed">
+              <p className="text-primary-foreground/80 leading-relaxed">
                 With years of experience helping tradespeople and small businesses across Czechia, I understand the unique challenges you face. Let's turn your vision into something your customers will love.
               </p>
               <div className="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
@@ -160,7 +160,7 @@ const ConsultantJitka = () => {
                   </Button>
                 </a>
                 <a href="#stories">
-                  <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 h-12 px-8 gap-2">
+                  <Button variant="outline" className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 h-12 px-8 gap-2">
                     <Heart className="w-5 h-5" /> Read Success Stories
                   </Button>
                 </a>
@@ -236,7 +236,7 @@ const ConsultantJitka = () => {
                     className="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent flex items-center justify-center md:hidden">
-                    <Calculator className="w-12 h-12 text-white" />
+                    <Calculator className="w-12 h-12 text-primary-foreground" />
                   </div>
                 </div>
                 <div className="md:w-3/5 p-6 lg:p-8 flex flex-col justify-center">
