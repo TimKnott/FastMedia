@@ -523,6 +523,48 @@ const CalculatorPage = () => {
                 <div>
                   <h2 className="font-display text-2xl font-bold text-foreground mb-2">{l.specialTitle}</h2>
                   <p className="text-muted-foreground text-sm mb-6">{l.canChange}</p>
+
+                  {/* Idea prompts */}
+                  <div className="mb-5">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
+                      {lang === 'cs' ? '💡 Nápady k vyzkoušení' : lang === 'de' ? '💡 Ideen zum Ausprobieren' : '💡 Ideas to try'}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {(lang === 'cs' ? [
+                        'Chci aby zákazníci platili online',
+                        'Potřebuji propojit web s mým účetním systémem',
+                        'Chci chat s umělou inteligencí na webu',
+                        'Potřebuji automatické odesílání SMS zákazníkům',
+                        'Chci kalkulačku cen pro mé zákazníky',
+                        'Potřebuji QR kódy pro objednávky',
+                      ] : lang === 'de' ? [
+                        'Ich möchte, dass Kunden online bezahlen können',
+                        'Ich brauche eine Anbindung an mein Buchhaltungssystem',
+                        'Ich möchte einen KI-Chat auf meiner Website',
+                        'Ich brauche automatische SMS an Kunden',
+                        'Ich möchte einen Preiskalkulator für meine Kunden',
+                        'Ich brauche QR-Codes für Bestellungen',
+                      ] : [
+                        'I want customers to pay online',
+                        'I need to connect to my accounting system',
+                        'I want an AI chatbot on my website',
+                        'I need automated SMS notifications for clients',
+                        'I want a price calculator for my customers',
+                        'I need QR codes for orders',
+                      ]).map((prompt) => (
+                        <motion.button
+                          key={prompt}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => setSpecialRequest(prompt)}
+                          className="text-xs px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors"
+                        >
+                          {prompt}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="relative">
                     <Input
                       value={specialRequest}
