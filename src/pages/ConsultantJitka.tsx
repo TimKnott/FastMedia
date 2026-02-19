@@ -140,16 +140,16 @@ const ConsultantJitka = () => {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-center lg:text-left max-w-2xl"
             >
-              <span className="inline-block px-4 py-1.5 rounded-full bg-accent/20 text-accent text-sm font-semibold mb-4">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-semibold mb-4">
                 Your Personal Consultant
               </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 text-white">
                 Hi, I'm Jitka Listanská
               </h1>
-              <p className="text-lg lg:text-xl text-primary-foreground/80 leading-relaxed mb-4">
+              <p className="text-lg lg:text-xl text-white/90 leading-relaxed mb-4">
                 Welcome! I'm here to guide you through every step of creating the perfect website for your business. Whether you're starting from scratch or refreshing an existing site, I'll help you choose the right features, design, and strategy — so your online presence truly works for you.
               </p>
-              <p className="text-primary-foreground/70 leading-relaxed">
+              <p className="text-white/80 leading-relaxed">
                 With years of experience helping tradespeople and small businesses across Czechia, I understand the unique challenges you face. Let's turn your vision into something your customers will love.
               </p>
               <div className="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
