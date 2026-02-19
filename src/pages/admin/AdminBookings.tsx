@@ -1,5 +1,11 @@
-import { useState } from 'react';
-import { Search, Filter, MoreHorizontal, Phone, Mail, MapPin, StickyNote, Calendar as CalendarIcon, Clock, LayoutGrid, List, CalendarDays } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { format } from 'date-fns';
+import { de } from 'date-fns/locale';
+import { motion } from 'framer-motion';
+import {
+  Search, Plus, MoreHorizontal, Phone, Mail, Clock, CalendarDays, List,
+  User, StickyNote, CalendarCheck, Loader2,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -11,46 +17,311 @@ import {
 import {
   Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+} from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import type { Booking, BookingStatus } from '@/types/bookings';
-import { statusConfig, priorityConfig, sourceLabel, pipelineStages } from '@/types/bookings';
-import { placeholderBookings as initialBookings } from '@/data/bookings';
-import BookingsKanban from '@/components/admin/BookingsKanban';
-import BookingsCalendar from '@/components/admin/BookingsCalendar';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import type { Tables } from '@/integrations/supabase/types';
 
-type ViewMode = 'table' | 'kanban' | 'calendar';
+type DbBooking = Tables<'bookings'>;
 
-const statCounts = (bookings: Booking[]) => {
-  const counts: Record<BookingStatus, number> = {
-    neu: 0, kontaktiert: 0, angebot_gesendet: 0, in_bearbeitung: 0, abgeschlossen: 0, storniert: 0,
-  };
-  bookings.forEach(b => counts[b.status]++);
-  return counts;
+type BookingStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
+
+const statusConfig: Record<BookingStatus, { label: string; dot: string; variant: string }> = {
+  pending: { label: 'Ausstehend', dot: 'bg-yellow-500', variant: 'outline' },
+  confirmed: { label: 'Bestätigt', dot: 'bg-blue-500', variant: 'secondary' },
+  in_progress: { label: 'In Bearbeitung', dot: 'bg-primary', variant: 'default' },
+  completed: { label: 'Abgeschlossen', dot: 'bg-green-500', variant: 'outline' },
+  cancelled: { label: 'Storniert', dot: 'bg-destructive', variant: 'destructive' },
 };
 
-const BookingsTable = ({
-  bookings,
-  onSelect,
-}: {
-  bookings: Booking[];
-  onSelect: (b: Booking) => void;
-}) => (
+const pipelineStages: { key: BookingStatus; label: string }[] = [
+  { key: 'pending', label: 'Ausstehend' },
+  { key: 'confirmed', label: 'Bestätigt' },
+  { key: 'in_progress', label: 'In Bearbeitung' },
+  { key: 'completed', label: 'Abgeschlossen' },
+  { key: 'cancelled', label: 'Storniert' },
+];
+
+const AdminBookings = () => {
+  const [bookings, setBookings] = useState<DbBooking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [selectedBooking, setSelectedBooking] = useState<DbBooking | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Create form state
+  const [newBooking, setNewBooking] = useState({
+    customer_name: '',
+    customer_email: '',
+    phone: '',
+    service: '',
+    scheduled_at: undefined as Date | undefined,
+    duration_minutes: 60,
+    notes: '',
+    assigned_to: '',
+  });
+
+  const fetchBookings = async () => {
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      toast.error('Fehler beim Laden der Buchungen.');
+      console.error(error);
+    } else {
+      setBookings(data ?? []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchBookings(); }, []);
+
+  const filtered = useMemo(() =>
+    bookings.filter(b =>
+      b.customer_name.toLowerCase().includes(search.toLowerCase()) ||
+      b.customer_email.toLowerCase().includes(search.toLowerCase()) ||
+      b.service.toLowerCase().includes(search.toLowerCase())
+    ), [bookings, search]);
+
+  const counts = useMemo(() => {
+    const c: Record<string, number> = {};
+    pipelineStages.forEach(s => c[s.key] = 0);
+    bookings.forEach(b => { if (c[b.status] !== undefined) c[b.status]++; });
+    return c;
+  }, [bookings]);
+
+  const handleCreate = async () => {
+    if (!newBooking.customer_name || !newBooking.customer_email || !newBooking.service || !newBooking.scheduled_at) {
+      toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from('bookings').insert({
+      customer_name: newBooking.customer_name,
+      customer_email: newBooking.customer_email,
+      phone: newBooking.phone || null,
+      service: newBooking.service,
+      scheduled_at: newBooking.scheduled_at.toISOString(),
+      duration_minutes: newBooking.duration_minutes,
+      notes: newBooking.notes || null,
+      assigned_to: newBooking.assigned_to || null,
+    });
+    setSaving(false);
+    if (error) {
+      toast.error('Fehler beim Erstellen: ' + error.message);
+    } else {
+      toast.success('Buchung erstellt.');
+      setCreateOpen(false);
+      setNewBooking({ customer_name: '', customer_email: '', phone: '', service: '', scheduled_at: undefined, duration_minutes: 60, notes: '', assigned_to: '' });
+      fetchBookings();
+    }
+  };
+
+  const handleStatusChange = async (bookingId: string, newStatus: string) => {
+    const { error } = await supabase.from('bookings').update({ status: newStatus }).eq('id', bookingId);
+    if (error) {
+      toast.error('Status konnte nicht aktualisiert werden.');
+    } else {
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
+      if (selectedBooking?.id === bookingId) setSelectedBooking(prev => prev ? { ...prev, status: newStatus } : null);
+      toast.success('Status aktualisiert.');
+    }
+  };
+
+  const handleSaveNotes = async (bookingId: string, notes: string) => {
+    const { error } = await supabase.from('bookings').update({ notes }).eq('id', bookingId);
+    if (error) {
+      toast.error('Notizen konnten nicht gespeichert werden.');
+    } else {
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, notes } : b));
+      toast.success('Notizen gespeichert.');
+    }
+  };
+
+  const filterByStatus = (status: BookingStatus) => filtered.filter(b => b.status === status);
+
+  const formatDate = (iso: string) => {
+    try { return format(new Date(iso), 'dd.MM.yyyy, HH:mm', { locale: de }); }
+    catch { return iso; }
+  };
+
+  const formatDateShort = (iso: string) => {
+    try { return format(new Date(iso), 'dd.MM.yyyy', { locale: de }); }
+    catch { return iso; }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-foreground">Buchungen</h1>
+          <p className="text-muted-foreground mt-1">Termine verwalten und nachverfolgen.</p>
+        </div>
+        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+          <DialogTrigger asChild>
+            <Button className="gradient-primary text-primary-foreground gap-1.5">
+              <Plus className="w-4 h-4" /> Neue Buchung
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="font-display">Neue Buchung erstellen</DialogTitle>
+              <DialogDescription>Füllen Sie die Details aus, um einen neuen Termin anzulegen.</DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Name *</Label>
+                  <Input value={newBooking.customer_name} onChange={e => setNewBooking(p => ({ ...p, customer_name: e.target.value }))} placeholder="Max Mustermann" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>E-Mail *</Label>
+                  <Input type="email" value={newBooking.customer_email} onChange={e => setNewBooking(p => ({ ...p, customer_email: e.target.value }))} placeholder="max@beispiel.de" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Telefon</Label>
+                  <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} placeholder="+49 170 …" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Dauer (Min.)</Label>
+                  <Input type="number" value={newBooking.duration_minutes} onChange={e => setNewBooking(p => ({ ...p, duration_minutes: Number(e.target.value) }))} />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Service *</Label>
+                <Input value={newBooking.service} onChange={e => setNewBooking(p => ({ ...p, service: e.target.value }))} placeholder="z.B. Sanitär – Rohrleitungsinstallation" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Termin *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !newBooking.scheduled_at && "text-muted-foreground")}>
+                      <CalendarDays className="mr-2 h-4 w-4" />
+                      {newBooking.scheduled_at ? format(newBooking.scheduled_at, 'PPP', { locale: de }) : 'Datum wählen'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={newBooking.scheduled_at} onSelect={d => setNewBooking(p => ({ ...p, scheduled_at: d }))} initialFocus className="p-3 pointer-events-auto" />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Zugewiesen an</Label>
+                <Input value={newBooking.assigned_to} onChange={e => setNewBooking(p => ({ ...p, assigned_to: e.target.value }))} placeholder="Mitarbeiter-Name" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Notizen</Label>
+                <Textarea value={newBooking.notes} onChange={e => setNewBooking(p => ({ ...p, notes: e.target.value }))} rows={3} placeholder="Optionale Notizen…" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setCreateOpen(false)}>Abbrechen</Button>
+              <Button className="gradient-primary text-primary-foreground" onClick={handleCreate} disabled={saving}>
+                {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
+                Erstellen
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Pipeline summary */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {pipelineStages.map((stage, i) => (
+          <motion.div key={stage.key} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+            <Card className="shadow-card">
+              <CardContent className="p-4 flex items-center gap-3">
+                <span className={`w-3 h-3 rounded-full ${statusConfig[stage.key].dot}`} />
+                <div>
+                  <p className="text-xs text-muted-foreground">{stage.label}</p>
+                  <p className="text-xl font-display font-bold">{counts[stage.key] ?? 0}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="flex gap-2">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Suche nach Name, E-Mail, Service…" className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
+        </div>
+      </div>
+
+      {/* Table */}
+      <Card className="shadow-card">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg font-display">Alle Buchungen</CardTitle>
+          <CardDescription>{filtered.length} Einträge</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="all">
+            <TabsList className="flex-wrap">
+              <TabsTrigger value="all">Alle ({filtered.length})</TabsTrigger>
+              {pipelineStages.map(s => (
+                <TabsTrigger key={s.key} value={s.key}>{s.label} ({counts[s.key] ?? 0})</TabsTrigger>
+              ))}
+            </TabsList>
+            <TabsContent value="all" className="mt-4">
+              <BookingsTableView bookings={filtered} onSelect={setSelectedBooking} formatDate={formatDateShort} />
+            </TabsContent>
+            {pipelineStages.map(s => (
+              <TabsContent key={s.key} value={s.key} className="mt-4">
+                <BookingsTableView bookings={filterByStatus(s.key)} onSelect={setSelectedBooking} formatDate={formatDateShort} />
+              </TabsContent>
+            ))}
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Detail Sheet */}
+      <BookingDetailSheet
+        booking={selectedBooking}
+        onClose={() => setSelectedBooking(null)}
+        onStatusChange={handleStatusChange}
+        onSaveNotes={handleSaveNotes}
+        formatDate={formatDate}
+      />
+    </div>
+  );
+};
+
+/* ── Table sub-component ── */
+const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBooking[]; onSelect: (b: DbBooking) => void; formatDate: (iso: string) => string }) => (
   <div className="overflow-x-auto">
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-20">ID</TableHead>
           <TableHead>Kunde</TableHead>
           <TableHead>Service</TableHead>
-          <TableHead>Priorität</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Quelle</TableHead>
-          <TableHead>Wunschtermin</TableHead>
-          <TableHead>Wert</TableHead>
+          <TableHead>Termin</TableHead>
+          <TableHead>Dauer</TableHead>
           <TableHead>Zugewiesen</TableHead>
           <TableHead className="w-10" />
         </TableRow>
@@ -58,301 +329,153 @@ const BookingsTable = ({
       <TableBody>
         {bookings.length === 0 && (
           <TableRow>
-            <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
-              Keine Buchungen in dieser Kategorie.
-            </TableCell>
+            <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Keine Buchungen gefunden.</TableCell>
           </TableRow>
         )}
-        {bookings.map((b) => (
-          <TableRow key={b.id} className="cursor-pointer hover:bg-muted/50" onClick={() => onSelect(b)}>
-            <TableCell className="text-xs text-muted-foreground font-mono">{b.id}</TableCell>
-            <TableCell>
-              <div>
-                <p className="font-medium text-sm">{b.name}</p>
-                <p className="text-xs text-muted-foreground">{b.email}</p>
-              </div>
-            </TableCell>
-            <TableCell className="text-sm max-w-[180px] truncate">{b.service}</TableCell>
-            <TableCell>
-              <Badge variant={priorityConfig[b.priority].variant as any} className="text-xs">
-                {priorityConfig[b.priority].label}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <span className="inline-flex items-center gap-1.5">
-                <span className={`w-2 h-2 rounded-full ${statusConfig[b.status].dot}`} />
-                <span className="text-sm">{statusConfig[b.status].label}</span>
-              </span>
-            </TableCell>
-            <TableCell className="text-sm text-muted-foreground">{sourceLabel[b.source]}</TableCell>
-            <TableCell className="text-sm">{b.requestedDate}</TableCell>
-            <TableCell className="text-sm font-medium">{b.estimatedValue}</TableCell>
-            <TableCell className="text-sm text-muted-foreground">{b.assignedTo}</TableCell>
-            <TableCell>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); onSelect(b); }}>
-                <MoreHorizontal className="w-4 h-4" />
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
+        {bookings.map(b => {
+          const sc = statusConfig[b.status as BookingStatus] ?? statusConfig.pending;
+          return (
+            <TableRow key={b.id} className="cursor-pointer hover:bg-muted/50" onClick={() => onSelect(b)}>
+              <TableCell>
+                <p className="font-medium text-sm">{b.customer_name}</p>
+                <p className="text-xs text-muted-foreground">{b.customer_email}</p>
+              </TableCell>
+              <TableCell className="text-sm max-w-[200px] truncate">{b.service}</TableCell>
+              <TableCell>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${sc.dot}`} />
+                  <span className="text-sm">{sc.label}</span>
+                </span>
+              </TableCell>
+              <TableCell className="text-sm">{formatDate(b.scheduled_at)}</TableCell>
+              <TableCell className="text-sm">{b.duration_minutes} Min.</TableCell>
+              <TableCell className="text-sm text-muted-foreground">{b.assigned_to || '—'}</TableCell>
+              <TableCell>
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={e => { e.stopPropagation(); onSelect(b); }}>
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   </div>
 );
 
-const AdminBookings = () => {
-  const [bookings, setBookings] = useState<Booking[]>(initialBookings);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
-  const [search, setSearch] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>('table');
-  const counts = statCounts(bookings);
+/* ── Detail Sheet sub-component ── */
+const BookingDetailSheet = ({
+  booking, onClose, onStatusChange, onSaveNotes, formatDate,
+}: {
+  booking: DbBooking | null;
+  onClose: () => void;
+  onStatusChange: (id: string, status: string) => void;
+  onSaveNotes: (id: string, notes: string) => void;
+  formatDate: (iso: string) => string;
+}) => {
+  const [notes, setNotes] = useState('');
 
-  const filtered = bookings.filter(b =>
-    b.name.toLowerCase().includes(search.toLowerCase()) ||
-    b.email.toLowerCase().includes(search.toLowerCase()) ||
-    b.service.toLowerCase().includes(search.toLowerCase()) ||
-    b.id.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    if (booking) setNotes(booking.notes ?? '');
+  }, [booking]);
 
-  const filterByStatus = (status: BookingStatus) => filtered.filter(b => b.status === status);
+  if (!booking) return null;
 
-  const handleStatusChange = (bookingId: string, newStatus: BookingStatus) => {
-    setBookings(prev =>
-      prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b)
-    );
-  };
+  const sc = statusConfig[booking.status as BookingStatus] ?? statusConfig.pending;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Buchungen & Leads</h1>
-          <p className="text-muted-foreground mt-1">Verwalten Sie eingehende Anfragen und den Workflow.</p>
-        </div>
-        {/* View toggle */}
-        <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-          <Button
-            variant={viewMode === 'table' ? 'secondary' : 'ghost'}
-            size="sm"
-            className="h-8 gap-1.5"
-            onClick={() => setViewMode('table')}
-          >
-            <List className="w-4 h-4" />
-            <span className="hidden sm:inline">Tabelle</span>
-          </Button>
-          <Button
-            variant={viewMode === 'kanban' ? 'secondary' : 'ghost'}
-            size="sm"
-            className="h-8 gap-1.5"
-            onClick={() => setViewMode('kanban')}
-          >
-            <LayoutGrid className="w-4 h-4" />
-            <span className="hidden sm:inline">Kanban</span>
-          </Button>
-          <Button
-            variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
-            size="sm"
-            className="h-8 gap-1.5"
-            onClick={() => setViewMode('calendar')}
-          >
-            <CalendarDays className="w-4 h-4" />
-            <span className="hidden sm:inline">Kalender</span>
-          </Button>
-        </div>
-      </div>
+    <Sheet open={!!booking} onOpenChange={open => !open && onClose()}>
+      <SheetContent className="sm:max-w-lg overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle className="font-display">{booking.customer_name}</SheetTitle>
+          <SheetDescription>
+            <Badge variant={sc.variant as any} className="text-xs">{sc.label}</Badge>
+          </SheetDescription>
+        </SheetHeader>
 
-      {/* Pipeline summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {pipelineStages.map((stage) => (
-          <Card key={stage.key} className="shadow-card">
-            <CardContent className="p-4 flex items-center gap-3">
-              <span className={`w-3 h-3 rounded-full ${statusConfig[stage.key].dot}`} />
+        <div className="mt-6 space-y-6">
+          {/* Contact */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Mail className="w-4 h-4" /> <span>{booking.customer_email}</span>
+              </div>
+              {booking.phone && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Phone className="w-4 h-4" /> <span>{booking.phone}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground">Buchungsdetails</h3>
+            <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-xs text-muted-foreground">{stage.label}</p>
-                <p className="text-xl font-display font-bold">{counts[stage.key]}</p>
+                <p className="text-muted-foreground text-xs">Service</p>
+                <p className="font-medium">{booking.service}</p>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <div>
+                <p className="text-muted-foreground text-xs">Dauer</p>
+                <p className="font-medium">{booking.duration_minutes} Minuten</p>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CalendarCheck className="w-3.5 h-3.5 text-muted-foreground" />
+                <div>
+                  <p className="text-muted-foreground text-xs">Termin</p>
+                  <p className="font-medium">{formatDate(booking.scheduled_at)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                <div>
+                  <p className="text-muted-foreground text-xs">Erstellt</p>
+                  <p className="font-medium">{formatDate(booking.created_at)}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-xs">Zugewiesen an</p>
+                <p className="font-medium">{booking.assigned_to || '—'}</p>
+              </div>
+              {booking.lead_id && (
+                <div>
+                  <p className="text-muted-foreground text-xs">Lead-ID</p>
+                  <p className="font-medium font-mono text-xs">{booking.lead_id.slice(0, 8)}…</p>
+                </div>
+              )}
+            </div>
+          </div>
 
-      {/* Search bar */}
-      <div className="flex gap-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Suche nach Name, E-Mail, Service…"
-            className="pl-9 h-9"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          {/* Status change */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground">Status ändern</h3>
+            <Select value={booking.status} onValueChange={v => onStatusChange(booking.id, v)}>
+              <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {pipelineStages.map(s => (
+                  <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Notes */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+              <StickyNote className="w-4 h-4" /> Notizen
+            </h3>
+            <Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} placeholder="Notizen hinzufügen…" />
+          </div>
+
+          <div className="flex gap-2 pt-2">
+            <Button className="gradient-primary text-primary-foreground flex-1" onClick={() => onSaveNotes(booking.id, notes)}>Speichern</Button>
+            <Button variant="outline" onClick={onClose}>Schließen</Button>
+          </div>
         </div>
-        <Button variant="outline" size="sm" className="h-9">
-          <Filter className="w-4 h-4 mr-1" />
-          Filtern
-        </Button>
-      </div>
-
-      {/* Calendar view */}
-      {viewMode === 'calendar' && (
-        <BookingsCalendar bookings={filtered} onSelect={setSelectedBooking} />
-      )}
-
-      {/* Kanban view */}
-      {viewMode === 'kanban' && (
-        <BookingsKanban
-          bookings={filtered}
-          onSelect={setSelectedBooking}
-          onStatusChange={handleStatusChange}
-        />
-      )}
-
-      {/* Table view */}
-      {viewMode === 'table' && (
-        <Card className="shadow-card">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-display">Alle Buchungen</CardTitle>
-            <CardDescription>{filtered.length} Einträge</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="all">
-              <TabsList className="flex-wrap">
-                <TabsTrigger value="all">Alle ({filtered.length})</TabsTrigger>
-                <TabsTrigger value="neu">Neu ({counts.neu})</TabsTrigger>
-                <TabsTrigger value="kontaktiert">Kontaktiert ({counts.kontaktiert})</TabsTrigger>
-                <TabsTrigger value="angebot_gesendet">Angebot ({counts.angebot_gesendet})</TabsTrigger>
-                <TabsTrigger value="in_bearbeitung">In Arbeit ({counts.in_bearbeitung})</TabsTrigger>
-                <TabsTrigger value="abgeschlossen">Fertig ({counts.abgeschlossen})</TabsTrigger>
-                <TabsTrigger value="storniert">Storniert ({counts.storniert})</TabsTrigger>
-              </TabsList>
-              <TabsContent value="all" className="mt-4">
-                <BookingsTable bookings={filtered} onSelect={setSelectedBooking} />
-              </TabsContent>
-              {(['neu', 'kontaktiert', 'angebot_gesendet', 'in_bearbeitung', 'abgeschlossen', 'storniert'] as BookingStatus[]).map(status => (
-                <TabsContent key={status} value={status} className="mt-4">
-                  <BookingsTable bookings={filterByStatus(status)} onSelect={setSelectedBooking} />
-                </TabsContent>
-              ))}
-            </Tabs>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Detail Sheet */}
-      <Sheet open={!!selectedBooking} onOpenChange={(open) => !open && setSelectedBooking(null)}>
-        <SheetContent className="sm:max-w-lg overflow-y-auto">
-          {selectedBooking && (
-            <>
-              <SheetHeader>
-                <SheetTitle className="font-display">{selectedBooking.name}</SheetTitle>
-                <SheetDescription>Buchung {selectedBooking.id}</SheetDescription>
-              </SheetHeader>
-
-              <div className="mt-6 space-y-6">
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Mail className="w-4 h-4" />
-                      <span>{selectedBooking.email}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Phone className="w-4 h-4" />
-                      <span>{selectedBooking.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="w-4 h-4" />
-                      <span>{selectedBooking.address}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">Buchungsdetails</h3>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <p className="text-muted-foreground text-xs">Service</p>
-                      <p className="font-medium">{selectedBooking.service}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-xs">Geschätzter Wert</p>
-                      <p className="font-medium">{selectedBooking.estimatedValue}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground" />
-                      <div>
-                        <p className="text-muted-foreground text-xs">Wunschtermin</p>
-                        <p className="font-medium">{selectedBooking.requestedDate}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                      <div>
-                        <p className="text-muted-foreground text-xs">Erstellt</p>
-                        <p className="font-medium">{selectedBooking.createdAt}</p>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-xs">Quelle</p>
-                      <p className="font-medium">{sourceLabel[selectedBooking.source]}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-xs">Zugewiesen an</p>
-                      <p className="font-medium">{selectedBooking.assignedTo}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">Workflow</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label className="text-xs">Status ändern</Label>
-                      <Select defaultValue={selectedBooking.status}>
-                        <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="neu">Neu</SelectItem>
-                          <SelectItem value="kontaktiert">Kontaktiert</SelectItem>
-                          <SelectItem value="angebot_gesendet">Angebot gesendet</SelectItem>
-                          <SelectItem value="in_bearbeitung">In Bearbeitung</SelectItem>
-                          <SelectItem value="abgeschlossen">Abgeschlossen</SelectItem>
-                          <SelectItem value="storniert">Storniert</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs">Priorität ändern</Label>
-                      <Select defaultValue={selectedBooking.priority}>
-                        <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="niedrig">Niedrig</SelectItem>
-                          <SelectItem value="mittel">Mittel</SelectItem>
-                          <SelectItem value="hoch">Hoch</SelectItem>
-                          <SelectItem value="dringend">Dringend</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                    <StickyNote className="w-4 h-4" />
-                    Notizen
-                  </h3>
-                  <Textarea defaultValue={selectedBooking.notes} rows={4} placeholder="Notizen hinzufügen…" />
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <Button className="gradient-primary text-primary-foreground flex-1">Speichern</Button>
-                  <Button variant="outline" onClick={() => setSelectedBooking(null)}>Schließen</Button>
-                </div>
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 
