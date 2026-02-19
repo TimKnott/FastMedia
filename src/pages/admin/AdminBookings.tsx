@@ -78,8 +78,7 @@ const AdminBookings = () => {
       .select('*')
       .order('created_at', { ascending: false });
     if (error) {
-      toast.error('Fehler beim Laden der Buchungen.');
-      console.error(error);
+      toast.error('Fehler beim Laden der Buchungen. Bitte versuchen Sie es erneut.');
     } else {
       setBookings(data ?? []);
     }
@@ -120,7 +119,7 @@ const AdminBookings = () => {
     });
     setSaving(false);
     if (error) {
-      toast.error('Fehler beim Erstellen: ' + error.message);
+      toast.error('Buchung konnte nicht erstellt werden. Bitte prüfen Sie Ihre Eingaben.');
     } else {
       toast.success('Buchung erstellt.');
       setCreateOpen(false);
