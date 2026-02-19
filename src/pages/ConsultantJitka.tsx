@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Star, Phone, Mail, MessageCircle, Calendar, ArrowLeft, Send, Sparkles, Heart, ThumbsUp, Quote } from 'lucide-react';
+import { Star, Phone, Mail, MessageCircle, Calendar, ArrowLeft, Send, Sparkles, Heart, ThumbsUp, Quote, Calculator } from 'lucide-react';
+import calculatorPreview from '@/assets/calculator-preview.jpg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -217,7 +218,46 @@ const ConsultantJitka = () => {
         </div>
       </section>
 
-      {/* Animated Reviews */}
+      {/* AI Calculator Advert */}
+      <section className="py-16 lg:py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Link to="/calculator" className="block group">
+              <div className="max-w-4xl mx-auto bg-card rounded-2xl overflow-hidden shadow-card border border-border/50 hover:shadow-lg transition-all flex flex-col md:flex-row">
+                <div className="md:w-2/5 relative overflow-hidden">
+                  <img
+                    src={calculatorPreview}
+                    alt="AI Website Calculator"
+                    className="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent flex items-center justify-center md:hidden">
+                    <Calculator className="w-12 h-12 text-white" />
+                  </div>
+                </div>
+                <div className="md:w-3/5 p-6 lg:p-8 flex flex-col justify-center">
+                  <span className="text-accent font-semibold text-xs uppercase tracking-wider mb-2">AI-Powered Tool</span>
+                  <h3 className="text-xl lg:text-2xl font-display font-bold text-foreground mb-2">
+                    Try Our Smart Website Calculator
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                    Get an instant, personalised quote for your website. Our AI recommends the best features for your trade and builds a custom price breakdown in seconds.
+                  </p>
+                  <div className="flex items-center gap-2 text-accent font-semibold text-sm group-hover:gap-3 transition-all">
+                    <Calculator className="w-4 h-4" />
+                    Build Your Quote Now →
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       <section className="py-20 lg:py-28 bg-background overflow-hidden">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div

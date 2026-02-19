@@ -145,6 +145,19 @@ export const translations: Translations = {
   'trade.cleaning': { cs: 'Úklidové služby', en: 'Cleaning Services', de: 'Reinigungsdienste' },
   'trade.locksmith': { cs: 'Zámečnictví', en: 'Locksmith', de: 'Schlosserei' },
   'trade.carpentry': { cs: 'Truhlářství', en: 'Carpentry', de: 'Tischlerei' },
+
+  // Calculator Showcase
+  'calculator_showcase.label': { cs: 'AI Nástroj', en: 'AI-Powered Tool', de: 'KI-gestütztes Tool' },
+  'calculator_showcase.title': { cs: 'Zjistěte cenu svého webu za 60 sekund', en: 'Get Your Website Price in 60 Seconds', de: 'Erhalten Sie Ihren Website-Preis in 60 Sekunden' },
+  'calculator_showcase.subtitle': { cs: 'Naše AI kalkulačka vám sestaví nabídku na míru podle vašeho řemesla a potřeb', en: 'Our AI calculator builds a custom quote tailored to your trade and needs', de: 'Unser KI-Rechner erstellt ein individuelles Angebot, zugeschnitten auf Ihr Gewerk' },
+  'calculator_showcase.badge': { cs: 'AI doporučení', en: 'AI Recommendations', de: 'KI-Empfehlungen' },
+  'calculator_showcase.badge2': { cs: 'Okamžitá nabídka', en: 'Instant Quote', de: 'Sofortangebot' },
+  'calculator_showcase.heading': { cs: 'Chytrá kalkulačka pro váš web', en: 'Smart Calculator for Your Website', de: 'Intelligenter Rechner für Ihre Website' },
+  'calculator_showcase.feature1': { cs: 'Vyberte si funkce a sledujte cenu v reálném čase', en: 'Pick features and watch the price update in real time', de: 'Wählen Sie Funktionen und sehen Sie den Preis in Echtzeit' },
+  'calculator_showcase.feature2': { cs: 'AI doporučí nejlepší funkce pro vaše řemeslo', en: 'AI recommends the best features for your trade', de: 'KI empfiehlt die besten Funktionen für Ihr Gewerk' },
+  'calculator_showcase.feature3': { cs: 'Zadejte vlastní požadavek a AI navrhne řešení', en: 'Enter a custom request and AI suggests solutions', de: 'Geben Sie eine individuelle Anfrage ein und KI schlägt Lösungen vor' },
+  'calculator_showcase.feature4': { cs: 'Stáhněte si nabídku jako soubor', en: 'Download your quote as a file', de: 'Laden Sie Ihr Angebot als Datei herunter' },
+  'calculator_showcase.cta': { cs: 'Spustit kalkulačku', en: 'Launch Calculator', de: 'Rechner starten' },
 };
 
 interface LanguageContextType {

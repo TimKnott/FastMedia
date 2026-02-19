@@ -7,6 +7,7 @@ import ReviewsSection from '@/components/ReviewsSection';
 import PricingSection from '@/components/PricingSection';
 import FAQSection from '@/components/FAQSection';
 import ConsultantSection from '@/components/ConsultantSection';
+import CalculatorShowcase from '@/components/CalculatorShowcase';
 import BookingSection from '@/components/BookingSection';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -19,6 +20,7 @@ const Index = () => {
         <ScrollToTop />
         <HeroSection />
         <DemosSection />
+        <CalculatorShowcase />
         <ServicesSection />
         <ReviewsSection />
         <PricingSection />
