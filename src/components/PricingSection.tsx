@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Check } from 'lucide-react';
+import { Check, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface PricingTier {
   nameKey: string;
@@ -21,6 +22,7 @@ const tiers: PricingTier[] = [
 
 const PricingSection = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const scrollToBooking = () => {
     document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
@@ -101,6 +103,27 @@ const PricingSection = () => {
             );
           })}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-center mt-12"
+        >
+          <p className="text-muted-foreground mb-4 text-sm">
+            {t('pricing.calculator.hint')}
+          </p>
+          <Button
+            onClick={() => navigate('/calculator')}
+            variant="outline"
+            size="lg"
+            className="gap-2 font-semibold"
+          >
+            <Calculator className="w-5 h-5" />
+            {t('pricing.calculator.cta')}
+          </Button>
+        </motion.div>
       </div>
     </section>
   );

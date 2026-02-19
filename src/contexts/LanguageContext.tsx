@@ -59,6 +59,8 @@ export const translations: Translations = {
   'pricing.subtitle': { cs: 'Transparentní ceny bez skrytých poplatků', en: 'Transparent pricing with no hidden fees', de: 'Transparente Preise ohne versteckte Gebühren' },
   'pricing.popular': { cs: 'Nejoblíbenější', en: 'Most Popular', de: 'Beliebteste' },
   'pricing.cta': { cs: 'Objednat', en: 'Get Started', de: 'Loslegen' },
+  'pricing.calculator.hint': { cs: 'Potřebujete něco na míru?', en: 'Need something custom?', de: 'Brauchen Sie etwas Individuelles?' },
+  'pricing.calculator.cta': { cs: 'Sestavte si vlastní nabídku', en: 'Build your custom quote', de: 'Erstellen Sie Ihr individuelles Angebot' },
   'pricing.starter.name': { cs: 'Starter', en: 'Starter', de: 'Starter' },
   'pricing.starter.price': { cs: '4 990 Kč', en: '4 990 Kč', de: '4 990 Kč' },
   'pricing.starter.hosting': { cs: '1 500 Kč/měs.', en: '1 500 Kč/mo', de: '1 500 Kč/Mon.' },
