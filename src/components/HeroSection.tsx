@@ -1,10 +1,60 @@
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Monitor, Users } from 'lucide-react';
 
+const useCountUp = (end: number, duration: number, start: boolean) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let startTime: number | null = null;
+    let raf: number;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * end));
+      if (progress < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [end, duration, start]);
+  return count;
+};
+
+const AnimatedStat = ({ icon: Icon, value, label, delay }: {
+  icon: React.ElementType;
+  value: string;
+  label: string;
+  delay: number;
+}) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+
+  const numericPart = parseInt(value.replace(/[^0-9]/g, ''), 10);
+  const suffix = value.replace(/[0-9]/g, '');
+  const animatedValue = useCountUp(numericPart, 2000, isInView);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ duration: 0.6, delay, ease: 'easeOut' }}
+      className="flex flex-col items-center p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 group hover:bg-white/10 transition-colors duration-300"
+    >
+      <Icon className="w-8 h-8 text-accent mb-3 group-hover:scale-110 transition-transform duration-300" />
+      <span className="text-3xl font-display font-bold text-white tabular-nums">
+        {isInView ? animatedValue : 0}{suffix}
+      </span>
+      <span className="text-white/70 text-sm mt-1">{label}</span>
+    </motion.div>
+  );
+};
+
 const HeroSection = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const stats = [
     { icon: Monitor, value: '16+', label: { cs: 'Ukázkových webů', en: 'Demo Websites', de: 'Demo-Websites' } },
@@ -87,26 +137,17 @@ const HeroSection = () => {
           </motion.div>
 
           {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto"
-          >
-            {stats.map((stat, index) => {
-              const { language } = useLanguage();
-              return (
-                <div
-                  key={index}
-                  className="flex flex-col items-center p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-                >
-                  <stat.icon className="w-8 h-8 text-accent mb-3" />
-                  <span className="text-3xl font-display font-bold text-white">{stat.value}</span>
-                  <span className="text-white/70 text-sm mt-1">{stat.label[language]}</span>
-                </div>
-              );
-            })}
-          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+            {stats.map((stat, index) => (
+              <AnimatedStat
+                key={index}
+                icon={stat.icon}
+                value={stat.value}
+                label={stat.label[language]}
+                delay={0.4 + index * 0.15}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
