@@ -36,6 +36,7 @@ import GardeningDemo from "./pages/demos/GardeningDemo";
 import CleaningDemo from "./pages/demos/CleaningDemo";
 import LocksmithDemo from "./pages/demos/LocksmithDemo";
 import CarpentryDemo from "./pages/demos/CarpentryDemo";
+import ConsultantJitka from "./pages/ConsultantJitka";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/demo/cleaning" element={<CleaningDemo />} />
             <Route path="/demo/locksmith" element={<LocksmithDemo />} />
             <Route path="/demo/carpentry" element={<CarpentryDemo />} />
+            <Route path="/consultant/jitka" element={<ConsultantJitka />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminLayout />}>
