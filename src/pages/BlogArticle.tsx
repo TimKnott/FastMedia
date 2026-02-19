@@ -1,4 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, Tag, Share2, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -76,6 +77,18 @@ const RichContentRenderer = ({ sections, language }: { sections: ContentBlock[];
 const BlogArticle = () => {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
+  const [progress, setProgress] = useState(0);
+
+  const handleScroll = useCallback(() => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    setProgress(docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   const post = blogPosts.find((p) => p.slug === slug);
 
@@ -102,6 +115,14 @@ const BlogArticle = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Reading progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-muted/30">
+        <motion.div
+          className="h-full bg-accent"
+          style={{ width: `${progress}%` }}
+          transition={{ duration: 0.1 }}
+        />
+      </div>
       <Navbar />
       <ScrollToTop />
 
