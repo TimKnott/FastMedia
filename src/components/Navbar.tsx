@@ -29,6 +29,7 @@ const Navbar = () => {
     { href: '#faq', label: t('nav.faq') },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/jitka', label: t('nav.consultant'), isRoute: true },
+    { href: '/calculator', label: t('nav.calculator'), isRoute: true },
     { href: '#contact', label: t('nav.contact') },
   ];
 
