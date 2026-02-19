@@ -154,7 +154,7 @@ const ConsultantJitka = () => {
               </p>
               <div className="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
                 <a href="#contact">
-                  <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow gap-2 h-12 px-8">
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold shadow-glow gap-2 h-12 px-8">
                     <MessageCircle className="w-5 h-5" /> Get in Touch
                   </Button>
                 </a>
