@@ -1,30 +1,34 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, CalendarCheck, ScrollText, TrendingUp, Mail } from 'lucide-react';
+import { Users, CalendarCheck, ScrollText, TrendingUp, Mail, Flame } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DashboardStats {
   users: number;
   subscribers: number;
-  roles: number;
+  leads: number;
+  hotLeads: number;
 }
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState<DashboardStats>({ users: 0, subscribers: 0, roles: 0 });
+  const [stats, setStats] = useState<DashboardStats>({ users: 0, subscribers: 0, leads: 0, hotLeads: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [subscribersRes, rolesRes] = await Promise.all([
+      const [subscribersRes, rolesRes, leadsRes, hotLeadsRes] = await Promise.all([
         supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('id', { count: 'exact', head: true }),
+        supabase.from('leads').select('id', { count: 'exact', head: true }),
+        supabase.from('leads').select('id', { count: 'exact', head: true }).in('classification', ['hot', 'high_priority']),
       ]);
 
       setStats({
         subscribers: subscribersRes.count ?? 0,
         users: rolesRes.count ?? 0,
-        roles: rolesRes.count ?? 0,
+        leads: leadsRes.count ?? 0,
+        hotLeads: hotLeadsRes.count ?? 0,
       });
       setLoading(false);
     };
@@ -33,10 +37,10 @@ const AdminDashboard = () => {
   }, []);
 
   const cards = [
-    { label: 'Benutzer gesamt', value: stats.users, icon: Users },
+    { label: 'Leads gesamt', value: stats.leads, icon: TrendingUp },
+    { label: 'Hot / Priority', value: stats.hotLeads, icon: Flame },
     { label: 'Newsletter-Abonnenten', value: stats.subscribers, icon: Mail },
-    { label: 'Buchungen', value: '—', icon: CalendarCheck, note: 'Noch keine Tabelle' },
-    { label: 'Audit-Einträge', value: '—', icon: ScrollText, note: 'Noch keine Tabelle' },
+    { label: 'Benutzer', value: stats.users, icon: Users },
   ];
 
   return (
@@ -62,9 +66,6 @@ const AdminDashboard = () => {
                     <p className="text-2xl font-display font-bold mt-1">
                       {loading ? '…' : card.value}
                     </p>
-                    {'note' in card && (
-                      <p className="text-xs text-muted-foreground mt-1">{card.note}</p>
-                    )}
                   </div>
                   <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
                     <card.icon className="w-5 h-5 text-primary" />

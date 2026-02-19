@@ -8,6 +8,7 @@ import {
   LogOut,
   Shield,
   Mail,
+  TrendingUp,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -28,6 +29,7 @@ import { toast } from 'sonner';
 
 const mainItems = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
+  { title: 'Leads', url: '/admin/leads', icon: TrendingUp },
   { title: 'Benutzer', url: '/admin/users', icon: Users },
   { title: 'Audit-Logs', url: '/admin/audit-logs', icon: ScrollText },
   { title: 'Buchungen', url: '/admin/bookings', icon: CalendarCheck },
