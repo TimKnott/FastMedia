@@ -2,24 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const Navbar = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-
-  const languages = [
-    { code: 'cs' as const, label: 'Čeština', flag: '🇨🇿' },
-    { code: 'en' as const, label: 'English', flag: '🇬🇧' },
-    { code: 'de' as const, label: 'Deutsch', flag: '🇩🇪' },
-  ];
 
   const navLinks = [
     { href: '#demos', label: t('nav.demos') },
@@ -82,29 +71,7 @@ const Navbar = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-4 ml-auto pl-6">
-            {/* Language Selector */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Globe className="w-4 h-4" />
-                  <span className="hidden sm:inline">
-                    {languages.find((l) => l.code === language)?.flag}
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => setLanguage(lang.code)}
-                    className={language === lang.code ? 'bg-accent/10' : ''}
-                  >
-                    <span className="mr-2">{lang.flag}</span>
-                    {lang.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <LanguageSwitcher />
 
             {/* CTA Button */}
             <a href="#contact" className="hidden sm:block">
