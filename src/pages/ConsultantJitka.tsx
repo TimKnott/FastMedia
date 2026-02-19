@@ -154,12 +154,12 @@ const ConsultantJitka = () => {
               </p>
               <div className="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
                 <a href="#contact">
-                  <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold shadow-glow gap-2 h-12 px-8">
+                  <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity gap-2 h-12 px-8">
                     <MessageCircle className="w-5 h-5" /> Get in Touch
                   </Button>
                 </a>
                 <a href="#stories">
-                  <Button variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 h-12 px-8 gap-2">
+                  <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 h-12 px-8 gap-2">
                     <Heart className="w-5 h-5" /> Read Success Stories
                   </Button>
                 </a>
