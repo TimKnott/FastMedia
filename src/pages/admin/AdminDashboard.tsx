@@ -9,19 +9,23 @@ interface DashboardStats {
   subscribers: number;
   leads: number;
   hotLeads: number;
+  bookings: number;
+  auditLogs: number;
 }
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState<DashboardStats>({ users: 0, subscribers: 0, leads: 0, hotLeads: 0 });
+  const [stats, setStats] = useState<DashboardStats>({ users: 0, subscribers: 0, leads: 0, hotLeads: 0, bookings: 0, auditLogs: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [subscribersRes, rolesRes, leadsRes, hotLeadsRes] = await Promise.all([
+      const [subscribersRes, rolesRes, leadsRes, hotLeadsRes, bookingsRes, auditRes] = await Promise.all([
         supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('id', { count: 'exact', head: true }),
         supabase.from('leads').select('id', { count: 'exact', head: true }),
         supabase.from('leads').select('id', { count: 'exact', head: true }).in('classification', ['hot', 'high_priority']),
+        supabase.from('bookings').select('id', { count: 'exact', head: true }),
+        supabase.from('audit_logs').select('id', { count: 'exact', head: true }),
       ]);
 
       setStats({
@@ -29,6 +33,8 @@ const AdminDashboard = () => {
         users: rolesRes.count ?? 0,
         leads: leadsRes.count ?? 0,
         hotLeads: hotLeadsRes.count ?? 0,
+        bookings: bookingsRes.count ?? 0,
+        auditLogs: auditRes.count ?? 0,
       });
       setLoading(false);
     };
@@ -39,8 +45,10 @@ const AdminDashboard = () => {
   const cards = [
     { label: 'Leads gesamt', value: stats.leads, icon: TrendingUp },
     { label: 'Hot / Priority', value: stats.hotLeads, icon: Flame },
+    { label: 'Buchungen', value: stats.bookings, icon: CalendarCheck },
     { label: 'Newsletter-Abonnenten', value: stats.subscribers, icon: Mail },
     { label: 'Benutzer', value: stats.users, icon: Users },
+    { label: 'Audit-Einträge', value: stats.auditLogs, icon: ScrollText },
   ];
 
   return (
@@ -50,7 +58,7 @@ const AdminDashboard = () => {
         <p className="text-muted-foreground mt-1">Übersicht über Ihr Admin-Portal.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card, i) => (
           <motion.div
             key={card.label}

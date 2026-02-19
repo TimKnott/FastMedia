@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      bookings: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          duration_minutes: number
+          id: string
+          lead_id: string | null
+          notes: string | null
+          phone: string | null
+          scheduled_at: string
+          service: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          duration_minutes?: number
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          phone?: string | null
+          scheduled_at: string
+          service: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          duration_minutes?: number
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          phone?: string | null
+          scheduled_at?: string
+          service?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_activities: {
         Row: {
           activity_type: string
