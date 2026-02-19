@@ -17,6 +17,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminNewsletter from "./pages/admin/AdminNewsletter";
 
 // Demo pages
 import PlumbingDemo from "./pages/demos/PlumbingDemo";
@@ -73,6 +74,7 @@ const App = () => (
               <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
