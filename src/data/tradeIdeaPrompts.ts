@@ -31,7 +31,7 @@ const defaultPrompts = {
 };
 
 export const tradeIdeaPrompts: TradePrompts = {
-  plumber: {
+  plumbing: {
     cs: [
       'Chci online objednávkový formulář pro pohotovostní opravy',
       'Potřebuji kalkulačku cen pro výměnu boileru',
@@ -57,7 +57,7 @@ export const tradeIdeaPrompts: TradePrompts = {
       'Ich brauche automatische SMS-Terminerinnerungen',
     ],
   },
-  electrician: {
+  electrical: {
     cs: [
       'Chci kalkulačku pro elektroinstalaci v novostavbě',
       'Potřebuji systém pro revizní zprávy online',
@@ -83,7 +83,7 @@ export const tradeIdeaPrompts: TradePrompts = {
       'Ich brauche eine Darstellung meiner Zertifizierungen',
     ],
   },
-  builder: {
+  building: {
     cs: [
       'Chci 3D vizualizace projektů na webu',
       'Potřebuji časovou osu průběhu stavby pro klienty',
@@ -109,7 +109,7 @@ export const tradeIdeaPrompts: TradePrompts = {
       'Ich brauche eine Sektion für aktuelle Projekte',
     ],
   },
-  roofer: {
+  roofing: {
     cs: [
       'Chci kalkulačku ceny střechy podle rozměrů',
       'Potřebuji formulář pro hlášení pojistných událostí',
@@ -135,7 +135,7 @@ export const tradeIdeaPrompts: TradePrompts = {
       'Ich brauche eine Karte unserer Einsatzgebiete',
     ],
   },
-  gardener: {
+  gardening: {
     cs: [
       'Chci sezónní kalendář zahradnických služeb',
       'Potřebuji konfigurátor zahradního návrhu',
