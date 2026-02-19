@@ -6,6 +6,7 @@ import {
   Settings,
   LogOut,
   Shield,
+  Mail,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -27,6 +28,7 @@ const mainItems = [
   { title: 'Benutzer', url: '/admin/users', icon: Users },
   { title: 'Audit-Logs', url: '/admin/audit-logs', icon: ScrollText },
   { title: 'Buchungen', url: '/admin/bookings', icon: CalendarCheck },
+  { title: 'Newsletter', url: '/admin/newsletter', icon: Mail },
 ];
 
 const settingsItems = [
