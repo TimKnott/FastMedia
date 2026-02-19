@@ -45,7 +45,7 @@ const AdminLogin = () => {
       setLoading(false);
       toast({
         title: 'Anmeldung fehlgeschlagen',
-        description: error.message,
+        description: 'E-Mail oder Passwort ungültig. Bitte versuchen Sie es erneut.',
         variant: 'destructive',
       });
       return;
