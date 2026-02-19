@@ -14,6 +14,242 @@ export type Database = {
   }
   public: {
     Tables: {
+      lead_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          description: string
+          id: string
+          lead_id: string
+          metadata: Json | null
+          performed_by: string | null
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          description: string
+          id?: string
+          lead_id: string
+          metadata?: Json | null
+          performed_by?: string | null
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          description?: string
+          id?: string
+          lead_id?: string
+          metadata?: Json | null
+          performed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_emails: {
+        Row: {
+          email_type: string
+          id: string
+          lead_id: string
+          metadata: Json | null
+          sent_at: string
+          status: string
+          subject: string
+        }
+        Insert: {
+          email_type: string
+          id?: string
+          lead_id: string
+          metadata?: Json | null
+          sent_at?: string
+          status?: string
+          subject: string
+        }
+        Update: {
+          email_type?: string
+          id?: string
+          lead_id?: string
+          metadata?: Json | null
+          sent_at?: string
+          status?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_emails_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_notes: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          lead_id: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          lead_id: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_notes_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_score_history: {
+        Row: {
+          created_at: string
+          id: string
+          lead_id: string
+          new_classification: Database["public"]["Enums"]["lead_classification"]
+          new_score: number
+          old_classification:
+            | Database["public"]["Enums"]["lead_classification"]
+            | null
+          old_score: number
+          reason: string | null
+          scored_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lead_id: string
+          new_classification: Database["public"]["Enums"]["lead_classification"]
+          new_score: number
+          old_classification?:
+            | Database["public"]["Enums"]["lead_classification"]
+            | null
+          old_score?: number
+          reason?: string | null
+          scored_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lead_id?: string
+          new_classification?: Database["public"]["Enums"]["lead_classification"]
+          new_score?: number
+          old_classification?:
+            | Database["public"]["Enums"]["lead_classification"]
+            | null
+          old_score?: number
+          reason?: string | null
+          scored_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_score_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          ai_analysis: Json | null
+          assigned_to: string | null
+          classification: Database["public"]["Enums"]["lead_classification"]
+          consent_timestamp: string | null
+          created_at: string
+          email: string
+          gdpr_consent: boolean
+          id: string
+          ip_address: string | null
+          labor_hours: number
+          language: string
+          name: string
+          phone: string | null
+          quote_monthly: number
+          quote_one_time: number
+          score: number
+          selected_features: Json
+          source: string
+          special_request: string | null
+          status: Database["public"]["Enums"]["lead_status"]
+          trade: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          assigned_to?: string | null
+          classification?: Database["public"]["Enums"]["lead_classification"]
+          consent_timestamp?: string | null
+          created_at?: string
+          email: string
+          gdpr_consent?: boolean
+          id?: string
+          ip_address?: string | null
+          labor_hours?: number
+          language?: string
+          name: string
+          phone?: string | null
+          quote_monthly?: number
+          quote_one_time?: number
+          score?: number
+          selected_features?: Json
+          source?: string
+          special_request?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          trade: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          ai_analysis?: Json | null
+          assigned_to?: string | null
+          classification?: Database["public"]["Enums"]["lead_classification"]
+          consent_timestamp?: string | null
+          created_at?: string
+          email?: string
+          gdpr_consent?: boolean
+          id?: string
+          ip_address?: string | null
+          labor_hours?: number
+          language?: string
+          name?: string
+          phone?: string | null
+          quote_monthly?: number
+          quote_one_time?: number
+          score?: number
+          selected_features?: Json
+          source?: string
+          special_request?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          trade?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
@@ -29,6 +265,42 @@ export type Database = {
           email?: string
           id?: string
           subscribed_at?: string
+        }
+        Relationships: []
+      }
+      scoring_rules: {
+        Row: {
+          condition: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          points: number
+          rule_category: string
+          rule_name: string
+          updated_at: string
+        }
+        Insert: {
+          condition: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          points?: number
+          rule_category: string
+          rule_name: string
+          updated_at?: string
+        }
+        Update: {
+          condition?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          points?: number
+          rule_category?: string
+          rule_name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -65,6 +337,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      lead_classification: "cold" | "warm" | "hot" | "high_priority"
+      lead_status: "new" | "contacted" | "qualified" | "converted" | "lost"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -193,6 +467,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      lead_classification: ["cold", "warm", "hot", "high_priority"],
+      lead_status: ["new", "contacted", "qualified", "converted", "lost"],
     },
   },
 } as const

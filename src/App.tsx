@@ -18,6 +18,7 @@ import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminNewsletter from "./pages/admin/AdminNewsletter";
+import AdminLeads from "./pages/admin/AdminLeads";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
@@ -75,6 +76,7 @@ const App = () => (
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
+              <Route path="leads" element={<AdminLeads />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="bookings" element={<AdminBookings />} />

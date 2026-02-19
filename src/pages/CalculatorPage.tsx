@@ -2,9 +2,11 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -20,7 +22,7 @@ import { trades } from '@/data/trades';
 import { getTradePrompts } from '@/data/tradeIdeaPrompts';
 
 type SelectedFeature = { id: string; quantity: number };
-type Step = 'trade' | 'features' | 'special' | 'summary';
+type Step = 'trade' | 'features' | 'special' | 'contact' | 'summary';
 
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
@@ -34,6 +36,14 @@ const CalculatorPage = () => {
   const [isListening, setIsListening] = useState(false);
   const [direction, setDirection] = useState(1);
 
+  // Lead capture fields
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [gdprConsent, setGdprConsent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [leadResult, setLeadResult] = useState<{ score: number; classification: string; leadId: string } | null>(null);
+
   const lang = language as 'cs' | 'en' | 'de';
   const nameKey = `name${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'nameCs' | 'nameEn' | 'nameDe';
   const descKey = `desc${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'descCs' | 'descEn' | 'descDe';
@@ -46,6 +56,8 @@ const CalculatorPage = () => {
       selectFeatures: 'Vyberte funkce pro váš web',
       specialTitle: 'Speciální požadavek',
       specialPlaceholder: 'Popište funkci, kterou nenajdete v nabídce...',
+      contactTitle: 'Vaše kontaktní údaje',
+      contactSubtitle: 'Výsledky uvidíte okamžitě – zadejte údaje pro uložení nabídky.',
       summaryTitle: 'Shrnutí vaší nabídky',
       baseWebsite: 'Základní web',
       laborCost: 'Práce a implementace',
@@ -68,6 +80,15 @@ const CalculatorPage = () => {
       suggestedFor: 'Doporučeno pro vás',
       noFeatures: 'Zatím žádné funkce',
       startOver: 'Začít znovu',
+      namePlaceholder: 'Vaše jméno',
+      emailPlaceholder: 'vas@email.cz',
+      phonePlaceholder: '+420 123 456 789 (nepovinné)',
+      gdprLabel: 'Souhlasím se zpracováním osobních údajů pro účely nabídky.',
+      submitLead: 'Zobrazit nabídku',
+      submittingLead: 'Zpracovávám...',
+      resultInstant: 'Výsledky se zobrazí okamžitě',
+      leadSuccess: 'Nabídka uložena!',
+      scoreLabel: 'Skóre projektu',
     },
     en: {
       title: 'Website Calculator',
@@ -76,6 +97,8 @@ const CalculatorPage = () => {
       selectFeatures: 'Choose features for your website',
       specialTitle: 'Special Request',
       specialPlaceholder: 'Describe a feature you don\'t see listed...',
+      contactTitle: 'Your Contact Details',
+      contactSubtitle: 'Results are shown instantly — enter your details to save your quote.',
       summaryTitle: 'Your Quote Summary',
       baseWebsite: 'Base Website',
       laborCost: 'Labor & Implementation',
@@ -98,6 +121,15 @@ const CalculatorPage = () => {
       suggestedFor: 'Recommended for you',
       noFeatures: 'No features selected yet',
       startOver: 'Start Over',
+      namePlaceholder: 'Your name',
+      emailPlaceholder: 'you@email.com',
+      phonePlaceholder: '+1 234 567 890 (optional)',
+      gdprLabel: 'I consent to my data being stored and used to provide a quote.',
+      submitLead: 'View Quote',
+      submittingLead: 'Processing...',
+      resultInstant: 'Results shown instantly',
+      leadSuccess: 'Quote saved!',
+      scoreLabel: 'Project Score',
     },
     de: {
       title: 'Website-Kalkulator',
@@ -106,6 +138,8 @@ const CalculatorPage = () => {
       selectFeatures: 'Wählen Sie Funktionen für Ihre Website',
       specialTitle: 'Sonderwunsch',
       specialPlaceholder: 'Beschreiben Sie eine Funktion, die Sie nicht finden...',
+      contactTitle: 'Ihre Kontaktdaten',
+      contactSubtitle: 'Ergebnisse werden sofort angezeigt — geben Sie Ihre Daten ein, um Ihr Angebot zu speichern.',
       summaryTitle: 'Ihre Angebotszusammenfassung',
       baseWebsite: 'Basis-Website',
       laborCost: 'Arbeit & Implementierung',
@@ -128,6 +162,15 @@ const CalculatorPage = () => {
       suggestedFor: 'Für Sie empfohlen',
       noFeatures: 'Noch keine Funktionen ausgewählt',
       startOver: 'Neu starten',
+      namePlaceholder: 'Ihr Name',
+      emailPlaceholder: 'ihre@email.de',
+      phonePlaceholder: '+49 123 456 789 (optional)',
+      gdprLabel: 'Ich stimme der Speicherung meiner Daten zur Angebotserstellung zu.',
+      submitLead: 'Angebot anzeigen',
+      submittingLead: 'Wird verarbeitet...',
+      resultInstant: 'Ergebnisse werden sofort angezeigt',
+      leadSuccess: 'Angebot gespeichert!',
+      scoreLabel: 'Projekt-Score',
     },
   };
 
@@ -245,6 +288,45 @@ const CalculatorPage = () => {
     }
   };
 
+  // Submit lead
+  const submitLead = async () => {
+    if (!contactName.trim() || !contactEmail.trim() || !gdprConsent) return;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactEmail)) {
+      toast({ title: lang === 'cs' ? 'Neplatný e-mail' : 'Invalid email', variant: 'destructive' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('score-lead', {
+        body: {
+          name: contactName.trim(),
+          email: contactEmail.trim(),
+          phone: contactPhone.trim() || undefined,
+          trade: selectedTrade,
+          selectedFeatures,
+          specialRequest: specialRequest.trim() || undefined,
+          quoteOneTime: grandTotalOneTime,
+          quoteMonthly: totalMonthly,
+          laborHours: totalLaborHours,
+          language: lang,
+          gdprConsent: true,
+        },
+      });
+      if (error) throw error;
+      setLeadResult({ score: data.score, classification: data.classification, leadId: data.leadId });
+      setDirection(1);
+      setStep('summary');
+      toast({ title: l.leadSuccess });
+    } catch (e) {
+      console.error(e);
+      toast({ title: lang === 'cs' ? 'Chyba při odesílání' : 'Submission error', variant: 'destructive' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Export
   const exportQuote = () => {
     const tradeObj = trades.find(t => t.id === selectedTrade);
@@ -282,21 +364,21 @@ const CalculatorPage = () => {
     toast({ title: lang === 'cs' ? 'Nabídka exportována!' : 'Quote exported!' });
   };
 
+  const allSteps: Step[] = ['trade', 'features', 'special', 'contact', 'summary'];
+
   const goNext = () => {
     setDirection(1);
-    const steps: Step[] = ['trade', 'features', 'special', 'summary'];
-    const idx = steps.indexOf(step);
-    if (idx < steps.length - 1) setStep(steps[idx + 1]);
+    const idx = allSteps.indexOf(step);
+    if (idx < allSteps.length - 1) setStep(allSteps[idx + 1]);
   };
 
   const goBack = () => {
     setDirection(-1);
-    const steps: Step[] = ['trade', 'features', 'special', 'summary'];
-    const idx = steps.indexOf(step);
-    if (idx > 0) setStep(steps[idx - 1]);
+    const idx = allSteps.indexOf(step);
+    if (idx > 0) setStep(allSteps[idx - 1]);
   };
 
-  const stepIndex = ['trade', 'features', 'special', 'summary'].indexOf(step);
+  const stepIndex = allSteps.indexOf(step);
 
   const slideVariants = {
     enter: (d: number) => ({ x: d > 0 ? 300 : -300, opacity: 0 }),
@@ -305,6 +387,8 @@ const CalculatorPage = () => {
   };
 
   const categories = ['essential', 'marketing', 'advanced', 'premium'] as const;
+
+  const isContactValid = contactName.trim().length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail) && gdprConsent;
 
   return (
     <div className="min-h-screen bg-background">
@@ -330,7 +414,7 @@ const CalculatorPage = () => {
       <div className="bg-card border-b border-border">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-center gap-2">
-            {['trade', 'features', 'special', 'summary'].map((s, i) => (
+            {allSteps.map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <motion.div
                   animate={{ scale: i === stepIndex ? 1.2 : 1 }}
@@ -340,8 +424,8 @@ const CalculatorPage = () => {
                 >
                   {i + 1}
                 </motion.div>
-                {i < 3 && (
-                  <div className={`w-8 sm:w-16 h-0.5 transition-colors ${i < stepIndex ? 'bg-primary' : 'bg-muted'}`} />
+                {i < allSteps.length - 1 && (
+                  <div className={`w-6 sm:w-12 h-0.5 transition-colors ${i < stepIndex ? 'bg-primary' : 'bg-muted'}`} />
                 )}
               </div>
             ))}
@@ -490,21 +574,11 @@ const CalculatorPage = () => {
                                     className="flex items-center gap-3 mt-3 pt-3 border-t border-border"
                                     onClick={e => e.stopPropagation()}
                                   >
-                                    <Button
-                                      size="icon"
-                                      variant="outline"
-                                      className="h-7 w-7"
-                                      onClick={() => updateQuantity(feature.id, -1)}
-                                    >
+                                    <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(feature.id, -1)}>
                                       <Minus className="w-3 h-3" />
                                     </Button>
                                     <span className="text-sm font-bold w-8 text-center">{qty}</span>
-                                    <Button
-                                      size="icon"
-                                      variant="outline"
-                                      className="h-7 w-7"
-                                      onClick={() => updateQuantity(feature.id, 1)}
-                                    >
+                                    <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(feature.id, 1)}>
                                       <Plus className="w-3 h-3" />
                                     </Button>
                                     <span className="text-xs text-muted-foreground">{l.quantity}</span>
@@ -619,10 +693,121 @@ const CalculatorPage = () => {
                 </div>
               )}
 
-              {/* Step 4: Summary */}
+              {/* Step 4: Contact Details & Lead Capture */}
+              {step === 'contact' && (
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-foreground mb-2">{l.contactTitle}</h2>
+                  <p className="text-muted-foreground text-sm mb-2">{l.contactSubtitle}</p>
+                  <div className="flex items-center gap-2 mb-8 px-3 py-2 rounded-lg bg-accent/10 border border-accent/20">
+                    <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0" />
+                    <span className="text-xs font-medium text-accent">{l.resultInstant}</span>
+                  </div>
+
+                  <div className="max-w-md space-y-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="lead-name" className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        {lang === 'cs' ? 'Jméno' : lang === 'de' ? 'Name' : 'Name'} *
+                      </Label>
+                      <Input
+                        id="lead-name"
+                        value={contactName}
+                        onChange={e => setContactName(e.target.value)}
+                        placeholder={l.namePlaceholder}
+                        className="h-12"
+                        maxLength={100}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="lead-email" className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        E-Mail *
+                      </Label>
+                      <Input
+                        id="lead-email"
+                        type="email"
+                        value={contactEmail}
+                        onChange={e => setContactEmail(e.target.value)}
+                        placeholder={l.emailPlaceholder}
+                        className="h-12"
+                        maxLength={255}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="lead-phone" className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-muted-foreground" />
+                        {lang === 'cs' ? 'Telefon' : lang === 'de' ? 'Telefon' : 'Phone'}
+                      </Label>
+                      <Input
+                        id="lead-phone"
+                        type="tel"
+                        value={contactPhone}
+                        onChange={e => setContactPhone(e.target.value)}
+                        placeholder={l.phonePlaceholder}
+                        className="h-12"
+                        maxLength={30}
+                      />
+                    </div>
+
+                    <div className="flex items-start gap-3 pt-2">
+                      <Checkbox
+                        id="gdpr-consent"
+                        checked={gdprConsent}
+                        onCheckedChange={(checked) => setGdprConsent(checked === true)}
+                      />
+                      <Label htmlFor="gdpr-consent" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
+                        <Shield className="w-3.5 h-3.5 inline mr-1 text-primary" />
+                        {l.gdprLabel}
+                      </Label>
+                    </div>
+
+                    <Button
+                      onClick={submitLead}
+                      disabled={!isContactValid || isSubmitting}
+                      className="w-full h-12 gradient-primary text-primary-foreground text-base"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                          {l.submittingLead}
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          <Send className="w-4 h-4" />
+                          {l.submitLead}
+                        </span>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 5: Summary */}
               {step === 'summary' && (
                 <div>
                   <h2 className="font-display text-2xl font-bold text-foreground mb-6">{l.summaryTitle}</h2>
+
+                  {/* Lead score badge */}
+                  {leadResult && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="mb-6 p-4 rounded-xl bg-primary/5 border border-primary/20 flex items-center gap-4"
+                    >
+                      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                        <TrendingUp className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">{l.scoreLabel}</p>
+                        <p className="text-2xl font-display font-bold text-foreground">{leadResult.score}/100</p>
+                        <p className="text-xs font-semibold text-primary capitalize">{leadResult.classification.replace('_', ' ')}</p>
+                      </div>
+                    </motion.div>
+                  )}
                   
                   <div className="space-y-3">
                     {/* Base */}
@@ -727,7 +912,7 @@ const CalculatorPage = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               {l.back}
             </Button>
-            {step !== 'summary' && (
+            {step !== 'summary' && step !== 'contact' && (
               <Button
                 onClick={goNext}
                 disabled={step === 'trade' && !selectedTrade}
@@ -746,6 +931,11 @@ const CalculatorPage = () => {
                   setAiSuggestions([]);
                   setSpecialRequest('');
                   setSpecialResponse(null);
+                  setContactName('');
+                  setContactEmail('');
+                  setContactPhone('');
+                  setGdprConsent(false);
+                  setLeadResult(null);
                 }}
               >
                 {l.startOver}
