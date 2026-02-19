@@ -3,13 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, Globe } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { getTradeImage } from '@/data/tradeImages';
 
 interface DemoLayoutProps {
@@ -34,13 +29,7 @@ const DemoLayout = ({
   primaryColor,
   gradientClass,
 }: DemoLayoutProps) => {
-  const { t, language, setLanguage } = useLanguage();
-
-  const languages = [
-    { code: 'cs' as const, label: 'Čeština', flag: '🇨🇿' },
-    { code: 'en' as const, label: 'English', flag: '🇬🇧' },
-    { code: 'de' as const, label: 'Deutsch', flag: '🇩🇪' },
-  ];
+  const { t, language } = useLanguage();
   const heroImage = getTradeImage(tradeId);
 
   const stats = [
@@ -99,26 +88,7 @@ const DemoLayout = ({
             {language === 'cs' ? 'Toto je ukázkový web – může být váš!' : language === 'en' ? 'This is a demo website – it could be yours!' : 'Dies ist eine Demo-Website – sie könnte Ihnen gehören!'}
           </span>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-2 text-background/80 hover:text-background hover:bg-white/10 h-7 px-2">
-              <Globe className="w-3.5 h-3.5" />
-              <span>{languages.find((l) => l.code === language)?.flag}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {languages.map((lang) => (
-              <DropdownMenuItem
-                key={lang.code}
-                onClick={() => setLanguage(lang.code)}
-                className={language === lang.code ? 'bg-accent/10' : ''}
-              >
-                <span className="mr-2">{lang.flag}</span>
-                {lang.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <LanguageSwitcher triggerClassName="text-background/80 hover:text-background hover:bg-white/10 h-7 px-2" />
       </div>
 
       {/* Demo Navbar */}
