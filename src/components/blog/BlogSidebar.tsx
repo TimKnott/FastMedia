@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { TrendingUp, Tags, Mail, Clock, ArrowRight, ListOrdered } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,8 @@ const labels = {
   subscribe: { cs: 'Odebírat', en: 'Subscribe', de: 'Abonnieren' },
   emailPlaceholder: { cs: 'Váš e-mail…', en: 'Your email…', de: 'Ihre E-Mail…' },
   subscribed: { cs: 'Úspěšně přihlášeno!', en: 'Successfully subscribed!', de: 'Erfolgreich abonniert!' },
+  alreadySubscribed: { cs: 'Tento e-mail je již přihlášen.', en: 'This email is already subscribed.', de: 'Diese E-Mail ist bereits abonniert.' },
+  error: { cs: 'Něco se pokazilo, zkuste to znovu.', en: 'Something went wrong, please try again.', de: 'Etwas ist schiefgelaufen, bitte versuchen Sie es erneut.' },
   min: { cs: 'min', en: 'min', de: 'Min' },
 };
 
@@ -51,6 +54,7 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
   const { language } = useLanguage();
   const [email, setEmail] = useState('');
   const [activeId, setActiveId] = useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (toc.length === 0) return;
@@ -70,11 +74,28 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
     return () => observer.disconnect();
   }, [toc]);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      toast.success(labels.subscribed[language]);
+    if (!email || submitting) return;
+    setSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert({ email: email.trim().toLowerCase() });
+      if (error) {
+        if (error.code === '23505') {
+          toast.info(labels.alreadySubscribed[language]);
+        } else {
+          toast.error(labels.error[language]);
+        }
+      } else {
+        toast.success(labels.subscribed[language]);
+      }
       setEmail('');
+    } catch {
+      toast.error(labels.error[language]);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -186,7 +207,7 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
             onChange={(e) => setEmail(e.target.value)}
             className="h-9 text-sm bg-background"
           />
-          <Button type="submit" size="sm" className="shrink-0 h-9">
+          <Button type="submit" size="sm" className="shrink-0 h-9" disabled={submitting}>
             <ArrowRight className="w-4 h-4" />
           </Button>
         </form>
