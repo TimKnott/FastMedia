@@ -22,6 +22,7 @@ import {
   type CalculatorFeature,
 } from '@/data/calculatorFeatures';
 import { trades } from '@/data/trades';
+import { getTradePrompts } from '@/data/tradeIdeaPrompts';
 
 type SelectedFeature = { id: string; quantity: number };
 type Step = 'trade' | 'features' | 'special' | 'summary';
@@ -563,28 +564,7 @@ const CalculatorPage = () => {
                       {lang === 'cs' ? '💡 Nápady k vyzkoušení' : lang === 'de' ? '💡 Ideen zum Ausprobieren' : '💡 Ideas to try'}
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {(lang === 'cs' ? [
-                        'Chci aby zákazníci platili online',
-                        'Potřebuji propojit web s mým účetním systémem',
-                        'Chci chat s umělou inteligencí na webu',
-                        'Potřebuji automatické odesílání SMS zákazníkům',
-                        'Chci kalkulačku cen pro mé zákazníky',
-                        'Potřebuji QR kódy pro objednávky',
-                      ] : lang === 'de' ? [
-                        'Ich möchte, dass Kunden online bezahlen können',
-                        'Ich brauche eine Anbindung an mein Buchhaltungssystem',
-                        'Ich möchte einen KI-Chat auf meiner Website',
-                        'Ich brauche automatische SMS an Kunden',
-                        'Ich möchte einen Preiskalkulator für meine Kunden',
-                        'Ich brauche QR-Codes für Bestellungen',
-                      ] : [
-                        'I want customers to pay online',
-                        'I need to connect to my accounting system',
-                        'I want an AI chatbot on my website',
-                        'I need automated SMS notifications for clients',
-                        'I want a price calculator for my customers',
-                        'I need QR codes for orders',
-                      ]).map((prompt) => (
+                      {getTradePrompts(selectedTrade, lang).map((prompt) => (
                         <motion.button
                           key={prompt}
                           whileHover={{ scale: 1.03 }}
