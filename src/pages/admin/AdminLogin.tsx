@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Eye, EyeOff, LogIn } from 'lucide-react';
@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -16,20 +17,67 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Redirect if already authenticated as admin
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        const { data } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+        if (data) navigate('/admin', { replace: true });
+      }
+    });
+  }, [navigate]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // TODO: Replace with Supabase auth when Cloud is enabled
-    // For now, navigate to dashboard for UI development
-    setTimeout(() => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
+    if (error) {
       setLoading(false);
       toast({
-        title: 'Anmeldung erfolgreich',
-        description: 'Willkommen im Admin-Bereich.',
+        title: 'Anmeldung fehlgeschlagen',
+        description: error.message,
+        variant: 'destructive',
       });
-      navigate('/admin');
-    }, 800);
+      return;
+    }
+
+    // Verify admin role
+    if (data.user) {
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (!roleData) {
+        await supabase.auth.signOut();
+        setLoading(false);
+        toast({
+          title: 'Zugriff verweigert',
+          description: 'Sie haben keine Administratorrechte.',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    setLoading(false);
+    toast({
+      title: 'Anmeldung erfolgreich',
+      description: 'Willkommen im Admin-Bereich.',
+    });
+    navigate('/admin', { replace: true });
   };
 
   return (

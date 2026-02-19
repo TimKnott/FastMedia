@@ -18,6 +18,7 @@ import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminNewsletter from "./pages/admin/AdminNewsletter";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
 import PlumbingDemo from "./pages/demos/PlumbingDemo";
@@ -72,7 +73,7 @@ const App = () => (
             <Route path="/calculator" element={<CalculatorPage />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
+            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />

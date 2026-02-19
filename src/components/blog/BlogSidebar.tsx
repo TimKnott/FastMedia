@@ -77,11 +77,21 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || submitting) return;
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    // Client-side email validation
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(trimmedEmail) || trimmedEmail.length > 255) {
+      toast.error(labels.error[language]);
+      return;
+    }
+
     setSubmitting(true);
     try {
       const { error } = await supabase
         .from('newsletter_subscribers')
-        .insert({ email: email.trim().toLowerCase() });
+        .insert({ email: trimmedEmail });
       if (error) {
         if (error.code === '23505') {
           toast.info(labels.alreadySubscribed[language]);

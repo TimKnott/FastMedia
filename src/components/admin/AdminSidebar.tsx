@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
@@ -22,6 +23,8 @@ import {
   SidebarHeader,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const mainItems = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
@@ -38,6 +41,13 @@ const settingsItems = [
 const AdminSidebar = () => {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success('Erfolgreich abgemeldet.');
+    navigate('/admin/login', { replace: true });
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -107,14 +117,9 @@ const AdminSidebar = () => {
       <SidebarFooter className="p-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Abmelden">
-              <NavLink
-                to="/admin/login"
-                className="text-destructive hover:bg-destructive/10"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Abmelden</span>
-              </NavLink>
+            <SidebarMenuButton tooltip="Abmelden" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 text-destructive" />
+              <span className="text-destructive">Abmelden</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
