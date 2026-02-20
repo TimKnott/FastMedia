@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import Footer from '@/components/Footer';
 import { getTradeImage } from '@/data/tradeImages';
 
 interface DemoLayoutProps {
@@ -644,7 +645,7 @@ const DemoLayout = ({
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Trade-specific footer */}
       <footer className="bg-foreground text-background py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
@@ -696,6 +697,9 @@ const DemoLayout = ({
           </div>
         </div>
       </footer>
+
+      {/* Main site footer with navigation */}
+      <Footer />
     </div>
   );
 };
