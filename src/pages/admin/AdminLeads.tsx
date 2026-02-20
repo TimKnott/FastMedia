@@ -292,7 +292,7 @@ const AdminLeads = () => {
                           {statusConfig[lead.status].label}
                         </span>
                       </TableCell>
-                      <TableCell className="text-sm font-medium">{lead.quote_one_time.toLocaleString()} Kč</TableCell>
+                      <TableCell className="text-sm font-medium">{lead.quote_one_time.toLocaleString('de-DE')} Kč</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {format(new Date(lead.created_at), 'dd.MM.yyyy')}
                       </TableCell>
@@ -355,11 +355,11 @@ const AdminLeads = () => {
                       </div>
                       <div>
                         <p className="text-muted-foreground text-xs">Einmalkosten</p>
-                        <p className="font-medium">{selectedLead.quote_one_time.toLocaleString()} Kč</p>
+                        <p className="font-medium">{selectedLead.quote_one_time.toLocaleString('de-DE')} Kč</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground text-xs">Monatlich</p>
-                        <p className="font-medium">{selectedLead.quote_monthly.toLocaleString()} Kč/Mon.</p>
+                        <p className="font-medium">{selectedLead.quote_monthly.toLocaleString('de-DE')} Kč/Mon.</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground text-xs">Arbeitsstunden</p>
