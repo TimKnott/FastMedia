@@ -1,38 +1,48 @@
 
-# Navbar Spacing Improvement and Global Language Switcher
 
-## What will change
+# Fix Czech Currency Formatting (dot as thousands separator)
 
-### 1. Navbar Layout Refinement
-- Add more breathing room around the FastMedia.Pro logo with increased left padding/margin
-- Reduce the gap between nav links from `gap-8` to `gap-5` or `gap-6` to fit better while keeping the logo spacious
-- Add a subtle separator (vertical divider) between the logo and the navigation links
-- Increase the navbar height slightly on desktop for a more premium feel
-- Ensure the logo area has dedicated space that doesn't get crowded by nav links
+## Problem
+All currency values use `.toLocaleString()` without a locale, which defaults to the browser's locale. In Czech, thousands should be separated with dots (e.g., `3.000 Kč`), but depending on the browser this may render incorrectly.
 
-### 2. Language Switcher on Calculator Page
-- Add the same Globe dropdown language switcher (already in the main Navbar) to the calculator page header, replacing the empty spacer `div` on the right side
-- This ensures users can switch languages while using the calculator
+## Solution
+Create a `formatCurrency` helper function that uses the correct locale based on the active language, then replace all `.toLocaleString()` calls for currency values.
 
-### 3. Language Switcher on Demo Pages
-- Add the language switcher to the DemoLayout component header so all 16 trade demo pages get language switching capability
+Czech uses `cs-CZ` locale which formats `3000` as `3 000` (with a non-breaking space). Since the user specifically wants dots (e.g., `3.000`), we will use `de-DE` locale for Czech formatting (which uses dots) or a custom formatter.
+
+## Changes
+
+### 1. Add helper function in `src/pages/CalculatorPage.tsx`
+Create a `formatPrice` function near the top of the component that formats numbers based on the current language:
+- For Czech (`cs`): use `de-DE` locale (produces `3.000` format with dot separators)
+- For German (`de`): use `de-DE` locale (same dot separators, standard for German)
+- For English (`en`): use `en-US` locale (produces `3,000` format with comma separators)
+
+### 2. Replace all `.toLocaleString()` calls in CalculatorPage
+Replace every instance of `value.toLocaleString()` with `formatPrice(value)` throughout the file. This affects approximately 15-20 occurrences across:
+- Feature prices in the feature selection step
+- Base website price display
+- Labor cost display
+- Total one-time and monthly costs
+- Summary/export text generation
+
+### 3. Update `src/pages/admin/AdminLeads.tsx`
+Replace the 3 `.toLocaleString()` calls for `quote_one_time` and `quote_monthly` with locale-aware formatting (admin panel can default to `de-DE` since it appears to be German-focused).
 
 ## Technical Details
 
-**Files to modify:**
+```typescript
+// Helper function
+const formatPrice = (value: number): string => {
+  if (language === 'en') {
+    return value.toLocaleString('en-US');
+  }
+  // Czech and German both use dot as thousands separator
+  return value.toLocaleString('de-DE');
+};
+```
 
-1. **`src/components/Navbar.tsx`**
-   - Change the logo `Link` to include more right margin (`mr-8` or `mr-10`)
-   - Reduce desktop nav links gap from `gap-8` to `gap-5`
-   - Optionally add a vertical separator element between logo and nav
-   - Increase container padding for more whitespace
-
-2. **`src/pages/CalculatorPage.tsx`**
-   - Replace the empty `<div className="w-24" />` spacer (line 323) with the language dropdown (Globe icon + DropdownMenu)
-   - Import the necessary dropdown components and Globe icon
-
-3. **`src/components/DemoLayout.tsx`**
-   - Add the language switcher dropdown to the demo page header area
-   - Import dropdown components and Globe icon
-
-All three files will reuse the same language switcher pattern already established in the Navbar (Globe icon, DropdownMenu with three language options: CS, EN, DE).
+This ensures:
+- Czech: `3.000 Kč`
+- German: `3.000 Kč`  
+- English: `3,000 Kč`
