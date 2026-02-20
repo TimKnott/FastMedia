@@ -45,6 +45,11 @@ const CalculatorPage = () => {
   const [leadResult, setLeadResult] = useState<{ score: number; classification: string; leadId: string } | null>(null);
 
   const lang = language as 'cs' | 'en' | 'de';
+
+  const formatPrice = (value: number): string => {
+    if (lang === 'en') return value.toLocaleString('en-US');
+    return value.toLocaleString('de-DE');
+  };
   const nameKey = `name${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'nameCs' | 'nameEn' | 'nameDe';
   const descKey = `desc${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'descCs' | 'descEn' | 'descDe';
 
@@ -334,24 +339,24 @@ const CalculatorPage = () => {
     
     let text = `${l.title} - FastMedia.Pro\n${'='.repeat(40)}\n\n`;
     text += `${l.selectTrade}: ${tradeName}\n\n`;
-    text += `${l.baseWebsite}: ${BASE_WEBSITE_PRICE.toLocaleString()} Kč\n\n`;
+    text += `${l.baseWebsite}: ${formatPrice(BASE_WEBSITE_PRICE)} Kč\n\n`;
     
     if (selectedFeatures.length > 0) {
       text += `${l.selectFeatures}:\n`;
       selectedFeatures.forEach(sf => {
         const feature = getFeatureById(sf.id);
         if (feature) {
-          text += `  • ${feature[nameKey]} x${sf.quantity} — ${(feature.oneTimePrice * sf.quantity).toLocaleString()} Kč`;
-          if (feature.monthlyPrice > 0) text += ` (+${(feature.monthlyPrice * sf.quantity).toLocaleString()} Kč${l.perMonth})`;
+          text += `  • ${feature[nameKey]} x${sf.quantity} — ${formatPrice(feature.oneTimePrice * sf.quantity)} Kč`;
+          if (feature.monthlyPrice > 0) text += ` (+${formatPrice(feature.monthlyPrice * sf.quantity)} Kč${l.perMonth})`;
           text += '\n';
         }
       });
     }
     
-    text += `\n${l.laborCost}: ${laborCost.toLocaleString()} Kč (${totalLaborHours} ${l.hours})\n`;
+    text += `\n${l.laborCost}: ${formatPrice(laborCost)} Kč (${totalLaborHours} ${l.hours})\n`;
     text += `\n${'─'.repeat(40)}\n`;
-    text += `${l.totalOneTime}: ${grandTotalOneTime.toLocaleString()} Kč\n`;
-    text += `${l.totalMonthly}: ${totalMonthly.toLocaleString()} Kč${l.perMonth}\n`;
+    text += `${l.totalOneTime}: ${formatPrice(grandTotalOneTime)} Kč\n`;
+    text += `${l.totalMonthly}: ${formatPrice(totalMonthly)} Kč${l.perMonth}\n`;
     text += `\n${l.canChange}\n`;
 
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
@@ -550,9 +555,9 @@ const CalculatorPage = () => {
                                     </div>
                                     <p className="text-xs text-muted-foreground">{feature[descKey]}</p>
                                     <div className="flex gap-3 mt-2 text-xs">
-                                      <span className="font-semibold text-foreground">{feature.oneTimePrice.toLocaleString()} Kč</span>
+                                      <span className="font-semibold text-foreground">{formatPrice(feature.oneTimePrice)} Kč</span>
                                       {feature.monthlyPrice > 0 && (
-                                        <span className="text-muted-foreground">+{feature.monthlyPrice.toLocaleString()} Kč{l.perMonth}</span>
+                                        <span className="text-muted-foreground">+{formatPrice(feature.monthlyPrice)} Kč{l.perMonth}</span>
                                       )}
                                     </div>
                                   </div>
@@ -813,7 +818,7 @@ const CalculatorPage = () => {
                     {/* Base */}
                     <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
                       <span className="text-sm font-medium">🌐 {l.baseWebsite}</span>
-                      <span className="font-bold text-sm">{BASE_WEBSITE_PRICE.toLocaleString()} Kč</span>
+                      <span className="font-bold text-sm">{formatPrice(BASE_WEBSITE_PRICE)} Kč</span>
                     </div>
 
                     {/* Features */}
@@ -837,10 +842,10 @@ const CalculatorPage = () => {
                           </div>
                           <div className="flex items-center gap-3">
                             <div className="text-right">
-                              <span className="font-bold text-sm">{(feature.oneTimePrice * sf.quantity).toLocaleString()} Kč</span>
+                              <span className="font-bold text-sm">{formatPrice(feature.oneTimePrice * sf.quantity)} Kč</span>
                               {feature.monthlyPrice > 0 && (
                                 <span className="text-xs text-muted-foreground block">
-                                  +{(feature.monthlyPrice * sf.quantity).toLocaleString()} Kč{l.perMonth}
+                                  +{formatPrice(feature.monthlyPrice * sf.quantity)} Kč{l.perMonth}
                                 </span>
                               )}
                             </div>
@@ -865,7 +870,7 @@ const CalculatorPage = () => {
                     {totalLaborHours > 0 && (
                       <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
                         <span className="text-sm font-medium">⚙️ {l.laborCost} ({totalLaborHours} {l.hours})</span>
-                        <span className="font-bold text-sm">{laborCost.toLocaleString()} Kč</span>
+                        <span className="font-bold text-sm">{formatPrice(laborCost)} Kč</span>
                       </div>
                     )}
 
@@ -873,11 +878,11 @@ const CalculatorPage = () => {
                     <div className="mt-6 p-5 rounded-xl gradient-primary text-primary-foreground">
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-semibold">{l.totalOneTime}</span>
-                        <span className="text-2xl font-display font-bold">{grandTotalOneTime.toLocaleString()} Kč</span>
+                        <span className="text-2xl font-display font-bold">{formatPrice(grandTotalOneTime)} Kč</span>
                       </div>
                       <div className="flex justify-between items-center opacity-80">
                         <span className="text-sm">{l.totalMonthly}</span>
-                        <span className="text-lg font-bold">{totalMonthly.toLocaleString()} Kč{l.perMonth}</span>
+                        <span className="text-lg font-bold">{formatPrice(totalMonthly)} Kč{l.perMonth}</span>
                       </div>
                     </div>
 
@@ -960,7 +965,7 @@ const CalculatorPage = () => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{l.baseWebsite}</span>
-                <span className="font-semibold">{BASE_WEBSITE_PRICE.toLocaleString()} Kč</span>
+                <span className="font-semibold">{formatPrice(BASE_WEBSITE_PRICE)} Kč</span>
               </div>
               {selectedFeatures.map(sf => {
                 const feature = getFeatureById(sf.id);
@@ -977,14 +982,14 @@ const CalculatorPage = () => {
                       {feature.icon} {feature[nameKey]}
                       {sf.quantity > 1 && <span className="text-xs"> x{sf.quantity}</span>}
                     </span>
-                    <span className="font-semibold whitespace-nowrap">{(feature.oneTimePrice * sf.quantity).toLocaleString()} Kč</span>
+                    <span className="font-semibold whitespace-nowrap">{formatPrice(feature.oneTimePrice * sf.quantity)} Kč</span>
                   </motion.div>
                 );
               })}
               {totalLaborHours > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">⚙️ {l.laborCost}</span>
-                  <span className="font-semibold">{laborCost.toLocaleString()} Kč</span>
+                  <span className="font-semibold">{formatPrice(laborCost)} Kč</span>
                 </div>
               )}
             </div>
@@ -998,7 +1003,7 @@ const CalculatorPage = () => {
                   animate={{ scale: 1, color: 'hsl(var(--foreground))' }}
                   className="text-xl font-display font-bold"
                 >
-                  {grandTotalOneTime.toLocaleString()} Kč
+                  {formatPrice(grandTotalOneTime)} Kč
                 </motion.span>
               </div>
               <div className="flex justify-between items-center mt-1">
@@ -1009,7 +1014,7 @@ const CalculatorPage = () => {
                   animate={{ scale: 1 }}
                   className="text-sm font-bold text-muted-foreground"
                 >
-                  {totalMonthly.toLocaleString()} Kč{l.perMonth}
+                  {formatPrice(totalMonthly)} Kč{l.perMonth}
                 </motion.span>
               </div>
             </div>
