@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, Menu, X } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Footer from '@/components/Footer';
 import { getTradeImage } from '@/data/tradeImages';
@@ -31,6 +31,7 @@ const DemoLayout = ({
   gradientClass,
 }: DemoLayoutProps) => {
   const { t, language } = useLanguage();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroImage = getTradeImage(tradeId);
 
   const stats = [
@@ -112,11 +113,36 @@ const DemoLayout = ({
             </a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">{t('demo.contact')}</a>
           </div>
-          <Button className={`${gradientClass} text-primary-foreground font-semibold shadow-md`}>
-            <Phone className="w-4 h-4 mr-2" />
-            {t('demo.callnow')}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button className={`hidden sm:inline-flex ${gradientClass} text-primary-foreground font-semibold shadow-md`}>
+              <Phone className="w-4 h-4 mr-2" />
+              {t('demo.callnow')}
+            </Button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-foreground"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-card border-t border-border px-4 py-4 space-y-3">
+            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">{t('demo.about')}</a>
+            <a href="#services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">{t('demo.services')}</a>
+            <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
+              {language === 'cs' ? 'Galerie' : language === 'en' ? 'Gallery' : 'Galerie'}
+            </a>
+            <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
+              {language === 'cs' ? 'Recenze' : language === 'en' ? 'Reviews' : 'Bewertungen'}
+            </a>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">{t('demo.contact')}</a>
+            <Button className={`w-full ${gradientClass} text-primary-foreground font-semibold`}>
+              <Phone className="w-4 h-4 mr-2" />
+              {t('demo.callnow')}
+            </Button>
+          </div>
+        )}
       </nav>
 
       {/* Hero with Background Image */}

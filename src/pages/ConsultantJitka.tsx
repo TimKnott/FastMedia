@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import jitkaPhoto from '@/assets/team/jitka-listanska.jpg';
@@ -80,24 +81,7 @@ const ConsultantJitka = () => {
     <div className="min-h-screen bg-background">
       <ScrollToTop />
 
-      {/* Simple top bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
-        <div className="container mx-auto px-4 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 gradient-accent rounded-lg flex items-center justify-center shadow-glow transition-transform group-hover:scale-110">
-              <span className="text-accent-foreground font-bold text-lg">F</span>
-            </div>
-            <span className="font-display font-bold text-xl text-foreground">
-              Fast<span className="text-accent">Media</span>.Pro
-            </span>
-          </Link>
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="w-4 h-4" /> Back to Home
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="pt-28 lg:pt-36 pb-20 gradient-hero text-primary-foreground relative overflow-hidden">

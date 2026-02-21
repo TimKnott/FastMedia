@@ -27,7 +27,7 @@ const BlogFeaturedHero = ({ post }: BlogFeaturedHeroProps) => {
     >
       <Link
         to={`/blog/${post.slug}`}
-        className="group relative block rounded-3xl overflow-hidden aspect-[21/9] min-h-[320px]"
+        className="group relative block rounded-3xl overflow-hidden aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] min-h-[280px] max-w-full"
       >
         <img
           src={post.image}
