@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -398,21 +399,17 @@ const CalculatorPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Navbar */}
+      <Navbar />
+
       {/* Header */}
-      <div className="gradient-hero text-primary-foreground py-6">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">FastMedia.Pro</span>
-          </Link>
-          <div className="text-center">
+      <div className="gradient-hero text-primary-foreground py-6 pt-24">
+        <div className="container mx-auto px-4 text-center">
             <h1 className="font-display text-2xl sm:text-3xl font-bold flex items-center gap-2 justify-center">
               <CalcIcon className="w-7 h-7" />
               {l.title}
             </h1>
             <p className="text-primary-foreground/70 text-sm mt-1">{l.subtitle}</p>
-          </div>
-          <LanguageSwitcher triggerClassName="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10" />
         </div>
       </div>
 

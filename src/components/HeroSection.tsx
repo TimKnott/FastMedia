@@ -130,7 +130,7 @@ const HeroSection = () => {
               </Button>
             </a>
             <a href="#contact">
-              <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8 py-6">
+              <Button size="lg" className="bg-transparent border-2 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8 py-6">
                 {t('hero.cta2')}
               </Button>
             </a>
