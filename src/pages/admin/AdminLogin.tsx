@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Shield, Eye, EyeOff, LogIn } from 'lucide-react';
+import { Shield, Eye, EyeOff, LogIn, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -14,8 +15,29 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail.trim()) return;
+    setResetLoading(true);
+
+    await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    setResetLoading(false);
+    setResetOpen(false);
+    setResetEmail('');
+    toast({
+      title: 'E-Mail gesendet',
+      description: 'Falls ein Konto mit dieser E-Mail existiert, erhalten Sie einen Link zum Zurücksetzen.',
+    });
+  };
 
   // Redirect if already authenticated as admin
   useEffect(() => {
@@ -158,6 +180,57 @@ const AdminLogin = () => {
                   </span>
                 )}
               </Button>
+
+              <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors mt-1"
+                  >
+                    Passwort vergessen?
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Passwort zurücksetzen</DialogTitle>
+                    <DialogDescription>
+                      Geben Sie Ihre E-Mail-Adresse ein. Sie erhalten einen Link zum Zurücksetzen.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleForgotPassword} className="space-y-4 pt-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="reset-email">E-Mail-Adresse</Label>
+                      <Input
+                        id="reset-email"
+                        type="email"
+                        placeholder="admin@fastmedia.pro"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        required
+                        autoComplete="email"
+                        className="h-11"
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full h-11 gradient-primary text-primary-foreground"
+                      disabled={resetLoading}
+                    >
+                      {resetLoading ? (
+                        <span className="flex items-center gap-2">
+                          <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                          Senden…
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          <Mail className="w-4 h-4" />
+                          Link senden
+                        </span>
+                      )}
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </form>
           </CardContent>
         </Card>

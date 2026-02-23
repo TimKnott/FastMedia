@@ -19,6 +19,7 @@ import AdminBookings from "./pages/admin/AdminBookings";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminNewsletter from "./pages/admin/AdminNewsletter";
 import AdminLeads from "./pages/admin/AdminLeads";
+import AdminResetPassword from "./pages/admin/AdminResetPassword";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
@@ -74,6 +75,7 @@ const App = () => (
             <Route path="/calculator" element={<CalculatorPage />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/reset-password" element={<AdminResetPassword />} />
             <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="leads" element={<AdminLeads />} />
