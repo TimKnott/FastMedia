@@ -202,7 +202,7 @@ const ConsultantJitka = () => {
                 <a href="#stories">
                   <Button
                     variant="outline"
-                    className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 h-12 px-8 gap-2"
+                    className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 h-12 px-8 gap-2"
                   >
                     <Heart className="w-5 h-5" /> Read Success Stories
                   </Button>
