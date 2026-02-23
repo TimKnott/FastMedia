@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import jitkaPhoto from "@/assets/team/jitka-Líšťanská.jpg";
+import jitkaPhoto from "@/assets/team/jitka-listanska.jpg";
 
 const successStories = [
   {
