@@ -41,7 +41,7 @@ const ConsultantSection = () => {
             <div className="md:w-2/5 relative">
               <img
                 src={jitkaPhoto}
-                alt="Jitka Listanská – FastMedia.Pro Consultant"
+                alt="Jitka Líšťanská – FastMedia.Pro Consultant"
                 className="w-full h-64 md:h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:bg-gradient-to-r md:from-transparent md:to-transparent" />
@@ -50,7 +50,7 @@ const ConsultantSection = () => {
             {/* Content */}
             <div className="md:w-3/5 p-8 lg:p-10 flex flex-col justify-center">
               <h3 className="text-2xl lg:text-3xl font-display font-bold text-foreground mb-1">
-                Jitka Listanská
+                Jitka Líšťanská
               </h3>
               <p className="text-accent font-semibold mb-4">
                 {t('consultant.role')}

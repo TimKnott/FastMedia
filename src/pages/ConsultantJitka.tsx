@@ -182,7 +182,7 @@ const ConsultantJitka = () => {
                 Your Personal Consultant
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 text-primary-foreground">
-                Hi, I'm Jitka Listanská
+                Hi, I'm Jitka Líšťanská
               </h1>
               <p className="text-lg lg:text-xl text-primary-foreground/90 leading-relaxed mb-4">
                 Welcome! I'm here to guide you through every step of creating the perfect website for your business.
