@@ -423,6 +423,39 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content_versions: {
+        Row: {
+          change_type: string
+          changed_by: string | null
+          content_key: string
+          created_at: string
+          id: string
+          language: string
+          status: string
+          value: string
+        }
+        Insert: {
+          change_type?: string
+          changed_by?: string | null
+          content_key: string
+          created_at?: string
+          id?: string
+          language?: string
+          status?: string
+          value: string
+        }
+        Update: {
+          change_type?: string
+          changed_by?: string | null
+          content_key?: string
+          created_at?: string
+          id?: string
+          language?: string
+          status?: string
+          value?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
