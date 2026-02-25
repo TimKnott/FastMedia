@@ -14,6 +14,7 @@ import {
   Palette,
   BookOpen,
   ImageIcon,
+  Map,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -55,6 +56,7 @@ const contentItems: MenuItem[] = [
   { title: 'Demo-Seiten', url: '/admin/demos', icon: Palette, minRole: 'editor' },
   { title: 'Blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
   { title: 'Medien', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
+  { title: 'Sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
 ];
 
 const adminItems: MenuItem[] = [
