@@ -49,28 +49,28 @@ interface MenuItem {
 const mainItems: MenuItem[] = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
   { title: 'Leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
-  { title: 'Buchungen', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
+  { title: 'Bookings', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
   { title: 'Newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
 ];
 
 const contentItems: MenuItem[] = [
-  { title: 'Startseite', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
-  { title: 'Demo-Seiten', url: '/admin/demos', icon: Palette, minRole: 'editor' },
+  { title: 'Homepage', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
+  { title: 'Demo Pages', url: '/admin/demos', icon: Palette, minRole: 'editor' },
   { title: 'Blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
-  { title: 'Medien', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
+  { title: 'Media', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
   { title: 'SEO', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
   { title: 'Sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
-  { title: 'Versionen', url: '/admin/content-history', icon: History, minRole: 'admin' },
+  { title: 'Versions', url: '/admin/content-history', icon: History, minRole: 'admin' },
 ];
 
 const adminItems: MenuItem[] = [
-  { title: 'Benutzer', url: '/admin/users', icon: Users, minRole: 'admin' },
-  { title: 'Rollen', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
-  { title: 'Audit-Logs', url: '/admin/audit-logs', icon: ScrollText, minRole: 'admin' },
+  { title: 'Users', url: '/admin/users', icon: Users, minRole: 'admin' },
+  { title: 'Roles', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
+  { title: 'Audit Logs', url: '/admin/audit-logs', icon: ScrollText, minRole: 'admin' },
 ];
 
 const settingsItems: MenuItem[] = [
-  { title: 'Einstellungen', url: '/admin/settings', icon: Settings, minRole: 'admin' },
+  { title: 'Settings', url: '/admin/settings', icon: Settings, minRole: 'admin' },
 ];
 
 const roleLabelMap: Record<string, string> = {
@@ -89,7 +89,7 @@ const AdminSidebar = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success('Erfolgreich abgemeldet.');
+    toast.success('Successfully signed out.');
     navigate('/admin/login', { replace: true });
   };
 
@@ -120,7 +120,7 @@ const AdminSidebar = () => {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Hauptmenü</SidebarGroupLabel>
+          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {visibleMain.map((item) => (
@@ -144,7 +144,7 @@ const AdminSidebar = () => {
 
         {visibleContent.length > 0 && (
           <SidebarGroup>
-            <SidebarGroupLabel>Inhalte</SidebarGroupLabel>
+            <SidebarGroupLabel>Content</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {visibleContent.map((item) => (
@@ -168,7 +168,7 @@ const AdminSidebar = () => {
 
         {visibleAdmin.length > 0 && (
           <SidebarGroup>
-            <SidebarGroupLabel>Verwaltung</SidebarGroupLabel>
+            <SidebarGroupLabel>Administration</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {visibleAdmin.map((item) => (
@@ -218,9 +218,9 @@ const AdminSidebar = () => {
       <SidebarFooter className="p-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Abmelden" onClick={handleLogout}>
+            <SidebarMenuButton tooltip="Sign Out" onClick={handleLogout}>
               <LogOut className="w-4 h-4 text-destructive" />
-              <span className="text-destructive">Abmelden</span>
+              <span className="text-destructive">Sign Out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

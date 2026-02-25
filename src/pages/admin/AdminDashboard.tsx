@@ -43,19 +43,19 @@ const AdminDashboard = () => {
   }, []);
 
   const cards = [
-    { label: 'Leads gesamt', value: stats.leads, icon: TrendingUp },
+    { label: 'Total Leads', value: stats.leads, icon: TrendingUp },
     { label: 'Hot / Priority', value: stats.hotLeads, icon: Flame },
-    { label: 'Buchungen', value: stats.bookings, icon: CalendarCheck },
-    { label: 'Newsletter-Abonnenten', value: stats.subscribers, icon: Mail },
-    { label: 'Benutzer', value: stats.users, icon: Users },
-    { label: 'Audit-Einträge', value: stats.auditLogs, icon: ScrollText },
+    { label: 'Bookings', value: stats.bookings, icon: CalendarCheck },
+    { label: 'Newsletter Subscribers', value: stats.subscribers, icon: Mail },
+    { label: 'Users', value: stats.users, icon: Users },
+    { label: 'Audit Entries', value: stats.auditLogs, icon: ScrollText },
   ];
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Übersicht über Ihr Admin-Portal.</p>
+        <p className="text-muted-foreground mt-1">Overview of your admin portal.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -87,17 +87,17 @@ const AdminDashboard = () => {
 
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle className="text-lg font-display">Letzte Aktivitäten</CardTitle>
-          <CardDescription>Aktuelle Änderungen und Ereignisse im System.</CardDescription>
+          <CardTitle className="text-lg font-display">Recent Activity</CardTitle>
+          <CardDescription>Latest changes and events in the system.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
               <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
               <div>
-                <p className="text-sm font-medium">Noch keine Aktivitäten</p>
+                <p className="text-sm font-medium">No activity yet</p>
                 <p className="text-xs text-muted-foreground">
-                  Erstellen Sie Audit- und Buchungstabellen, um Echtzeit-Daten zu sehen.
+                  Create audit and booking records to see real-time data.
                 </p>
               </div>
             </div>
