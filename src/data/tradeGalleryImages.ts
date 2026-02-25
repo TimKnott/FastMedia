@@ -336,5 +336,165 @@ export const tradeGalleryDescriptions: Record<string, {
       { cs: "Plynový rozvod", en: "Gas Pipeline", de: "Gasleitung" },
       { cs: "Ovládání topení", en: "Heating Controls", de: "Heizungssteuerung" }
     ]
+  },
+  autorepair: {
+    hero: "Professional auto mechanic working under car hood in modern garage",
+    about: "Auto repair team performing vehicle diagnostics and maintenance",
+    gallery: [
+      "Mechanic inspecting engine under hood",
+      "Brake disc replacement service",
+      "OBD engine diagnostics scan",
+      "Tire change and wheel alignment",
+      "Oil change service on vehicle lift",
+      "Car body paint repair in spray booth"
+    ],
+    galleryTitles: [
+      { cs: "Oprava motoru", en: "Engine Repair", de: "Motorreparatur" },
+      { cs: "Výměna brzd", en: "Brake Replacement", de: "Bremsenwechsel" },
+      { cs: "Diagnostika", en: "Diagnostics", de: "Diagnostik" },
+      { cs: "Přezutí pneumatik", en: "Tire Change", de: "Reifenwechsel" },
+      { cs: "Výměna oleje", en: "Oil Change", de: "Ölwechsel" },
+      { cs: "Lakování karoserie", en: "Body Paint", de: "Karosserielackierung" }
+    ]
+  },
+  beautysalon: {
+    hero: "Elegant beauty salon interior with professional styling stations",
+    about: "Beauty team providing luxury hair and skincare services",
+    gallery: [
+      "Professional hair styling session",
+      "Beauty product display shelf",
+      "Facial skincare treatment",
+      "Makeup application for event",
+      "Hair coloring service",
+      "Relaxing massage therapy"
+    ],
+    galleryTitles: [
+      { cs: "Účes a styling", en: "Hair Styling", de: "Haarstyling" },
+      { cs: "Kosmetické produkty", en: "Beauty Products", de: "Schönheitsprodukte" },
+      { cs: "Péče o pleť", en: "Skincare", de: "Hautpflege" },
+      { cs: "Líčení", en: "Makeup", de: "Make-up" },
+      { cs: "Barvení vlasů", en: "Hair Coloring", de: "Haarfärbung" },
+      { cs: "Masáže", en: "Massage", de: "Massage" }
+    ]
+  },
+  photography: {
+    hero: "Professional photographer in studio with lighting equipment",
+    about: "Photography team capturing moments at various events",
+    gallery: [
+      "Portrait photography studio setup",
+      "Wedding photography outdoor session",
+      "Product photography white background",
+      "Real estate interior photography",
+      "Corporate event photography",
+      "Food photography styled dishes"
+    ],
+    galleryTitles: [
+      { cs: "Portrétní focení", en: "Portrait Session", de: "Porträtfotografie" },
+      { cs: "Svatební fotografie", en: "Wedding Photos", de: "Hochzeitsfotografie" },
+      { cs: "Produktové foto", en: "Product Photos", de: "Produktfotografie" },
+      { cs: "Interiérové foto", en: "Interior Photos", de: "Immobilienfotografie" },
+      { cs: "Firemní akce", en: "Corporate Events", de: "Firmenevents" },
+      { cs: "Food fotografie", en: "Food Photography", de: "Food-Fotografie" }
+    ]
+  },
+  catering: {
+    hero: "Elegant catering buffet setup for wedding event",
+    about: "Professional catering team preparing gourmet dishes",
+    gallery: [
+      "Wedding buffet table arrangement",
+      "Chef preparing gourmet plates",
+      "Corporate event catering",
+      "Food truck at outdoor festival",
+      "BBQ grill outdoor party",
+      "Dessert table with pastries"
+    ],
+    galleryTitles: [
+      { cs: "Svatební raut", en: "Wedding Buffet", de: "Hochzeitsbuffet" },
+      { cs: "Příprava jídel", en: "Food Preparation", de: "Speisezubereitung" },
+      { cs: "Firemní catering", en: "Corporate Catering", de: "Firmen-Catering" },
+      { cs: "Food truck", en: "Food Truck", de: "Food Truck" },
+      { cs: "Grilování", en: "BBQ Grill", de: "Grillen" },
+      { cs: "Dezerty", en: "Desserts", de: "Desserts" }
+    ]
+  },
+  fitness: {
+    hero: "Modern fitness gym interior with professional equipment",
+    about: "Fitness trainers coaching clients in state-of-the-art facility",
+    gallery: [
+      "Weight training area with dumbbells",
+      "Personal training kettlebell session",
+      "Group yoga class in bright studio",
+      "CrossFit functional training zone",
+      "Spinning cycling class",
+      "Gym reception and lounge area"
+    ],
+    galleryTitles: [
+      { cs: "Posilovna", en: "Weight Room", de: "Kraftraum" },
+      { cs: "Osobní trénink", en: "Personal Training", de: "Personal Training" },
+      { cs: "Skupinové lekce", en: "Group Classes", de: "Gruppenkurse" },
+      { cs: "CrossFit", en: "CrossFit", de: "CrossFit" },
+      { cs: "Spinning", en: "Spinning", de: "Spinning" },
+      { cs: "Recepce", en: "Reception", de: "Empfang" }
+    ]
+  },
+  moving: {
+    hero: "Professional movers loading furniture into moving truck",
+    about: "Moving team carefully packing and transporting belongings",
+    gallery: [
+      "Loading furniture into truck",
+      "Professional packing service",
+      "Office relocation service",
+      "Piano moving with special equipment",
+      "Storage facility warehouse",
+      "Furniture assembly after move"
+    ],
+    galleryTitles: [
+      { cs: "Nakládání nábytku", en: "Furniture Loading", de: "Möbelverladung" },
+      { cs: "Balicí služby", en: "Packing Service", de: "Verpackungsservice" },
+      { cs: "Stěhování kanceláří", en: "Office Moving", de: "Büroumzug" },
+      { cs: "Přeprava klavíru", en: "Piano Moving", de: "Klaviertransport" },
+      { cs: "Skladování", en: "Storage", de: "Lagerung" },
+      { cs: "Montáž nábytku", en: "Furniture Assembly", de: "Möbelmontage" }
+    ]
+  },
+  pestcontrol: {
+    hero: "Pest control technician in protective gear treating home",
+    about: "Professional pest management team performing inspections",
+    gallery: [
+      "Interior pest treatment spraying",
+      "Termite inspection with flashlight",
+      "Rodent bait station placement",
+      "House fumigation tent setup",
+      "Wasp nest removal from roof",
+      "Commercial kitchen pest inspection"
+    ],
+    galleryTitles: [
+      { cs: "Postřik interiéru", en: "Interior Treatment", de: "Innenbehandlung" },
+      { cs: "Kontrola termitů", en: "Termite Inspection", de: "Termiteninspektion" },
+      { cs: "Deratizace", en: "Rodent Control", de: "Nagerbekämpfung" },
+      { cs: "Fumigace domu", en: "Fumigation", de: "Begasung" },
+      { cs: "Odstranění hnízd", en: "Nest Removal", de: "Nestentfernung" },
+      { cs: "Inspekce kuchyně", en: "Kitchen Inspection", de: "Kücheninspektion" }
+    ]
+  },
+  itservices: {
+    hero: "IT technician setting up server rack in data center",
+    about: "IT team providing comprehensive technology solutions",
+    gallery: [
+      "Server rack setup in data center",
+      "Computer repair and component replacement",
+      "Office network cable installation",
+      "Cybersecurity monitoring center",
+      "WiFi access point installation",
+      "IT helpdesk support service"
+    ],
+    galleryTitles: [
+      { cs: "Serverová infrastruktura", en: "Server Infrastructure", de: "Serverinfrastruktur" },
+      { cs: "Oprava počítačů", en: "Computer Repair", de: "Computerreparatur" },
+      { cs: "Síťová instalace", en: "Network Setup", de: "Netzwerkinstallation" },
+      { cs: "Kybernetická bezpečnost", en: "Cybersecurity", de: "Cybersicherheit" },
+      { cs: "WiFi řešení", en: "WiFi Solutions", de: "WLAN-Lösungen" },
+      { cs: "IT podpora", en: "IT Support", de: "IT-Support" }
+    ]
   }
 };
