@@ -136,6 +136,62 @@ import heatingG3 from '@/assets/trades/gallery/heating-3.jpg';
 import heatingG4 from '@/assets/trades/gallery/heating-4.jpg';
 import heatingG5 from '@/assets/trades/gallery/heating-5.jpg';
 import heatingG6 from '@/assets/trades/gallery/heating-6.jpg';
+// Gallery images - Auto Repair
+import autorepairG1 from '@/assets/trades/gallery/autorepair-1.jpg';
+import autorepairG2 from '@/assets/trades/gallery/autorepair-2.jpg';
+import autorepairG3 from '@/assets/trades/gallery/autorepair-3.jpg';
+import autorepairG4 from '@/assets/trades/gallery/autorepair-4.jpg';
+import autorepairG5 from '@/assets/trades/gallery/autorepair-5.jpg';
+import autorepairG6 from '@/assets/trades/gallery/autorepair-6.jpg';
+// Gallery images - Beauty Salon
+import beautysalonG1 from '@/assets/trades/gallery/beautysalon-1.jpg';
+import beautysalonG2 from '@/assets/trades/gallery/beautysalon-2.jpg';
+import beautysalonG3 from '@/assets/trades/gallery/beautysalon-3.jpg';
+import beautysalonG4 from '@/assets/trades/gallery/beautysalon-4.jpg';
+import beautysalonG5 from '@/assets/trades/gallery/beautysalon-5.jpg';
+import beautysalonG6 from '@/assets/trades/gallery/beautysalon-6.jpg';
+// Gallery images - Photography
+import photographyG1 from '@/assets/trades/gallery/photography-1.jpg';
+import photographyG2 from '@/assets/trades/gallery/photography-2.jpg';
+import photographyG3 from '@/assets/trades/gallery/photography-3.jpg';
+import photographyG4 from '@/assets/trades/gallery/photography-4.jpg';
+import photographyG5 from '@/assets/trades/gallery/photography-5.jpg';
+import photographyG6 from '@/assets/trades/gallery/photography-6.jpg';
+// Gallery images - Catering
+import cateringG1 from '@/assets/trades/gallery/catering-1.jpg';
+import cateringG2 from '@/assets/trades/gallery/catering-2.jpg';
+import cateringG3 from '@/assets/trades/gallery/catering-3.jpg';
+import cateringG4 from '@/assets/trades/gallery/catering-4.jpg';
+import cateringG5 from '@/assets/trades/gallery/catering-5.jpg';
+import cateringG6 from '@/assets/trades/gallery/catering-6.jpg';
+// Gallery images - Fitness
+import fitnessG1 from '@/assets/trades/gallery/fitness-1.jpg';
+import fitnessG2 from '@/assets/trades/gallery/fitness-2.jpg';
+import fitnessG3 from '@/assets/trades/gallery/fitness-3.jpg';
+import fitnessG4 from '@/assets/trades/gallery/fitness-4.jpg';
+import fitnessG5 from '@/assets/trades/gallery/fitness-5.jpg';
+import fitnessG6 from '@/assets/trades/gallery/fitness-6.jpg';
+// Gallery images - Moving
+import movingG1 from '@/assets/trades/gallery/moving-1.jpg';
+import movingG2 from '@/assets/trades/gallery/moving-2.jpg';
+import movingG3 from '@/assets/trades/gallery/moving-3.jpg';
+import movingG4 from '@/assets/trades/gallery/moving-4.jpg';
+import movingG5 from '@/assets/trades/gallery/moving-5.jpg';
+import movingG6 from '@/assets/trades/gallery/moving-6.jpg';
+// Gallery images - Pest Control
+import pestcontrolG1 from '@/assets/trades/gallery/pestcontrol-1.jpg';
+import pestcontrolG2 from '@/assets/trades/gallery/pestcontrol-2.jpg';
+import pestcontrolG3 from '@/assets/trades/gallery/pestcontrol-3.jpg';
+import pestcontrolG4 from '@/assets/trades/gallery/pestcontrol-4.jpg';
+import pestcontrolG5 from '@/assets/trades/gallery/pestcontrol-5.jpg';
+import pestcontrolG6 from '@/assets/trades/gallery/pestcontrol-6.jpg';
+// Gallery images - IT Services
+import itservicesG1 from '@/assets/trades/gallery/itservices-1.jpg';
+import itservicesG2 from '@/assets/trades/gallery/itservices-2.jpg';
+import itservicesG3 from '@/assets/trades/gallery/itservices-3.jpg';
+import itservicesG4 from '@/assets/trades/gallery/itservices-4.jpg';
+import itservicesG5 from '@/assets/trades/gallery/itservices-5.jpg';
+import itservicesG6 from '@/assets/trades/gallery/itservices-6.jpg';
 
 export const tradeImages: Record<string, string> = {
   plumbing: plumberHero,
@@ -181,6 +237,14 @@ export const tradeGalleryImages: Record<string, string[]> = {
   drywall: [drywallG1, drywallG2, drywallG3, drywallG4, drywallG5, drywallG6],
   wells: [wellsG1, wellsG2, wellsG3, wellsG4, wellsG5, wellsG6],
   heating: [heatingG1, heatingG2, heatingG3, heatingG4, heatingG5, heatingG6],
+  autorepair: [autorepairG1, autorepairG2, autorepairG3, autorepairG4, autorepairG5, autorepairG6],
+  beautysalon: [beautysalonG1, beautysalonG2, beautysalonG3, beautysalonG4, beautysalonG5, beautysalonG6],
+  photography: [photographyG1, photographyG2, photographyG3, photographyG4, photographyG5, photographyG6],
+  catering: [cateringG1, cateringG2, cateringG3, cateringG4, cateringG5, cateringG6],
+  fitness: [fitnessG1, fitnessG2, fitnessG3, fitnessG4, fitnessG5, fitnessG6],
+  moving: [movingG1, movingG2, movingG3, movingG4, movingG5, movingG6],
+  pestcontrol: [pestcontrolG1, pestcontrolG2, pestcontrolG3, pestcontrolG4, pestcontrolG5, pestcontrolG6],
+  itservices: [itservicesG1, itservicesG2, itservicesG3, itservicesG4, itservicesG5, itservicesG6],
 };
 
 export const getTradeImage = (tradeId: string): string => {
