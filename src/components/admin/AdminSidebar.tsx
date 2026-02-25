@@ -10,6 +10,10 @@ import {
   Mail,
   TrendingUp,
   ShieldCheck,
+  Home,
+  Palette,
+  BookOpen,
+  ImageIcon,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -44,6 +48,16 @@ const mainItems: MenuItem[] = [
   { title: 'Leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
   { title: 'Buchungen', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
   { title: 'Newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
+];
+
+const contentItems: MenuItem[] = [
+  { title: 'Startseite', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
+  { title: 'Demo-Seiten', url: '/admin/demos', icon: Palette, minRole: 'editor' },
+  { title: 'Blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
+  { title: 'Medien', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
+];
+
+const adminItems: MenuItem[] = [
   { title: 'Benutzer', url: '/admin/users', icon: Users, minRole: 'admin' },
   { title: 'Rollen', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
   { title: 'Audit-Logs', url: '/admin/audit-logs', icon: ScrollText, minRole: 'admin' },
@@ -74,6 +88,8 @@ const AdminSidebar = () => {
   };
 
   const visibleMain = mainItems.filter(item => hasMinRole(item.minRole));
+  const visibleContent = contentItems.filter(item => hasMinRole(item.minRole));
+  const visibleAdmin = adminItems.filter(item => hasMinRole(item.minRole));
   const visibleSettings = settingsItems.filter(item => hasMinRole(item.minRole));
 
   return (
@@ -119,6 +135,54 @@ const AdminSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {visibleContent.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Inhalte</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visibleContent.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <NavLink
+                        to={item.url}
+                        className="hover:bg-sidebar-accent"
+                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                      >
+                        <item.icon className="w-4 h-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {visibleAdmin.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Verwaltung</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visibleAdmin.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <NavLink
+                        to={item.url}
+                        className="hover:bg-sidebar-accent"
+                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                      >
+                        <item.icon className="w-4 h-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {visibleSettings.length > 0 && (
           <SidebarGroup>
