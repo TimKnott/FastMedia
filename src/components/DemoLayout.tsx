@@ -86,6 +86,7 @@ const DemoLayout = ({
         title={`${tradeName} — ${heroTitle[language]}`}
         description={heroSubtitle[language]}
         canonical={`/demo/${tradeId}`}
+        pagePath={`/demo/${tradeId}`}
       />
       <script
         type="application/ld+json"
