@@ -91,6 +91,18 @@ const DemoLayout = ({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://fastmedia-pro.lovable.app/' },
+            { '@type': 'ListItem', position: 2, name: language === 'cs' ? 'Ukázky' : language === 'de' ? 'Demos' : 'Demos', item: 'https://fastmedia-pro.lovable.app/#demos' },
+            { '@type': 'ListItem', position: 3, name: tradeName },
+          ],
+        }) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
           '@type': 'LocalBusiness',
           name: tradeName,
           description: heroSubtitle[language],
