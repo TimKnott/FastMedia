@@ -138,6 +138,7 @@ const ConsultantJitka = () => {
         description="Meet Jitka Líšťanská, your personal web consultant at FastMedia.Pro. Years of experience helping tradespeople build websites that drive customers."
         canonical="/consultant/jitka"
         ogType="profile"
+        pagePath="/consultant/jitka"
       />
       <script
         type="application/ld+json"

@@ -74,6 +74,7 @@ const Blog = () => {
         title="Blog — FastMedia.Pro"
         description={labels.subtitle[language]}
         canonical="/blog"
+        pagePath="/blog"
       />
       <Navbar />
       <ScrollToTop />
