@@ -17,6 +17,7 @@ import {
   Map,
   History,
   Search,
+  Send,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -51,6 +52,7 @@ const mainItems: MenuItem[] = [
   { title: 'Leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
   { title: 'Bookings', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
   { title: 'Newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
+  { title: 'Vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
 ];
 
 const contentItems: MenuItem[] = [
