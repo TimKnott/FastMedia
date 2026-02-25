@@ -35,12 +35,11 @@ const AdminLogin = () => {
     setResetOpen(false);
     setResetEmail('');
     toast({
-      title: 'E-Mail gesendet',
-      description: 'Falls ein Konto mit dieser E-Mail existiert, erhalten Sie einen Link zum Zurücksetzen.',
+      title: 'Email sent',
+      description: 'If an account exists with that email, you will receive a reset link.',
     });
   };
 
-  // Redirect if already authenticated with sufficient role
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
@@ -68,14 +67,13 @@ const AdminLogin = () => {
     if (error) {
       setLoading(false);
       toast({
-        title: 'Anmeldung fehlgeschlagen',
-        description: 'E-Mail oder Passwort ungültig. Bitte versuchen Sie es erneut.',
+        title: 'Login failed',
+        description: 'Invalid email or password. Please try again.',
         variant: 'destructive',
       });
       return;
     }
 
-    // Verify minimum editor role
     if (data.user) {
       const { data: roleData } = await supabase
         .from('user_roles')
@@ -87,8 +85,8 @@ const AdminLogin = () => {
         await supabase.auth.signOut();
         setLoading(false);
         toast({
-          title: 'Zugriff verweigert',
-          description: 'Sie haben keine Administratorrechte.',
+          title: 'Access denied',
+          description: 'You do not have administrator privileges.',
           variant: 'destructive',
         });
         return;
@@ -97,8 +95,8 @@ const AdminLogin = () => {
 
     setLoading(false);
     toast({
-      title: 'Anmeldung erfolgreich',
-      description: 'Willkommen im Admin-Bereich.',
+      title: 'Login successful',
+      description: 'Welcome to the admin area.',
     });
     navigate('/admin', { replace: true });
   };
@@ -117,9 +115,9 @@ const AdminLogin = () => {
               <Shield className="w-8 h-8 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-display">Admin-Portal</CardTitle>
+              <CardTitle className="text-2xl font-display">Admin Portal</CardTitle>
               <CardDescription className="mt-1">
-                Melden Sie sich an, um das Back-Office zu verwalten.
+                Sign in to manage the back-office.
               </CardDescription>
             </div>
           </CardHeader>
@@ -127,11 +125,11 @@ const AdminLogin = () => {
           <CardContent className="pt-4">
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">E-Mail-Adresse</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@fastmedia.pro"
+                  placeholder="admin@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -141,7 +139,7 @@ const AdminLogin = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Passwort</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -172,12 +170,12 @@ const AdminLogin = () => {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    Anmelden…
+                    Signing in…
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
                     <LogIn className="w-4 h-4" />
-                    Anmelden
+                    Sign In
                   </span>
                 )}
               </Button>
@@ -188,23 +186,23 @@ const AdminLogin = () => {
                     type="button"
                     className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors mt-1"
                   >
-                    Passwort vergessen?
+                    Forgot password?
                   </button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Passwort zurücksetzen</DialogTitle>
+                    <DialogTitle>Reset Password</DialogTitle>
                     <DialogDescription>
-                      Geben Sie Ihre E-Mail-Adresse ein. Sie erhalten einen Link zum Zurücksetzen.
+                      Enter your email address. You will receive a reset link.
                     </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleForgotPassword} className="space-y-4 pt-2">
                     <div className="space-y-2">
-                      <Label htmlFor="reset-email">E-Mail-Adresse</Label>
+                      <Label htmlFor="reset-email">Email Address</Label>
                       <Input
                         id="reset-email"
                         type="email"
-                        placeholder="admin@fastmedia.pro"
+                        placeholder="admin@example.com"
                         value={resetEmail}
                         onChange={(e) => setResetEmail(e.target.value)}
                         required
@@ -220,12 +218,12 @@ const AdminLogin = () => {
                       {resetLoading ? (
                         <span className="flex items-center gap-2">
                           <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                          Senden…
+                          Sending…
                         </span>
                       ) : (
                         <span className="flex items-center gap-2">
                           <Mail className="w-4 h-4" />
-                          Link senden
+                          Send Link
                         </span>
                       )}
                     </Button>
