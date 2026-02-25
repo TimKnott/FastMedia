@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import SEOHead from "@/components/SEOHead";
 import jitkaPhoto from "@/assets/team/jitka-listanska.jpg";
 
 const successStories = [
@@ -132,6 +133,23 @@ const ConsultantJitka = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Jitka Líšťanská — Web Consultant"
+        description="Meet Jitka Líšťanská, your personal web consultant at FastMedia.Pro. Years of experience helping tradespeople build websites that drive customers."
+        canonical="/consultant/jitka"
+        ogType="profile"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: 'Jitka Líšťanská',
+          jobTitle: 'Web Consultant & Business Manager',
+          worksFor: { '@type': 'Organization', name: 'FastMedia.Pro' },
+          url: 'https://fastmedia-pro.lovable.app/consultant/jitka',
+        }) }}
+      />
       <ScrollToTop />
 
       <Navbar />

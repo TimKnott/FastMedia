@@ -11,6 +11,7 @@ import { getTradeImage, getTradeGalleryImages } from '@/data/tradeImages';
 import { tradeGalleryDescriptions } from '@/data/tradeGalleryImages';
 import EditableImage from '@/components/EditableImage';
 import { useImageContent } from '@/hooks/useImageContent';
+import SEOHead from '@/components/SEOHead';
 
 interface DemoLayoutProps {
   tradeName: string;
@@ -81,6 +82,23 @@ const DemoLayout = ({
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${tradeName} — ${heroTitle[language]}`}
+        description={heroSubtitle[language]}
+        canonical={`/demo/${tradeId}`}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'LocalBusiness',
+          name: tradeName,
+          description: heroSubtitle[language],
+          url: `https://fastmedia-pro.lovable.app/demo/${tradeId}`,
+          address: { '@type': 'PostalAddress', addressLocality: 'Praha', addressCountry: 'CZ' },
+          aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '250' },
+        }) }}
+      />
       {/* Back to FastMedia Banner */}
       <div className="bg-foreground text-background py-2 px-4 text-sm flex items-center justify-between">
         <div className="flex items-center gap-2">

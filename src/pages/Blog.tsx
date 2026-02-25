@@ -12,6 +12,7 @@ import BlogFeaturedHero from '@/components/blog/BlogFeaturedHero';
 import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
 
 type ViewMode = 'grid' | 'list';
 
@@ -69,6 +70,11 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Blog — FastMedia.Pro"
+        description={labels.subtitle[language]}
+        canonical="/blog"
+      />
       <Navbar />
       <ScrollToTop />
 
