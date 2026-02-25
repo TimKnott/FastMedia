@@ -9,6 +9,8 @@ import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import Footer from '@/components/Footer';
 import { getTradeImage, getTradeGalleryImages } from '@/data/tradeImages';
 import { tradeGalleryDescriptions } from '@/data/tradeGalleryImages';
+import EditableImage from '@/components/EditableImage';
+import { useImageContent } from '@/hooks/useImageContent';
 
 interface DemoLayoutProps {
   tradeName: string;
@@ -33,6 +35,7 @@ const DemoLayout = ({
   gradientClass,
 }: DemoLayoutProps) => {
   const { t, language } = useLanguage();
+  const { getImageUrl, invalidateImage } = useImageContent();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroImage = getTradeImage(tradeId);
 
@@ -148,8 +151,11 @@ const DemoLayout = ({
       {/* Hero with Background Image */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src={heroImage} 
+          <EditableImage
+            contentKey={`demo.${tradeId}.hero`}
+            defaultSrc={heroImage}
+            overrideSrc={getImageUrl(`demo.${tradeId}.hero`)}
+            onSave={invalidateImage}
             alt={tradeName}
             className="w-full h-full object-cover"
           />
@@ -273,8 +279,11 @@ const DemoLayout = ({
               viewport={{ once: true }}
               className="relative"
             >
-              <img 
-                src={heroImage} 
+              <EditableImage
+                contentKey={`demo.${tradeId}.about`}
+                defaultSrc={heroImage}
+                overrideSrc={getImageUrl(`demo.${tradeId}.about`)}
+                onSave={invalidateImage}
                 alt="Our team at work"
                 className="rounded-3xl shadow-2xl w-full aspect-[4/3] object-cover"
               />
@@ -414,10 +423,13 @@ const DemoLayout = ({
                 transition={{ delay: index * 0.1 }}
                 className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
               >
-                <img 
-                   src={image.src}
-                   alt={image.title[language]}
-                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                <EditableImage
+                  contentKey={`demo.${tradeId}.gallery.${index}`}
+                  defaultSrc={image.src}
+                  overrideSrc={getImageUrl(`demo.${tradeId}.gallery.${index}`)}
+                  onSave={invalidateImage}
+                  alt={image.title[language]}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                   <div className="text-primary-foreground">
