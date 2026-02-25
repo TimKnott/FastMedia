@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { usePreviewMode } from '@/contexts/PreviewModeContext';
 
 type ContentMap = Record<string, string>;
 
@@ -8,37 +9,56 @@ let globalCache: Record<string, ContentMap> = {};
 let fetchPromise: Record<string, Promise<void>> = {};
 
 /**
- * Fetches all site_content overrides for the current language.
- * Returns a lookup function: getContent(key, fallback) → string.
+ * Fetches site_content overrides for the current language.
+ * In preview mode, draft values override published values.
  */
 export const useSiteContent = () => {
   const { language } = useLanguage();
-  const [content, setContent] = useState<ContentMap>(globalCache[language] ?? {});
+  const { isPreview } = usePreviewMode();
+  const cacheKey = `${language}_${isPreview ? 'preview' : 'live'}`;
+  const [content, setContent] = useState<ContentMap>(globalCache[cacheKey] ?? {});
 
   useEffect(() => {
-    if (globalCache[language] && Object.keys(globalCache[language]).length > 0) {
-      setContent(globalCache[language]);
+    if (globalCache[cacheKey] && Object.keys(globalCache[cacheKey]).length > 0) {
+      setContent(globalCache[cacheKey]);
       return;
     }
 
-    if (!fetchPromise[language]) {
-      fetchPromise[language] = (async () => {
-        const { data } = await supabase
+    if (!fetchPromise[cacheKey]) {
+      fetchPromise[cacheKey] = (async () => {
+        // Always fetch published
+        const { data: published } = await supabase
           .from('site_content')
           .select('content_key, value')
-          .eq('language', language);
+          .eq('language', language)
+          .eq('status', 'published');
+
         const map: ContentMap = {};
-        data?.forEach((row) => {
+        published?.forEach((row) => {
           map[row.content_key] = row.value;
         });
-        globalCache[language] = map;
+
+        // In preview mode, overlay drafts on top
+        if (isPreview) {
+          const { data: drafts } = await supabase
+            .from('site_content')
+            .select('content_key, value')
+            .eq('language', language)
+            .eq('status', 'draft');
+
+          drafts?.forEach((row) => {
+            map[row.content_key] = row.value;
+          });
+        }
+
+        globalCache[cacheKey] = map;
       })();
     }
 
-    fetchPromise[language].then(() => {
-      setContent(globalCache[language] ?? {});
+    fetchPromise[cacheKey].then(() => {
+      setContent(globalCache[cacheKey] ?? {});
     });
-  }, [language]);
+  }, [language, isPreview, cacheKey]);
 
   const getContent = useCallback(
     (key: string, fallback: string) => content[key] ?? fallback,
@@ -46,9 +66,14 @@ export const useSiteContent = () => {
   );
 
   const invalidate = useCallback((key: string, value: string) => {
-    globalCache[language] = { ...globalCache[language], [key]: value };
-    setContent({ ...globalCache[language] });
-  }, [language]);
+    // Update preview cache
+    const previewKey = `${language}_preview`;
+    globalCache[previewKey] = { ...globalCache[previewKey], [key]: value };
+    // Clear live cache so it refetches on publish
+    delete fetchPromise[`${language}_live`];
+    delete globalCache[`${language}_live`];
+    setContent({ ...globalCache[cacheKey], [key]: value });
+  }, [language, cacheKey]);
 
   return { getContent, invalidate };
 };

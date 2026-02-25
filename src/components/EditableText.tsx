@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { usePreviewMode } from '@/contexts/PreviewModeContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Pencil, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -34,6 +35,7 @@ const EditableText = ({
 }: EditableTextProps) => {
   const { isSuperAdmin } = useUserRole();
   const { language } = useLanguage();
+  const { setPreview, refreshDraftCount } = usePreviewMode();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const [saving, setSaving] = useState(false);
@@ -65,10 +67,11 @@ const EditableText = ({
           content_key: contentKey,
           language,
           value: draft,
+          status: 'draft',
           updated_by: userId ?? null,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: 'content_key,language' }
+        { onConflict: 'content_key,language,status' }
       );
 
     setSaving(false);
@@ -78,10 +81,12 @@ const EditableText = ({
       return;
     }
 
-    toast.success('Gespeichert');
+    toast.success('Als Entwurf gespeichert');
     onSave?.(contentKey, draft);
     setEditing(false);
-  }, [draft, displayValue, contentKey, language, onSave]);
+    setPreview(true);
+    refreshDraftCount();
+  }, [draft, displayValue, contentKey, language, onSave, setPreview, refreshDraftCount]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !multiline) handleSave();

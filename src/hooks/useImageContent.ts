@@ -1,42 +1,60 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { usePreviewMode } from '@/contexts/PreviewModeContext';
 
 type ImageMap = Record<string, string>;
 
-let imageCache: ImageMap = {};
-let imageFetchPromise: Promise<void> | null = null;
+let imageCache: Record<string, ImageMap> = {};
+let imageFetchPromise: Record<string, Promise<void>> = {};
 
 /**
  * Fetches all site_content image overrides (language='all').
- * Returns a lookup: getImageUrl(key) → string | undefined
+ * In preview mode, draft values override published values.
  */
 export const useImageContent = () => {
-  const [content, setContent] = useState<ImageMap>(imageCache);
+  const { isPreview } = usePreviewMode();
+  const cacheKey = isPreview ? 'preview' : 'live';
+  const [content, setContent] = useState<ImageMap>(imageCache[cacheKey] ?? {});
 
   useEffect(() => {
-    if (Object.keys(imageCache).length > 0) {
-      setContent(imageCache);
+    if (imageCache[cacheKey] && Object.keys(imageCache[cacheKey]).length > 0) {
+      setContent(imageCache[cacheKey]);
       return;
     }
 
-    if (!imageFetchPromise) {
-      imageFetchPromise = (async () => {
-        const { data } = await supabase
+    if (!imageFetchPromise[cacheKey]) {
+      imageFetchPromise[cacheKey] = (async () => {
+        const { data: published } = await supabase
           .from('site_content')
           .select('content_key, value')
-          .eq('language', 'all');
+          .eq('language', 'all')
+          .eq('status', 'published');
+
         const map: ImageMap = {};
-        data?.forEach((row) => {
+        published?.forEach((row) => {
           map[row.content_key] = row.value;
         });
-        imageCache = map;
+
+        if (isPreview) {
+          const { data: drafts } = await supabase
+            .from('site_content')
+            .select('content_key, value')
+            .eq('language', 'all')
+            .eq('status', 'draft');
+
+          drafts?.forEach((row) => {
+            map[row.content_key] = row.value;
+          });
+        }
+
+        imageCache[cacheKey] = map;
       })();
     }
 
-    imageFetchPromise.then(() => {
-      setContent({ ...imageCache });
+    imageFetchPromise[cacheKey].then(() => {
+      setContent({ ...imageCache[cacheKey] });
     });
-  }, []);
+  }, [isPreview, cacheKey]);
 
   const getImageUrl = useCallback(
     (key: string): string | undefined => content[key],
@@ -44,9 +62,11 @@ export const useImageContent = () => {
   );
 
   const invalidateImage = useCallback((key: string, value: string) => {
-    imageCache = { ...imageCache, [key]: value };
-    setContent({ ...imageCache });
-  }, []);
+    imageCache['preview'] = { ...imageCache['preview'], [key]: value };
+    delete imageFetchPromise['live'];
+    delete imageCache['live'];
+    setContent({ ...imageCache[cacheKey], [key]: value });
+  }, [cacheKey]);
 
   return { getImageUrl, invalidateImage };
 };

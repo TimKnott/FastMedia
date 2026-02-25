@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { useUserRole } from '@/hooks/useUserRole';
+import { usePreviewMode } from '@/contexts/PreviewModeContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Camera, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -32,6 +33,7 @@ const EditableImage = ({
   containerClassName,
 }: EditableImageProps) => {
   const { isSuperAdmin } = useUserRole();
+  const { setPreview, refreshDraftCount } = usePreviewMode();
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -73,7 +75,7 @@ const EditableImage = ({
 
     const publicUrl = urlData.publicUrl;
 
-    // Save the URL to site_content
+    // Save the URL to site_content as draft
     const { data: session } = await supabase.auth.getSession();
     const userId = session?.session?.user?.id;
 
@@ -84,10 +86,11 @@ const EditableImage = ({
           content_key: contentKey,
           language: 'all',
           value: publicUrl,
+          status: 'draft',
           updated_by: userId ?? null,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: 'content_key,language' }
+        { onConflict: 'content_key,language,status' }
       );
 
     setUploading(false);
@@ -98,8 +101,10 @@ const EditableImage = ({
       return;
     }
 
-    toast.success('Bild aktualisiert');
+    toast.success('Bild als Entwurf gespeichert');
     onSave?.(contentKey, publicUrl);
+    setPreview(true);
+    refreshDraftCount();
 
     // Reset file input
     if (inputRef.current) inputRef.current.value = '';

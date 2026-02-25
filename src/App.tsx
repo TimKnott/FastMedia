@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
+import AdminToolbar from "@/components/AdminToolbar";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Blog from "./pages/Blog";
@@ -61,9 +63,11 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <LanguageProvider>
+        <PreviewModeProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <AdminToolbar />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/blog" element={<Blog />} />
@@ -114,6 +118,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </PreviewModeProvider>
       </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
