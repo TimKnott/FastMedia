@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const HomeJsonLd = () => {
@@ -39,45 +38,25 @@ const HomeJsonLd = () => {
       '@type': 'Product',
       name: 'Starter',
       description: t('pricing.starter.desc'),
-      offers: {
-        '@type': 'Offer',
-        price: '15000',
-        priceCurrency: 'CZK',
-        availability: 'https://schema.org/InStock',
-      },
+      offers: { '@type': 'Offer', price: '15000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
     },
     {
       '@type': 'Product',
       name: 'Basic',
       description: t('pricing.basic.desc'),
-      offers: {
-        '@type': 'Offer',
-        price: '25000',
-        priceCurrency: 'CZK',
-        availability: 'https://schema.org/InStock',
-      },
+      offers: { '@type': 'Offer', price: '25000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
     },
     {
       '@type': 'Product',
       name: 'Professional',
       description: t('pricing.pro.desc'),
-      offers: {
-        '@type': 'Offer',
-        price: '45000',
-        priceCurrency: 'CZK',
-        availability: 'https://schema.org/InStock',
-      },
+      offers: { '@type': 'Offer', price: '45000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
     },
     {
       '@type': 'Product',
       name: 'Enterprise',
       description: t('pricing.enterprise.desc'),
-      offers: {
-        '@type': 'Offer',
-        price: '80000',
-        priceCurrency: 'CZK',
-        availability: 'https://schema.org/InStock',
-      },
+      offers: { '@type': 'Offer', price: '80000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
     },
   ];
 
@@ -93,11 +72,20 @@ const HomeJsonLd = () => {
   };
 
   return (
-    <Helmet>
-      <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(productListSchema)}</script>
-    </Helmet>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productListSchema) }}
+      />
+    </>
   );
 };
 
