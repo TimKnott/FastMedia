@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { hasMinimumRole } from '@/hooks/useUserRole';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -39,7 +40,7 @@ const AdminLogin = () => {
     });
   };
 
-  // Redirect if already authenticated as admin
+  // Redirect if already authenticated with sufficient role
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
@@ -47,9 +48,10 @@ const AdminLogin = () => {
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .eq('role', 'admin')
           .maybeSingle();
-        if (data) navigate('/admin', { replace: true });
+        if (data && hasMinimumRole(data.role, 'editor')) {
+          navigate('/admin', { replace: true });
+        }
       }
     });
   }, [navigate]);
@@ -73,16 +75,15 @@ const AdminLogin = () => {
       return;
     }
 
-    // Verify admin role
+    // Verify minimum editor role
     if (data.user) {
       const { data: roleData } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', data.user.id)
-        .eq('role', 'admin')
         .maybeSingle();
 
-      if (!roleData) {
+      if (!roleData || !hasMinimumRole(roleData.role, 'editor')) {
         await supabase.auth.signOut();
         setLoading(false);
         toast({
