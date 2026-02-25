@@ -20,6 +20,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminNewsletter from "./pages/admin/AdminNewsletter";
 import AdminLeads from "./pages/admin/AdminLeads";
 import AdminResetPassword from "./pages/admin/AdminResetPassword";
+import AdminRoles from "./pages/admin/AdminRoles";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
@@ -92,7 +93,7 @@ const App = () => (
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/reset-password" element={<AdminResetPassword />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+            <Route path="/admin" element={<ProtectedRoute minRole="editor"><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="leads" element={<AdminLeads />} />
               <Route path="users" element={<AdminUsers />} />
@@ -100,6 +101,7 @@ const App = () => (
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="newsletter" element={<AdminNewsletter />} />
+              <Route path="roles" element={<AdminRoles />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

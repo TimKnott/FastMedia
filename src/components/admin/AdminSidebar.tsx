@@ -9,6 +9,7 @@ import {
   Shield,
   Mail,
   TrendingUp,
+  ShieldCheck,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -25,31 +26,55 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { supabase } from '@/integrations/supabase/client';
+import { useUserRole } from '@/hooks/useUserRole';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
-const mainItems = [
-  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
-  { title: 'Leads', url: '/admin/leads', icon: TrendingUp },
-  { title: 'Benutzer', url: '/admin/users', icon: Users },
-  { title: 'Audit-Logs', url: '/admin/audit-logs', icon: ScrollText },
-  { title: 'Buchungen', url: '/admin/bookings', icon: CalendarCheck },
-  { title: 'Newsletter', url: '/admin/newsletter', icon: Mail },
+type AppRole = 'super_admin' | 'admin' | 'moderator' | 'editor' | 'user';
+
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+  minRole: AppRole;
+}
+
+const mainItems: MenuItem[] = [
+  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
+  { title: 'Leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
+  { title: 'Buchungen', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
+  { title: 'Newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
+  { title: 'Benutzer', url: '/admin/users', icon: Users, minRole: 'admin' },
+  { title: 'Rollen', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
+  { title: 'Audit-Logs', url: '/admin/audit-logs', icon: ScrollText, minRole: 'admin' },
 ];
 
-const settingsItems = [
-  { title: 'Einstellungen', url: '/admin/settings', icon: Settings },
+const settingsItems: MenuItem[] = [
+  { title: 'Einstellungen', url: '/admin/settings', icon: Settings, minRole: 'admin' },
 ];
+
+const roleLabelMap: Record<string, string> = {
+  super_admin: 'Super Admin',
+  admin: 'Admin',
+  editor: 'Editor',
+  moderator: 'Moderator',
+  user: 'User',
+};
 
 const AdminSidebar = () => {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const navigate = useNavigate();
+  const { role, hasMinRole } = useUserRole();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success('Erfolgreich abgemeldet.');
     navigate('/admin/login', { replace: true });
   };
+
+  const visibleMain = mainItems.filter(item => hasMinRole(item.minRole));
+  const visibleSettings = settingsItems.filter(item => hasMinRole(item.minRole));
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -63,7 +88,9 @@ const AdminSidebar = () => {
               <p className="font-display font-semibold text-sm text-sidebar-foreground truncate">
                 FastMedia.Pro
               </p>
-              <p className="text-xs text-muted-foreground truncate">Admin-Portal</p>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 mt-0.5">
+                {roleLabelMap[role ?? ''] ?? 'Loading…'}
+              </Badge>
             </div>
           )}
         </div>
@@ -74,7 +101,7 @@ const AdminSidebar = () => {
           <SidebarGroupLabel>Hauptmenü</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainItems.map((item) => (
+              {visibleMain.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <NavLink
@@ -93,27 +120,29 @@ const AdminSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>System</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {settingsItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <NavLink
-                      to={item.url}
-                      className="hover:bg-sidebar-accent"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
-                    >
-                      <item.icon className="w-4 h-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {visibleSettings.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>System</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visibleSettings.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <NavLink
+                        to={item.url}
+                        className="hover:bg-sidebar-accent"
+                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                      >
+                        <item.icon className="w-4 h-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="p-3">
