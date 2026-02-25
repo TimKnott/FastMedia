@@ -21,6 +21,10 @@ import AdminNewsletter from "./pages/admin/AdminNewsletter";
 import AdminLeads from "./pages/admin/AdminLeads";
 import AdminResetPassword from "./pages/admin/AdminResetPassword";
 import AdminRoles from "./pages/admin/AdminRoles";
+import AdminLandingPage from "./pages/admin/AdminLandingPage";
+import AdminDemos from "./pages/admin/AdminDemos";
+import AdminBlog from "./pages/admin/AdminBlog";
+import AdminMedia from "./pages/admin/AdminMedia";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
@@ -102,6 +106,10 @@ const App = () => (
               <Route path="settings" element={<AdminSettings />} />
               <Route path="newsletter" element={<AdminNewsletter />} />
               <Route path="roles" element={<AdminRoles />} />
+              <Route path="landing-page" element={<AdminLandingPage />} />
+              <Route path="demos" element={<AdminDemos />} />
+              <Route path="blog-manage" element={<AdminBlog />} />
+              <Route path="media" element={<AdminMedia />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
