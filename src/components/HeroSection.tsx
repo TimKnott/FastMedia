@@ -3,6 +3,8 @@ import { motion, useInView } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Monitor, Users } from 'lucide-react';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const useCountUp = (end: number, duration: number, start: boolean) => {
   const [count, setCount] = useState(0);
@@ -55,6 +57,7 @@ const AnimatedStat = ({ icon: Icon, value, label, delay }: {
 
 const HeroSection = () => {
   const { t, language } = useLanguage();
+  const { getContent, invalidate } = useSiteContent();
 
   const stats = [
     { icon: Monitor, value: '24+', label: { cs: 'Oborových šablon', en: 'Industry Templates', de: 'Branchenvorlagen' } },
@@ -97,24 +100,39 @@ const HeroSection = () => {
           </motion.div>
 
           {/* Title */}
-          <motion.h1
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-primary-foreground leading-tight mb-6"
+            className="mb-6"
           >
-            {t('hero.title')}
-          </motion.h1>
+            <EditableText
+              contentKey="hero.title"
+              defaultValue={t('hero.title')}
+              value={getContent('hero.title', '') || undefined}
+              onSave={invalidate}
+              as="h1"
+              className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-primary-foreground leading-tight"
+            />
+          </motion.div>
 
           {/* Subtitle */}
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg sm:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-10"
+            className="max-w-2xl mx-auto mb-10"
           >
-            {t('hero.subtitle')}
-          </motion.p>
+            <EditableText
+              contentKey="hero.subtitle"
+              defaultValue={t('hero.subtitle')}
+              value={getContent('hero.subtitle', '') || undefined}
+              onSave={invalidate}
+              as="p"
+              className="text-lg sm:text-xl text-primary-foreground/80"
+              multiline
+            />
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
