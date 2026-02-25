@@ -16,6 +16,7 @@ import {
   ImageIcon,
   Map,
   History,
+  Search,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -57,6 +58,7 @@ const contentItems: MenuItem[] = [
   { title: 'Demo-Seiten', url: '/admin/demos', icon: Palette, minRole: 'editor' },
   { title: 'Blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
   { title: 'Medien', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
+  { title: 'SEO', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
   { title: 'Sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
   { title: 'Versionen', url: '/admin/content-history', icon: History, minRole: 'admin' },
 ];

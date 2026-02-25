@@ -29,6 +29,7 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import AdminMedia from "./pages/admin/AdminMedia";
 import AdminSitemap from "./pages/admin/AdminSitemap";
 import AdminContentHistory from "./pages/admin/AdminContentHistory";
+import AdminSEO from "./pages/admin/AdminSEO";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
@@ -118,6 +119,7 @@ const App = () => (
               <Route path="media" element={<AdminMedia />} />
               <Route path="sitemap" element={<AdminSitemap />} />
               <Route path="content-history" element={<AdminContentHistory />} />
+              <Route path="seo" element={<AdminSEO />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

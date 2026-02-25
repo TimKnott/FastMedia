@@ -24,6 +24,7 @@ const Index = () => {
         description="FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI chatbot, online rezervace, sběr poptávek. 24 oborových šablon, dodání do 10 dní."
         canonical="/"
         ogType="website"
+        pagePath="/"
       />
       <HomeJsonLd />
       <div className="min-h-screen">

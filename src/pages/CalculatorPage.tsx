@@ -404,6 +404,7 @@ const CalculatorPage = () => {
         title={l.title}
         description={l.subtitle}
         canonical="/calculator"
+        pagePath="/calculator"
       />
       <Navbar />
 

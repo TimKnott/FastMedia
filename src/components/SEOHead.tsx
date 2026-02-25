@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { usePageSeo } from '@/hooks/usePageSeo';
 
 interface SEOHeadProps {
   title: string;
@@ -9,6 +10,8 @@ interface SEOHeadProps {
   ogDescription?: string;
   ogImage?: string;
   ogType?: string;
+  /** Page path for DB-driven SEO overrides (e.g. "/" or "/blog") */
+  pagePath?: string;
 }
 
 const BASE_URL = 'https://fastmedia-pro.lovable.app';
@@ -22,27 +25,41 @@ const SEOHead = ({
   ogDescription,
   ogImage,
   ogType = 'website',
+  pagePath,
 }: SEOHeadProps) => {
-  const fullTitle = title.includes('FastMedia') ? title : `${title} | FastMedia.Pro`;
+  const seo = usePageSeo(pagePath ?? '');
+
+  // DB values override props when available
+  const effectiveTitle = (pagePath && seo?.title) || title;
+  const effectiveDescription = (pagePath && seo?.description) || description;
+  const effectiveOgTitle = (pagePath && seo?.og_title) || ogTitle;
+  const effectiveOgDescription = (pagePath && seo?.og_description) || ogDescription;
+  const effectiveOgImage = (pagePath && seo?.og_image) || ogImage;
+  const effectiveOgType = (pagePath && seo?.og_type) || ogType;
+  const effectiveNoindex = (pagePath && seo?.noindex) || noindex;
+
+  const fullTitle = effectiveTitle.includes('FastMedia')
+    ? effectiveTitle
+    : `${effectiveTitle} | FastMedia.Pro`;
   const canonicalUrl = canonical ? `${BASE_URL}${canonical}` : undefined;
 
   return (
     <Helmet>
       <title>{fullTitle}</title>
-      <meta name="description" content={description} />
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      <meta name="description" content={effectiveDescription} />
+      {effectiveNoindex && <meta name="robots" content="noindex, nofollow" />}
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
-      <meta property="og:title" content={ogTitle || fullTitle} />
-      <meta property="og:description" content={ogDescription || description} />
-      <meta property="og:type" content={ogType} />
+      <meta property="og:title" content={effectiveOgTitle || fullTitle} />
+      <meta property="og:description" content={effectiveOgDescription || effectiveDescription} />
+      <meta property="og:type" content={effectiveOgType} />
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
-      {ogImage && <meta property="og:image" content={ogImage} />}
+      {effectiveOgImage && <meta property="og:image" content={effectiveOgImage} />}
 
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={ogTitle || fullTitle} />
-      <meta name="twitter:description" content={ogDescription || description} />
-      {ogImage && <meta name="twitter:image" content={ogImage} />}
+      <meta name="twitter:title" content={effectiveOgTitle || fullTitle} />
+      <meta name="twitter:description" content={effectiveOgDescription || effectiveDescription} />
+      {effectiveOgImage && <meta name="twitter:image" content={effectiveOgImage} />}
     </Helmet>
   );
 };
