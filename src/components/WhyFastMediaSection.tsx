@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageSquare, Inbox, CalendarCheck, Search, Target, Clock, Bot, BarChart3, Zap } from 'lucide-react';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const WhyFastMediaSection = () => {
   const { language } = useLanguage();
+  const { getContent, invalidate } = useSiteContent();
 
   const advantages = [
     {
@@ -70,16 +73,27 @@ const WhyFastMediaSection = () => {
           <span className="text-accent font-semibold text-sm uppercase tracking-wider">
             {language === 'cs' ? 'Proč FastMedia.Pro' : language === 'en' ? 'Why FastMedia.Pro' : 'Warum FastMedia.Pro'}
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-            {language === 'cs' ? 'Co získáte s FastMedia.Pro' : language === 'en' ? 'What You Gain With FastMedia.Pro' : 'Was Sie mit FastMedia.Pro gewinnen'}
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            {language === 'cs' 
+          <EditableText
+            contentKey="whyfastmedia.title"
+            defaultValue={language === 'cs' ? 'Co získáte s FastMedia.Pro' : language === 'en' ? 'What You Gain With FastMedia.Pro' : 'Was Sie mit FastMedia.Pro gewinnen'}
+            value={getContent('whyfastmedia.title', '') || undefined}
+            onSave={invalidate}
+            as="h2"
+            className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4"
+          />
+          <EditableText
+            contentKey="whyfastmedia.subtitle"
+            defaultValue={language === 'cs' 
               ? 'Většina webů vypadá dobře, ale dělá velmi málo. Naše weby jsou navrženy podle toho, jak zákazníci skutečně hledají, procházejí a rozhodují se.'
               : language === 'en'
               ? 'Most websites look good but do very little. Our websites are built after analyzing how real customers search, scroll, hesitate, and decide.'
               : 'Die meisten Websites sehen gut aus, leisten aber sehr wenig. Unsere Websites basieren auf der Analyse, wie echte Kunden suchen, scrollen und entscheiden.'}
-          </p>
+            value={getContent('whyfastmedia.subtitle', '') || undefined}
+            onSave={invalidate}
+            as="p"
+            className="text-muted-foreground text-lg"
+            multiline
+          />
         </motion.div>
 
         <div className="space-y-8">

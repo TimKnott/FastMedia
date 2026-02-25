@@ -3,6 +3,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Check, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 interface PricingTier {
   nameKey: string;
@@ -23,6 +25,7 @@ const tiers: PricingTier[] = [
 const PricingSection = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { getContent, invalidate } = useSiteContent();
 
   const scrollToBooking = () => {
     document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
@@ -41,12 +44,22 @@ const PricingSection = () => {
           <span className="text-accent font-semibold text-sm uppercase tracking-wider">
             {t('pricing.label')}
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-            {t('pricing.title')}
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            {t('pricing.subtitle')}
-          </p>
+          <EditableText
+            contentKey="pricing.title"
+            defaultValue={t('pricing.title')}
+            value={getContent('pricing.title', '') || undefined}
+            onSave={invalidate}
+            as="h2"
+            className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4"
+          />
+          <EditableText
+            contentKey="pricing.subtitle"
+            defaultValue={t('pricing.subtitle')}
+            value={getContent('pricing.subtitle', '') || undefined}
+            onSave={invalidate}
+            as="p"
+            className="text-muted-foreground text-lg"
+          />
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">

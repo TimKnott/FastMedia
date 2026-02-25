@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageSquare, UserCheck, PhoneOff, Shield, MousePointerClick, Inbox, Target, TrendingUp } from 'lucide-react';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const WhyThisWebsiteWorks = () => {
   const { language } = useLanguage();
+  const { getContent, invalidate } = useSiteContent();
 
   const bullets = [
     { icon: MessageSquare, text: { cs: 'Odpovídá zákazníkům okamžitě', en: 'Answers customer questions instantly', de: 'Beantwortet Kundenfragen sofort' } },
@@ -29,9 +32,14 @@ const WhyThisWebsiteWorks = () => {
               <TrendingUp className="w-4 h-4" />
               FastMedia.Pro
             </div>
-            <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground">
-              {language === 'cs' ? 'Proč tento web funguje' : language === 'en' ? 'Why This Website Works' : 'Warum diese Website funktioniert'}
-            </h2>
+            <EditableText
+              contentKey="whythisworks.title"
+              defaultValue={language === 'cs' ? 'Proč tento web funguje' : language === 'en' ? 'Why This Website Works' : 'Warum diese Website funktioniert'}
+              value={getContent('whythisworks.title', '') || undefined}
+              onSave={invalidate}
+              as="h2"
+              className="text-3xl sm:text-4xl font-display font-bold text-foreground"
+            />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4 mb-8">

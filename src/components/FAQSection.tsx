@@ -5,9 +5,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const FAQSection = () => {
   const { t } = useLanguage();
+  const { getContent, invalidate } = useSiteContent();
 
   const faqKeys = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
@@ -18,12 +21,22 @@ const FAQSection = () => {
           <span className="text-sm font-semibold tracking-widest uppercase text-primary">
             {t('faq.label')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-2 text-foreground">
-            {t('faq.title')}
-          </h2>
-          <p className="text-muted-foreground mt-4 text-lg">
-            {t('faq.subtitle')}
-          </p>
+          <EditableText
+            contentKey="faq.title"
+            defaultValue={t('faq.title')}
+            value={getContent('faq.title', '') || undefined}
+            onSave={invalidate}
+            as="h2"
+            className="text-3xl md:text-4xl font-bold mt-2 text-foreground"
+          />
+          <EditableText
+            contentKey="faq.subtitle"
+            defaultValue={t('faq.subtitle')}
+            value={getContent('faq.subtitle', '') || undefined}
+            onSave={invalidate}
+            as="p"
+            className="text-muted-foreground mt-4 text-lg"
+          />
         </div>
 
         <Accordion type="single" collapsible className="w-full space-y-3">
@@ -34,10 +47,24 @@ const FAQSection = () => {
               className="bg-card border border-border rounded-lg px-6 data-[state=open]:shadow-md transition-shadow"
             >
               <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5">
-                {t(`faq.q${key}`)}
+                <EditableText
+                  contentKey={`faq.q${key}`}
+                  defaultValue={t(`faq.q${key}`)}
+                  value={getContent(`faq.q${key}`, '') || undefined}
+                  onSave={invalidate}
+                  as="span"
+                  className="text-left"
+                />
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground pb-5">
-                {t(`faq.a${key}`)}
+                <EditableText
+                  contentKey={`faq.a${key}`}
+                  defaultValue={t(`faq.a${key}`)}
+                  value={getContent(`faq.a${key}`, '') || undefined}
+                  onSave={invalidate}
+                  as="span"
+                  multiline
+                />
               </AccordionContent>
             </AccordionItem>
           ))}
