@@ -24,10 +24,10 @@ export const translations: Translations = {
   'nav.calculator': { cs: 'Kalkulačka', en: 'Calculator', de: 'Kalkulator' },
 
   // Hero
-  'hero.title': { cs: 'Profesionální weby pro řemeslníky', en: 'Professional Websites for Tradespeople', de: 'Professionelle Websites für Handwerker' },
-  'hero.subtitle': { cs: 'Získejte moderní webové stránky pro vaše podnikání během několika dní. Bez starostí, bez technických znalostí.', en: 'Get a modern website for your business in days. No hassle, no technical knowledge required.', de: 'Erhalten Sie in wenigen Tagen eine moderne Website für Ihr Unternehmen. Ohne Aufwand, ohne technische Kenntnisse.' },
-  'hero.cta': { cs: 'Prohlédnout ukázky', en: 'Browse Demos', de: 'Demos ansehen' },
-  'hero.cta2': { cs: 'Objednat konzultaci', en: 'Book Consultation', de: 'Beratung buchen' },
+  'hero.title': { cs: 'Weby, které pracují za vás — 24/7', en: 'Websites That Do the Work For You — 24/7', de: 'Websites, die für Sie arbeiten — 24/7' },
+  'hero.subtitle': { cs: 'FastMedia.Pro buduje konverzní weby, které odpovídají zákazníkům, sbírají poptávky, rezervují zakázky a sjednocují komunikaci na jednom místě.', en: 'FastMedia.Pro builds conversion-focused websites that answer customer questions, capture leads, book jobs, and unify all communication in one place.', de: 'FastMedia.Pro erstellt konversionsorientierte Websites, die Kundenfragen beantworten, Leads erfassen, Aufträge buchen und alle Kommunikation vereinen.' },
+  'hero.cta': { cs: 'Bezplatná strategická konzultace', en: 'Book a Free Strategy Call', de: 'Kostenlose Strategieberatung buchen' },
+  'hero.cta2': { cs: 'Prohlédnout ukázky oborů', en: 'View Industry Demos', de: 'Branchendemos ansehen' },
 
   // Services Section
   'services.title': { cs: 'Pro všechny řemeslníky', en: 'For All Tradespeople', de: 'Für alle Handwerker' },
@@ -145,6 +145,14 @@ export const translations: Translations = {
   'trade.cleaning': { cs: 'Úklidové služby', en: 'Cleaning Services', de: 'Reinigungsdienste' },
   'trade.locksmith': { cs: 'Zámečnictví', en: 'Locksmith', de: 'Schlosserei' },
   'trade.carpentry': { cs: 'Truhlářství', en: 'Carpentry', de: 'Tischlerei' },
+  'trade.autorepair': { cs: 'Autoservis', en: 'Auto Repair', de: 'Autowerkstatt' },
+  'trade.pestcontrol': { cs: 'Deratizace', en: 'Pest Control', de: 'Schädlingsbekämpfung' },
+  'trade.photography': { cs: 'Fotografie', en: 'Photography', de: 'Fotografie' },
+  'trade.catering': { cs: 'Catering', en: 'Catering', de: 'Catering' },
+  'trade.fitness': { cs: 'Fitness', en: 'Fitness', de: 'Fitness' },
+  'trade.beautysalon': { cs: 'Salon krásy', en: 'Beauty Salon', de: 'Schönheitssalon' },
+  'trade.moving': { cs: 'Stěhování', en: 'Moving', de: 'Umzug' },
+  'trade.itservices': { cs: 'IT služby', en: 'IT Services', de: 'IT-Dienste' },
 
   // Calculator Showcase
   'calculator_showcase.label': { cs: 'AI Nástroj', en: 'AI-Powered Tool', de: 'KI-gestütztes Tool' },

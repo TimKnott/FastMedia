@@ -24,4 +24,12 @@ export const trades: Trade[] = [
   { id: 'cleaning', nameKey: 'trade.cleaning', icon: '✨', color: 'from-cyan-400 to-blue-400', gradient: 'bg-gradient-to-br from-cyan-400 to-blue-400', demoPath: '/demo/cleaning' },
   { id: 'locksmith', nameKey: 'trade.locksmith', icon: '🔐', color: 'from-zinc-500 to-gray-600', gradient: 'bg-gradient-to-br from-zinc-500 to-gray-600', demoPath: '/demo/locksmith' },
   { id: 'carpentry', nameKey: 'trade.carpentry', icon: '🪵', color: 'from-amber-600 to-orange-700', gradient: 'bg-gradient-to-br from-amber-600 to-orange-700', demoPath: '/demo/carpentry' },
+  { id: 'autorepair', nameKey: 'trade.autorepair', icon: '🔩', color: 'from-red-500 to-orange-600', gradient: 'bg-gradient-to-br from-red-500 to-orange-600', demoPath: '/demo/autorepair' },
+  { id: 'pestcontrol', nameKey: 'trade.pestcontrol', icon: '🐛', color: 'from-green-600 to-emerald-500', gradient: 'bg-gradient-to-br from-green-600 to-emerald-500', demoPath: '/demo/pestcontrol' },
+  { id: 'photography', nameKey: 'trade.photography', icon: '📷', color: 'from-purple-500 to-pink-500', gradient: 'bg-gradient-to-br from-purple-500 to-pink-500', demoPath: '/demo/photography' },
+  { id: 'catering', nameKey: 'trade.catering', icon: '🍽️', color: 'from-amber-500 to-orange-500', gradient: 'bg-gradient-to-br from-amber-500 to-orange-500', demoPath: '/demo/catering' },
+  { id: 'fitness', nameKey: 'trade.fitness', icon: '💪', color: 'from-violet-500 to-indigo-600', gradient: 'bg-gradient-to-br from-violet-500 to-indigo-600', demoPath: '/demo/fitness' },
+  { id: 'beautysalon', nameKey: 'trade.beautysalon', icon: '💅', color: 'from-pink-500 to-rose-400', gradient: 'bg-gradient-to-br from-pink-500 to-rose-400', demoPath: '/demo/beautysalon' },
+  { id: 'moving', nameKey: 'trade.moving', icon: '🚚', color: 'from-cyan-600 to-teal-500', gradient: 'bg-gradient-to-br from-cyan-600 to-teal-500', demoPath: '/demo/moving' },
+  { id: 'itservices', nameKey: 'trade.itservices', icon: '💻', color: 'from-blue-500 to-indigo-600', gradient: 'bg-gradient-to-br from-blue-500 to-indigo-600', demoPath: '/demo/itservices' },
 ];
