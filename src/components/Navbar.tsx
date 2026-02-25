@@ -21,6 +21,7 @@ const Navbar = () => {
     { href: '/consultant/jitka', label: t('nav.consultant'), isRoute: true },
     { href: '/calculator', label: t('nav.calculator'), isRoute: true },
     { href: '#contact', label: t('nav.contact') },
+    { href: '/admin/login', label: t('nav.admin'), isRoute: true },
   ];
 
   return (

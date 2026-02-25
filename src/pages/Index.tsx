@@ -13,24 +13,33 @@ import CalculatorShowcase from '@/components/CalculatorShowcase';
 import BookingSection from '@/components/BookingSection';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
+import SEOHead from '@/components/SEOHead';
 
 const Index = () => {
   return (
     <LanguageProvider>
+      <SEOHead
+        title="FastMedia.Pro — Profesionální weby pro řemeslníky a služby"
+        description="FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI chatbot, online rezervace, sběr poptávek. 24 oborových šablon, dodání do 10 dní."
+        canonical="/"
+        ogType="website"
+      />
       <div className="min-h-screen">
         <Navbar />
         <ScrollToTop />
-        <HeroSection />
-        <WhyFastMediaSection />
-        <AutomationSection />
-        <DemosSection />
-        <CalculatorShowcase />
-        <ServicesSection />
-        <ReviewsSection />
-        <PricingSection />
-        <FAQSection />
-        <ConsultantSection />
-        <BookingSection />
+        <main>
+          <HeroSection />
+          <WhyFastMediaSection />
+          <AutomationSection />
+          <DemosSection />
+          <CalculatorShowcase />
+          <ServicesSection />
+          <ReviewsSection />
+          <PricingSection />
+          <FAQSection />
+          <ConsultantSection />
+          <BookingSection />
+        </main>
         <Footer />
       </div>
     </LanguageProvider>
