@@ -14,6 +14,7 @@ import BookingSection from '@/components/BookingSection';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import SEOHead from '@/components/SEOHead';
+import HomeJsonLd from '@/components/HomeJsonLd';
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
         canonical="/"
         ogType="website"
       />
+      <HomeJsonLd />
       <div className="min-h-screen">
         <Navbar />
         <ScrollToTop />
