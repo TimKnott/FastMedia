@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import logo from '@/assets/logo.jpeg';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -26,9 +27,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 gradient-accent rounded-lg flex items-center justify-center">
-                <span className="text-accent-foreground font-bold text-sm">F</span>
-              </div>
+              <img src={logo} alt="FastMedia.Pro" className="w-8 h-8 rounded-lg object-cover" />
               <span className="font-display font-bold text-lg">
                 Fast<span className="text-accent">Media</span>.Pro
               </span>
