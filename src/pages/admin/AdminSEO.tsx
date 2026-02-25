@@ -13,7 +13,8 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Sparkles, Save, Globe, AlertTriangle, CheckCircle, Loader2, Lightbulb } from 'lucide-react';
+import { Search, Sparkles, Save, Globe, AlertTriangle, CheckCircle, Loader2, Lightbulb, Zap } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 import SEOHead from '@/components/SEOHead';
 
 interface PageSeoRow {
@@ -76,6 +77,8 @@ const AdminSEO = () => {
   const [search, setSearch] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiTips, setAiTips] = useState<string[]>([]);
+  const [bulkRunning, setBulkRunning] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0, errors: 0 });
 
   const { data: seoRows = [], isLoading } = useQuery({
     queryKey: ['page_seo', language],
@@ -171,6 +174,72 @@ const AdminSEO = () => {
     }
   };
 
+  const handleBulkGenerate = async () => {
+    const incomplete = indexablePages.filter((p) => getStatus(p.path) !== 'complete');
+    if (incomplete.length === 0) {
+      toast.info('Všechny stránky už mají kompletní SEO');
+      return;
+    }
+
+    setBulkRunning(true);
+    setBulkProgress({ done: 0, total: incomplete.length, errors: 0 });
+
+    let errors = 0;
+    for (let i = 0; i < incomplete.length; i++) {
+      const page = incomplete[i];
+      try {
+        const existing = seoMap.get(page.path);
+        const { data, error } = await supabase.functions.invoke('seo-ai', {
+          body: {
+            pagePath: page.path,
+            pageLabel: page.label,
+            currentTitle: existing?.title ?? '',
+            currentDescription: existing?.description ?? '',
+            language,
+          },
+        });
+        if (error) throw error;
+        if (data.error) throw new Error(data.error);
+
+        const { error: saveError } = await supabase.from('page_seo').upsert(
+          {
+            page_path: page.path,
+            language,
+            title: data.title || existing?.title || null,
+            description: data.description || existing?.description || null,
+            og_title: data.og_title || existing?.og_title || null,
+            og_description: data.og_description || existing?.og_description || null,
+            og_image: existing?.og_image || null,
+            og_type: existing?.og_type || 'website',
+            noindex: existing?.noindex ?? false,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'page_path,language' }
+        );
+        if (saveError) throw saveError;
+      } catch (e: any) {
+        console.error(`Bulk SEO error for ${page.path}:`, e);
+        errors++;
+      }
+      setBulkProgress({ done: i + 1, total: incomplete.length, errors });
+
+      // Rate limit delay
+      if (i < incomplete.length - 1) {
+        await new Promise((r) => setTimeout(r, 1500));
+      }
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['page_seo'] });
+    invalidatePageSeoCache();
+    setBulkRunning(false);
+
+    if (errors === 0) {
+      toast.success(`AI vygeneroval SEO pro ${incomplete.length} stránek`);
+    } else {
+      toast.warning(`Dokončeno s ${errors} chybami z ${incomplete.length} stránek`);
+    }
+  };
+
   const filtered = indexablePages.filter(
     (p) =>
       p.label.toLowerCase().includes(search.toLowerCase()) ||
@@ -207,20 +276,45 @@ const AdminSEO = () => {
             Spravujte meta tagy, OG značky a indexování pro každou stránku
           </p>
         </div>
-        <Select value={language} onValueChange={setLanguage}>
-          <SelectTrigger className="w-32">
-            <Globe className="w-4 h-4 mr-2" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {LANGUAGES.map((l) => (
-              <SelectItem key={l.value} value={l.value}>
-                {l.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleBulkGenerate}
+            disabled={bulkRunning || isLoading}
+          >
+            {bulkRunning ? (
+              <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+            ) : (
+              <Zap className="w-4 h-4 mr-1" />
+            )}
+            {bulkRunning ? `${bulkProgress.done}/${bulkProgress.total}` : 'AI bulk'}
+          </Button>
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger className="w-32">
+              <Globe className="w-4 h-4 mr-2" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {LANGUAGES.map((l) => (
+                <SelectItem key={l.value} value={l.value}>
+                  {l.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
+
+      {bulkRunning && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>Generuji SEO pro {bulkProgress.total} stránek…</span>
+            <span>{Math.round((bulkProgress.done / bulkProgress.total) * 100)}%{bulkProgress.errors > 0 && ` (${bulkProgress.errors} chyb)`}</span>
+          </div>
+          <Progress value={(bulkProgress.done / bulkProgress.total) * 100} />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Page list */}
