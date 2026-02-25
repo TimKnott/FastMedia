@@ -7,7 +7,8 @@ import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award,
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import Footer from '@/components/Footer';
-import { getTradeImage } from '@/data/tradeImages';
+import { getTradeImage, getTradeGalleryImages } from '@/data/tradeImages';
+import { tradeGalleryDescriptions } from '@/data/tradeGalleryImages';
 
 interface DemoLayoutProps {
   tradeName: string;
@@ -62,14 +63,12 @@ const DemoLayout = ({
     { name: 'Lucie Dvořáková', location: 'Plzeň', text: { cs: 'Rychlí, spolehliví a čistá práce. Určitě využiji znovu.', en: 'Fast, reliable and clean work. Will definitely use again.', de: 'Schnell, zuverlässig und saubere Arbeit. Werde definitiv wieder nutzen.' }, rating: 5, date: '2023-12-28' },
   ];
 
-  const galleryImages = [
-    { title: { cs: 'Projekt 1', en: 'Project 1', de: 'Projekt 1' } },
-    { title: { cs: 'Projekt 2', en: 'Project 2', de: 'Projekt 2' } },
-    { title: { cs: 'Projekt 3', en: 'Project 3', de: 'Projekt 3' } },
-    { title: { cs: 'Projekt 4', en: 'Project 4', de: 'Projekt 4' } },
-    { title: { cs: 'Projekt 5', en: 'Project 5', de: 'Projekt 5' } },
-    { title: { cs: 'Projekt 6', en: 'Project 6', de: 'Projekt 6' } },
-  ];
+  const tradeGalleryImgs = getTradeGalleryImages(tradeId);
+  const tradeGalleryData = tradeGalleryDescriptions[tradeId];
+  const galleryImages = tradeGalleryImgs.map((src, i) => ({
+    src,
+    title: tradeGalleryData?.galleryTitles?.[i] || { cs: `Projekt ${i + 1}`, en: `Project ${i + 1}`, de: `Projekt ${i + 1}` },
+  }));
 
   const workingHours = [
     { day: { cs: 'Pondělí - Pátek', en: 'Monday - Friday', de: 'Montag - Freitag' }, hours: '8:00 - 18:00' },
@@ -416,9 +415,9 @@ const DemoLayout = ({
                 className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
               >
                 <img 
-                  src={heroImage}
-                  alt={image.title[language]}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                   src={image.src}
+                   alt={image.title[language]}
+                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                   <div className="text-primary-foreground">
