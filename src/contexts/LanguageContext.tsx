@@ -177,7 +177,15 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('cs');
+  const [language, setLanguage] = useState<Language>(() => {
+    const saved = localStorage.getItem('fastmedia-language');
+    return (saved === 'cs' || saved === 'en' || saved === 'de') ? saved : 'cs';
+  });
+
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem('fastmedia-language', lang);
+  };
 
   const t = (key: string): string => {
     const translation = translations[key];
@@ -186,7 +194,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
