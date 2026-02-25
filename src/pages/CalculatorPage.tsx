@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -399,7 +400,11 @@ const CalculatorPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navbar */}
+      <SEOHead
+        title={l.title}
+        description={l.subtitle}
+        canonical="/calculator"
+      />
       <Navbar />
 
       {/* Header */}

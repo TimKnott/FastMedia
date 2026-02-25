@@ -12,6 +12,7 @@ import BlogSidebar, { type TocItem } from '@/components/blog/BlogSidebar';
 import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
 
 type Language = 'cs' | 'en' | 'de';
 
@@ -115,6 +116,26 @@ const BlogArticle = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={post.title[language]}
+        description={post.excerpt[language]}
+        canonical={`/blog/${post.slug}`}
+        ogType="article"
+        ogImage={typeof post.image === 'string' ? post.image : undefined}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: post.title[language],
+          description: post.excerpt[language],
+          image: post.image,
+          datePublished: post.date,
+          author: { '@type': 'Person', name: post.author },
+          publisher: { '@type': 'Organization', name: 'FastMedia.Pro' },
+        }) }}
+      />
       {/* Reading progress bar */}
       <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-muted/30">
         <motion.div
