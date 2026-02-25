@@ -5,11 +5,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Phone, Star, MessageCircle } from 'lucide-react';
 import jitkaPhoto from '@/assets/team/jitka-listanska.jpg';
 import EditableText from '@/components/EditableText';
+import EditableImage from '@/components/EditableImage';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { useImageContent } from '@/hooks/useImageContent';
 
 const ConsultantSection = () => {
   const { t } = useLanguage();
   const { getContent, invalidate } = useSiteContent();
+  const { getImageUrl, invalidateImage } = useImageContent();
 
   return (
     <section className="py-20 lg:py-32 bg-muted/30 overflow-hidden">
@@ -51,7 +54,14 @@ const ConsultantSection = () => {
         >
           <div className="bg-card rounded-3xl shadow-card overflow-hidden flex flex-col md:flex-row">
             <div className="md:w-2/5 relative">
-              <img src={jitkaPhoto} alt="Jitka Líšťanská – FastMedia.Pro Consultant" className="w-full h-64 md:h-full object-cover" />
+              <EditableImage
+                contentKey="consultant.photo"
+                defaultSrc={jitkaPhoto}
+                overrideSrc={getImageUrl('consultant.photo')}
+                onSave={invalidateImage}
+                alt="Jitka Líšťanská – FastMedia.Pro Consultant"
+                className="w-full h-64 md:h-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:bg-gradient-to-r md:from-transparent md:to-transparent" />
             </div>
             <div className="md:w-3/5 p-8 lg:p-10 flex flex-col justify-center">
