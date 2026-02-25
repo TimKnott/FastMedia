@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import logo from '@/assets/logo.jpeg';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const Footer = () => {
   const { t } = useLanguage();
+  const { getContent, invalidate } = useSiteContent();
 
   const siteLinks = [
     { href: '/#demos', label: t('nav.demos') },
@@ -32,9 +35,15 @@ const Footer = () => {
                 Fast<span className="text-accent">Media</span>.Pro
               </span>
             </Link>
-            <p className="text-sm text-background/60 leading-relaxed">
-              {t('hero.subtitle')}
-            </p>
+            <EditableText
+              contentKey="footer.tagline"
+              defaultValue={t('hero.subtitle')}
+              value={getContent('footer.tagline', '') || undefined}
+              onSave={invalidate}
+              as="p"
+              className="text-sm text-background/60 leading-relaxed"
+              multiline
+            />
           </div>
 
           {/* Site Navigation */}

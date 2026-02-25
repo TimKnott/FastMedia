@@ -2,9 +2,12 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { reviews } from '@/data/reviews';
 import { Star } from 'lucide-react';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const ReviewsSection = () => {
   const { t, language } = useLanguage();
+  const { getContent, invalidate } = useSiteContent();
 
   return (
     <section id="reviews" className="py-20 lg:py-32 bg-background overflow-hidden">
@@ -18,12 +21,22 @@ const ReviewsSection = () => {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <span className="text-accent font-semibold text-sm uppercase tracking-wider">Reviews</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-            {t('reviews.title')}
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            {t('reviews.subtitle')}
-          </p>
+          <EditableText
+            contentKey="reviews.title"
+            defaultValue={t('reviews.title')}
+            value={getContent('reviews.title', '') || undefined}
+            onSave={invalidate}
+            as="h2"
+            className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4"
+          />
+          <EditableText
+            contentKey="reviews.subtitle"
+            defaultValue={t('reviews.subtitle')}
+            value={getContent('reviews.subtitle', '') || undefined}
+            onSave={invalidate}
+            as="p"
+            className="text-muted-foreground text-lg"
+          />
         </motion.div>
 
         {/* Reviews Grid - Masonry Style */}
@@ -37,7 +50,6 @@ const ReviewsSection = () => {
               transition={{ duration: 0.5, delay: (index % 6) * 0.1 }}
               className="break-inside-avoid bg-card rounded-2xl p-6 shadow-card hover:shadow-lg transition-shadow"
             >
-              {/* Stars */}
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -46,13 +58,9 @@ const ReviewsSection = () => {
                   />
                 ))}
               </div>
-
-              {/* Review Text */}
               <p className="text-foreground mb-4 leading-relaxed">
                 "{review.text[language]}"
               </p>
-
-              {/* Author */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-semibold text-sm">
                   {review.avatar}

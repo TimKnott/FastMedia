@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Bot, MessageSquareText, CalendarCheck, Filter, Route, Clock, DollarSign, Brain } from 'lucide-react';
+import EditableText from '@/components/EditableText';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const AutomationSection = () => {
   const { language } = useLanguage();
+  const { getContent, invalidate } = useSiteContent();
 
   const tasks = [
     { icon: MessageSquareText, text: { cs: 'Odpovídá na dotazy', en: 'Answers questions', de: 'Beantwortet Fragen' } },
@@ -31,16 +34,27 @@ const AutomationSection = () => {
             <span className="text-accent font-semibold text-sm uppercase tracking-wider">
               {language === 'cs' ? 'Automatizace' : language === 'en' ? 'Automation' : 'Automatisierung'}
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-6">
-              {language === 'cs' ? 'Ušetřete čas. Ušetřete peníze. Snižte stres.' : language === 'en' ? 'Save Time. Save Money. Reduce Stress.' : 'Zeit sparen. Geld sparen. Stress reduzieren.'}
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8">
-              {language === 'cs'
+            <EditableText
+              contentKey="automation.title"
+              defaultValue={language === 'cs' ? 'Ušetřete čas. Ušetřete peníze. Snižte stres.' : language === 'en' ? 'Save Time. Save Money. Reduce Stress.' : 'Zeit sparen. Geld sparen. Stress reduzieren.'}
+              value={getContent('automation.title', '') || undefined}
+              onSave={invalidate}
+              as="h2"
+              className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-6"
+            />
+            <EditableText
+              contentKey="automation.subtitle"
+              defaultValue={language === 'cs'
                 ? 'Weby od FastMedia.Pro fungují jako digitální zaměstnanec. Pracují za vás, zatímco vy děláte to, co umíte nejlépe.'
                 : language === 'en'
                 ? 'FastMedia.Pro websites act like a digital employee. They work for you while you do what you do best.'
                 : 'FastMedia.Pro-Websites fungieren wie ein digitaler Mitarbeiter. Sie arbeiten für Sie, während Sie das tun, was Sie am besten können.'}
-            </p>
+              value={getContent('automation.subtitle', '') || undefined}
+              onSave={invalidate}
+              as="p"
+              className="text-muted-foreground text-lg mb-8"
+              multiline
+            />
             <div className="space-y-3">
               {tasks.map((task, i) => (
                 <motion.div
