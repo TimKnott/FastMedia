@@ -57,9 +57,9 @@ const HeroSection = () => {
   const { t, language } = useLanguage();
 
   const stats = [
-    { icon: Monitor, value: '16+', label: { cs: 'Ukázkových webů', en: 'Demo Websites', de: 'Demo-Websites' } },
+    { icon: Monitor, value: '24+', label: { cs: 'Oborových šablon', en: 'Industry Templates', de: 'Branchenvorlagen' } },
     { icon: Users, value: '500+', label: { cs: 'Spokojených klientů', en: 'Happy Clients', de: 'Zufriedene Kunden' } },
-    { icon: Sparkles, value: '99%', label: { cs: 'Spokojenost', en: 'Satisfaction', de: 'Zufriedenheit' } },
+    { icon: Sparkles, value: '70%', label: { cs: 'Dotazů vyřízeno automaticky', en: 'Questions Handled Automatically', de: 'Fragen automatisch beantwortet' } },
   ];
 
   return (
@@ -123,13 +123,13 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
           >
-            <a href="#demos">
+            <a href="#contact">
               <Button size="lg" className="gradient-accent text-accent-foreground font-semibold text-lg px-8 py-6 shadow-glow hover:opacity-90 transition-all group">
                 {t('hero.cta')}
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </a>
-            <a href="#contact">
+            <a href="#demos">
               <Button size="lg" className="bg-transparent border-2 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8 py-6">
                 {t('hero.cta2')}
               </Button>

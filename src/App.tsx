@@ -39,6 +39,14 @@ import GardeningDemo from "./pages/demos/GardeningDemo";
 import CleaningDemo from "./pages/demos/CleaningDemo";
 import LocksmithDemo from "./pages/demos/LocksmithDemo";
 import CarpentryDemo from "./pages/demos/CarpentryDemo";
+import AutoRepairDemo from "./pages/demos/AutoRepairDemo";
+import PestControlDemo from "./pages/demos/PestControlDemo";
+import PhotographyDemo from "./pages/demos/PhotographyDemo";
+import CateringDemo from "./pages/demos/CateringDemo";
+import FitnessDemo from "./pages/demos/FitnessDemo";
+import BeautySalonDemo from "./pages/demos/BeautySalonDemo";
+import MovingDemo from "./pages/demos/MovingDemo";
+import ITServicesDemo from "./pages/demos/ITServicesDemo";
 import ConsultantJitka from "./pages/ConsultantJitka";
 import CalculatorPage from "./pages/CalculatorPage";
 
@@ -71,6 +79,14 @@ const App = () => (
             <Route path="/demo/cleaning" element={<CleaningDemo />} />
             <Route path="/demo/locksmith" element={<LocksmithDemo />} />
             <Route path="/demo/carpentry" element={<CarpentryDemo />} />
+            <Route path="/demo/autorepair" element={<AutoRepairDemo />} />
+            <Route path="/demo/pestcontrol" element={<PestControlDemo />} />
+            <Route path="/demo/photography" element={<PhotographyDemo />} />
+            <Route path="/demo/catering" element={<CateringDemo />} />
+            <Route path="/demo/fitness" element={<FitnessDemo />} />
+            <Route path="/demo/beautysalon" element={<BeautySalonDemo />} />
+            <Route path="/demo/moving" element={<MovingDemo />} />
+            <Route path="/demo/itservices" element={<ITServicesDemo />} />
             <Route path="/consultant/jitka" element={<ConsultantJitka />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             {/* Admin routes */}

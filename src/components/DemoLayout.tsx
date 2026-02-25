@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, Menu, X } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import Footer from '@/components/Footer';
 import { getTradeImage } from '@/data/tradeImages';
 
@@ -495,6 +496,9 @@ const DemoLayout = ({
           </div>
         </div>
       </section>
+
+      {/* Why This Website Works */}
+      <WhyThisWebsiteWorks />
 
       {/* CTA Section */}
       <section className={`py-16 lg:py-24 ${gradientClass} relative overflow-hidden`}>
