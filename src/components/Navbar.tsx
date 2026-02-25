@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import logo from '@/assets/logo.jpeg';
 
 const Navbar = () => {
   const { t } = useLanguage();
@@ -33,9 +34,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 lg:h-[72px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group mr-8 lg:mr-12 shrink-0">
-            <div className="w-10 h-10 gradient-accent rounded-lg flex items-center justify-center shadow-glow transition-transform group-hover:scale-110">
-              <span className="text-accent-foreground font-bold text-lg">F</span>
-            </div>
+            <img src={logo} alt="FastMedia.Pro" className="w-10 h-10 rounded-lg object-cover shadow-glow" />
             <span className="font-display font-bold text-xl text-foreground">
               Fast<span className="text-accent">Media</span>.Pro
             </span>
