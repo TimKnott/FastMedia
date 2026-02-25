@@ -398,6 +398,7 @@ export type Database = {
           content_key: string
           id: string
           language: string
+          status: string
           updated_at: string
           updated_by: string | null
           value: string
@@ -406,6 +407,7 @@ export type Database = {
           content_key: string
           id?: string
           language?: string
+          status?: string
           updated_at?: string
           updated_by?: string | null
           value: string
@@ -414,6 +416,7 @@ export type Database = {
           content_key?: string
           id?: string
           language?: string
+          status?: string
           updated_at?: string
           updated_by?: string | null
           value?: string
