@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, Star, Search, X, Plus, Minus, Trash2, ChevronRight, Package, CreditCard, Truck, Shield, BarChart3, Users, Settings, FileText, Menu, Tag, Heart } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Star, Search, X, Plus, Minus, Trash2, ChevronRight, Package, CreditCard, Truck, Shield, BarChart3, Users, Settings, FileText, Menu, Tag, Heart, ArrowUpDown, ChevronDown } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import Footer from '@/components/Footer';
@@ -26,16 +26,36 @@ const EshopDemo = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'rating' | 'newest'>('default');
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+
+  const toggleWishlist = (productId: string) => {
+    setWishlist(prev => {
+      const next = new Set(prev);
+      if (next.has(productId)) next.delete(productId);
+      else next.add(productId);
+      return next;
+    });
+  };
 
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    let filtered = products.filter(p => {
       const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
       const matchSearch = searchQuery === '' ||
         p.name[language].toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description[language].toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
     });
-  }, [selectedCategory, searchQuery, language]);
+
+    switch (sortBy) {
+      case 'price-asc': return [...filtered].sort((a, b) => a.price - b.price);
+      case 'price-desc': return [...filtered].sort((a, b) => b.price - a.price);
+      case 'rating': return [...filtered].sort((a, b) => b.rating - a.rating);
+      case 'newest': return [...filtered].sort((a, b) => parseInt(b.id.slice(1)) - parseInt(a.id.slice(1)));
+      default: return filtered;
+    }
+  }, [selectedCategory, searchQuery, language, sortBy]);
 
   const cartTotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -120,6 +140,15 @@ const EshopDemo = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Wishlist button */}
+            <button className="relative p-2 text-foreground hover:text-primary transition-colors">
+              <Heart className={`w-6 h-6 ${wishlist.size > 0 ? 'fill-destructive text-destructive' : ''}`} />
+              {wishlist.size > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-bold">
+                  {wishlist.size}
+                </span>
+              )}
+            </button>
             <button onClick={() => setCartOpen(true)} className="relative p-2 text-foreground hover:text-primary transition-colors">
               <ShoppingCart className="w-6 h-6" />
               {cartCount > 0 && (
@@ -210,6 +239,45 @@ const EshopDemo = () => {
             <h2 className="text-2xl font-display font-bold text-foreground">
               {language === 'cs' ? `${filteredProducts.length} produktů` : `${filteredProducts.length} products`}
             </h2>
+            {/* Sort dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                className="flex items-center gap-2 px-4 py-2 bg-secondary/50 border border-border rounded-full text-sm font-medium text-foreground hover:bg-secondary transition-colors"
+              >
+                <ArrowUpDown className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {sortBy === 'default' && (language === 'cs' ? 'Řazení' : 'Sort')}
+                  {sortBy === 'price-asc' && (language === 'cs' ? 'Cena ↑' : 'Price ↑')}
+                  {sortBy === 'price-desc' && (language === 'cs' ? 'Cena ↓' : 'Price ↓')}
+                  {sortBy === 'rating' && (language === 'cs' ? 'Hodnocení' : 'Rating')}
+                  {sortBy === 'newest' && (language === 'cs' ? 'Nejnovější' : 'Newest')}
+                </span>
+                <ChevronDown className={`w-3 h-3 transition-transform ${sortDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {sortDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setSortDropdownOpen(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-card rounded-xl shadow-lg border border-border py-1 z-20">
+                    {([
+                      { value: 'default', label: language === 'cs' ? 'Výchozí' : 'Default' },
+                      { value: 'price-asc', label: language === 'cs' ? 'Cena: nejnižší' : 'Price: Low to High' },
+                      { value: 'price-desc', label: language === 'cs' ? 'Cena: nejvyšší' : 'Price: High to Low' },
+                      { value: 'rating', label: language === 'cs' ? 'Nejlépe hodnocené' : 'Top Rated' },
+                      { value: 'newest', label: language === 'cs' ? 'Nejnovější' : 'Newest' },
+                    ] as const).map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => { setSortBy(opt.value); setSortDropdownOpen(false); }}
+                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${sortBy === opt.value ? 'text-primary font-semibold bg-primary/5' : 'text-foreground hover:bg-secondary/50'}`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -237,8 +305,11 @@ const EshopDemo = () => {
                   >
                     <Plus className="w-5 h-5" />
                   </button>
-                  <button className="absolute top-3 right-3 w-8 h-8 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Heart className="w-4 h-4 text-muted-foreground" />
+                  <button
+                    onClick={e => { e.stopPropagation(); toggleWishlist(product.id); }}
+                    className={`absolute top-3 right-3 w-8 h-8 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all ${wishlist.has(product.id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                  >
+                    <Heart className={`w-4 h-4 transition-colors ${wishlist.has(product.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'}`} />
                   </button>
                 </div>
 
