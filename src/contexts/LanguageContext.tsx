@@ -255,6 +255,7 @@ export const translations: Translations = {
   'trade.beautysalon': { cs: 'Salon krásy', en: 'Beauty Salon', de: 'Schönheitssalon' },
   'trade.moving': { cs: 'Stěhování', en: 'Moving', de: 'Umzug' },
   'trade.itservices': { cs: 'IT služby', en: 'IT Services', de: 'IT-Dienste' },
+  'trade.eshop': { cs: 'E-shop', en: 'E-shop', de: 'E-Shop' },
 
   // Calculator Showcase — clear value proposition
   'calculator_showcase.label': { cs: 'AI Nástroj', en: 'AI-Powered Tool', de: 'KI-gestütztes Tool' },
