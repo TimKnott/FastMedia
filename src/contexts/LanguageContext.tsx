@@ -22,6 +22,7 @@ export const translations: Translations = {
   'nav.book': { cs: 'Rezervovat konzultaci', en: 'Book Consultation', de: 'Beratung buchen' },
   'nav.consultant': { cs: 'Konzultantka', en: 'Consultant', de: 'Beraterin' },
   'nav.calculator': { cs: 'Kalkulačka', en: 'Calculator', de: 'Kalkulator' },
+  'nav.install': { cs: 'Instalovat aplikaci', en: 'Install App', de: 'App installieren' },
   'nav.admin': { cs: 'Přihlášení', en: 'Login', de: 'Anmelden' },
 
   // Hero — direct answer in first sentence
