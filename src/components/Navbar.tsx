@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import logo from '@/assets/logo.jpeg';
@@ -72,6 +72,22 @@ const Navbar = () => {
           {/* Right side */}
           <div className="flex items-center gap-4 ml-auto pl-6">
             <LanguageSwitcher />
+
+            {/* Share Button - mobile/tablet only, uses Web Share API */}
+            {'share' in navigator && (
+              <button
+                onClick={() => {
+                  navigator.share({
+                    title: document.title,
+                    url: window.location.href,
+                  }).catch(() => {});
+                }}
+                className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Share"
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+            )}
 
             {/* CTA Button */}
             <a href="#contact" className="hidden sm:block">
