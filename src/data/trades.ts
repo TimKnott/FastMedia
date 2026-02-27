@@ -32,4 +32,5 @@ export const trades: Trade[] = [
   { id: 'beautysalon', nameKey: 'trade.beautysalon', icon: '💅', color: 'from-pink-500 to-rose-400', gradient: 'bg-gradient-to-br from-pink-500 to-rose-400', demoPath: '/demo/beautysalon' },
   { id: 'moving', nameKey: 'trade.moving', icon: '🚚', color: 'from-cyan-600 to-teal-500', gradient: 'bg-gradient-to-br from-cyan-600 to-teal-500', demoPath: '/demo/moving' },
   { id: 'itservices', nameKey: 'trade.itservices', icon: '💻', color: 'from-blue-500 to-indigo-600', gradient: 'bg-gradient-to-br from-blue-500 to-indigo-600', demoPath: '/demo/itservices' },
+  { id: 'eshop', nameKey: 'trade.eshop', icon: '🛍️', color: 'from-violet-600 to-fuchsia-500', gradient: 'bg-gradient-to-br from-violet-600 to-fuchsia-500', demoPath: '/demo/eshop' },
 ];
