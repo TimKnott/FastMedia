@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2 } from 'lucide-react';
+import { Menu, X, Share2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import logo from '@/assets/logo.jpeg';
@@ -11,7 +11,7 @@ const Navbar = () => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
-  const navLinks = [
+  const navLinks: { href: string; label: string; isRoute?: boolean; mobileOnly?: boolean }[] = [
     { href: '#demos', label: t('nav.demos') },
     { href: '#services', label: t('nav.services') },
     { href: '#reviews', label: t('nav.reviews') },
@@ -21,6 +21,7 @@ const Navbar = () => {
     { href: '/consultant/jitka', label: t('nav.consultant'), isRoute: true },
     { href: '/calculator', label: t('nav.calculator'), isRoute: true },
     { href: '#contact', label: t('nav.contact') },
+    { href: '/install', label: t('nav.install'), isRoute: true, mobileOnly: true },
     { href: '/admin/login', label: t('nav.admin'), isRoute: true },
   ];
 
@@ -46,7 +47,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-5">
-            {navLinks.map((link) =>
+            {navLinks.filter(l => !l.mobileOnly).map((link) =>
               link.isRoute ? (
                 <Link
                   key={link.href}
@@ -123,8 +124,9 @@ const Navbar = () => {
                     key={link.href}
                     to={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="block py-2 text-foreground font-medium hover:text-accent transition-colors"
+                    className={`block py-2 font-medium hover:text-accent transition-colors ${link.mobileOnly ? 'text-accent flex items-center gap-2' : 'text-foreground'}`}
                   >
+                    {link.mobileOnly && <Download className="w-4 h-4" />}
                     {link.label}
                   </Link>
                 ) : (
