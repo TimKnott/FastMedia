@@ -29,6 +29,9 @@ const EshopDemo = () => {
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'rating' | 'newest'>('default');
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+  const [wishlistOpen, setWishlistOpen] = useState(false);
+
+  const wishlistProducts = useMemo(() => products.filter(p => wishlist.has(p.id)), [wishlist]);
 
   const toggleWishlist = (productId: string) => {
     setWishlist(prev => {
@@ -141,7 +144,7 @@ const EshopDemo = () => {
 
           <div className="flex items-center gap-3">
             {/* Wishlist button */}
-            <button className="relative p-2 text-foreground hover:text-primary transition-colors">
+            <button onClick={() => setWishlistOpen(true)} className="relative p-2 text-foreground hover:text-primary transition-colors">
               <Heart className={`w-6 h-6 ${wishlist.size > 0 ? 'fill-destructive text-destructive' : ''}`} />
               {wishlist.size > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-bold">
@@ -436,6 +439,101 @@ const EshopDemo = () => {
                   </div>
                 </div>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Wishlist Drawer */}
+      <AnimatePresence>
+        {wishlistOpen && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] bg-foreground/50" onClick={() => setWishlistOpen(false)}>
+            <motion.div
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-card shadow-2xl flex flex-col"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-6 border-b border-border">
+                <h2 className="font-display font-bold text-xl text-foreground">
+                  <Heart className="w-5 h-5 inline-block mr-2 fill-destructive text-destructive" />
+                  {language === 'cs' ? 'Oblíbené' : language === 'en' ? 'Wishlist' : 'Wunschliste'} ({wishlist.size})
+                </h2>
+                <button onClick={() => setWishlistOpen(false)} className="p-2 text-muted-foreground hover:text-foreground">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                {wishlistProducts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Heart className="w-16 h-16 mx-auto text-muted-foreground/30 mb-4" />
+                    <p className="text-muted-foreground">{language === 'cs' ? 'Zatím nemáte žádné oblíbené produkty' : language === 'en' ? 'No wishlist items yet' : 'Noch keine Wunschlisten-Artikel'}</p>
+                    <p className="text-sm text-muted-foreground/60 mt-1">{language === 'cs' ? 'Klikněte na srdíčko u produktu' : 'Click the heart icon on a product'}</p>
+                  </div>
+                ) : (
+                  wishlistProducts.map(product => (
+                    <div key={product.id} className="flex gap-4 bg-secondary/30 rounded-xl p-4">
+                      <div
+                        className="w-20 h-20 rounded-lg bg-secondary/50 flex-shrink-0 overflow-hidden cursor-pointer"
+                        onClick={() => { setWishlistOpen(false); setSelectedProduct(product); }}
+                      >
+                        <img src={eshopImages[product.id]} alt={product.name[language]} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4
+                          className="font-semibold text-foreground text-sm truncate cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => { setWishlistOpen(false); setSelectedProduct(product); }}
+                        >
+                          {product.name[language]}
+                        </h4>
+                        <div className="flex items-center gap-1 mt-1">
+                          <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                          <span className="text-xs text-foreground">{product.rating}</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm font-bold text-foreground">{product.price.toLocaleString()} {product.currency}</span>
+                          {product.originalPrice && (
+                            <span className="text-xs text-muted-foreground line-through">{product.originalPrice.toLocaleString()}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Button
+                            size="sm"
+                            className={`${gradientClass} text-primary-foreground text-xs h-8`}
+                            onClick={() => { addToCart(product); }}
+                          >
+                            <ShoppingCart className="w-3.5 h-3.5 mr-1" />
+                            {language === 'cs' ? 'Do košíku' : language === 'en' ? 'Add to Cart' : 'In den Warenkorb'}
+                          </Button>
+                          <button
+                            onClick={() => toggleWishlist(product.id)}
+                            className="p-1.5 text-muted-foreground hover:text-destructive transition-colors"
+                            title={language === 'cs' ? 'Odebrat z oblíbených' : 'Remove from wishlist'}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {wishlistProducts.length > 0 && (
+                <div className="p-6 border-t border-border">
+                  <Button
+                    className={`w-full ${gradientClass} text-primary-foreground font-semibold h-12`}
+                    onClick={() => {
+                      wishlistProducts.forEach(p => addToCart(p));
+                      setWishlistOpen(false);
+                      setCartOpen(true);
+                    }}
+                  >
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                    {language === 'cs' ? 'Přidat vše do košíku' : language === 'en' ? 'Add All to Cart' : 'Alle in den Warenkorb'}
+                  </Button>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
