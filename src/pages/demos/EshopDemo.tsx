@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import { products, categories, type Product } from '@/data/eshopProducts';
 import { eshopImages } from '@/data/eshopImages';
+import CheckoutFlow from '@/components/eshop/CheckoutFlow';
 
 interface CartItem {
   product: Product;
@@ -24,6 +25,7 @@ const EshopDemo = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -425,7 +427,7 @@ const EshopDemo = () => {
                     <span>{language === 'cs' ? 'Celkem' : 'Total'}</span>
                     <span>{cartTotal.toLocaleString()} Kč</span>
                   </div>
-                  <Button className={`w-full ${gradientClass} text-primary-foreground font-semibold h-12`}>
+                  <Button onClick={() => { setCartOpen(false); setCheckoutOpen(true); }} className={`w-full ${gradientClass} text-primary-foreground font-semibold h-12`}>
                     <CreditCard className="w-5 h-5 mr-2" />
                     {language === 'cs' ? 'Přejít k pokladně' : language === 'en' ? 'Checkout' : 'Zur Kasse'}
                   </Button>
@@ -509,6 +511,18 @@ const EshopDemo = () => {
       </section>
 
       <Footer />
+
+      {/* Checkout Flow */}
+      <AnimatePresence>
+        {checkoutOpen && cart.length > 0 && (
+          <CheckoutFlow
+            cart={cart}
+            cartTotal={cartTotal}
+            onBack={() => setCheckoutOpen(false)}
+            onComplete={() => { setCheckoutOpen(false); setCart([]); }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
