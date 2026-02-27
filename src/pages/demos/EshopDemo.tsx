@@ -9,6 +9,7 @@ import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import { products, categories, type Product } from '@/data/eshopProducts';
+import { eshopImages } from '@/data/eshopImages';
 
 interface CartItem {
   product: Product;
@@ -222,7 +223,7 @@ const EshopDemo = () => {
               >
                 {/* Product Image */}
                 <div className="relative aspect-square bg-secondary/30 flex items-center justify-center">
-                  <span className="text-5xl sm:text-6xl group-hover:scale-110 transition-transform duration-300">{product.images[0]}</span>
+                  <img src={eshopImages[product.id]} alt={product.name[language]} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" loading="lazy" />
                   {product.badge && (
                     <span className={`absolute top-3 left-3 ${gradientClass} text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-full`}>
                       {product.badge[language]}
@@ -282,7 +283,7 @@ const EshopDemo = () => {
               onClick={e => e.stopPropagation()}
             >
               <div className="relative aspect-[4/3] bg-secondary/30 flex items-center justify-center rounded-t-3xl">
-                <span className="text-8xl">{selectedProduct.images[0]}</span>
+                <img src={eshopImages[selectedProduct.id]} alt={selectedProduct.name[language]} className="w-full h-full object-cover" />
                 <button onClick={() => setSelectedProduct(null)} className="absolute top-4 right-4 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center">
                   <X className="w-5 h-5 text-foreground" />
                 </button>
@@ -394,8 +395,8 @@ const EshopDemo = () => {
                 ) : (
                   cart.map(item => (
                     <div key={item.product.id} className="flex gap-4 bg-secondary/30 rounded-xl p-4">
-                      <div className="w-16 h-16 rounded-lg bg-secondary/50 flex items-center justify-center text-3xl flex-shrink-0">
-                        {item.product.images[0]}
+                      <div className="w-16 h-16 rounded-lg bg-secondary/50 flex-shrink-0 overflow-hidden">
+                        <img src={eshopImages[item.product.id]} alt={item.product.name[language]} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-foreground text-sm truncate">{item.product.name[language]}</h4>
