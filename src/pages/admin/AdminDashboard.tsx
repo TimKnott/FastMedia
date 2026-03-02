@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, CalendarCheck, ScrollText, TrendingUp, Mail, Flame } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
+import TrackingDiagnostics from '@/components/admin/TrackingDiagnostics';
 
 interface DashboardStats {
   users: number;
@@ -84,6 +85,8 @@ const AdminDashboard = () => {
           </motion.div>
         ))}
       </div>
+
+      <TrackingDiagnostics />
 
       <Card className="shadow-card">
         <CardHeader>
