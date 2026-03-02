@@ -59,7 +59,7 @@ import BeautySalonDemo from "./pages/demos/BeautySalonDemo";
 import MovingDemo from "./pages/demos/MovingDemo";
 import ITServicesDemo from "./pages/demos/ITServicesDemo";
 import EshopDemo from "./pages/demos/EshopDemo";
-import ConsultantJitka from "./pages/ConsultantJitka";
+import ConsultantTereza from "./pages/ConsultantTereza";
 import CalculatorPage from "./pages/CalculatorPage";
 import Install from "./pages/Install";
 
@@ -103,7 +103,7 @@ const App = () => (
             <Route path="/demo/moving" element={<MovingDemo />} />
             <Route path="/demo/itservices" element={<ITServicesDemo />} />
             <Route path="/demo/eshop" element={<EshopDemo />} />
-            <Route path="/consultant/jitka" element={<ConsultantJitka />} />
+            <Route path="/consultant/tereza" element={<ConsultantTereza />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />
             {/* Admin routes */}
