@@ -9,6 +9,12 @@ type EmbedCode = {
   name: string;
 };
 
+const fetchEmbedCodes = async (): Promise<EmbedCode[]> => {
+  const { data, error } = await supabase.functions.invoke('embed-codes');
+  if (error) throw error;
+  return data as EmbedCode[];
+};
+
 /**
  * Fetches active embed codes from the database and injects them into the page.
  * - head: injected into <head>
@@ -18,15 +24,8 @@ type EmbedCode = {
 const EmbedCodeInjector = () => {
   const { data: codes } = useQuery({
     queryKey: ['embed-codes-active'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('embed_codes')
-        .select('id, code, placement, name')
-        .eq('is_active', true);
-      if (error) throw error;
-      return data as EmbedCode[];
-    },
-    staleTime: 5 * 60 * 1000, // cache 5 minutes
+    queryFn: fetchEmbedCodes,
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
