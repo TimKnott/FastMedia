@@ -30,32 +30,32 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import SEOHead from "@/components/SEOHead";
-import jitkaPhoto from "@/assets/team/jitka-listanska.jpg";
+import terezaPhoto from "@/assets/team/tereza-novakova.jpg";
 
 const successStories = [
   {
     client: "Martin Kovář",
     trade: "Plumber",
     emoji: "🔧",
-    story: `Martin came to us completely overwhelmed. He'd been relying on word-of-mouth for 15 years, but new competitors were popping up with flashy websites and stealing his customers. "I don't know where to start," he told Jitka on their first call. Jitka listened patiently, asked about his proudest jobs, and within an hour they'd sketched out a plan together. She suggested a clean, mobile-first website showcasing his emergency response times and a gallery of his best work. Martin was hesitant about the booking system — "My customers just call me!" — but Jitka showed him how online bookings could fill his quieter weekday slots. Three months later, Martin's calendar was full, and he told us: "Jitka didn't just build me a website, she helped me see my business differently."`,
+    story: `Martin came to us completely overwhelmed. He'd been relying on word-of-mouth for 15 years, but new competitors were popping up with flashy websites and stealing his customers. "I don't know where to start," he told Tereza on their first call. Tereza listened patiently, asked about his proudest jobs, and within an hour they'd sketched out a plan together. She suggested a clean, mobile-first website showcasing his emergency response times and a gallery of his best work. Martin was hesitant about the booking system — "My customers just call me!" — but Tereza showed him how online bookings could fill his quieter weekday slots. Three months later, Martin's calendar was full, and he told us: "Tereza didn't just build me a website, she helped me see my business differently."`,
   },
   {
     client: "Eva Nováková",
     trade: "Interior Designer",
     emoji: "🎨",
-    story: `Eva had a beautiful portfolio on Instagram but no proper website. She was losing high-value clients who wanted to see a professional online presence before committing to large projects. When she contacted FastMedia.Pro, Jitka immediately understood the challenge: "Your work is stunning — we just need to let it breathe on a proper stage." Together they designed a visually rich portfolio site with full-screen project galleries, client testimonials integrated into each project story, and a sophisticated enquiry form that pre-qualified leads. Eva was amazed at how Jitka turned her scattered ideas into a cohesive brand story. Within weeks of launch, Eva landed her biggest contract yet — a full apartment redesign — and the client said they chose her specifically because her website "looked like she meant business."`,
+    story: `Eva had a beautiful portfolio on Instagram but no proper website. She was losing high-value clients who wanted to see a professional online presence before committing to large projects. When she contacted FastMedia.Pro, Tereza immediately understood the challenge: "Your work is stunning — we just need to let it breathe on a proper stage." Together they designed a visually rich portfolio site with full-screen project galleries, client testimonials integrated into each project story, and a sophisticated enquiry form that pre-qualified leads. Eva was amazed at how Tereza turned her scattered ideas into a cohesive brand story. Within weeks of launch, Eva landed her biggest contract yet — a full apartment redesign — and the client said they chose her specifically because her website "looked like she meant business."`,
   },
   {
     client: "Tomáš Dvořák",
     trade: "Electrician",
     emoji: "⚡",
-    story: `Tomáš had an outdated website that hadn't been touched in five years. It looked like it was built in the early 2000s, and his Google reviews — all 4.9 stars — were buried and invisible to new visitors. Jitka's approach was warm but direct: "Tomáš, your reputation is gold. Let's make sure the world can see it." She proposed a complete makeover with his glowing reviews front and centre, an interactive service area map, and a one-click emergency call button for mobile users. Tomáš was nervous about change, but Jitka walked him through every decision, showing him live mockups so nothing felt like a surprise. The result? A 60% increase in enquiries in the first month, and Tomáš now sends Jitka a thank-you message every time a new customer mentions finding him online.`,
+    story: `Tomáš had an outdated website that hadn't been touched in five years. It looked like it was built in the early 2000s, and his Google reviews — all 4.9 stars — were buried and invisible to new visitors. Tereza's approach was warm but direct: "Tomáš, your reputation is gold. Let's make sure the world can see it." She proposed a complete makeover with his glowing reviews front and centre, an interactive service area map, and a one-click emergency call button for mobile users. Tomáš was nervous about change, but Tereza walked him through every decision, showing him live mockups so nothing felt like a surprise. The result? A 60% increase in enquiries in the first month, and Tomáš now sends Tereza a thank-you message every time a new customer mentions finding him online.`,
   },
   {
     client: "Lucie Šťastná",
     trade: "Cleaning Service",
     emoji: "✨",
-    story: `Lucie ran a growing cleaning company but was drowning in admin. She spent hours every week answering the same questions about pricing and availability over the phone. Jitka proposed something transformative: a website with a smart quote calculator and an automated booking system. "But won't that feel impersonal?" Lucie worried. Jitka smiled and said, "Not if we do it right." Together they crafted a warm, friendly website that felt like talking to a real person — complete with Lucie's own photos and her team's cheerful bios. The calculator gave instant estimates, and the booking form asked just enough questions to prepare each visit perfectly. Lucie's phone calls dropped by 70%, but her bookings doubled. "I actually have weekends again," she laughed. "Jitka gave me my life back."`,
+    story: `Lucie ran a growing cleaning company but was drowning in admin. She spent hours every week answering the same questions about pricing and availability over the phone. Tereza proposed something transformative: a website with a smart quote calculator and an automated booking system. "But won't that feel impersonal?" Lucie worried. Tereza smiled and said, "Not if we do it right." Together they crafted a warm, friendly website that felt like talking to a real person — complete with Lucie's own photos and her team's cheerful bios. The calculator gave instant estimates, and the booking form asked just enough questions to prepare each visit perfectly. Lucie's phone calls dropped by 70%, but her bookings doubled. "I actually have weekends again," she laughed. "Tereza gave me my life back."`,
   },
 ];
 
@@ -63,54 +63,54 @@ const clientReviews = [
   {
     name: "Petr Horák",
     rating: 5,
-    text: "Jitka was incredibly patient and really listened to what I needed. She made the whole process feel easy and even fun!",
+    text: "Tereza was incredibly patient and really listened to what I needed. She made the whole process feel easy and even fun!",
     trade: "Roofer",
   },
   {
     name: "Jana Procházková",
     rating: 5,
-    text: "I was nervous about getting a website, but Jitka explained everything step by step. The result exceeded all my expectations.",
+    text: "I was nervous about getting a website, but Tereza explained everything step by step. The result exceeded all my expectations.",
     trade: "Gardener",
   },
   {
     name: "Ondřej Malý",
     rating: 5,
-    text: "Jitka understood my business better than I did after just one conversation. Truly a professional who cares.",
+    text: "Tereza understood my business better than I did after just one conversation. Truly a professional who cares.",
     trade: "Builder",
   },
   {
     name: "Kateřina Černá",
     rating: 5,
-    text: "Working with Jitka felt like working with a friend. She was always available, always cheerful, and the website is beautiful.",
+    text: "Working with Tereza felt like working with a friend. She was always available, always cheerful, and the website is beautiful.",
     trade: "Painter",
   },
   {
     name: "David Veselý",
     rating: 5,
-    text: "I recommended Jitka to three other tradespeople after she helped me. She's the real deal - knowledgeable, kind, and efficient.",
+    text: "I recommended Tereza to three other tradespeople after she helped me. She's the real deal - knowledgeable, kind, and efficient.",
     trade: "Heating Engineer",
   },
   {
     name: "Markéta Svobodová",
     rating: 5,
-    text: "Jitka turned my vague ideas into a stunning website. She has a gift for understanding what customers actually need.",
+    text: "Tereza turned my vague ideas into a stunning website. She has a gift for understanding what customers actually need.",
     trade: "Locksmith",
   },
   {
     name: "Filip Král",
     rating: 4,
-    text: "Great experience overall. Jitka was very responsive and helped me choose the perfect package for my budget.",
+    text: "Great experience overall. Tereza was very responsive and helped me choose the perfect package for my budget.",
     trade: "Solar Installer",
   },
   {
     name: "Tereza Pokorná",
     rating: 5,
-    text: "I can't say enough good things about Jitka. She made everything so simple and the results speak for themselves — more customers every week!",
+    text: "I can't say enough good things about Tereza. She made everything so simple and the results speak for themselves — more customers every week!",
     trade: "Drywall Specialist",
   },
 ];
 
-const ConsultantJitka = () => {
+const ConsultantTereza = () => {
   const [callbackDate, setCallbackDate] = useState<Date>();
   const [callbackTime, setCallbackTime] = useState("");
   const [enquiryType, setEnquiryType] = useState("");
@@ -123,7 +123,7 @@ const ConsultantJitka = () => {
     // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    toast.success("Your enquiry has been sent to Jitka! She will get back to you shortly.");
+    toast.success("Your enquiry has been sent to Tereza! She will get back to you shortly.");
     setIsSubmitting(false);
     (e.target as HTMLFormElement).reset();
     setCallbackDate(undefined);
@@ -134,21 +134,21 @@ const ConsultantJitka = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Jitka Líšťanská — Web Consultant"
-        description="Meet Jitka Líšťanská, your personal web consultant at FastMedia.Pro. Years of experience helping tradespeople build websites that drive customers."
-        canonical="/consultant/jitka"
+        title="Tereza Nováková — Web Consultant"
+        description="Meet Tereza Nováková, your personal web consultant at FastMedia.Pro. Years of experience helping tradespeople build websites that drive customers."
+        canonical="/consultant/tereza"
         ogType="profile"
-        pagePath="/consultant/jitka"
+        pagePath="/consultant/tereza"
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Person',
-          name: 'Jitka Líšťanská',
+          name: 'Tereza Nováková',
           jobTitle: 'Web Consultant & Business Manager',
           worksFor: { '@type': 'Organization', name: 'FastMedia.Pro' },
-          url: 'https://fastmedia-pro.lovable.app/consultant/jitka',
+          url: 'https://fastmedia-pro.lovable.app/consultant/tereza',
         }) }}
       />
       <ScrollToTop />
@@ -179,7 +179,7 @@ const ConsultantJitka = () => {
               className="relative"
             >
               <div className="w-56 h-56 lg:w-72 lg:h-72 rounded-full overflow-hidden border-4 border-accent/50 shadow-glow">
-                <img src={jitkaPhoto} alt="Jitka Líšťanská" className="w-full h-full object-cover" />
+                <img src={terezaPhoto} alt="Tereza Nováková" className="w-full h-full object-cover" />
               </div>
               <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
@@ -201,7 +201,7 @@ const ConsultantJitka = () => {
                 Your Personal Consultant
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 text-primary-foreground">
-                Hi, I'm Jitka Líšťanská
+                Hi, I'm Tereza Nováková
               </h1>
               <p className="text-lg lg:text-xl text-primary-foreground/90 leading-relaxed mb-4">
                 Welcome! I'm here to guide you through every step of creating the perfect website for your business.
@@ -246,7 +246,7 @@ const ConsultantJitka = () => {
               Real Customers, Real Results
             </h2>
             <p className="text-muted-foreground text-lg">
-              Every project is a journey. Here are some stories from customers Jitka has helped along the way.
+              Every project is a journey. Here are some stories from customers Tereza has helped along the way.
             </p>
           </motion.div>
 
@@ -333,7 +333,7 @@ const ConsultantJitka = () => {
           >
             <span className="text-accent font-semibold text-sm uppercase tracking-wider">Client Reviews</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-              What People Say About Jitka
+              What People Say About Tereza
             </h2>
           </motion.div>
 
@@ -395,10 +395,10 @@ const ConsultantJitka = () => {
           >
             <span className="text-accent font-semibold text-sm uppercase tracking-wider">Get in Touch</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-              Contact Jitka
+              Contact Tereza
             </h2>
             <p className="text-muted-foreground text-lg">
-              Fill in your details below and Jitka will get back to you personally. You can also request a callback at a
+              Fill in your details below and Tereza will get back to you personally. You can also request a callback at a
               time that suits you.
             </p>
           </motion.div>
@@ -464,7 +464,7 @@ const ConsultantJitka = () => {
 
               {/* Message */}
               <div className="space-y-2">
-                <Label htmlFor="message">Tell Jitka about your project *</Label>
+                <Label htmlFor="message">Tell Tereza about your project *</Label>
                 <Textarea
                   id="message"
                   name="message"
@@ -539,13 +539,13 @@ const ConsultantJitka = () => {
                   </motion.div>
                 ) : (
                   <>
-                    <Send className="w-5 h-5" /> Send Enquiry to Jitka
+                    <Send className="w-5 h-5" /> Send Enquiry to Tereza
                   </>
                 )}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">
-                Your enquiry will be sent directly to <strong>Jitka Líšťanská</strong> at FastMedia.Pro. She typically
+                Your enquiry will be sent directly to <strong>Tereza Nováková</strong> at FastMedia.Pro. She typically
                 responds within 24 hours.
               </p>
             </form>
@@ -558,4 +558,4 @@ const ConsultantJitka = () => {
   );
 };
 
-export default ConsultantJitka;
+export default ConsultantTereza;

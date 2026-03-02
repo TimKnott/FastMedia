@@ -19,7 +19,7 @@ const Footer = () => {
 
   const pageLinks = [
     { href: '/blog', label: 'Blog' },
-    { href: '/consultant/jitka', label: t('nav.consultant') },
+    { href: '/consultant/tereza', label: t('nav.consultant') },
     { href: '/calculator', label: t('nav.calculator') },
     { href: '/install', label: t('nav.install') },
   ];

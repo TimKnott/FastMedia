@@ -15,7 +15,10 @@ const useCountUp = (end: number, duration: number, start: boolean) => {
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+      // Elastic ease-out for a bouncy, energetic feel
+      const c4 = (2 * Math.PI) / 3;
+      const eased = progress === 0 ? 0 : progress === 1 ? 1
+        : Math.pow(2, -10 * progress) * Math.sin((progress * 10 - 0.75) * c4) + 1;
       setCount(Math.floor(eased * end));
       if (progress < 1) raf = requestAnimationFrame(step);
     };
@@ -36,17 +39,24 @@ const AnimatedStat = ({ icon: Icon, value, label, delay }: {
 
   const numericPart = parseInt(value.replace(/[^0-9]/g, ''), 10);
   const suffix = value.replace(/[0-9]/g, '');
-  const animatedValue = useCountUp(numericPart, 2000, isInView);
+  const animatedValue = useCountUp(numericPart, 2200, isInView);
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30, scale: 0.9 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.6, delay, ease: 'easeOut' }}
-      className="flex flex-col items-center p-6 rounded-2xl bg-primary-foreground/5 backdrop-blur-sm border border-primary-foreground/10 group hover:bg-primary-foreground/10 transition-colors duration-300"
+      initial={{ opacity: 0, y: 50, scale: 0.7, rotateX: 40 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1, rotateX: 0 } : {}}
+      transition={{ duration: 0.8, delay, type: 'spring', stiffness: 120, damping: 14 }}
+      className="relative flex flex-col items-center p-6 rounded-2xl bg-primary-foreground/5 backdrop-blur-sm border border-primary-foreground/10 group hover:bg-primary-foreground/10 transition-colors duration-300 overflow-hidden"
     >
-      <Icon className="w-8 h-8 text-accent mb-3 group-hover:scale-110 transition-transform duration-300" />
+      {/* Shimmer effect on hover */}
+      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary-foreground/10 to-transparent" />
+      <motion.div
+        animate={isInView ? { rotate: [0, -10, 10, -5, 0] } : {}}
+        transition={{ duration: 0.6, delay: delay + 0.5 }}
+      >
+        <Icon className="w-8 h-8 text-accent mb-3 group-hover:scale-110 transition-transform duration-300" />
+      </motion.div>
       <span className="text-3xl font-display font-bold text-primary-foreground tabular-nums">
         {isInView ? animatedValue : 0}{suffix}
       </span>
@@ -60,7 +70,7 @@ const HeroSection = () => {
   const { getContent, invalidate } = useSiteContent();
 
   const stats = [
-    { icon: Monitor, value: '24+', label: { cs: 'Oborových šablon', en: 'Industry Templates', de: 'Branchenvorlagen' } },
+    { icon: Monitor, value: '25+', label: { cs: 'Oborových šablon', en: 'Industry Templates', de: 'Branchenvorlagen' } },
     { icon: Users, value: '500+', label: { cs: 'Spokojených klientů', en: 'Happy Clients', de: 'Zufriedene Kunden' } },
     { icon: Sparkles, value: '70%', label: { cs: 'Dotazů vyřízeno automaticky', en: 'Questions Handled Automatically', de: 'Fragen automatisch beantwortet' } },
   ];

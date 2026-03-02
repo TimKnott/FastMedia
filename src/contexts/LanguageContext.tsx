@@ -208,9 +208,9 @@ export const translations: Translations = {
   },
   'consultant.role': { cs: 'Webová konzultantka & obchodní manažerka', en: 'Web Consultant & Business Manager', de: 'Web-Beraterin & Geschäftsleiterin' },
   'consultant.bio': {
-    cs: 'Jitka pomáhá řemeslníkům a firmám najít ideální webové řešení. Díky zkušenostem v digitálním marketingu a webovém designu zajistí, že váš web bude funkční, přehledný a přinese zákazníky.',
-    en: 'Jitka helps tradespeople and businesses find the right web solution. With experience in digital marketing and web design, she ensures your website is functional, clear, and drives customers.',
-    de: 'Jitka hilft Handwerkern und Unternehmen, die richtige Web-Lösung zu finden. Mit Erfahrung in digitalem Marketing und Webdesign sorgt sie dafür, dass Ihre Website funktional und kundenorientiert ist.',
+    cs: 'Tereza pomáhá řemeslníkům a firmám najít ideální webové řešení. Díky zkušenostem v digitálním marketingu a webovém designu zajistí, že váš web bude funkční, přehledný a přinese zákazníky.',
+    en: 'Tereza helps tradespeople and businesses find the right web solution. With experience in digital marketing and web design, she ensures your website is functional, clear, and drives customers.',
+    de: 'Tereza hilft Handwerkern und Unternehmen, die richtige Web-Lösung zu finden. Mit Erfahrung in digitalem Marketing und Webdesign sorgt sie dafür, dass Ihre Website funktional und kundenorientiert ist.',
   },
   'consultant.stat1': { cs: '50+ spokojených klientů', en: '50+ happy clients', de: '50+ zufriedene Kunden' },
   'consultant.stat2': { cs: 'Odpověď do 24h', en: 'Reply within 24h', de: 'Antwort innerhalb 24h' },

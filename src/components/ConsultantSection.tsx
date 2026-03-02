@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Phone, Star, MessageCircle } from 'lucide-react';
-import jitkaPhoto from '@/assets/team/jitka-listanska.jpg';
+import consultantPhoto from '@/assets/team/tereza-novakova.jpg';
 import EditableText from '@/components/EditableText';
 import EditableImage from '@/components/EditableImage';
 import { useSiteContent } from '@/hooks/useSiteContent';
@@ -56,16 +56,16 @@ const ConsultantSection = () => {
             <div className="md:w-2/5 relative">
               <EditableImage
                 contentKey="consultant.photo"
-                defaultSrc={jitkaPhoto}
+                defaultSrc={consultantPhoto}
                 overrideSrc={getImageUrl('consultant.photo')}
                 onSave={invalidateImage}
-                alt="Jitka Líšťanská – FastMedia.Pro Consultant"
+                alt="Tereza Nováková – FastMedia.Pro Consultant"
                 className="w-full h-64 md:h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:bg-gradient-to-r md:from-transparent md:to-transparent" />
             </div>
             <div className="md:w-3/5 p-8 lg:p-10 flex flex-col justify-center">
-              <h3 className="text-2xl lg:text-3xl font-display font-bold text-foreground mb-1">Jitka Líšťanská</h3>
+              <h3 className="text-2xl lg:text-3xl font-display font-bold text-foreground mb-1">Tereza Nováková</h3>
               <p className="text-accent font-semibold mb-4">{t('consultant.role')}</p>
               <EditableText
                 contentKey="consultant.bio"
@@ -87,7 +87,7 @@ const ConsultantSection = () => {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link to="/consultant/jitka">
+                <Link to="/consultant/tereza">
                   <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity gap-2">
                     {t('consultant.cta')}
                     <ArrowRight className="w-4 h-4" />
