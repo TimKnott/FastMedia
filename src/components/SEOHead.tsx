@@ -14,7 +14,7 @@ interface SEOHeadProps {
   pagePath?: string;
 }
 
-const BASE_URL = 'https://fastmedia-pro.lovable.app';
+const BASE_URL = 'https://fastmedia.pro';
 
 const SEOHead = ({
   title,

@@ -129,8 +129,8 @@ const BlogArticle = () => {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://fastmedia-pro.lovable.app/' },
-            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://fastmedia-pro.lovable.app/blog' },
+            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://fastmedia.pro/' },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://fastmedia.pro/blog' },
             { '@type': 'ListItem', position: 3, name: post.title[language] },
           ],
         }) }}

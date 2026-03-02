@@ -94,8 +94,8 @@ const DemoLayout = ({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://fastmedia-pro.lovable.app/' },
-            { '@type': 'ListItem', position: 2, name: language === 'cs' ? 'Ukázky' : language === 'de' ? 'Demos' : 'Demos', item: 'https://fastmedia-pro.lovable.app/#demos' },
+            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://fastmedia.pro/' },
+            { '@type': 'ListItem', position: 2, name: language === 'cs' ? 'Ukázky' : language === 'de' ? 'Demos' : 'Demos', item: 'https://fastmedia.pro/#demos' },
             { '@type': 'ListItem', position: 3, name: tradeName },
           ],
         }) }}
@@ -107,7 +107,7 @@ const DemoLayout = ({
           '@type': 'LocalBusiness',
           name: tradeName,
           description: heroSubtitle[language],
-          url: `https://fastmedia-pro.lovable.app/demo/${tradeId}`,
+          url: `https://fastmedia.pro/demo/${tradeId}`,
           address: { '@type': 'PostalAddress', addressLocality: 'Praha', addressCountry: 'CZ' },
           aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '250' },
         }) }}
