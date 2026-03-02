@@ -148,7 +148,7 @@ const ConsultantTereza = () => {
           name: 'Tereza Nováková',
           jobTitle: 'Web Consultant & Business Manager',
           worksFor: { '@type': 'Organization', name: 'FastMedia.Pro' },
-          url: 'https://fastmedia-pro.lovable.app/consultant/tereza',
+          url: 'https://fastmedia.pro/consultant/tereza',
         }) }}
       />
       <ScrollToTop />

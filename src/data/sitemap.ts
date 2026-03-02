@@ -49,7 +49,7 @@ export const sitemapEntries: SitemapEntry[] = [
 ];
 
 export const generateSitemapXml = (): string => {
-  const BASE_URL = 'https://fastmedia-pro.lovable.app';
+  const BASE_URL = 'https://fastmedia.pro';
   const today = new Date().toISOString().split('T')[0];
 
   const urls = sitemapEntries

@@ -16,8 +16,8 @@ const HomeJsonLd = () => {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'FastMedia.Pro',
-    url: 'https://fastmedia-pro.lovable.app',
-    logo: 'https://fastmedia-pro.lovable.app/favicon.jpeg',
+    url: 'https://fastmedia.pro',
+    logo: 'https://fastmedia.pro/favicon.jpeg',
     description: t('hero.subtitle'),
     contactPoint: {
       '@type': 'ContactPoint',

@@ -443,7 +443,7 @@ const AdminSEO = () => {
                         {form.title || 'Název stránky'}
                       </p>
                       <p className="text-green-700 text-xs truncate">
-                        https://fastmedia-pro.lovable.app{selectedPath}
+                        https://fastmedia.pro{selectedPath}
                       </p>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {form.description || 'Zde se zobrazí meta popis…'}
