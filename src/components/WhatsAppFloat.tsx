@@ -10,7 +10,7 @@ const WhatsAppFloat = () => {
 
   return (
     <motion.a
-      href="https://wa.me/4407926400060"
+      href="https://wa.me/447926400060"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
