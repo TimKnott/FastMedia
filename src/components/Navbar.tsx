@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2, Download } from 'lucide-react';
+import { Menu, X, Share2, Download, MessageCircle, Contact } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import logo from '@/assets/logo.jpeg';
@@ -42,6 +42,29 @@ const Navbar = () => {
             </span>
           </Link>
 
+          {/* Quick contact actions */}
+          <div className="hidden lg:flex items-center gap-1.5 mr-4 shrink-0">
+            <a
+              href="https://wa.me/4407926400060"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-lg text-muted-foreground hover:text-green-500 hover:bg-green-500/10 transition-colors"
+              aria-label="WhatsApp"
+              title="WhatsApp"
+            >
+              <MessageCircle className="w-4.5 h-4.5" />
+            </a>
+            <a
+              href="/tim-knott.vcf"
+              download="tim-knott.vcf"
+              className="p-2 rounded-lg text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
+              aria-label="Save Contact"
+              title="Save Contact"
+            >
+              <Contact className="w-4.5 h-4.5" />
+            </a>
+          </div>
+
           {/* Separator */}
           <div className="hidden lg:block w-px h-8 bg-border/60 mr-6 shrink-0" />
 
@@ -73,6 +96,25 @@ const Navbar = () => {
           {/* Right side */}
           <div className="flex items-center gap-4 ml-auto pl-6">
             <LanguageSwitcher />
+
+            {/* Mobile WhatsApp + vCard */}
+            <a
+              href="https://wa.me/4407926400060"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg:hidden p-2 text-muted-foreground hover:text-green-500 transition-colors"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="w-5 h-5" />
+            </a>
+            <a
+              href="/tim-knott.vcf"
+              download="tim-knott.vcf"
+              className="lg:hidden p-2 text-muted-foreground hover:text-accent transition-colors"
+              aria-label="Save Contact"
+            >
+              <Contact className="w-5 h-5" />
+            </a>
 
             {/* Share Button - mobile/tablet only, uses Web Share API */}
             {'share' in navigator && (
