@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { MessageCircle, Contact } from 'lucide-react';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
@@ -106,10 +107,30 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-background/10 text-center">
+        <div className="pt-8 border-t border-background/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-background/50">
             © {new Date().getFullYear()} FastMedia.Pro. {t('footer.rights')}.
           </p>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://wa.me/4407926400060"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-green-400 transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp
+            </a>
+            <span className="text-background/20">|</span>
+            <a
+              href="/tim-knott.vcf"
+              download="tim-knott.vcf"
+              className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
+            >
+              <Contact className="w-4 h-4" />
+              Save Contact
+            </a>
+          </div>
         </div>
       </div>
     </footer>

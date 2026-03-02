@@ -31,7 +31,7 @@ const BookingSection = () => {
 
   const contactInfo = [
     { icon: Phone, value: '+420 123 456 789', label: { cs: 'Telefon', en: 'Phone', de: 'Telefon' } },
-    { icon: Mail, value: 'info@fastmedia.pro', label: { cs: 'E-mail', en: 'Email', de: 'E-Mail' } },
+    { icon: Mail, value: 'support@fastmedia.pro', label: { cs: 'E-mail', en: 'Email', de: 'E-Mail' } },
     { icon: MapPin, value: 'Praha, Česká republika', label: { cs: 'Adresa', en: 'Address', de: 'Adresse' } },
   ];
 
