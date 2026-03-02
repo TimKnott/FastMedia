@@ -71,7 +71,10 @@ const EmbedCodeInjector = () => {
         Array.from(oldScript.attributes).forEach(attr =>
           newScript.setAttribute(attr.name, attr.value)
         );
-        newScript.textContent = oldScript.textContent;
+        // For external scripts (with src), don't set textContent as it prevents loading
+        if (!oldScript.src) {
+          newScript.textContent = oldScript.textContent;
+        }
 
         if (embed.placement === 'body_end') {
           document.body.appendChild(newScript);
