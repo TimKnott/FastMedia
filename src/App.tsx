@@ -62,6 +62,7 @@ import EshopDemo from "./pages/demos/EshopDemo";
 import ConsultantTereza from "./pages/ConsultantTereza";
 import CalculatorPage from "./pages/CalculatorPage";
 import Install from "./pages/Install";
+import WhatsAppFloat from "./components/WhatsAppFloat";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AdminToolbar />
+          <WhatsAppFloat />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/blog" element={<Blog />} />
