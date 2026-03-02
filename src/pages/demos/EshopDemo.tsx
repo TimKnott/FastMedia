@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, Star, Search, X, Plus, Minus, Trash2, ChevronRight, Package, CreditCard, Truck, Shield, BarChart3, Users, Settings, FileText, Menu, Tag, Heart, ArrowUpDown, ChevronDown } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Star, Search, X, Plus, Minus, Trash2, ChevronRight, Package, CreditCard, Truck, Shield, BarChart3, Users, Settings, FileText, Menu, Tag, Heart, ArrowUpDown, ChevronDown, Eye, GitCompareArrows, Check } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import Footer from '@/components/Footer';
@@ -30,8 +30,20 @@ const EshopDemo = () => {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
   const [wishlistOpen, setWishlistOpen] = useState(false);
+  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
+  const [compareList, setCompareList] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   const wishlistProducts = useMemo(() => products.filter(p => wishlist.has(p.id)), [wishlist]);
+  const compareProducts = useMemo(() => products.filter(p => compareList.includes(p.id)), [compareList]);
+
+  const toggleCompare = (productId: string) => {
+    setCompareList(prev => {
+      if (prev.includes(productId)) return prev.filter(id => id !== productId);
+      if (prev.length >= 3) return prev;
+      return [...prev, productId];
+    });
+  };
 
   const toggleWishlist = (productId: string) => {
     setWishlist(prev => {
@@ -291,8 +303,10 @@ const EshopDemo = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: (index % 8) * 0.05 }}
-                className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-lg transition-all duration-300 cursor-pointer"
+                className="group relative bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-lg transition-all duration-300 cursor-pointer"
                 onClick={() => setSelectedProduct(product)}
+                onMouseEnter={() => setHoveredProduct(product.id)}
+                onMouseLeave={() => setHoveredProduct(null)}
               >
                 {/* Product Image */}
                 <div className="relative aspect-square bg-secondary/30 flex items-center justify-center">
@@ -302,19 +316,75 @@ const EshopDemo = () => {
                       {product.badge[language]}
                     </span>
                   )}
-                  <button
-                    onClick={e => { e.stopPropagation(); addToCart(product); }}
-                    className="absolute bottom-3 right-3 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:scale-110"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
+                  {/* Action buttons */}
+                  <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={e => { e.stopPropagation(); toggleCompare(product.id); }}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all ${compareList.includes(product.id) ? 'bg-primary text-primary-foreground scale-110' : 'bg-background/90 text-foreground hover:bg-primary hover:text-primary-foreground hover:scale-110'}`}
+                      title={language === 'cs' ? 'Porovnat' : 'Compare'}
+                    >
+                      {compareList.includes(product.id) ? <Check className="w-5 h-5" /> : <GitCompareArrows className="w-5 h-5" />}
+                    </button>
+                    <button
+                      onClick={e => { e.stopPropagation(); addToCart(product); }}
+                      className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  </div>
                   <button
                     onClick={e => { e.stopPropagation(); toggleWishlist(product.id); }}
                     className={`absolute top-3 right-3 w-8 h-8 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-all ${wishlist.has(product.id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                   >
                     <Heart className={`w-4 h-4 transition-colors ${wishlist.has(product.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'}`} />
                   </button>
+                  {/* Quick View button */}
+                  <button
+                    onClick={e => { e.stopPropagation(); setSelectedProduct(product); }}
+                    className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-background/90 backdrop-blur-sm text-foreground text-xs font-medium px-3 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-background"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    {language === 'cs' ? 'Náhled' : language === 'en' ? 'Quick View' : 'Vorschau'}
+                  </button>
                 </div>
+
+                {/* Quick-view hover preview */}
+                <AnimatePresence>
+                  {hoveredProduct === product.id && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute left-0 right-0 bottom-0 bg-card/95 backdrop-blur-md border-t border-border p-3 sm:p-4 z-10 hidden sm:block"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{product.description[language]}</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                          <span className="text-xs font-medium text-foreground">{product.rating}</span>
+                          <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
+                        </div>
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => { toggleCompare(product.id); }}
+                            className={`text-xs px-2 py-1 rounded-md transition-colors ${compareList.includes(product.id) ? 'bg-primary text-primary-foreground' : 'bg-secondary text-foreground hover:bg-secondary/80'}`}
+                          >
+                            <GitCompareArrows className="w-3 h-3 inline mr-1" />
+                            {compareList.includes(product.id) ? '✓' : (language === 'cs' ? 'Porovnat' : 'Compare')}
+                          </button>
+                          <button
+                            onClick={() => { addToCart(product); }}
+                            className={`text-xs px-2 py-1 rounded-md ${gradientClass} text-primary-foreground`}
+                          >
+                            <Plus className="w-3 h-3 inline mr-1" />{language === 'cs' ? 'Košík' : 'Cart'}
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* Product Info */}
                 <div className="p-3 sm:p-4">
@@ -680,6 +750,173 @@ const EshopDemo = () => {
       </section>
 
       <Footer />
+
+      {/* Compare Floating Bar */}
+      <AnimatePresence>
+        {compareList.length > 0 && !compareOpen && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-card border border-border rounded-2xl shadow-2xl px-6 py-4 flex items-center gap-4"
+          >
+            <div className="flex items-center gap-3">
+              <GitCompareArrows className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium text-foreground">
+                {compareList.length}/3 {language === 'cs' ? 'vybrány' : 'selected'}
+              </span>
+              <div className="flex -space-x-2">
+                {compareProducts.map(p => (
+                  <div key={p.id} className="w-10 h-10 rounded-full border-2 border-card overflow-hidden">
+                    <img src={eshopImages[p.id]} alt={p.name[language]} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <Button
+              onClick={() => setCompareOpen(true)}
+              className={`${gradientClass} text-primary-foreground font-semibold`}
+              disabled={compareList.length < 2}
+            >
+              {language === 'cs' ? 'Porovnat' : language === 'en' ? 'Compare' : 'Vergleichen'}
+            </Button>
+            <button onClick={() => setCompareList([])} className="p-2 text-muted-foreground hover:text-foreground">
+              <X className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Compare Modal */}
+      <AnimatePresence>
+        {compareOpen && compareProducts.length >= 2 && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70] bg-foreground/50 flex items-center justify-center p-4"
+            onClick={() => setCompareOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-card rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-6 border-b border-border">
+                <h2 className="font-display font-bold text-xl text-foreground flex items-center gap-2">
+                  <GitCompareArrows className="w-5 h-5 text-primary" />
+                  {language === 'cs' ? 'Porovnání produktů' : language === 'en' ? 'Product Comparison' : 'Produktvergleich'}
+                </h2>
+                <button onClick={() => setCompareOpen(false)} className="p-2 text-muted-foreground hover:text-foreground">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[600px]">
+                  {/* Product images */}
+                  <thead>
+                    <tr>
+                      <th className="p-4 text-left text-sm font-medium text-muted-foreground w-32"></th>
+                      {compareProducts.map(p => (
+                        <th key={p.id} className="p-4 text-center">
+                          <div className="flex flex-col items-center gap-3">
+                            <div className="w-32 h-32 rounded-xl overflow-hidden bg-secondary/30">
+                              <img src={eshopImages[p.id]} alt={p.name[language]} className="w-full h-full object-cover" />
+                            </div>
+                            <span className="font-display font-bold text-foreground text-sm">{p.name[language]}</span>
+                            <button
+                              onClick={() => toggleCompare(p.id)}
+                              className="text-xs text-muted-foreground hover:text-destructive flex items-center gap-1"
+                            >
+                              <X className="w-3 h-3" />{language === 'cs' ? 'Odebrat' : 'Remove'}
+                            </button>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* Price */}
+                    <tr className="border-t border-border">
+                      <td className="p-4 text-sm font-medium text-muted-foreground">{language === 'cs' ? 'Cena' : 'Price'}</td>
+                      {compareProducts.map(p => (
+                        <td key={p.id} className="p-4 text-center">
+                          <span className="font-bold text-foreground">{p.price.toLocaleString()} {p.currency}</span>
+                          {p.originalPrice && (
+                            <span className="block text-xs text-muted-foreground line-through">{p.originalPrice.toLocaleString()} {p.currency}</span>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                    {/* Rating */}
+                    <tr className="border-t border-border bg-secondary/20">
+                      <td className="p-4 text-sm font-medium text-muted-foreground">{language === 'cs' ? 'Hodnocení' : 'Rating'}</td>
+                      {compareProducts.map(p => (
+                        <td key={p.id} className="p-4 text-center">
+                          <div className="flex items-center justify-center gap-1">
+                            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                            <span className="font-medium text-foreground">{p.rating}</span>
+                            <span className="text-xs text-muted-foreground">({p.reviewCount})</span>
+                          </div>
+                        </td>
+                      ))}
+                    </tr>
+                    {/* Category */}
+                    <tr className="border-t border-border">
+                      <td className="p-4 text-sm font-medium text-muted-foreground">{language === 'cs' ? 'Kategorie' : 'Category'}</td>
+                      {compareProducts.map(p => (
+                        <td key={p.id} className="p-4 text-center text-sm text-foreground capitalize">{categories.find(c => c.id === p.category)?.label[language]}</td>
+                      ))}
+                    </tr>
+                    {/* Description */}
+                    <tr className="border-t border-border bg-secondary/20">
+                      <td className="p-4 text-sm font-medium text-muted-foreground">{language === 'cs' ? 'Popis' : 'Description'}</td>
+                      {compareProducts.map(p => (
+                        <td key={p.id} className="p-4 text-center text-sm text-muted-foreground">{p.description[language]}</td>
+                      ))}
+                    </tr>
+                    {/* Colors */}
+                    <tr className="border-t border-border">
+                      <td className="p-4 text-sm font-medium text-muted-foreground">{language === 'cs' ? 'Barvy' : 'Colors'}</td>
+                      {compareProducts.map(p => (
+                        <td key={p.id} className="p-4 text-center">
+                          {p.colors ? (
+                            <div className="flex justify-center gap-1.5">
+                              {p.colors.map((c, i) => <div key={i} className="w-5 h-5 rounded-full border border-border" style={{ backgroundColor: c }} />)}
+                            </div>
+                          ) : <span className="text-xs text-muted-foreground">—</span>}
+                        </td>
+                      ))}
+                    </tr>
+                    {/* Sizes */}
+                    <tr className="border-t border-border bg-secondary/20">
+                      <td className="p-4 text-sm font-medium text-muted-foreground">{language === 'cs' ? 'Velikosti' : 'Sizes'}</td>
+                      {compareProducts.map(p => (
+                        <td key={p.id} className="p-4 text-center text-sm text-foreground">
+                          {p.sizes ? p.sizes.join(', ') : <span className="text-xs text-muted-foreground">—</span>}
+                        </td>
+                      ))}
+                    </tr>
+                    {/* Add to cart */}
+                    <tr className="border-t border-border">
+                      <td className="p-4"></td>
+                      {compareProducts.map(p => (
+                        <td key={p.id} className="p-4 text-center">
+                          <Button
+                            onClick={() => { addToCart(p); setCompareOpen(false); setCartOpen(true); }}
+                            className={`${gradientClass} text-primary-foreground text-sm`}
+                          >
+                            <ShoppingCart className="w-4 h-4 mr-1.5" />
+                            {language === 'cs' ? 'Do košíku' : 'Add to Cart'}
+                          </Button>
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Checkout Flow */}
       <AnimatePresence>
