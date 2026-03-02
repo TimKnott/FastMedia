@@ -31,6 +31,7 @@ import AdminSitemap from "./pages/admin/AdminSitemap";
 import AdminContentHistory from "./pages/admin/AdminContentHistory";
 import AdminSEO from "./pages/admin/AdminSEO";
 import AdminVbout from "./pages/admin/AdminVbout";
+import AdminEmbedCodes from "./pages/admin/AdminEmbedCodes";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
@@ -63,6 +64,7 @@ import ConsultantTereza from "./pages/ConsultantTereza";
 import CalculatorPage from "./pages/CalculatorPage";
 import Install from "./pages/Install";
 import WhatsAppFloat from "./components/WhatsAppFloat";
+import EmbedCodeInjector from "./components/EmbedCodeInjector";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +78,7 @@ const App = () => (
         <BrowserRouter>
           <AdminToolbar />
           <WhatsAppFloat />
+          <EmbedCodeInjector />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/blog" element={<Blog />} />
@@ -128,6 +131,7 @@ const App = () => (
               <Route path="content-history" element={<AdminContentHistory />} />
               <Route path="seo" element={<AdminSEO />} />
               <Route path="vbout" element={<AdminVbout />} />
+              <Route path="embed-codes" element={<AdminEmbedCodes />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

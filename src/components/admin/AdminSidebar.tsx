@@ -18,6 +18,7 @@ import {
   History,
   Search,
   Send,
+  Code2,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -72,6 +73,7 @@ const adminItems: MenuItem[] = [
 ];
 
 const settingsItems: MenuItem[] = [
+  { title: 'Embed Codes', url: '/admin/embed-codes', icon: Code2, minRole: 'super_admin' },
   { title: 'Settings', url: '/admin/settings', icon: Settings, minRole: 'admin' },
 ];
 
