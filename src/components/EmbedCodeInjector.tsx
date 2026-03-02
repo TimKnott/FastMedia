@@ -68,9 +68,15 @@ const EmbedCodeInjector = () => {
       // Re-create script tags so the browser executes them
       scripts.forEach(oldScript => {
         const newScript = document.createElement('script');
-        Array.from(oldScript.attributes).forEach(attr =>
-          newScript.setAttribute(attr.name, attr.value)
-        );
+        Array.from(oldScript.attributes).forEach(attr => {
+          if (attr.name === 'onload') {
+            newScript.onload = () => new Function(attr.value)();
+          } else if (attr.name === 'onerror') {
+            newScript.onerror = () => new Function(attr.value)();
+          } else {
+            newScript.setAttribute(attr.name, attr.value);
+          }
+        });
         // For external scripts (with src), don't set textContent as it prevents loading
         if (!oldScript.src) {
           newScript.textContent = oldScript.textContent;
