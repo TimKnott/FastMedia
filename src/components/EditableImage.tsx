@@ -39,16 +39,25 @@ const EditableImage = ({
 
   const displaySrc = overrideSrc || defaultSrc;
 
+  const ALLOWED_MIME_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/svg+xml',
+    'image/gif',
+  ];
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
   const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      toast.error('Bitte nur Bilddateien hochladen');
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      toast.error('Nur Bilddateien erlaubt (JPEG, PNG, WebP, SVG, GIF)');
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE) {
       toast.error('Maximale Dateigröße: 5 MB');
       return;
     }
@@ -139,7 +148,7 @@ const EditableImage = ({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept=".jpg,.jpeg,.png,.webp,.svg,.gif"
         className="hidden"
         onChange={handleUpload}
       />
