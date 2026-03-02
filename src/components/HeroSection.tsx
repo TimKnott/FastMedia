@@ -41,16 +41,17 @@ const AnimatedStat = ({ icon: Icon, value, label, delay }: {
   label: string;
   delay: number;
 }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
   useEffect(() => {
     if (isInView) setShouldAnimate(true);
   }, [isInView]);
 
+  // Shorter fallback for mobile where IntersectionObserver can be unreliable
   useEffect(() => {
-    const fallbackTimer = window.setTimeout(() => setShouldAnimate(true), 1000);
+    const fallbackTimer = window.setTimeout(() => setShouldAnimate(true), 800);
     return () => window.clearTimeout(fallbackTimer);
   }, []);
 
