@@ -8,23 +8,30 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 
 const useCountUp = (end: number, duration: number, start: boolean) => {
   const [count, setCount] = useState(0);
+
   useEffect(() => {
     if (!start) return;
+
     let startTime: number | null = null;
     let raf: number;
+
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
+
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      // Elastic ease-out for a bouncy, energetic feel
-      const c4 = (2 * Math.PI) / 3;
-      const eased = progress === 0 ? 0 : progress === 1 ? 1
-        : Math.pow(2, -10 * progress) * Math.sin((progress * 10 - 0.75) * c4) + 1;
-      setCount(Math.floor(eased * end));
-      if (progress < 1) raf = requestAnimationFrame(step);
+      // Deterministic, monotonic easing to avoid jumpy/variable-looking values
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * end));
+
+      if (progress < 1) {
+        raf = requestAnimationFrame(step);
+      }
     };
+
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
   }, [end, duration, start]);
+
   return count;
 };
 
@@ -35,11 +42,22 @@ const AnimatedStat = ({ icon: Icon, value, label, delay }: {
   delay: number;
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const [shouldAnimate, setShouldAnimate] = useState(false);
 
-  const numericPart = parseInt(value.replace(/[^0-9]/g, ''), 10);
+  useEffect(() => {
+    if (isInView) setShouldAnimate(true);
+  }, [isInView]);
+
+  useEffect(() => {
+    const fallbackTimer = window.setTimeout(() => setShouldAnimate(true), 1000);
+    return () => window.clearTimeout(fallbackTimer);
+  }, []);
+
+  const numericPart = Number.parseInt(value.replace(/[^0-9]/g, ''), 10);
+  const safeNumericPart = Number.isFinite(numericPart) ? numericPart : 0;
   const suffix = value.replace(/[0-9]/g, '');
-  const animatedValue = useCountUp(numericPart, 2200, isInView);
+  const animatedValue = useCountUp(safeNumericPart, 1600, shouldAnimate);
 
   return (
     <motion.div
@@ -58,7 +76,7 @@ const AnimatedStat = ({ icon: Icon, value, label, delay }: {
         <Icon className="w-8 h-8 text-accent mb-3 group-hover:scale-110 transition-transform duration-300" />
       </motion.div>
       <span className="text-3xl font-display font-bold text-primary-foreground tabular-nums">
-        {isInView ? animatedValue : 0}{suffix}
+        {animatedValue}{suffix}
       </span>
       <span className="text-primary-foreground/70 text-sm mt-1">{label}</span>
     </motion.div>
@@ -71,8 +89,8 @@ const HeroSection = () => {
 
   const stats = [
     { icon: Monitor, value: '25+', label: { cs: 'Oborových šablon', en: 'Industry Templates', de: 'Branchenvorlagen' } },
-    { icon: Users, value: '500+', label: { cs: 'Spokojených klientů', en: 'Happy Clients', de: 'Zufriedene Kunden' } },
-    { icon: Sparkles, value: '70%', label: { cs: 'Dotazů vyřízeno automaticky', en: 'Questions Handled Automatically', de: 'Fragen automatisch beantwortet' } },
+    { icon: Users, value: '402+', label: { cs: 'Spokojených klientů', en: 'Satisfied Clients', de: 'Zufriedene Kunden' } },
+    { icon: Sparkles, value: '56%', label: { cs: 'Dotazů vyřízeno automaticky', en: 'Inquiries Handled Automatically', de: 'Anfragen automatisch bearbeitet' } },
   ];
 
   return (
