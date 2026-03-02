@@ -32,18 +32,18 @@ const Navbar = () => {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
     >
-      <div className="container mx-auto px-6 lg:px-10">
-        <div className="flex items-center justify-between h-16 lg:h-[72px]">
+      <div className="container mx-auto px-3 sm:px-6 lg:px-10">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group mr-8 lg:mr-12 shrink-0">
-            <img src={logo} alt="FastMedia.Pro" className="w-10 h-10 rounded-lg object-cover shadow-glow" />
-            <span className="font-display font-bold text-xl text-foreground">
+          <Link to="/" className="flex items-center gap-2 group shrink-0">
+            <img src={logo} alt="FastMedia.Pro" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow" />
+            <span className="font-display font-bold text-lg sm:text-xl text-foreground">
               Fast<span className="text-accent">Media</span>.Pro
             </span>
           </Link>
 
-          {/* Quick contact actions */}
-          <div className="hidden lg:flex items-center gap-1.5 mr-4 shrink-0">
+          {/* Quick contact actions - desktop only */}
+          <div className="hidden lg:flex items-center gap-1.5 ml-8 mr-4 shrink-0">
             <a
               href="https://wa.me/4407926400060"
               target="_blank"
@@ -94,55 +94,20 @@ const Navbar = () => {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-4 ml-auto pl-6">
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-4 ml-auto">
             <LanguageSwitcher />
 
-            {/* Mobile WhatsApp + vCard */}
-            <a
-              href="https://wa.me/4407926400060"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="lg:hidden p-2 text-muted-foreground hover:text-green-500 transition-colors"
-              aria-label="WhatsApp"
-            >
-              <MessageCircle className="w-5 h-5" />
-            </a>
-            <a
-              href="/tim-knott.vcf"
-              download="tim-knott.vcf"
-              className="lg:hidden p-2 text-muted-foreground hover:text-accent transition-colors"
-              aria-label="Save Contact"
-            >
-              <Contact className="w-5 h-5" />
-            </a>
-
-            {/* Share Button - mobile/tablet only, uses Web Share API */}
-            {'share' in navigator && (
-              <button
-                onClick={() => {
-                  navigator.share({
-                    title: document.title,
-                    url: window.location.href,
-                  }).catch(() => {});
-                }}
-                className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Share"
-              >
-                <Share2 className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* CTA Button */}
+            {/* CTA Button - hidden on mobile, visible sm+ desktop */}
             <a href="#contact" className="hidden sm:block">
               <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity">
                 {t('nav.book')}
               </Button>
             </a>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Toggle - always visible on mobile */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 text-foreground"
+              className="lg:hidden p-2 text-foreground shrink-0"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -159,7 +124,7 @@ const Navbar = () => {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-card border-t border-border"
           >
-            <div className="container mx-auto px-4 py-4 space-y-4">
+            <div className="container mx-auto px-4 py-4 space-y-3">
               {navLinks.map((link) =>
                 link.isRoute ? (
                   <Link
@@ -182,6 +147,42 @@ const Navbar = () => {
                   </a>
                 )
               )}
+
+              {/* Quick actions row */}
+              <div className="flex items-center gap-3 pt-2 border-t border-border">
+                <a
+                  href="https://wa.me/4407926400060"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-green-500 transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp
+                </a>
+                <a
+                  href="/tim-knott.vcf"
+                  download="tim-knott.vcf"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
+                >
+                  <Contact className="w-4 h-4" />
+                  Save Contact
+                </a>
+                {'share' in navigator && (
+                  <button
+                    onClick={() => {
+                      navigator.share({ title: document.title, url: window.location.href }).catch(() => {});
+                      setIsOpen(false);
+                    }}
+                    className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Share
+                  </button>
+                )}
+              </div>
+
               <a href="#contact" onClick={() => setIsOpen(false)}>
                 <Button className="w-full gradient-accent text-accent-foreground font-semibold">
                   {t('nav.book')}
