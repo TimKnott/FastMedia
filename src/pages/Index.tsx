@@ -33,11 +33,13 @@ const Index = () => {
         <ScrollToTop />
         <main>
           <HeroSection />
+          <PromoBanner variant="compact" />
           <WhyFastMediaSection />
           <AutomationSection />
           <DemosSection />
           <CalculatorShowcase />
           <ServicesSection />
+          <PromoBanner variant="full" />
           <ReviewsSection />
           <PricingSection />
           <FAQSection />
