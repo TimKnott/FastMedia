@@ -66,6 +66,7 @@ import Install from "./pages/Install";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import SitemapRedirect from "./pages/SitemapRedirect";
+import Inquiry from "./pages/Inquiry";
 
 const queryClient = new QueryClient();
 
@@ -112,6 +113,7 @@ const App = () => (
             <Route path="/consultant/tereza" element={<ConsultantTereza />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />
+            <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
