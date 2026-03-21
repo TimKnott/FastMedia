@@ -66,6 +66,7 @@ import Install from "./pages/Install";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import SitemapRedirect from "./pages/SitemapRedirect";
+import Inquiry from "./pages/Inquiry";
 
 const queryClient = new QueryClient();
 
