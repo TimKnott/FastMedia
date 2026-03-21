@@ -15,6 +15,7 @@ import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import SEOHead from '@/components/SEOHead';
 import HomeJsonLd from '@/components/HomeJsonLd';
+import PromoBanner from '@/components/PromoBanner';
 
 const Index = () => {
   return (
