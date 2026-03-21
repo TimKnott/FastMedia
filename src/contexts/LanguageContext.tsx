@@ -278,6 +278,62 @@ export const translations: Translations = {
   'calculator_showcase.feature3': { cs: 'Zadejte vlastní požadavek a AI navrhne řešení', en: 'Enter a custom request and AI suggests solutions', de: 'Geben Sie eine Anfrage ein und KI schlägt Lösungen vor' },
   'calculator_showcase.feature4': { cs: 'Stáhněte si nabídku jako soubor', en: 'Download your quote as a file', de: 'Laden Sie Ihr Angebot als Datei herunter' },
   'calculator_showcase.cta': { cs: 'Spustit kalkulačku', en: 'Launch Calculator', de: 'Rechner starten' },
+
+  // Admin Back-Office
+  'admin.backoffice': { cs: 'Administrace', en: 'Admin Back-Office', de: 'Admin-Bereich' },
+  'admin.main_menu': { cs: 'Hlavní menu', en: 'Main Menu', de: 'Hauptmenü' },
+  'admin.content': { cs: 'Obsah', en: 'Content', de: 'Inhalt' },
+  'admin.administration': { cs: 'Správa', en: 'Administration', de: 'Verwaltung' },
+  'admin.system': { cs: 'Systém', en: 'System', de: 'System' },
+  'admin.sign_out': { cs: 'Odhlásit se', en: 'Sign Out', de: 'Abmelden' },
+  'admin.dashboard': { cs: 'Přehled', en: 'Dashboard', de: 'Dashboard' },
+  'admin.leads': { cs: 'Poptávky', en: 'Leads', de: 'Anfragen' },
+  'admin.bookings': { cs: 'Rezervace', en: 'Bookings', de: 'Buchungen' },
+  'admin.newsletter': { cs: 'Newsletter', en: 'Newsletter', de: 'Newsletter' },
+  'admin.homepage': { cs: 'Hlavní strana', en: 'Homepage', de: 'Startseite' },
+  'admin.demo_pages': { cs: 'Demo stránky', en: 'Demo Pages', de: 'Demo-Seiten' },
+  'admin.blog': { cs: 'Blog', en: 'Blog', de: 'Blog' },
+  'admin.media': { cs: 'Média', en: 'Media', de: 'Medien' },
+  'admin.seo': { cs: 'SEO', en: 'SEO', de: 'SEO' },
+  'admin.sitemap': { cs: 'Mapa webu', en: 'Sitemap', de: 'Sitemap' },
+  'admin.versions': { cs: 'Verze', en: 'Versions', de: 'Versionen' },
+  'admin.users': { cs: 'Uživatelé', en: 'Users', de: 'Benutzer' },
+  'admin.roles': { cs: 'Role', en: 'Roles', de: 'Rollen' },
+  'admin.audit_logs': { cs: 'Protokoly', en: 'Audit Logs', de: 'Audit-Protokolle' },
+  'admin.embed_codes': { cs: 'Embed kódy', en: 'Embed Codes', de: 'Embed-Codes' },
+  'admin.settings': { cs: 'Nastavení', en: 'Settings', de: 'Einstellungen' },
+  'admin.vbout': { cs: 'Vbout', en: 'Vbout', de: 'Vbout' },
+
+  // AdminToolbar
+  'admin.preview': { cs: 'Náhled', en: 'Preview', de: 'Vorschau' },
+  'admin.preview_off': { cs: 'Náhled vypnout', en: 'Preview off', de: 'Vorschau aus' },
+  'admin.preview_active': { cs: 'Režim náhledu aktivní', en: 'Preview mode active', de: 'Vorschau-Modus aktiv' },
+  'admin.draft': { cs: 'koncept', en: 'draft', de: 'Entwurf' },
+  'admin.drafts': { cs: 'konceptů', en: 'drafts', de: 'Entwürfe' },
+  'admin.publish': { cs: 'Publikovat', en: 'Publish', de: 'Veröffentlichen' },
+  'admin.publish_confirm': { cs: 'Publikovat změny?', en: 'Publish changes?', de: 'Änderungen veröffentlichen?' },
+  'admin.publish_desc': { cs: '{count} konceptů bude viditelných pro všechny návštěvníky.', en: '{count} drafts will become visible to all visitors.', de: '{count} Entwürfe werden für alle Besucher sichtbar.' },
+  'admin.cancel': { cs: 'Zrušit', en: 'Cancel', de: 'Abbrechen' },
+  'admin.discard_all': { cs: 'Zahodit vše?', en: 'Discard all drafts?', de: 'Alle Entwürfe verwerfen?' },
+  'admin.discard_desc': { cs: 'Všechny nepublikované změny budou nenávratně ztraceny.', en: 'All unpublished changes will be permanently lost.', de: 'Alle unveröffentlichten Änderungen gehen unwiderruflich verloren.' },
+  'admin.discard': { cs: 'Zahodit', en: 'Discard', de: 'Verwerfen' },
+
+  // Admin Dashboard
+  'admin.total_leads': { cs: 'Celkem poptávek', en: 'Total Leads', de: 'Anfragen gesamt' },
+  'admin.hot_priority': { cs: 'Horké / Prioritní', en: 'Hot / Priority', de: 'Heiß / Priorität' },
+  'admin.admin_users': { cs: 'Admin uživatelé', en: 'Admin Users', de: 'Admin-Benutzer' },
+  'admin.recent_actions': { cs: 'Poslední akce', en: 'Recent Actions', de: 'Letzte Aktionen' },
+
+  // Admin Login
+  'admin.portal': { cs: 'Administrace', en: 'Admin Portal', de: 'Admin-Portal' },
+  'admin.sign_in_desc': { cs: 'Přihlaste se do správy webu.', en: 'Sign in to manage the back-office.', de: 'Anmelden zur Verwaltung des Back-Office.' },
+  'admin.email': { cs: 'E-mailová adresa', en: 'Email Address', de: 'E-Mail-Adresse' },
+  'admin.password': { cs: 'Heslo', en: 'Password', de: 'Passwort' },
+  'admin.sign_in': { cs: 'Přihlásit se', en: 'Sign In', de: 'Anmelden' },
+  'admin.forgot_password': { cs: 'Zapomenuté heslo?', en: 'Forgot password?', de: 'Passwort vergessen?' },
+  'admin.reset_password': { cs: 'Obnovit heslo', en: 'Reset Password', de: 'Passwort zurücksetzen' },
+  'admin.reset_desc': { cs: 'Zadejte e-mail a pošleme vám odkaz.', en: 'Enter your email and we\'ll send a reset link.', de: 'Geben Sie Ihre E-Mail ein und wir senden Ihnen einen Link.' },
+  'admin.send_link': { cs: 'Odeslat odkaz', en: 'Send Reset Link', de: 'Link senden' },
 };
 
 interface LanguageContextType {

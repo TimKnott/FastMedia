@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { hasMinimumRole } from '@/hooks/useUserRole';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -21,6 +23,7 @@ const AdminLogin = () => {
   const [resetOpen, setResetOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +105,12 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-hero p-4">
+    <div className="min-h-screen flex items-center justify-center gradient-hero p-4 relative">
+      {/* Language switcher in top-right */}
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher triggerClassName="text-primary-foreground/80 hover:text-primary-foreground" />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -115,9 +123,9 @@ const AdminLogin = () => {
               <Shield className="w-8 h-8 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-display">Admin Portal</CardTitle>
+              <CardTitle className="text-2xl font-display">{t('admin.portal')}</CardTitle>
               <CardDescription className="mt-1">
-                Sign in to manage the back-office.
+                {t('admin.sign_in_desc')}
               </CardDescription>
             </div>
           </CardHeader>
@@ -125,7 +133,7 @@ const AdminLogin = () => {
           <CardContent className="pt-4">
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">{t('admin.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -139,7 +147,7 @@ const AdminLogin = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('admin.password')}</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -170,12 +178,12 @@ const AdminLogin = () => {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    Signing in…
+                    …
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
                     <LogIn className="w-4 h-4" />
-                    Sign In
+                    {t('admin.sign_in')}
                   </span>
                 )}
               </Button>
@@ -186,19 +194,19 @@ const AdminLogin = () => {
                     type="button"
                     className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors mt-1"
                   >
-                    Forgot password?
+                    {t('admin.forgot_password')}
                   </button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Reset Password</DialogTitle>
+                    <DialogTitle>{t('admin.reset_password')}</DialogTitle>
                     <DialogDescription>
-                      Enter your email address. You will receive a reset link.
+                      {t('admin.reset_desc')}
                     </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleForgotPassword} className="space-y-4 pt-2">
                     <div className="space-y-2">
-                      <Label htmlFor="reset-email">Email Address</Label>
+                      <Label htmlFor="reset-email">{t('admin.email')}</Label>
                       <Input
                         id="reset-email"
                         type="email"
@@ -218,12 +226,12 @@ const AdminLogin = () => {
                       {resetLoading ? (
                         <span className="flex items-center gap-2">
                           <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                          Sending…
+                          …
                         </span>
                       ) : (
                         <span className="flex items-center gap-2">
                           <Mail className="w-4 h-4" />
-                          Send Link
+                          {t('admin.send_link')}
                         </span>
                       )}
                     </Button>
@@ -235,7 +243,7 @@ const AdminLogin = () => {
         </Card>
 
         <p className="text-center text-sm text-primary-foreground/60 mt-6">
-          FastMedia.Pro &middot; Admin Back-Office
+          FastMedia.Pro &middot; {t('admin.backoffice')}
         </p>
       </motion.div>
     </div>
