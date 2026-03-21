@@ -1,10 +1,20 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdminSettings = () => {
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email) setUserEmail(data.user.email);
+    });
+  }, []);
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
@@ -20,7 +30,7 @@ const AdminSettings = () => {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input value="admin@fastmedia.pro" disabled className="h-10" />
+            <Input value={userEmail} disabled className="h-10" />
           </div>
           <div className="space-y-2">
             <Label>Display Name</Label>

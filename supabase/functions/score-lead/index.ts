@@ -219,6 +219,32 @@ serve(async (req) => {
       metadata: { features_count: featureCount, quote_total: totalBudget },
     });
 
+    // Send admin notification (fire-and-forget)
+    try {
+      const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/notify-admin`;
+      await fetch(notifyUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "new_lead",
+          data: {
+            name: body.name.trim(),
+            email: body.email.trim().toLowerCase(),
+            trade: body.trade,
+            score,
+            classification,
+            quoteOneTime: body.quoteOneTime,
+            specialRequest: body.specialRequest || null,
+          },
+        }),
+      });
+    } catch (notifyErr) {
+      console.error("Notification error (non-blocking):", notifyErr instanceof Error ? notifyErr.message : "Unknown");
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
