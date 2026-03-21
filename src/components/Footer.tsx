@@ -22,6 +22,7 @@ const Footer = () => {
     { href: '/blog', label: 'Blog' },
     { href: '/consultant/tereza', label: t('nav.consultant') },
     { href: '/calculator', label: t('nav.calculator') },
+    { href: '/inquiry', label: t('nav.inquiry') },
     { href: '/install', label: t('nav.install') },
   ];
 

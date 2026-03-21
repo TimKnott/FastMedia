@@ -15,6 +15,7 @@ export const sitemapEntries: SitemapEntry[] = [
   { path: '/blog', changefreq: 'daily', priority: 0.8, label: 'Blog', indexable: true },
   { path: '/calculator', changefreq: 'monthly', priority: 0.7, label: 'Calculator', indexable: true },
   { path: '/consultant/tereza', changefreq: 'monthly', priority: 0.6, label: 'Consultant — Tereza', indexable: true },
+  { path: '/inquiry', changefreq: 'weekly', priority: 0.8, label: 'Project Inquiry', indexable: true },
 
   // Demo pages
   { path: '/demo/plumbing', changefreq: 'monthly', priority: 0.6, label: 'Demo: Plumbing', indexable: true },
