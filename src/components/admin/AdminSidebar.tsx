@@ -36,45 +36,46 @@ import {
 } from '@/components/ui/sidebar';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
 type AppRole = 'super_admin' | 'admin' | 'moderator' | 'editor' | 'user';
 
 interface MenuItem {
-  title: string;
+  titleKey: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
   minRole: AppRole;
 }
 
 const mainItems: MenuItem[] = [
-  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
-  { title: 'Leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
-  { title: 'Bookings', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
-  { title: 'Newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
-  { title: 'Vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
+  { titleKey: 'admin.dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
+  { titleKey: 'admin.leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
+  { titleKey: 'admin.bookings', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
+  { titleKey: 'admin.newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
+  { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
 ];
 
 const contentItems: MenuItem[] = [
-  { title: 'Homepage', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
-  { title: 'Demo Pages', url: '/admin/demos', icon: Palette, minRole: 'editor' },
-  { title: 'Blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
-  { title: 'Media', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
-  { title: 'SEO', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
-  { title: 'Sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
-  { title: 'Versions', url: '/admin/content-history', icon: History, minRole: 'admin' },
+  { titleKey: 'admin.homepage', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
+  { titleKey: 'admin.demo_pages', url: '/admin/demos', icon: Palette, minRole: 'editor' },
+  { titleKey: 'admin.blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
+  { titleKey: 'admin.media', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
+  { titleKey: 'admin.seo', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
+  { titleKey: 'admin.sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
+  { titleKey: 'admin.versions', url: '/admin/content-history', icon: History, minRole: 'admin' },
 ];
 
 const adminItems: MenuItem[] = [
-  { title: 'Users', url: '/admin/users', icon: Users, minRole: 'admin' },
-  { title: 'Roles', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
-  { title: 'Audit Logs', url: '/admin/audit-logs', icon: ScrollText, minRole: 'admin' },
+  { titleKey: 'admin.users', url: '/admin/users', icon: Users, minRole: 'admin' },
+  { titleKey: 'admin.roles', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
+  { titleKey: 'admin.audit_logs', url: '/admin/audit-logs', icon: ScrollText, minRole: 'admin' },
 ];
 
 const settingsItems: MenuItem[] = [
-  { title: 'Embed Codes', url: '/admin/embed-codes', icon: Code2, minRole: 'super_admin' },
-  { title: 'Settings', url: '/admin/settings', icon: Settings, minRole: 'admin' },
+  { titleKey: 'admin.embed_codes', url: '/admin/embed-codes', icon: Code2, minRole: 'super_admin' },
+  { titleKey: 'admin.settings', url: '/admin/settings', icon: Settings, minRole: 'admin' },
 ];
 
 const roleLabelMap: Record<string, string> = {
@@ -90,10 +91,11 @@ const AdminSidebar = () => {
   const collapsed = state === 'collapsed';
   const navigate = useNavigate();
   const { role, hasMinRole } = useUserRole();
+  const { t } = useLanguage();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success('Successfully signed out.');
+    toast.success(t('admin.sign_out'));
     navigate('/admin/login', { replace: true });
   };
 
@@ -101,6 +103,34 @@ const AdminSidebar = () => {
   const visibleContent = contentItems.filter(item => hasMinRole(item.minRole));
   const visibleAdmin = adminItems.filter(item => hasMinRole(item.minRole));
   const visibleSettings = settingsItems.filter(item => hasMinRole(item.minRole));
+
+  const renderGroup = (items: MenuItem[], label: string) => (
+    <SidebarGroup>
+      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => {
+            const title = t(item.titleKey);
+            return (
+              <SidebarMenuItem key={item.titleKey}>
+                <SidebarMenuButton asChild tooltip={title}>
+                  <NavLink
+                    to={item.url}
+                    end={item.url === '/admin'}
+                    className="hover:bg-sidebar-accent"
+                    activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                  >
+                    <item.icon className="w-4 h-4" />
+                    <span>{title}</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -123,108 +153,18 @@ const AdminSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {visibleMain.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === '/admin'}
-                      className="hover:bg-sidebar-accent"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
-                    >
-                      <item.icon className="w-4 h-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {visibleContent.length > 0 && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Content</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {visibleContent.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <NavLink
-                        to={item.url}
-                        className="hover:bg-sidebar-accent"
-                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
-                      >
-                        <item.icon className="w-4 h-4" />
-                        <span>{item.title}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-
-        {visibleAdmin.length > 0 && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Administration</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {visibleAdmin.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <NavLink
-                        to={item.url}
-                        className="hover:bg-sidebar-accent"
-                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
-                      >
-                        <item.icon className="w-4 h-4" />
-                        <span>{item.title}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-
-        {visibleSettings.length > 0 && (
-          <SidebarGroup>
-            <SidebarGroupLabel>System</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {visibleSettings.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <NavLink
-                        to={item.url}
-                        className="hover:bg-sidebar-accent"
-                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
-                      >
-                        <item.icon className="w-4 h-4" />
-                        <span>{item.title}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+        {visibleMain.length > 0 && renderGroup(visibleMain, t('admin.main_menu'))}
+        {visibleContent.length > 0 && renderGroup(visibleContent, t('admin.content'))}
+        {visibleAdmin.length > 0 && renderGroup(visibleAdmin, t('admin.administration'))}
+        {visibleSettings.length > 0 && renderGroup(visibleSettings, t('admin.system'))}
       </SidebarContent>
 
       <SidebarFooter className="p-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Sign Out" onClick={handleLogout}>
+            <SidebarMenuButton tooltip={t('admin.sign_out')} onClick={handleLogout}>
               <LogOut className="w-4 h-4 text-destructive" />
-              <span className="text-destructive">Sign Out</span>
+              <span className="text-destructive">{t('admin.sign_out')}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

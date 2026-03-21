@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { usePreviewMode } from '@/contexts/PreviewModeContext';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Eye, EyeOff, Upload, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +19,7 @@ import {
 
 const AdminToolbar = () => {
   const { isSuperAdmin } = useUserRole();
+  const { t } = useLanguage();
   const {
     isPreview,
     setPreview,
@@ -46,13 +48,13 @@ const AdminToolbar = () => {
         className="gap-2"
       >
         {isPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-        {isPreview ? 'Vorschau aus' : 'Vorschau'}
+        {isPreview ? t('admin.preview_off') : t('admin.preview')}
       </Button>
 
       {/* Draft count */}
       {draftCount > 0 && (
         <Badge variant="secondary" className="text-xs px-2 py-1">
-          {draftCount} Entwurf{draftCount !== 1 ? 'e' : ''}
+          {draftCount} {draftCount !== 1 ? t('admin.drafts') : t('admin.draft')}
         </Badge>
       )}
 
@@ -62,19 +64,19 @@ const AdminToolbar = () => {
           <AlertDialogTrigger asChild>
             <Button size="sm" className="gap-2 gradient-accent text-accent-foreground" disabled={publishing}>
               {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              Veröffentlichen
+              {t('admin.publish')}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Änderungen veröffentlichen?</AlertDialogTitle>
+              <AlertDialogTitle>{t('admin.publish_confirm')}</AlertDialogTitle>
               <AlertDialogDescription>
-                {draftCount} Entwurf{draftCount !== 1 ? 'e' : ''} werden für alle Besucher sichtbar.
+                {t('admin.publish_desc').replace('{count}', String(draftCount))}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-              <AlertDialogAction onClick={publishAll}>Veröffentlichen</AlertDialogAction>
+              <AlertDialogCancel>{t('admin.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={publishAll}>{t('admin.publish')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -90,15 +92,15 @@ const AdminToolbar = () => {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Alle Entwürfe verwerfen?</AlertDialogTitle>
+              <AlertDialogTitle>{t('admin.discard_all')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Alle unveröffentlichten Änderungen gehen unwiderruflich verloren.
+                {t('admin.discard_desc')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+              <AlertDialogCancel>{t('admin.cancel')}</AlertDialogCancel>
               <AlertDialogAction onClick={discardAll} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Verwerfen
+                {t('admin.discard')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -108,7 +110,7 @@ const AdminToolbar = () => {
       {/* Preview indicator */}
       {isPreview && (
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
-          Vorschau-Modus aktiv
+          {t('admin.preview_active')}
         </div>
       )}
     </div>
