@@ -122,6 +122,7 @@ const BlogArticle = () => {
         canonical={`/blog/${post.slug}`}
         ogType="article"
         ogImage={typeof post.image === 'string' ? post.image : undefined}
+        pagePath={`/blog/${post.slug}`}
       />
       <script
         type="application/ld+json"
@@ -139,13 +140,49 @@ const BlogArticle = () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org',
-          '@type': 'Article',
+          '@type': 'BlogPosting',
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://fastmedia.pro/blog/${post.slug}`,
+          },
           headline: post.title[language],
           description: post.excerpt[language],
           image: post.image,
           datePublished: post.date,
-          author: { '@type': 'Person', name: post.author },
-          publisher: { '@type': 'Organization', name: 'FastMedia.Pro' },
+          dateModified: post.date,
+          wordCount: post.sections
+            .filter(s => s.type === 'paragraph' || s.type === 'heading')
+            .reduce((acc, s) => acc + ((s as any).text[language]?.split(/\s+/).length || 0), 0),
+          articleSection: categoryLabels[post.category][language],
+          inLanguage: language,
+          keywords: post.tags.join(', '),
+          author: {
+            '@type': 'Person',
+            name: post.author,
+            jobTitle: post.authorRole[language],
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'FastMedia.Pro',
+            url: 'https://fastmedia.pro',
+            logo: {
+              '@type': 'ImageObject',
+              url: 'https://fastmedia.pro/favicon.jpeg',
+            },
+          },
+          speakable: {
+            '@type': 'SpeakableSpecification',
+            cssSelector: ['h1', '.text-lg.leading-relaxed'],
+          },
+          ...(post.videoUrl ? {
+            video: {
+              '@type': 'VideoObject',
+              name: post.title[language],
+              description: post.excerpt[language],
+              embedUrl: post.videoUrl.replace('watch?v=', 'embed/'),
+              uploadDate: post.date,
+            },
+          } : {}),
         }) }}
       />
       {/* Reading progress bar */}
