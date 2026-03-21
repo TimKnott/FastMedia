@@ -71,6 +71,31 @@ const HomeJsonLd = () => {
     })),
   };
 
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'FastMedia.Pro',
+    url: 'https://fastmedia.pro',
+    description: t('hero.subtitle'),
+    inLanguage: ['cs', 'en', 'de'],
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://fastmedia.pro/?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
+  const speakableSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: t('hero.title'),
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.hero-subtitle', '.faq-section'],
+    },
+    url: 'https://fastmedia.pro',
+  };
+
   return (
     <>
       <script
@@ -79,11 +104,19 @@ const HomeJsonLd = () => {
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }}
       />
     </>
   );

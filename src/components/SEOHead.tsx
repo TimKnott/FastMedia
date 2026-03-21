@@ -48,11 +48,22 @@ const SEOHead = ({
       <title>{fullTitle}</title>
       <meta name="description" content={effectiveDescription} />
       {effectiveNoindex && <meta name="robots" content="noindex, nofollow" />}
+      {!effectiveNoindex && <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />}
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+      {/* Hreflang for multilingual SEO */}
+      {canonicalUrl && <link rel="alternate" hrefLang="cs" href={canonicalUrl} />}
+      {canonicalUrl && <link rel="alternate" hrefLang="en" href={canonicalUrl} />}
+      {canonicalUrl && <link rel="alternate" hrefLang="de" href={canonicalUrl} />}
+      {canonicalUrl && <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />}
 
       <meta property="og:title" content={effectiveOgTitle || fullTitle} />
       <meta property="og:description" content={effectiveOgDescription || effectiveDescription} />
       <meta property="og:type" content={effectiveOgType} />
+      <meta property="og:site_name" content="FastMedia.Pro" />
+      <meta property="og:locale" content="cs_CZ" />
+      <meta property="og:locale:alternate" content="en_US" />
+      <meta property="og:locale:alternate" content="de_DE" />
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
       {effectiveOgImage && <meta property="og:image" content={effectiveOgImage} />}
 
