@@ -23,6 +23,7 @@ export const translations: Translations = {
   'nav.consultant': { cs: 'Konzultantka', en: 'Consultant', de: 'Beraterin' },
   'nav.calculator': { cs: 'Kalkulačka', en: 'Calculator', de: 'Kalkulator' },
   'nav.install': { cs: 'Instalovat aplikaci', en: 'Install App', de: 'App installieren' },
+  'nav.inquiry': { cs: 'Poptávka', en: 'Inquiry', de: 'Anfrage' },
   'nav.admin': { cs: 'Přihlášení', en: 'Login', de: 'Anmelden' },
 
   // Hero — direct answer in first sentence
