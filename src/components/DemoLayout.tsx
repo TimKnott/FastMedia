@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, Menu, X } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
+import DemoFAQSection from '@/components/DemoFAQSection';
 import Footer from '@/components/Footer';
 import { getTradeImage, getTradeGalleryImages } from '@/data/tradeImages';
 import { tradeGalleryDescriptions } from '@/data/tradeGalleryImages';
