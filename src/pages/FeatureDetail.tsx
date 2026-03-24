@@ -12,6 +12,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import ScrollToTop from '@/components/ScrollToTop';
+import FAQJsonLd from '@/components/FAQJsonLd';
 
 const FeatureDetail = () => {
   const { featureId } = useParams<{ featureId: string }>();
@@ -72,6 +73,7 @@ const FeatureDetail = () => {
       />
       <Navbar />
       <ScrollToTop />
+      <FAQJsonLd faqs={faqs.map(f => ({ question: f.q, answer: f.a }))} />
 
       {/* Hero */}
       <div className="relative w-full h-[340px] sm:h-[420px] overflow-hidden">
@@ -207,12 +209,12 @@ const FeatureDetail = () => {
           </h2>
           <Accordion type="single" collapsible className="space-y-2">
             {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-4 bg-card">
+              <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-4 bg-card" itemScope itemProp="mainEntity" itemType="https://schema.org/Question">
                 <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline">
-                  {faq.q}
+                  <span itemProp="name">{faq.q}</span>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {faq.a}
+                <AccordionContent className="text-muted-foreground" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <span itemProp="text">{faq.a}</span>
                 </AccordionContent>
               </AccordionItem>
             ))}

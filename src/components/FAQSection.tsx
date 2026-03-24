@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/accordion';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import FAQJsonLd from '@/components/FAQJsonLd';
 
 const FAQSection = () => {
   const { t } = useLanguage();
@@ -14,8 +15,14 @@ const FAQSection = () => {
 
   const faqKeys = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
+  const faqItems = faqKeys.map((key) => ({
+    question: getContent(`faq.q${key}`, '') || t(`faq.q${key}`),
+    answer: getContent(`faq.a${key}`, '') || t(`faq.a${key}`),
+  }));
+
   return (
-    <section id="faq" className="py-20 bg-muted/30">
+    <section id="faq" className="py-20 bg-muted/30" itemScope itemType="https://schema.org/FAQPage">
+      <FAQJsonLd faqs={faqItems} />
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-12">
           <span className="text-sm font-semibold tracking-widest uppercase text-primary">
@@ -45,26 +52,33 @@ const FAQSection = () => {
               key={key}
               value={`faq-${key}`}
               className="bg-card border border-border rounded-lg px-6 data-[state=open]:shadow-md transition-shadow"
+              itemScope
+              itemProp="mainEntity"
+              itemType="https://schema.org/Question"
             >
               <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5">
-                <EditableText
-                  contentKey={`faq.q${key}`}
-                  defaultValue={t(`faq.q${key}`)}
-                  value={getContent(`faq.q${key}`, '') || undefined}
-                  onSave={invalidate}
-                  as="span"
-                  className="text-left"
-                />
+                <span itemProp="name">
+                  <EditableText
+                    contentKey={`faq.q${key}`}
+                    defaultValue={t(`faq.q${key}`)}
+                    value={getContent(`faq.q${key}`, '') || undefined}
+                    onSave={invalidate}
+                    as="span"
+                    className="text-left"
+                  />
+                </span>
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground pb-5">
-                <EditableText
-                  contentKey={`faq.a${key}`}
-                  defaultValue={t(`faq.a${key}`)}
-                  value={getContent(`faq.a${key}`, '') || undefined}
-                  onSave={invalidate}
-                  as="span"
-                  multiline
-                />
+              <AccordionContent className="text-muted-foreground pb-5" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                <span itemProp="text">
+                  <EditableText
+                    contentKey={`faq.a${key}`}
+                    defaultValue={t(`faq.a${key}`)}
+                    value={getContent(`faq.a${key}`, '') || undefined}
+                    onSave={invalidate}
+                    as="span"
+                    multiline
+                  />
+                </span>
               </AccordionContent>
             </AccordionItem>
           ))}
