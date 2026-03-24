@@ -725,6 +725,9 @@ const DemoLayout = ({
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <DemoFAQSection tradeId={tradeId} tradeName={tradeName} gradientClass={gradientClass} />
+
       {/* Trade-specific footer */}
       <footer className="bg-foreground text-background py-12">
         <div className="container mx-auto px-4">
