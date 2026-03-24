@@ -1,4 +1,4 @@
-export type BookingStatus = 'neu' | 'kontaktiert' | 'angebot_gesendet' | 'in_bearbeitung' | 'abgeschlossen' | 'storniert';
+export type BookingStatus = 'neu' | 'kontaktiert' | 'angebot_gesendet' | 'in_bearbeitung' | 'abgeschlossen' | 'fakturiert' | 'storniert';
 export type BookingPriority = 'niedrig' | 'mittel' | 'hoch' | 'dringend';
 export type BookingSource = 'website' | 'telefon' | 'empfehlung' | 'google' | 'social_media';
 
@@ -25,6 +25,7 @@ export const statusConfig: Record<BookingStatus, { label: string; variant: strin
   angebot_gesendet: { label: 'Angebot gesendet', variant: 'outline', dot: 'bg-muted-foreground' },
   in_bearbeitung: { label: 'In Bearbeitung', variant: 'secondary', dot: 'bg-accent' },
   abgeschlossen: { label: 'Abgeschlossen', variant: 'outline', dot: 'bg-primary' },
+  fakturiert: { label: 'Fakturiert', variant: 'default', dot: 'bg-green-500' },
   storniert: { label: 'Storniert', variant: 'destructive', dot: 'bg-destructive' },
 };
 
@@ -49,4 +50,5 @@ export const pipelineStages: { key: BookingStatus; label: string }[] = [
   { key: 'angebot_gesendet', label: 'Angebot' },
   { key: 'in_bearbeitung', label: 'In Arbeit' },
   { key: 'abgeschlossen', label: 'Fertig' },
+  { key: 'fakturiert', label: 'Fakturiert' },
 ];
