@@ -12,6 +12,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import ScrollToTop from '@/components/ScrollToTop';
+import FAQJsonLd from '@/components/FAQJsonLd';
 
 const FeatureDetail = () => {
   const { featureId } = useParams<{ featureId: string }>();
@@ -72,6 +73,7 @@ const FeatureDetail = () => {
       />
       <Navbar />
       <ScrollToTop />
+      <FAQJsonLd faqs={faqs.map(f => ({ question: f.q, answer: f.a }))} />
 
       {/* Hero */}
       <div className="relative w-full h-[340px] sm:h-[420px] overflow-hidden">
