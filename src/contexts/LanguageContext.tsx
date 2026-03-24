@@ -315,6 +315,7 @@ export const translations: Translations = {
   'admin.embed_codes': { cs: 'Embed kódy', en: 'Embed Codes', de: 'Embed-Codes' },
   'admin.settings': { cs: 'Nastavení', en: 'Settings', de: 'Einstellungen' },
   'admin.vbout': { cs: 'Vbout', en: 'Vbout', de: 'Vbout' },
+  'admin.accounting': { cs: 'Účetnictví', en: 'Accounting', de: 'Buchhaltung' },
 
   // AdminToolbar
   'admin.preview': { cs: 'Náhled', en: 'Preview', de: 'Vorschau' },
