@@ -558,11 +558,18 @@ const CalculatorPage = () => {
                                       <span className="font-semibold text-sm text-foreground">{feature[nameKey]}</span>
                                     </div>
                                     <p className="text-xs text-muted-foreground">{feature[descKey]}</p>
-                                    <div className="flex gap-3 mt-2 text-xs">
+                                    <div className="flex gap-3 mt-2 text-xs items-center">
                                       <span className="font-semibold text-foreground">{formatPrice(feature.oneTimePrice)} Kč</span>
                                       {feature.monthlyPrice > 0 && (
                                         <span className="text-muted-foreground">+{formatPrice(feature.monthlyPrice)} Kč{l.perMonth}</span>
                                       )}
+                                      <Link
+                                        to={`/feature/${feature.id}`}
+                                        className="text-primary hover:underline ml-auto"
+                                        onClick={e => e.stopPropagation()}
+                                      >
+                                        {lang === 'cs' ? 'Více info →' : lang === 'de' ? 'Mehr Info →' : 'Learn more →'}
+                                      </Link>
                                     </div>
                                   </div>
                                   {selected && (
