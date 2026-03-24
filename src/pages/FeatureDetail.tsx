@@ -169,7 +169,7 @@ const FeatureDetail = () => {
             <CardContent className="p-6 sm:p-8">
               <div className="flex gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map(s => (
-                  <Star key={s} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <Star key={s} className="w-5 h-5 fill-primary text-primary" />
                 ))}
               </div>
               <blockquote className="text-foreground/90 text-lg italic leading-relaxed mb-6">
