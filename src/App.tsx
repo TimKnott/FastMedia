@@ -80,6 +80,7 @@ import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import SitemapRedirect from "./pages/SitemapRedirect";
 import Inquiry from "./pages/Inquiry";
+import FeatureDetail from "./pages/FeatureDetail";
 
 const queryClient = new QueryClient();
 
@@ -139,6 +140,7 @@ const App = () => (
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />
             <Route path="/inquiry" element={<Inquiry />} />
+            <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
