@@ -225,10 +225,12 @@ const DemoLayout = ({
                 <Phone className="w-5 h-5 mr-2" />
                 +420 123 456 789
               </Button>
-              <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
-                {t('demo.getquote')}
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
+              <Link to="/calculator">
+                <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
+                  {t('demo.getquote')}
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -565,10 +567,12 @@ const DemoLayout = ({
                 <Phone className="w-5 h-5 mr-2" />
                 +420 123 456 789
               </Button>
-              <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
-                <Mail className="w-5 h-5 mr-2" />
-                info@example.cz
-              </Button>
+              <Link to="/calculator">
+                <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
+                  {t('demo.getquote')}
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
