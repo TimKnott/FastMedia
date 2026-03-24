@@ -57,26 +57,28 @@ const FAQSection = () => {
               itemType="https://schema.org/Question"
             >
               <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5">
-                <EditableText
-                  contentKey={`faq.q${key}`}
-                  defaultValue={t(`faq.q${key}`)}
-                  value={getContent(`faq.q${key}`, '') || undefined}
-                  onSave={invalidate}
-                  as="span"
-                  className="text-left"
-                  itemProp="name"
-                />
+                <span itemProp="name">
+                  <EditableText
+                    contentKey={`faq.q${key}`}
+                    defaultValue={t(`faq.q${key}`)}
+                    value={getContent(`faq.q${key}`, '') || undefined}
+                    onSave={invalidate}
+                    as="span"
+                    className="text-left"
+                  />
+                </span>
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground pb-5" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
-                <EditableText
-                  contentKey={`faq.a${key}`}
-                  defaultValue={t(`faq.a${key}`)}
-                  value={getContent(`faq.a${key}`, '') || undefined}
-                  onSave={invalidate}
-                  as="span"
-                  multiline
-                  itemProp="text"
-                />
+                <span itemProp="text">
+                  <EditableText
+                    contentKey={`faq.a${key}`}
+                    defaultValue={t(`faq.a${key}`)}
+                    value={getContent(`faq.a${key}`, '') || undefined}
+                    onSave={invalidate}
+                    as="span"
+                    multiline
+                  />
+                </span>
               </AccordionContent>
             </AccordionItem>
           ))}
