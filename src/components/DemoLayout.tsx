@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, Menu, X } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
+import DemoFAQSection from '@/components/DemoFAQSection';
 import Footer from '@/components/Footer';
 import { getTradeImage, getTradeGalleryImages } from '@/data/tradeImages';
 import { tradeGalleryDescriptions } from '@/data/tradeGalleryImages';
@@ -145,6 +146,7 @@ const DemoLayout = ({
             <a href="#reviews" className="text-muted-foreground hover:text-foreground transition-colors">
               {language === 'cs' ? 'Recenze' : language === 'en' ? 'Reviews' : 'Bewertungen'}
             </a>
+            <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">{t('demo.contact')}</a>
           </div>
           <div className="flex items-center gap-2">
@@ -723,6 +725,9 @@ const DemoLayout = ({
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <DemoFAQSection tradeId={tradeId} tradeName={tradeName} gradientClass={gradientClass} />
 
       {/* Trade-specific footer */}
       <footer className="bg-foreground text-background py-12">
