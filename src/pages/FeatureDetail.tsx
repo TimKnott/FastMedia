@@ -209,12 +209,12 @@ const FeatureDetail = () => {
           </h2>
           <Accordion type="single" collapsible className="space-y-2">
             {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-4 bg-card">
+              <AccordionItem key={i} value={`faq-${i}`} className="border rounded-xl px-4 bg-card" itemScope itemProp="mainEntity" itemType="https://schema.org/Question">
                 <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline">
-                  {faq.q}
+                  <span itemProp="name">{faq.q}</span>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {faq.a}
+                <AccordionContent className="text-muted-foreground" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <span itemProp="text">{faq.a}</span>
                 </AccordionContent>
               </AccordionItem>
             ))}
