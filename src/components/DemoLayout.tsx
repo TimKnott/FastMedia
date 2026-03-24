@@ -146,6 +146,7 @@ const DemoLayout = ({
             <a href="#reviews" className="text-muted-foreground hover:text-foreground transition-colors">
               {language === 'cs' ? 'Recenze' : language === 'en' ? 'Reviews' : 'Bewertungen'}
             </a>
+            <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
             <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">{t('demo.contact')}</a>
           </div>
           <div className="flex items-center gap-2">
