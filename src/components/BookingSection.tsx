@@ -30,7 +30,7 @@ const BookingSection = () => {
   };
 
   const contactInfo = [
-    { icon: Phone, value: '+420 123 456 789', label: { cs: 'Telefon', en: 'Phone', de: 'Telefon' } },
+    { icon: Phone, value: '+420 797 864 432', label: { cs: 'Telefon', en: 'Phone', de: 'Telefon' } },
     { icon: Mail, value: 'support@fastmedia.pro', label: { cs: 'E-mail', en: 'Email', de: 'E-Mail' } },
     { icon: MapPin, value: 'Praha, Česká republika', label: { cs: 'Adresa', en: 'Address', de: 'Adresse' } },
   ];
@@ -118,7 +118,7 @@ const BookingSection = () => {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-foreground text-sm font-medium mb-2">{t('booking.phone')}</label>
-                      <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="+420 123 456 789" className="h-12" />
+                      <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="+420 797 864 432" className="h-12" />
                     </div>
                     <div>
                       <label className="block text-foreground text-sm font-medium mb-2">{t('booking.trade')}</label>

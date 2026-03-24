@@ -22,7 +22,7 @@ const Index = () => {
     <LanguageProvider>
       <SEOHead
         title="FastMedia.Pro — Profesionální weby pro řemeslníky a služby"
-        description="FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI chatbot, online rezervace, sběr poptávek. 25 oborových šablon, dodání do 10 dní."
+        description="FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI chatbot, online rezervace, sběr poptávek. 37 oborových šablon, dodání do 10 dní."
         canonical="/"
         ogType="website"
         pagePath="/"

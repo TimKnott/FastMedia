@@ -47,9 +47,9 @@ export const translations: Translations = {
     de: 'Websites für jedes Gewerk und jeden Dienstleister',
   },
   'services.subtitle': {
-    cs: 'Nabízíme profesionální webové stránky přizpůsobené potřebám 24 řemeslných a servisních oborů — od instalatérů po IT služby.',
-    en: 'We build professional websites tailored to 24 trade and service industries — from plumbers to IT services.',
-    de: 'Wir erstellen professionelle Websites für 24 Handwerks- und Dienstleistungsbranchen — von Klempnern bis IT-Dienstleistern.',
+    cs: 'Nabízíme profesionální webové stránky přizpůsobené potřebám 37 řemeslných a servisních oborů — od instalatérů po IT služby.',
+    en: 'We build professional websites tailored to 37 trade and service industries — from plumbers to IT services.',
+    de: 'Wir erstellen professionelle Websites für 37 Handwerks- und Dienstleistungsbranchen — von Klempnern bis IT-Dienstleistern.',
   },
 
   // Demos Section
