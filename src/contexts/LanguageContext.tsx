@@ -47,9 +47,9 @@ export const translations: Translations = {
     de: 'Websites für jedes Gewerk und jeden Dienstleister',
   },
   'services.subtitle': {
-    cs: 'Nabízíme profesionální webové stránky přizpůsobené potřebám 24 řemeslných a servisních oborů — od instalatérů po IT služby.',
-    en: 'We build professional websites tailored to 24 trade and service industries — from plumbers to IT services.',
-    de: 'Wir erstellen professionelle Websites für 24 Handwerks- und Dienstleistungsbranchen — von Klempnern bis IT-Dienstleistern.',
+    cs: 'Nabízíme profesionální webové stránky přizpůsobené potřebám 37 řemeslných a servisních oborů — od instalatérů po IT služby.',
+    en: 'We build professional websites tailored to 37 trade and service industries — from plumbers to IT services.',
+    de: 'Wir erstellen professionelle Websites für 37 Handwerks- und Dienstleistungsbranchen — von Klempnern bis IT-Dienstleistern.',
   },
 
   // Demos Section
@@ -257,6 +257,18 @@ export const translations: Translations = {
   'trade.moving': { cs: 'Stěhování', en: 'Moving', de: 'Umzug' },
   'trade.itservices': { cs: 'IT služby', en: 'IT Services', de: 'IT-Dienste' },
   'trade.eshop': { cs: 'E-shop', en: 'E-shop', de: 'E-Shop' },
+  'trade.womeninbusiness': { cs: 'Ženy v podnikání', en: 'Women in Business', de: 'Frauen im Business' },
+  'trade.virtualassistant': { cs: 'Virtuální asistentka', en: 'Virtual Assistant', de: 'Virtuelle Assistentin' },
+  'trade.weddingplanner': { cs: 'Svatební koordinátorka', en: 'Wedding Planner', de: 'Hochzeitsplanerin' },
+  'trade.florist': { cs: 'Květinářství', en: 'Florist', de: 'Floristin' },
+  'trade.bakery': { cs: 'Cukrárna & pekárna', en: 'Bakery & Café', de: 'Bäckerei & Café' },
+  'trade.yoga': { cs: 'Yoga studio', en: 'Yoga Studio', de: 'Yoga-Studio' },
+  'trade.nailsalon': { cs: 'Nehtové studio', en: 'Nail Salon', de: 'Nagelstudio' },
+  'trade.massage': { cs: 'Masážní studio', en: 'Massage Therapy', de: 'Massagestudio' },
+  'trade.petgrooming': { cs: 'Psí salon', en: 'Pet Grooming', de: 'Tierpflege' },
+  'trade.nutritionist': { cs: 'Výživové poradenství', en: 'Nutritionist', de: 'Ernährungsberatung' },
+  'trade.handmade': { cs: 'Handmade & řemesla', en: 'Handmade & Crafts', de: 'Handgemacht & Kunsthandwerk' },
+  'trade.childcare': { cs: 'Hlídání dětí', en: 'Childcare', de: 'Kinderbetreuung' },
 
   // Calculator Showcase — clear value proposition
   'calculator_showcase.label': { cs: 'AI Nástroj', en: 'AI-Powered Tool', de: 'KI-gestütztes Tool' },

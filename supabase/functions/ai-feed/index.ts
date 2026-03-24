@@ -21,7 +21,7 @@ serve(async (req) => {
           "@id": `${BASE_URL}/#website`,
           name: "FastMedia.Pro",
           url: BASE_URL,
-          description: "Professional conversion-optimized websites for tradespeople and service businesses. AI chatbot, online booking, lead collection. 25 industry templates, delivery within 10 days.",
+          description: "Professional conversion-optimized websites for tradespeople and service businesses. AI chatbot, online booking, lead collection. 37 industry templates, delivery within 10 days.",
           inLanguage: ["cs", "en", "de"],
           publisher: { "@id": `${BASE_URL}/#organization` },
           potentialAction: {

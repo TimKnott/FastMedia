@@ -89,7 +89,7 @@ const HeroSection = () => {
   const { getContent, invalidate } = useSiteContent();
 
   const stats = [
-    { icon: Monitor, value: '25+', label: { cs: 'Oborových šablon', en: 'Industry Templates', de: 'Branchenvorlagen' } },
+    { icon: Monitor, value: '37+', label: { cs: 'Oborových šablon', en: 'Industry Templates', de: 'Branchenvorlagen' } },
     { icon: Users, value: '402+', label: { cs: 'Spokojených klientů', en: 'Satisfied Clients', de: 'Zufriedene Kunden' } },
     { icon: Sparkles, value: '56%', label: { cs: 'Dotazů vyřízeno automaticky', en: 'Inquiries Handled Automatically', de: 'Anfragen automatisch bearbeitet' } },
   ];

@@ -221,10 +221,12 @@ const DemoLayout = ({
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8 group">
-                <Phone className="w-5 h-5 mr-2" />
-                +420 123 456 789
-              </Button>
+              <a href="tel:+420797864432">
+                <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8 group">
+                  <Phone className="w-5 h-5 mr-2" />
+                  +420 797 864 432
+                </Button>
+              </a>
               <Link to="/calculator">
                 <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
                   {t('demo.getquote')}
@@ -563,10 +565,12 @@ const DemoLayout = ({
               {language === 'cs' ? 'Kontaktujte nás pro bezplatnou konzultaci a cenovou nabídku' : language === 'en' ? 'Contact us for a free consultation and quote' : 'Kontaktieren Sie uns für eine kostenlose Beratung und ein Angebot'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8">
-                <Phone className="w-5 h-5 mr-2" />
-                +420 123 456 789
-              </Button>
+              <a href="tel:+420797864432">
+                <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8">
+                  <Phone className="w-5 h-5 mr-2" />
+                  +420 797 864 432
+                </Button>
+              </a>
               <Link to="/calculator">
                 <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
                   {t('demo.getquote')}
@@ -613,8 +617,7 @@ const DemoLayout = ({
                     <h3 className="font-semibold text-foreground mb-1">
                       {language === 'cs' ? 'Telefon' : language === 'en' ? 'Phone' : 'Telefon'}
                     </h3>
-                    <p className="text-muted-foreground">+420 123 456 789</p>
-                    <p className="text-muted-foreground">+420 987 654 321</p>
+                    <p className="text-muted-foreground">+420 797 864 432</p>
                   </div>
                 </div>
 
@@ -756,8 +759,8 @@ const DemoLayout = ({
             <div>
               <h4 className="font-semibold mb-4">{t('demo.contact')}</h4>
               <ul className="space-y-2 text-sm text-background/70">
-                <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> +420 123 456 789</li>
-                <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> info@example.cz</li>
+                <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> +420 797 864 432</li>
+                <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@fastmedia.pro</li>
                 <li className="flex items-center gap-2"><MapPin className="w-4 h-4" /> Praha 1</li>
               </ul>
             </div>
