@@ -60,6 +60,18 @@ import BeautySalonDemo from "./pages/demos/BeautySalonDemo";
 import MovingDemo from "./pages/demos/MovingDemo";
 import ITServicesDemo from "./pages/demos/ITServicesDemo";
 import EshopDemo from "./pages/demos/EshopDemo";
+import WomenInBusinessDemo from "./pages/demos/WomenInBusinessDemo";
+import VirtualAssistantDemo from "./pages/demos/VirtualAssistantDemo";
+import WeddingPlannerDemo from "./pages/demos/WeddingPlannerDemo";
+import FloristDemo from "./pages/demos/FloristDemo";
+import BakeryDemo from "./pages/demos/BakeryDemo";
+import YogaDemo from "./pages/demos/YogaDemo";
+import NailSalonDemo from "./pages/demos/NailSalonDemo";
+import MassageDemo from "./pages/demos/MassageDemo";
+import PetGroomingDemo from "./pages/demos/PetGroomingDemo";
+import NutritionistDemo from "./pages/demos/NutritionistDemo";
+import HandmadeDemo from "./pages/demos/HandmadeDemo";
+import ChildcareDemo from "./pages/demos/ChildcareDemo";
 import ConsultantTereza from "./pages/ConsultantTereza";
 import CalculatorPage from "./pages/CalculatorPage";
 import Install from "./pages/Install";
@@ -110,6 +122,18 @@ const App = () => (
             <Route path="/demo/moving" element={<MovingDemo />} />
             <Route path="/demo/itservices" element={<ITServicesDemo />} />
             <Route path="/demo/eshop" element={<EshopDemo />} />
+            <Route path="/demo/womeninbusiness" element={<WomenInBusinessDemo />} />
+            <Route path="/demo/virtualassistant" element={<VirtualAssistantDemo />} />
+            <Route path="/demo/weddingplanner" element={<WeddingPlannerDemo />} />
+            <Route path="/demo/florist" element={<FloristDemo />} />
+            <Route path="/demo/bakery" element={<BakeryDemo />} />
+            <Route path="/demo/yoga" element={<YogaDemo />} />
+            <Route path="/demo/nailsalon" element={<NailSalonDemo />} />
+            <Route path="/demo/massage" element={<MassageDemo />} />
+            <Route path="/demo/petgrooming" element={<PetGroomingDemo />} />
+            <Route path="/demo/nutritionist" element={<NutritionistDemo />} />
+            <Route path="/demo/handmade" element={<HandmadeDemo />} />
+            <Route path="/demo/childcare" element={<ChildcareDemo />} />
             <Route path="/consultant/tereza" element={<ConsultantTereza />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />
