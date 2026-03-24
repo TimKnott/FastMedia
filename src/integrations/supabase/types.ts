@@ -139,6 +139,93 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          customer_address: string | null
+          customer_email: string
+          customer_name: string
+          due_at: string | null
+          id: string
+          invoice_number: string
+          issued_at: string | null
+          items: Json
+          lead_id: string | null
+          notes: string | null
+          paid_at: string | null
+          status: string
+          subtotal: number
+          tax_amount: number
+          tax_rate: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_address?: string | null
+          customer_email: string
+          customer_name: string
+          due_at?: string | null
+          id?: string
+          invoice_number: string
+          issued_at?: string | null
+          items?: Json
+          lead_id?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_address?: string | null
+          customer_email?: string
+          customer_name?: string
+          due_at?: string | null
+          id?: string
+          invoice_number?: string
+          issued_at?: string | null
+          items?: Json
+          lead_id?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_activities: {
         Row: {
           activity_type: string
@@ -437,6 +524,80 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: []
+      }
+      recurring_invoices: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          customer_address: string | null
+          customer_email: string
+          customer_name: string
+          frequency: string
+          id: string
+          is_active: boolean
+          items: Json
+          last_invoiced_at: string | null
+          next_invoice_at: string
+          notes: string | null
+          subtotal: number
+          tax_amount: number
+          tax_rate: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_address?: string | null
+          customer_email: string
+          customer_name: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          items?: Json
+          last_invoiced_at?: string | null
+          next_invoice_at?: string
+          notes?: string | null
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_address?: string | null
+          customer_email?: string
+          customer_name?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          items?: Json
+          last_invoiced_at?: string | null
+          next_invoice_at?: string
+          notes?: string | null
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recurring_invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scoring_rules: {
         Row: {
