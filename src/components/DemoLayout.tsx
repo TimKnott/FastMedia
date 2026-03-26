@@ -223,7 +223,7 @@ const DemoLayout = ({
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 pb-16">
               <a href="tel:+420797864432">
                 <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8 group">
                   <Phone className="w-5 h-5 mr-2" />
