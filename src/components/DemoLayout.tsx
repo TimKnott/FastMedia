@@ -252,6 +252,11 @@ const DemoLayout = ({
         </motion.div>
       </section>
 
+      {/* Share Bar */}
+      <div className="container mx-auto px-4 py-4 flex justify-end">
+        <DemoShareBar tradeName={tradeName} tradeId={tradeId} gradientClass={gradientClass} />
+      </div>
+
       {/* Stats Bar */}
       <section className={`py-8 ${gradientClass}`}>
         <div className="container mx-auto px-4">
