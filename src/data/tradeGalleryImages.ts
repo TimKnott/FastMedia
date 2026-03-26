@@ -44,7 +44,7 @@ export const tradeGalleryDescriptions: Record<string, {
       "Modern LED lighting installation in living room",
       "Electrical panel upgrade with circuit breakers",
       "Smart home wiring and automation system",
-      "EV charging station installation in garage",
+      "Standalone freestanding EV charging station pedestal in parking lot",
       "Commercial electrical work in office building",
       "Outdoor lighting installation for garden"
     ],
