@@ -13,6 +13,7 @@ import { tradeGalleryDescriptions } from '@/data/tradeGalleryImages';
 import EditableImage from '@/components/EditableImage';
 import { useImageContent } from '@/hooks/useImageContent';
 import SEOHead from '@/components/SEOHead';
+import DemoShareBar from '@/components/DemoShareBar';
 
 interface DemoLayoutProps {
   tradeName: string;
