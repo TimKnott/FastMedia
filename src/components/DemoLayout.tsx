@@ -572,7 +572,7 @@ const DemoLayout = ({
             <p className="text-xl text-primary-foreground/90 mb-8">
               {language === 'cs' ? 'Kontaktujte nás pro bezplatnou konzultaci a cenovou nabídku' : language === 'en' ? 'Contact us for a free consultation and quote' : 'Kontaktieren Sie uns für eine kostenlose Beratung und ein Angebot'}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
               <a href="tel:+420797864432">
                 <Button size="lg" className="bg-background text-foreground hover:bg-background/90 font-semibold text-lg px-8">
                   <Phone className="w-5 h-5 mr-2" />
