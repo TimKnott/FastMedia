@@ -81,6 +81,7 @@ import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import SitemapRedirect from "./pages/SitemapRedirect";
 import Inquiry from "./pages/Inquiry";
 import FeatureDetail from "./pages/FeatureDetail";
+import Unsubscribe from "./pages/Unsubscribe";
 
 const queryClient = new QueryClient();
 
