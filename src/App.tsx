@@ -81,6 +81,7 @@ import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import SitemapRedirect from "./pages/SitemapRedirect";
 import Inquiry from "./pages/Inquiry";
 import FeatureDetail from "./pages/FeatureDetail";
+import Unsubscribe from "./pages/Unsubscribe";
 
 const queryClient = new QueryClient();
 
@@ -142,6 +143,7 @@ const App = () => (
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/reset-password" element={<AdminResetPassword />} />

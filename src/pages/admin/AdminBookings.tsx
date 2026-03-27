@@ -4,7 +4,7 @@ import { de } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import {
   Search, Plus, MoreHorizontal, Phone, Mail, Clock, CalendarDays, List,
-  User, StickyNote, CalendarCheck, Loader2,
+  User, StickyNote, CalendarCheck, Loader2, Send,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -107,7 +107,9 @@ const AdminBookings = () => {
       return;
     }
     setSaving(true);
+    const bookingId = crypto.randomUUID();
     const { error } = await supabase.from('bookings').insert({
+      id: bookingId,
       customer_name: newBooking.customer_name,
       customer_email: newBooking.customer_email,
       phone: newBooking.phone || null,
@@ -122,6 +124,25 @@ const AdminBookings = () => {
       toast.error('Buchung konnte nicht erstellt werden. Bitte prüfen Sie Ihre Eingaben.');
     } else {
       toast.success('Buchung erstellt.');
+      // Send booking confirmation email (fire-and-forget)
+      const scheduledFormatted = newBooking.scheduled_at
+        ? newBooking.scheduled_at.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : '';
+      supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'booking-confirmation',
+          recipientEmail: newBooking.customer_email,
+          idempotencyKey: `booking-confirm-${bookingId}`,
+          templateData: {
+            customerName: newBooking.customer_name,
+            service: newBooking.service,
+            scheduledAt: scheduledFormatted,
+            durationMinutes: newBooking.duration_minutes,
+            assignedTo: newBooking.assigned_to || undefined,
+            notes: newBooking.notes || undefined,
+          },
+        },
+      }).catch(() => {});
       setCreateOpen(false);
       setNewBooking({ customer_name: '', customer_email: '', phone: '', service: '', scheduled_at: undefined, duration_minutes: 60, notes: '', assigned_to: '' });
       fetchBookings();
@@ -466,6 +487,53 @@ const BookingDetailSheet = ({
               <StickyNote className="w-4 h-4" /> Notizen
             </h3>
             <Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} placeholder="Notizen hinzufügen…" />
+          </div>
+
+          {/* Email task to team */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+              <Send className="w-4 h-4" /> Aufgabe per E-Mail senden
+            </h3>
+            <div className="space-y-2">
+              <Input
+                placeholder="E-Mail des Empfängers (Admin/Editor)"
+                id="task-email-recipient"
+              />
+              <Button
+                variant="secondary"
+                className="w-full gap-1.5"
+                onClick={async () => {
+                  const emailInput = document.getElementById('task-email-recipient') as HTMLInputElement;
+                  const recipientEmail = emailInput?.value?.trim();
+                  if (!recipientEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
+                    toast.error('Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+                    return;
+                  }
+                  try {
+                    await supabase.functions.invoke('send-transactional-email', {
+                      body: {
+                        templateName: 'kanban-task-assignment',
+                        recipientEmail,
+                        idempotencyKey: `kanban-task-${booking.id}-${Date.now()}`,
+                        templateData: {
+                          customerName: booking.customer_name,
+                          service: booking.service,
+                          status: sc.label,
+                          scheduledAt: formatDate(booking.scheduled_at),
+                          notes: booking.notes || undefined,
+                        },
+                      },
+                    });
+                    toast.success('Aufgabe per E-Mail gesendet!');
+                    emailInput.value = '';
+                  } catch {
+                    toast.error('E-Mail konnte nicht gesendet werden.');
+                  }
+                }}
+              >
+                <Send className="w-4 h-4" /> Aufgabe senden
+              </Button>
+            </div>
           </div>
 
           <div className="flex gap-2 pt-2">
