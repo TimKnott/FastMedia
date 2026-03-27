@@ -219,9 +219,9 @@ serve(async (req) => {
       metadata: { features_count: featureCount, quote_total: totalBudget },
     });
 
-    // Send admin notification (fire-and-forget)
+    // Send admin notification via transactional email (fire-and-forget)
     try {
-      const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/notify-admin`;
+      const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
       await fetch(notifyUrl, {
         method: "POST",
         headers: {
@@ -229,15 +229,17 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: "new_lead",
-          data: {
+          templateName: "lead-notification",
+          recipientEmail: Deno.env.get("NOTIFICATION_EMAIL") || "support@fastmedia.pro",
+          idempotencyKey: `lead-notify-${lead.id}`,
+          templateData: {
             name: body.name.trim(),
             email: body.email.trim().toLowerCase(),
             trade: body.trade,
             score,
             classification,
             quoteOneTime: body.quoteOneTime,
-            specialRequest: body.specialRequest || null,
+            specialRequest: body.specialRequest || undefined,
           },
         }),
       });
