@@ -107,7 +107,9 @@ const AdminBookings = () => {
       return;
     }
     setSaving(true);
+    const bookingId = crypto.randomUUID();
     const { error } = await supabase.from('bookings').insert({
+      id: bookingId,
       customer_name: newBooking.customer_name,
       customer_email: newBooking.customer_email,
       phone: newBooking.phone || null,
@@ -122,6 +124,25 @@ const AdminBookings = () => {
       toast.error('Buchung konnte nicht erstellt werden. Bitte prüfen Sie Ihre Eingaben.');
     } else {
       toast.success('Buchung erstellt.');
+      // Send booking confirmation email (fire-and-forget)
+      const scheduledFormatted = newBooking.scheduled_at
+        ? newBooking.scheduled_at.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : '';
+      supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'booking-confirmation',
+          recipientEmail: newBooking.customer_email,
+          idempotencyKey: `booking-confirm-${bookingId}`,
+          templateData: {
+            customerName: newBooking.customer_name,
+            service: newBooking.service,
+            scheduledAt: scheduledFormatted,
+            durationMinutes: newBooking.duration_minutes,
+            assignedTo: newBooking.assigned_to || undefined,
+            notes: newBooking.notes || undefined,
+          },
+        },
+      }).catch(() => {});
       setCreateOpen(false);
       setNewBooking({ customer_name: '', customer_email: '', phone: '', service: '', scheduled_at: undefined, duration_minutes: 60, notes: '', assigned_to: '' });
       fetchBookings();

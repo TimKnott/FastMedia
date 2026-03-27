@@ -100,6 +100,16 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
         }
       } else {
         toast.success(labels.subscribed[language]);
+        // Send welcome email (fire-and-forget)
+        const subId = crypto.randomUUID();
+        supabase.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'newsletter-welcome',
+            recipientEmail: trimmedEmail,
+            idempotencyKey: `newsletter-welcome-${subId}`,
+            templateData: { email: trimmedEmail },
+          },
+        }).catch(() => {});
       }
       setEmail('');
     } catch {
