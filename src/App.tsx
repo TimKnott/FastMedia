@@ -33,6 +33,7 @@ import AdminSEO from "./pages/admin/AdminSEO";
 import AdminVbout from "./pages/admin/AdminVbout";
 import AdminEmbedCodes from "./pages/admin/AdminEmbedCodes";
 import AdminAccounting from "./pages/admin/AdminAccounting";
+import AdminEmails from "./pages/admin/AdminEmails";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Demo pages
@@ -166,6 +167,7 @@ const App = () => (
               <Route path="vbout" element={<AdminVbout />} />
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
               <Route path="accounting" element={<AdminAccounting />} />
+              <Route path="emails" element={<AdminEmails />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
