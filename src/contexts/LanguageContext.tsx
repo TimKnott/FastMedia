@@ -316,6 +316,7 @@ export const translations: Translations = {
   'admin.settings': { cs: 'Nastavení', en: 'Settings', de: 'Einstellungen' },
   'admin.vbout': { cs: 'Vbout', en: 'Vbout', de: 'Vbout' },
   'admin.accounting': { cs: 'Účetnictví', en: 'Accounting', de: 'Buchhaltung' },
+  'admin.emails': { cs: 'E-Maily', en: 'Emails', de: 'E-Mails' },
 
   // AdminToolbar
   'admin.preview': { cs: 'Náhled', en: 'Preview', de: 'Vorschau' },

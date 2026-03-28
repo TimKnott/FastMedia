@@ -57,6 +57,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
   { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
+  { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
 ];
 
 const contentItems: MenuItem[] = [
