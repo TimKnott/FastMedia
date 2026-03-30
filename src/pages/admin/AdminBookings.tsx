@@ -57,6 +57,9 @@ const useBookingLabels = () => {
 };
 
 const AdminBookings = () => {
+  const { t, language } = useLanguage();
+  const { statusConfig, pipelineStages } = useBookingLabels();
+  const dateLocale = language === 'de' ? de : language === 'en' ? enUS : de;
   const [bookings, setBookings] = useState<DbBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
