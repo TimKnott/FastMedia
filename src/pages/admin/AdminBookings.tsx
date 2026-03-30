@@ -404,6 +404,8 @@ const BookingDetailSheet = ({
   onSaveNotes: (id: string, notes: string) => void;
   formatDate: (iso: string) => string;
 }) => {
+  const { t } = useLanguage();
+  const { statusConfig, pipelineStages } = useBookingLabels();
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
