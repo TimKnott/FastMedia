@@ -12,7 +12,7 @@ import { Mail, CheckCircle, XCircle, AlertTriangle, Clock, ChevronLeft, ChevronR
 import { format, subDays, subHours, startOfDay, startOfHour, eachDayOfInterval, eachHourOfInterval } from 'date-fns';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-type TimeRange = '24h' | '7d' | '30d';
+type ChartGranularity = 'daily' | 'hourly';
 
 const PAGE_SIZE = 50;
 
