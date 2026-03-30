@@ -6,11 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Mail, CheckCircle, XCircle, AlertTriangle, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
-import { format, subDays, subHours } from 'date-fns';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { Mail, CheckCircle, XCircle, AlertTriangle, Clock, ChevronLeft, ChevronRight, BarChart3 } from 'lucide-react';
+import { format, subDays, subHours, startOfDay, startOfHour, eachDayOfInterval, eachHourOfInterval } from 'date-fns';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 type TimeRange = '24h' | '7d' | '30d';
+type ChartGranularity = 'daily' | 'hourly';
 
 const PAGE_SIZE = 50;
 
@@ -29,6 +32,7 @@ const AdminEmails = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
   const [templateFilter, setTemplateFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [chartGranularity, setChartGranularity] = useState<ChartGranularity>('daily');
   const [page, setPage] = useState(0);
 
   const rangeStart = useMemo(() => {
@@ -82,6 +86,45 @@ const AdminEmails = () => {
     return { total, sent, failed, suppressed };
   }, [filtered]);
 
+  const chartData = useMemo(() => {
+    const now = new Date();
+    const start = new Date(rangeStart);
+    const isHourly = chartGranularity === 'hourly';
+
+    const buckets = isHourly
+      ? eachHourOfInterval({ start, end: now })
+      : eachDayOfInterval({ start, end: now });
+
+    const bucketMap = new Map<string, { sent: number; failed: number; suppressed: number }>();
+    for (const b of buckets) {
+      const key = isHourly ? format(b, 'MM/dd HH:00') : format(b, 'MM/dd');
+      bucketMap.set(key, { sent: 0, failed: 0, suppressed: 0 });
+    }
+
+    for (const log of filtered) {
+      const d = new Date(log.created_at);
+      const key = isHourly
+        ? format(startOfHour(d), 'MM/dd HH:00')
+        : format(startOfDay(d), 'MM/dd');
+      const bucket = bucketMap.get(key);
+      if (!bucket) continue;
+      if (log.status === 'sent') bucket.sent++;
+      else if (['dlq', 'failed'].includes(log.status)) bucket.failed++;
+      else if (log.status === 'suppressed') bucket.suppressed++;
+    }
+
+    return Array.from(bucketMap.entries()).map(([label, counts]) => ({
+      label,
+      ...counts,
+    }));
+  }, [filtered, rangeStart, chartGranularity]);
+
+  const chartConfig = {
+    sent: { label: t('emails.sent'), color: 'hsl(142, 71%, 45%)' },
+    failed: { label: t('emails.failed'), color: 'hsl(0, 84%, 60%)' },
+    suppressed: { label: t('emails.suppressed'), color: 'hsl(25, 95%, 53%)' },
+  };
+
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paged = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
@@ -105,7 +148,7 @@ const AdminEmails = () => {
               key={r}
               size="sm"
               variant={timeRange === r ? 'default' : 'outline'}
-              onClick={() => { setTimeRange(r); setPage(0); }}
+              onClick={() => { setTimeRange(r); setChartGranularity(r === '24h' ? 'hourly' : 'daily'); setPage(0); }}
             >
               {timeLabels[r]}
             </Button>
@@ -167,6 +210,31 @@ const AdminEmails = () => {
           <CardContent><p className="text-2xl font-bold text-orange-600">{stats.suppressed}</p></CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" /> Email Volume
+          </CardTitle>
+          <div className="flex gap-1">
+            <Button size="sm" variant={chartGranularity === 'daily' ? 'default' : 'outline'} onClick={() => setChartGranularity('daily')}>Daily</Button>
+            <Button size="sm" variant={chartGranularity === 'hourly' ? 'default' : 'outline'} onClick={() => setChartGranularity('hourly')}>Hourly</Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-[250px] w-full">
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+              <XAxis dataKey="label" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
+              <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="sent" stackId="a" fill="var(--color-sent)" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="failed" stackId="a" fill="var(--color-failed)" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="suppressed" stackId="a" fill="var(--color-suppressed)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardContent className="p-0">
