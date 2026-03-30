@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -5,27 +6,30 @@ import {
   Layout, Type, Image, Megaphone, Calculator, Users, Star, CreditCard,
   HelpCircle, BookOpen, Zap, BarChart3, Bot
 } from 'lucide-react';
-
-const sections = [
-  { id: 'hero', label: 'Hero', icon: Megaphone, desc: 'Hlavní nadpis, podtitulek, CTA tlačítka' },
-  { id: 'why', label: 'Proč FastMedia', icon: BarChart3, desc: 'Hodnotová nabídka, metriky' },
-  { id: 'demos', label: 'Ukázky oborů', icon: Layout, desc: 'Sekce s demo kartami' },
-  { id: 'calculator', label: 'Kalkulačka', icon: Calculator, desc: 'AI kalkulačka showcase' },
-  { id: 'advantages', label: 'Výhody', icon: Star, desc: 'Klíčové výhody a čísla' },
-  { id: 'automation', label: 'Automatizace', icon: Bot, desc: 'Sekce úspory času' },
-  { id: 'services', label: 'Služby', icon: Zap, desc: 'Přehled služeb' },
-  { id: 'consultant', label: 'Konzultantka', icon: Users, desc: 'Profil Jitky' },
-  { id: 'pricing', label: 'Ceník', icon: CreditCard, desc: 'Balíčky a ceny' },
-  { id: 'faq', label: 'FAQ', icon: HelpCircle, desc: 'Často kladené otázky' },
-  { id: 'blog', label: 'Blog sekce', icon: BookOpen, desc: 'Doporučené články na HP' },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminLandingPage = () => {
+  const { t } = useLanguage();
+
+  const sections = [
+    { id: 'hero', label: 'Hero', icon: Megaphone, descKey: 'hero' },
+    { id: 'why', label: 'Why FastMedia', icon: BarChart3, descKey: 'why' },
+    { id: 'demos', label: 'Demos', icon: Layout, descKey: 'demos' },
+    { id: 'calculator', label: 'Calculator', icon: Calculator, descKey: 'calculator' },
+    { id: 'advantages', label: 'Advantages', icon: Star, descKey: 'advantages' },
+    { id: 'automation', label: 'Automation', icon: Bot, descKey: 'automation' },
+    { id: 'services', label: 'Services', icon: Zap, descKey: 'services' },
+    { id: 'consultant', label: 'Consultant', icon: Users, descKey: 'consultant' },
+    { id: 'pricing', label: 'Pricing', icon: CreditCard, descKey: 'pricing' },
+    { id: 'faq', label: 'FAQ', icon: HelpCircle, descKey: 'faq' },
+    { id: 'blog', label: 'Blog', icon: BookOpen, descKey: 'blog' },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Startseite bearbeiten</h1>
-        <p className="text-muted-foreground mt-1">Verwalten Sie alle Abschnitte der Landing Page.</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('landing.title')}</h1>
+        <p className="text-muted-foreground mt-1">{t('landing.subtitle')}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -38,9 +42,8 @@ const AdminLandingPage = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm text-foreground">{section.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{section.desc}</p>
                 </div>
-                <Badge variant="outline" className="text-[10px] flex-shrink-0">Bearbeiten</Badge>
+                <Badge variant="outline" className="text-[10px] flex-shrink-0">{t('landing.edit')}</Badge>
               </div>
             </CardContent>
           </Card>
@@ -48,7 +51,7 @@ const AdminLandingPage = () => {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Inline-Bearbeitung kommt bald. Hier können Sie in Zukunft Texte und Bilder direkt bearbeiten.
+        {t('landing.coming_soon')}
       </p>
     </div>
   );

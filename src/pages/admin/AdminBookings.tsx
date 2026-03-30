@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Search, Plus, MoreHorizontal, Phone, Mail, Clock, CalendarDays, List,
   User, StickyNote, CalendarCheck, Loader2, Send,
@@ -36,23 +37,29 @@ type DbBooking = Tables<'bookings'>;
 
 type BookingStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
 
-const statusConfig: Record<BookingStatus, { label: string; dot: string; variant: string }> = {
-  pending: { label: 'Ausstehend', dot: 'bg-yellow-500', variant: 'outline' },
-  confirmed: { label: 'Bestätigt', dot: 'bg-blue-500', variant: 'secondary' },
-  in_progress: { label: 'In Bearbeitung', dot: 'bg-primary', variant: 'default' },
-  completed: { label: 'Abgeschlossen', dot: 'bg-green-500', variant: 'outline' },
-  cancelled: { label: 'Storniert', dot: 'bg-destructive', variant: 'destructive' },
+const useBookingLabels = () => {
+  const { t } = useLanguage();
+  const statusConfig: Record<BookingStatus, { label: string; dot: string; variant: string }> = {
+    pending: { label: t('bookings.status.pending'), dot: 'bg-yellow-500', variant: 'outline' },
+    confirmed: { label: t('bookings.status.confirmed'), dot: 'bg-blue-500', variant: 'secondary' },
+    in_progress: { label: t('bookings.status.in_progress'), dot: 'bg-primary', variant: 'default' },
+    completed: { label: t('bookings.status.completed'), dot: 'bg-green-500', variant: 'outline' },
+    cancelled: { label: t('bookings.status.cancelled'), dot: 'bg-destructive', variant: 'destructive' },
+  };
+  const pipelineStages: { key: BookingStatus; label: string }[] = [
+    { key: 'pending', label: t('bookings.status.pending') },
+    { key: 'confirmed', label: t('bookings.status.confirmed') },
+    { key: 'in_progress', label: t('bookings.status.in_progress') },
+    { key: 'completed', label: t('bookings.status.completed') },
+    { key: 'cancelled', label: t('bookings.status.cancelled') },
+  ];
+  return { statusConfig, pipelineStages };
 };
 
-const pipelineStages: { key: BookingStatus; label: string }[] = [
-  { key: 'pending', label: 'Ausstehend' },
-  { key: 'confirmed', label: 'Bestätigt' },
-  { key: 'in_progress', label: 'In Bearbeitung' },
-  { key: 'completed', label: 'Abgeschlossen' },
-  { key: 'cancelled', label: 'Storniert' },
-];
-
 const AdminBookings = () => {
+  const { t, language } = useLanguage();
+  const { statusConfig, pipelineStages } = useBookingLabels();
+  const dateLocale = language === 'de' ? de : language === 'en' ? enUS : de;
   const [bookings, setBookings] = useState<DbBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -78,7 +85,7 @@ const AdminBookings = () => {
       .select('*')
       .order('created_at', { ascending: false });
     if (error) {
-      toast.error('Fehler beim Laden der Buchungen. Bitte versuchen Sie es erneut.');
+      toast.error(t('common.error_generic'));
     } else {
       setBookings(data ?? []);
     }
@@ -103,7 +110,7 @@ const AdminBookings = () => {
 
   const handleCreate = async () => {
     if (!newBooking.customer_name || !newBooking.customer_email || !newBooking.service || !newBooking.scheduled_at) {
-      toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
+      toast.error(t('common.required_fields'));
       return;
     }
     setSaving(true);
@@ -121,9 +128,9 @@ const AdminBookings = () => {
     });
     setSaving(false);
     if (error) {
-      toast.error('Buchung konnte nicht erstellt werden. Bitte prüfen Sie Ihre Eingaben.');
+      toast.error(t('common.error_generic'));
     } else {
-      toast.success('Buchung erstellt.');
+      toast.success(t('common.success_created'));
       // Send booking confirmation email (fire-and-forget)
       const scheduledFormatted = newBooking.scheduled_at
         ? newBooking.scheduled_at.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
@@ -152,21 +159,21 @@ const AdminBookings = () => {
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     const { error } = await supabase.from('bookings').update({ status: newStatus }).eq('id', bookingId);
     if (error) {
-      toast.error('Status konnte nicht aktualisiert werden.');
+      toast.error(t('common.error_generic'));
     } else {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
       if (selectedBooking?.id === bookingId) setSelectedBooking(prev => prev ? { ...prev, status: newStatus } : null);
-      toast.success('Status aktualisiert.');
+      toast.success(t('common.success_updated'));
     }
   };
 
   const handleSaveNotes = async (bookingId: string, notes: string) => {
     const { error } = await supabase.from('bookings').update({ notes }).eq('id', bookingId);
     if (error) {
-      toast.error('Notizen konnten nicht gespeichert werden.');
+      toast.error(t('common.error_generic'));
     } else {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, notes } : b));
-      toast.success('Notizen gespeichert.');
+      toast.success(t('common.success_saved'));
     }
   };
 
@@ -332,7 +339,10 @@ const AdminBookings = () => {
 };
 
 /* ── Table sub-component ── */
-const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBooking[]; onSelect: (b: DbBooking) => void; formatDate: (iso: string) => string }) => (
+const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBooking[]; onSelect: (b: DbBooking) => void; formatDate: (iso: string) => string }) => {
+  const { statusConfig, pipelineStages } = useBookingLabels();
+  const { t } = useLanguage();
+  return (
   <div className="overflow-x-auto">
     <Table>
       <TableHeader>
@@ -381,7 +391,8 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
       </TableBody>
     </Table>
   </div>
-);
+  );
+};
 
 /* ── Detail Sheet sub-component ── */
 const BookingDetailSheet = ({
@@ -393,6 +404,8 @@ const BookingDetailSheet = ({
   onSaveNotes: (id: string, notes: string) => void;
   formatDate: (iso: string) => string;
 }) => {
+  const { t } = useLanguage();
+  const { statusConfig, pipelineStages } = useBookingLabels();
   const [notes, setNotes] = useState('');
 
   useEffect(() => {

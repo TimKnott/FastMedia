@@ -6,8 +6,10 @@ import { Switch } from '@/components/ui/switch';
 import { Globe, Copy, ExternalLink, Check } from 'lucide-react';
 import { sitemapEntries, generateSitemapXml, SitemapEntry } from '@/data/sitemap';
 import { toast } from 'sonner';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminSitemap = () => {
+  const { t } = useLanguage();
   const [entries, setEntries] = useState<SitemapEntry[]>(sitemapEntries);
   const [copied, setCopied] = useState(false);
 
@@ -18,13 +20,13 @@ const AdminSitemap = () => {
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(sitemapUrl);
     setCopied(true);
-    toast.success('URL kopiert');
+    toast.success(t('common.url_copied'));
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleCopyXml = () => {
     navigator.clipboard.writeText(generateSitemapXml());
-    toast.success('XML kopiert');
+    toast.success(t('common.xml_copied'));
   };
 
   const toggleIndexable = (path: string) => {
@@ -36,16 +38,15 @@ const AdminSitemap = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Sitemap-Verwaltung</h1>
-        <p className="text-muted-foreground mt-1">XML-Sitemap verwalten und für Suchmaschinen bereitstellen.</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('sitemap.title')}</h1>
+        <p className="text-muted-foreground mt-1">{t('sitemap.subtitle')}</p>
       </div>
 
-      {/* Sitemap URL */}
       <Card className="shadow-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Globe className="w-4 h-4 text-accent" />
-            Sitemap-URL
+            {t('sitemap.url')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -63,31 +64,29 @@ const AdminSitemap = () => {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            Diese URL in Google Search Console unter „Sitemaps" einreichen.
+            {t('sitemap.submit_hint')}
           </p>
         </CardContent>
       </Card>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 gap-4">
         <Card className="shadow-card">
           <CardContent className="pt-5 pb-4 text-center">
             <p className="text-3xl font-display font-bold text-foreground">{indexable.length}</p>
-            <p className="text-sm text-muted-foreground">Indexierbare Seiten</p>
+            <p className="text-sm text-muted-foreground">{t('sitemap.indexable')}</p>
           </CardContent>
         </Card>
         <Card className="shadow-card">
           <CardContent className="pt-5 pb-4 text-center">
             <p className="text-3xl font-display font-bold text-foreground">{excluded.length}</p>
-            <p className="text-sm text-muted-foreground">Ausgeschlossene Seiten</p>
+            <p className="text-sm text-muted-foreground">{t('sitemap.excluded')}</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Indexable pages */}
       <Card className="shadow-card">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Indexierbare Seiten</CardTitle>
+          <CardTitle className="text-base">{t('sitemap.indexable')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {entries.map((entry) => (
@@ -115,11 +114,10 @@ const AdminSitemap = () => {
         </CardContent>
       </Card>
 
-      {/* Export */}
       <div className="flex gap-3">
         <Button variant="outline" size="sm" onClick={handleCopyXml}>
           <Copy className="w-4 h-4 mr-1" />
-          XML kopieren
+          {t('sitemap.copy_xml')}
         </Button>
       </div>
     </div>

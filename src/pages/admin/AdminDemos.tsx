@@ -1,56 +1,58 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, ExternalLink } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const trades = [
-  { id: 'plumbing', name: 'Instalatérství', icon: '🔧' },
-  { id: 'electrical', name: 'Elektrikář', icon: '⚡' },
-  { id: 'building', name: 'Stavebnictví', icon: '🏗️' },
-  { id: 'roofing', name: 'Pokrývačství', icon: '🏠' },
-  { id: 'drywall', name: 'Sádrokarton', icon: '🧱' },
-  { id: 'wells', name: 'Studnařství', icon: '💧' },
-  { id: 'heating', name: 'Topenářství', icon: '🔥' },
-  { id: 'solar', name: 'Solární panely', icon: '☀️' },
-  { id: 'heatpumps', name: 'Tepelná čerpadla', icon: '♨️' },
-  { id: 'painting', name: 'Malířství', icon: '🎨' },
-  { id: 'interior', name: 'Interiéry', icon: '🛋️' },
-  { id: 'exterior', name: 'Fasády', icon: '🏢' },
-  { id: 'gardening', name: 'Zahradnictví', icon: '🌿' },
-  { id: 'cleaning', name: 'Úklid', icon: '🧹' },
-  { id: 'locksmith', name: 'Zámečnictví', icon: '🔑' },
-  { id: 'carpentry', name: 'Truhlářství', icon: '🪚' },
-  { id: 'autorepair', name: 'Autoservis', icon: '🚗' },
-  { id: 'pestcontrol', name: 'Deratizace', icon: '🐛' },
-  { id: 'photography', name: 'Fotografie', icon: '📸' },
-  { id: 'catering', name: 'Catering', icon: '🍽️' },
-  { id: 'fitness', name: 'Fitness', icon: '💪' },
-  { id: 'beautysalon', name: 'Salon krásy', icon: '💅' },
-  { id: 'moving', name: 'Stěhování', icon: '📦' },
-  { id: 'itservices', name: 'IT služby', icon: '💻' },
+  { id: 'plumbing', nameKey: 'trade.plumbing', icon: '🔧' },
+  { id: 'electrical', nameKey: 'trade.electrical', icon: '⚡' },
+  { id: 'building', nameKey: 'trade.building', icon: '🏗️' },
+  { id: 'roofing', nameKey: 'trade.roofing', icon: '🏠' },
+  { id: 'drywall', nameKey: 'trade.drywall', icon: '🧱' },
+  { id: 'wells', nameKey: 'trade.wells', icon: '💧' },
+  { id: 'heating', nameKey: 'trade.heating', icon: '🔥' },
+  { id: 'solar', nameKey: 'trade.solar', icon: '☀️' },
+  { id: 'heatpumps', nameKey: 'trade.heatpumps', icon: '♨️' },
+  { id: 'painting', nameKey: 'trade.painting', icon: '🎨' },
+  { id: 'interior', nameKey: 'trade.interior', icon: '🛋️' },
+  { id: 'exterior', nameKey: 'trade.exterior', icon: '🏢' },
+  { id: 'gardening', nameKey: 'trade.gardening', icon: '🌿' },
+  { id: 'cleaning', nameKey: 'trade.cleaning', icon: '🧹' },
+  { id: 'locksmith', nameKey: 'trade.locksmith', icon: '🔑' },
+  { id: 'carpentry', nameKey: 'trade.carpentry', icon: '🪚' },
+  { id: 'autorepair', nameKey: 'trade.autorepair', icon: '🚗' },
+  { id: 'pestcontrol', nameKey: 'trade.pestcontrol', icon: '🐛' },
+  { id: 'photography', nameKey: 'trade.photography', icon: '📸' },
+  { id: 'catering', nameKey: 'trade.catering', icon: '🍽️' },
+  { id: 'fitness', nameKey: 'trade.fitness', icon: '💪' },
+  { id: 'beautysalon', nameKey: 'trade.beautysalon', icon: '💅' },
+  { id: 'moving', nameKey: 'trade.moving', icon: '📦' },
+  { id: 'itservices', nameKey: 'trade.itservices', icon: '💻' },
 ];
 
 const AdminDemos = () => {
+  const { t } = useLanguage();
   const [search, setSearch] = useState('');
 
-  const filtered = trades.filter(t =>
-    t.name.toLowerCase().includes(search.toLowerCase()) ||
-    t.id.toLowerCase().includes(search.toLowerCase())
+  const filtered = trades.filter(tr =>
+    t(tr.nameKey).toLowerCase().includes(search.toLowerCase()) ||
+    tr.id.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Demo-Seiten</h1>
-        <p className="text-muted-foreground mt-1">Verwalten Sie Texte, Bilder und Services der {trades.length} Branchen-Demos.</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('demos.admin_title')}</h1>
+        <p className="text-muted-foreground mt-1">{t('demos.admin_subtitle').replace('{count}', String(trades.length))}</p>
       </div>
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Demo suchen…"
+          placeholder={t('demos.search')}
           className="pl-9 h-9"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -65,7 +67,7 @@ const AdminDemos = () => {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{trade.icon}</span>
                   <div>
-                    <p className="font-medium text-sm">{trade.name}</p>
+                    <p className="font-medium text-sm">{t(trade.nameKey)}</p>
                     <p className="text-[11px] text-muted-foreground font-mono">/demo/{trade.id}</p>
                   </div>
                 </div>
@@ -81,7 +83,7 @@ const AdminDemos = () => {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        {filtered.length} von {trades.length} Demos angezeigt. Inline-Bearbeitung kommt bald.
+        {filtered.length} {t('demos.of')} {trades.length} {t('demos.shown')}. {t('demos.inline_soon')}
       </p>
     </div>
   );

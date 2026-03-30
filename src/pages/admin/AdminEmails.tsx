@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Mail, CheckCircle, XCircle, AlertTriangle, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, subDays, subHours } from 'date-fns';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type TimeRange = '24h' | '7d' | '30d';
 
@@ -24,6 +25,7 @@ const statusColors: Record<string, string> = {
 };
 
 const AdminEmails = () => {
+  const { t } = useLanguage();
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
   const [templateFilter, setTemplateFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -83,11 +85,17 @@ const AdminEmails = () => {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paged = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
+  const timeLabels: Record<TimeRange, string> = {
+    '24h': t('emails.24h'),
+    '7d': t('emails.7d'),
+    '30d': t('emails.30d'),
+  };
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">E-Mail Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Übersicht aller gesendeten E-Mails</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('emails.title')}</h1>
+        <p className="text-muted-foreground text-sm mt-1">{t('emails.subtitle')}</p>
       </div>
 
       <div className="flex flex-wrap gap-3 items-center">
@@ -99,28 +107,28 @@ const AdminEmails = () => {
               variant={timeRange === r ? 'default' : 'outline'}
               onClick={() => { setTimeRange(r); setPage(0); }}
             >
-              {r === '24h' ? '24 Std' : r === '7d' ? '7 Tage' : '30 Tage'}
+              {timeLabels[r]}
             </Button>
           ))}
         </div>
         <Select value={templateFilter} onValueChange={v => { setTemplateFilter(v); setPage(0); }}>
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Alle Vorlagen" />
+            <SelectValue placeholder={t('emails.all_templates')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Vorlagen</SelectItem>
-            {templates.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+            <SelectItem value="all">{t('emails.all_templates')}</SelectItem>
+            {templates.map(tpl => <SelectItem key={tpl} value={tpl}>{tpl}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={v => { setStatusFilter(v); setPage(0); }}>
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Alle Status" />
+            <SelectValue placeholder={t('emails.all_statuses')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="sent">Gesendet</SelectItem>
-            <SelectItem value="dlq">Fehlgeschlagen</SelectItem>
-            <SelectItem value="suppressed">Unterdrückt</SelectItem>
+            <SelectItem value="all">{t('emails.all_statuses')}</SelectItem>
+            <SelectItem value="sent">{t('emails.sent')}</SelectItem>
+            <SelectItem value="dlq">{t('emails.failed')}</SelectItem>
+            <SelectItem value="suppressed">{t('emails.suppressed')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -129,7 +137,7 @@ const AdminEmails = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Mail className="w-4 h-4" /> Gesamt
+              <Mail className="w-4 h-4" /> {t('emails.total')}
             </CardTitle>
           </CardHeader>
           <CardContent><p className="text-2xl font-bold">{stats.total}</p></CardContent>
@@ -137,7 +145,7 @@ const AdminEmails = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-600" /> Gesendet
+              <CheckCircle className="w-4 h-4 text-green-600" /> {t('emails.sent')}
             </CardTitle>
           </CardHeader>
           <CardContent><p className="text-2xl font-bold text-green-600">{stats.sent}</p></CardContent>
@@ -145,7 +153,7 @@ const AdminEmails = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <XCircle className="w-4 h-4 text-red-600" /> Fehlgeschlagen
+              <XCircle className="w-4 h-4 text-red-600" /> {t('emails.failed')}
             </CardTitle>
           </CardHeader>
           <CardContent><p className="text-2xl font-bold text-red-600">{stats.failed}</p></CardContent>
@@ -153,7 +161,7 @@ const AdminEmails = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-orange-600" /> Unterdrückt
+              <AlertTriangle className="w-4 h-4 text-orange-600" /> {t('emails.suppressed')}
             </CardTitle>
           </CardHeader>
           <CardContent><p className="text-2xl font-bold text-orange-600">{stats.suppressed}</p></CardContent>
@@ -166,11 +174,11 @@ const AdminEmails = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Vorlage</TableHead>
-                  <TableHead>Empfänger</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Zeitpunkt</TableHead>
-                  <TableHead>Fehler</TableHead>
+                  <TableHead>{t('emails.template')}</TableHead>
+                  <TableHead>{t('emails.recipient')}</TableHead>
+                  <TableHead>{t('emails.status')}</TableHead>
+                  <TableHead>{t('emails.timestamp')}</TableHead>
+                  <TableHead>{t('emails.error')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -178,13 +186,13 @@ const AdminEmails = () => {
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-8">
                       <Clock className="w-5 h-5 animate-spin mx-auto mb-2 text-muted-foreground" />
-                      <span className="text-muted-foreground">Lädt…</span>
+                      <span className="text-muted-foreground">{t('emails.loading')}</span>
                     </TableCell>
                   </TableRow>
                 ) : paged.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                      Keine E-Mails im gewählten Zeitraum
+                      {t('emails.none')}
                     </TableCell>
                   </TableRow>
                 ) : paged.map(log => (
@@ -210,7 +218,7 @@ const AdminEmails = () => {
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-4 py-3 border-t">
               <span className="text-sm text-muted-foreground">
-                Seite {page + 1} von {totalPages}
+                {t('emails.page')} {page + 1} {t('emails.of')} {totalPages}
               </span>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
