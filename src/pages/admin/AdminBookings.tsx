@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Search, Plus, MoreHorizontal, Phone, Mail, Clock, CalendarDays, List,
   User, StickyNote, CalendarCheck, Loader2, Send,
@@ -36,21 +37,24 @@ type DbBooking = Tables<'bookings'>;
 
 type BookingStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
 
-const statusConfig: Record<BookingStatus, { label: string; dot: string; variant: string }> = {
-  pending: { label: 'Ausstehend', dot: 'bg-yellow-500', variant: 'outline' },
-  confirmed: { label: 'Bestätigt', dot: 'bg-blue-500', variant: 'secondary' },
-  in_progress: { label: 'In Bearbeitung', dot: 'bg-primary', variant: 'default' },
-  completed: { label: 'Abgeschlossen', dot: 'bg-green-500', variant: 'outline' },
-  cancelled: { label: 'Storniert', dot: 'bg-destructive', variant: 'destructive' },
+const useBookingLabels = () => {
+  const { t } = useLanguage();
+  const statusConfig: Record<BookingStatus, { label: string; dot: string; variant: string }> = {
+    pending: { label: t('bookings.status.pending'), dot: 'bg-yellow-500', variant: 'outline' },
+    confirmed: { label: t('bookings.status.confirmed'), dot: 'bg-blue-500', variant: 'secondary' },
+    in_progress: { label: t('bookings.status.in_progress'), dot: 'bg-primary', variant: 'default' },
+    completed: { label: t('bookings.status.completed'), dot: 'bg-green-500', variant: 'outline' },
+    cancelled: { label: t('bookings.status.cancelled'), dot: 'bg-destructive', variant: 'destructive' },
+  };
+  const pipelineStages: { key: BookingStatus; label: string }[] = [
+    { key: 'pending', label: t('bookings.status.pending') },
+    { key: 'confirmed', label: t('bookings.status.confirmed') },
+    { key: 'in_progress', label: t('bookings.status.in_progress') },
+    { key: 'completed', label: t('bookings.status.completed') },
+    { key: 'cancelled', label: t('bookings.status.cancelled') },
+  ];
+  return { statusConfig, pipelineStages };
 };
-
-const pipelineStages: { key: BookingStatus; label: string }[] = [
-  { key: 'pending', label: 'Ausstehend' },
-  { key: 'confirmed', label: 'Bestätigt' },
-  { key: 'in_progress', label: 'In Bearbeitung' },
-  { key: 'completed', label: 'Abgeschlossen' },
-  { key: 'cancelled', label: 'Storniert' },
-];
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState<DbBooking[]>([]);
