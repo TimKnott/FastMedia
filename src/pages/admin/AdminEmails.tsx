@@ -32,6 +32,7 @@ const AdminEmails = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('7d');
   const [templateFilter, setTemplateFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [chartGranularity, setChartGranularity] = useState<ChartGranularity>(timeRange === '24h' ? 'hourly' : 'daily');
   const [page, setPage] = useState(0);
 
   const rangeStart = useMemo(() => {
