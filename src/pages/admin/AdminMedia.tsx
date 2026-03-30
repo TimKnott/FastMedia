@@ -1,26 +1,29 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, Image, FolderOpen } from 'lucide-react';
-
-const folders = [
-  { name: 'Hero-Bilder', count: 24, path: 'trades/' },
-  { name: 'Galerie', count: 144, path: 'trades/gallery/' },
-  { name: 'Blog', count: 16, path: 'blog/' },
-  { name: 'Team', count: 1, path: 'team/' },
-  { name: 'Sonstiges', count: 3, path: '' },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminMedia = () => {
+  const { t } = useLanguage();
+
+  const folders = [
+    { name: 'Hero', count: 24, path: 'trades/' },
+    { name: 'Gallery', count: 144, path: 'trades/gallery/' },
+    { name: 'Blog', count: 16, path: 'blog/' },
+    { name: 'Team', count: 1, path: 'team/' },
+    { name: 'Other', count: 3, path: '' },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Medienbibliothek</h1>
-          <p className="text-muted-foreground mt-1">Verwalten Sie Bilder und Dateien der gesamten Website.</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t('media.title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('media.subtitle')}</p>
         </div>
         <Button size="sm" disabled>
           <Upload className="w-4 h-4 mr-1" />
-          Hochladen
+          {t('media.upload')}
         </Button>
       </div>
 
@@ -34,7 +37,7 @@ const AdminMedia = () => {
                 </div>
                 <div>
                   <p className="font-medium text-sm">{folder.name}</p>
-                  <p className="text-xs text-muted-foreground">{folder.count} Dateien · src/assets/{folder.path}</p>
+                  <p className="text-xs text-muted-foreground">{folder.count} {t('media.files')} · src/assets/{folder.path}</p>
                 </div>
               </div>
             </CardContent>
@@ -43,7 +46,7 @@ const AdminMedia = () => {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Upload und Bildbearbeitung kommen bald. Zurzeit nur Vorschau verfügbar.
+        {t('media.coming_soon')}
       </p>
     </div>
   );
