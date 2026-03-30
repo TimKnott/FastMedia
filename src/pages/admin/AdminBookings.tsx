@@ -339,7 +339,10 @@ const AdminBookings = () => {
 };
 
 /* ── Table sub-component ── */
-const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBooking[]; onSelect: (b: DbBooking) => void; formatDate: (iso: string) => string }) => (
+const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBooking[]; onSelect: (b: DbBooking) => void; formatDate: (iso: string) => string }) => {
+  const { statusConfig, pipelineStages } = useBookingLabels();
+  const { t } = useLanguage();
+  return (
   <div className="overflow-x-auto">
     <Table>
       <TableHeader>
@@ -388,7 +391,8 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
       </TableBody>
     </Table>
   </div>
-);
+  );
+};
 
 /* ── Detail Sheet sub-component ── */
 const BookingDetailSheet = ({
