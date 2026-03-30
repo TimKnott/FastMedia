@@ -85,7 +85,7 @@ const AdminBookings = () => {
       .select('*')
       .order('created_at', { ascending: false });
     if (error) {
-      toast.error('Fehler beim Laden der Buchungen. Bitte versuchen Sie es erneut.');
+      toast.error(t('common.error_generic'));
     } else {
       setBookings(data ?? []);
     }
@@ -110,7 +110,7 @@ const AdminBookings = () => {
 
   const handleCreate = async () => {
     if (!newBooking.customer_name || !newBooking.customer_email || !newBooking.service || !newBooking.scheduled_at) {
-      toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
+      toast.error(t('common.required_fields'));
       return;
     }
     setSaving(true);
@@ -128,9 +128,9 @@ const AdminBookings = () => {
     });
     setSaving(false);
     if (error) {
-      toast.error('Buchung konnte nicht erstellt werden. Bitte prüfen Sie Ihre Eingaben.');
+      toast.error(t('common.error_generic'));
     } else {
-      toast.success('Buchung erstellt.');
+      toast.success(t('common.success_created'));
       // Send booking confirmation email (fire-and-forget)
       const scheduledFormatted = newBooking.scheduled_at
         ? newBooking.scheduled_at.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
@@ -159,21 +159,21 @@ const AdminBookings = () => {
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     const { error } = await supabase.from('bookings').update({ status: newStatus }).eq('id', bookingId);
     if (error) {
-      toast.error('Status konnte nicht aktualisiert werden.');
+      toast.error(t('common.error_generic'));
     } else {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
       if (selectedBooking?.id === bookingId) setSelectedBooking(prev => prev ? { ...prev, status: newStatus } : null);
-      toast.success('Status aktualisiert.');
+      toast.success(t('common.success_updated'));
     }
   };
 
   const handleSaveNotes = async (bookingId: string, notes: string) => {
     const { error } = await supabase.from('bookings').update({ notes }).eq('id', bookingId);
     if (error) {
-      toast.error('Notizen konnten nicht gespeichert werden.');
+      toast.error(t('common.error_generic'));
     } else {
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, notes } : b));
-      toast.success('Notizen gespeichert.');
+      toast.success(t('common.success_saved'));
     }
   };
 
