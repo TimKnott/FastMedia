@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
         globPatterns: ["**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff,woff2}"],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
       manifest: {
         name: "FastMedia.Pro — Profesionální weby pro řemeslníky",
