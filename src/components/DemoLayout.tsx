@@ -397,6 +397,9 @@ const DemoLayout = ({
         </div>
       </section>
 
+      {/* Booking Calendar */}
+      <DemoBookingCalendar primaryColor={primaryColor} gradientClass={gradientClass} tradeName={tradeName} />
+
       {/* Team Section */}
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
