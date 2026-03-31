@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,85 +7,95 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
 import AdminToolbar from "@/components/AdminToolbar";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Blog from "./pages/Blog";
-import BlogArticle from "./pages/BlogArticle";
-
-// Admin pages
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminLayout from "./components/admin/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
-import AdminBookings from "./pages/admin/AdminBookings";
-import AdminSettings from "./pages/admin/AdminSettings";
-import AdminNewsletter from "./pages/admin/AdminNewsletter";
-import AdminLeads from "./pages/admin/AdminLeads";
-import AdminResetPassword from "./pages/admin/AdminResetPassword";
-import AdminRoles from "./pages/admin/AdminRoles";
-import AdminLandingPage from "./pages/admin/AdminLandingPage";
-import AdminDemos from "./pages/admin/AdminDemos";
-import AdminBlog from "./pages/admin/AdminBlog";
-import AdminMedia from "./pages/admin/AdminMedia";
-import AdminSitemap from "./pages/admin/AdminSitemap";
-import AdminContentHistory from "./pages/admin/AdminContentHistory";
-import AdminSEO from "./pages/admin/AdminSEO";
-import AdminVbout from "./pages/admin/AdminVbout";
-import AdminEmbedCodes from "./pages/admin/AdminEmbedCodes";
-import AdminAccounting from "./pages/admin/AdminAccounting";
-import AdminEmails from "./pages/admin/AdminEmails";
-import ProtectedRoute from "./components/admin/ProtectedRoute";
-
-// Demo pages
-import PlumbingDemo from "./pages/demos/PlumbingDemo";
-import ElectricalDemo from "./pages/demos/ElectricalDemo";
-import BuildingDemo from "./pages/demos/BuildingDemo";
-import RoofingDemo from "./pages/demos/RoofingDemo";
-import DrywallDemo from "./pages/demos/DrywallDemo";
-import WellsDemo from "./pages/demos/WellsDemo";
-import HeatingDemo from "./pages/demos/HeatingDemo";
-import SolarDemo from "./pages/demos/SolarDemo";
-import HeatpumpsDemo from "./pages/demos/HeatpumpsDemo";
-import PaintingDemo from "./pages/demos/PaintingDemo";
-import InteriorDemo from "./pages/demos/InteriorDemo";
-import ExteriorDemo from "./pages/demos/ExteriorDemo";
-import GardeningDemo from "./pages/demos/GardeningDemo";
-import CleaningDemo from "./pages/demos/CleaningDemo";
-import LocksmithDemo from "./pages/demos/LocksmithDemo";
-import CarpentryDemo from "./pages/demos/CarpentryDemo";
-import AutoRepairDemo from "./pages/demos/AutoRepairDemo";
-import PestControlDemo from "./pages/demos/PestControlDemo";
-import PhotographyDemo from "./pages/demos/PhotographyDemo";
-import CateringDemo from "./pages/demos/CateringDemo";
-import FitnessDemo from "./pages/demos/FitnessDemo";
-import BeautySalonDemo from "./pages/demos/BeautySalonDemo";
-import MovingDemo from "./pages/demos/MovingDemo";
-import ITServicesDemo from "./pages/demos/ITServicesDemo";
-import EshopDemo from "./pages/demos/EshopDemo";
-import WomenInBusinessDemo from "./pages/demos/WomenInBusinessDemo";
-import VirtualAssistantDemo from "./pages/demos/VirtualAssistantDemo";
-import WeddingPlannerDemo from "./pages/demos/WeddingPlannerDemo";
-import FloristDemo from "./pages/demos/FloristDemo";
-import BakeryDemo from "./pages/demos/BakeryDemo";
-import YogaDemo from "./pages/demos/YogaDemo";
-import NailSalonDemo from "./pages/demos/NailSalonDemo";
-import MassageDemo from "./pages/demos/MassageDemo";
-import PetGroomingDemo from "./pages/demos/PetGroomingDemo";
-import NutritionistDemo from "./pages/demos/NutritionistDemo";
-import HandmadeDemo from "./pages/demos/HandmadeDemo";
-import ChildcareDemo from "./pages/demos/ChildcareDemo";
-import ConsultantTereza from "./pages/ConsultantTereza";
-import CalculatorPage from "./pages/CalculatorPage";
-import Install from "./pages/Install";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
-import SitemapRedirect from "./pages/SitemapRedirect";
-import Inquiry from "./pages/Inquiry";
-import FeatureDetail from "./pages/FeatureDetail";
-import Unsubscribe from "./pages/Unsubscribe";
+
+// Critical pages loaded eagerly
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+
+// Lazy-loaded pages
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogArticle = lazy(() => import("./pages/BlogArticle"));
+const ConsultantTereza = lazy(() => import("./pages/ConsultantTereza"));
+const CalculatorPage = lazy(() => import("./pages/CalculatorPage"));
+const Install = lazy(() => import("./pages/Install"));
+const Inquiry = lazy(() => import("./pages/Inquiry"));
+const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
+const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+
+// Admin pages (lazy)
+const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminAuditLogs = lazy(() => import("./pages/admin/AdminAuditLogs"));
+const AdminBookings = lazy(() => import("./pages/admin/AdminBookings"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter"));
+const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
+const AdminResetPassword = lazy(() => import("./pages/admin/AdminResetPassword"));
+const AdminRoles = lazy(() => import("./pages/admin/AdminRoles"));
+const AdminLandingPage = lazy(() => import("./pages/admin/AdminLandingPage"));
+const AdminDemos = lazy(() => import("./pages/admin/AdminDemos"));
+const AdminBlog = lazy(() => import("./pages/admin/AdminBlog"));
+const AdminMedia = lazy(() => import("./pages/admin/AdminMedia"));
+const AdminSitemap = lazy(() => import("./pages/admin/AdminSitemap"));
+const AdminContentHistory = lazy(() => import("./pages/admin/AdminContentHistory"));
+const AdminSEO = lazy(() => import("./pages/admin/AdminSEO"));
+const AdminVbout = lazy(() => import("./pages/admin/AdminVbout"));
+const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
+const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
+const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
+const ProtectedRoute = lazy(() => import("./components/admin/ProtectedRoute"));
+
+// Demo pages (lazy)
+const PlumbingDemo = lazy(() => import("./pages/demos/PlumbingDemo"));
+const ElectricalDemo = lazy(() => import("./pages/demos/ElectricalDemo"));
+const BuildingDemo = lazy(() => import("./pages/demos/BuildingDemo"));
+const RoofingDemo = lazy(() => import("./pages/demos/RoofingDemo"));
+const DrywallDemo = lazy(() => import("./pages/demos/DrywallDemo"));
+const WellsDemo = lazy(() => import("./pages/demos/WellsDemo"));
+const HeatingDemo = lazy(() => import("./pages/demos/HeatingDemo"));
+const SolarDemo = lazy(() => import("./pages/demos/SolarDemo"));
+const HeatpumpsDemo = lazy(() => import("./pages/demos/HeatpumpsDemo"));
+const PaintingDemo = lazy(() => import("./pages/demos/PaintingDemo"));
+const InteriorDemo = lazy(() => import("./pages/demos/InteriorDemo"));
+const ExteriorDemo = lazy(() => import("./pages/demos/ExteriorDemo"));
+const GardeningDemo = lazy(() => import("./pages/demos/GardeningDemo"));
+const CleaningDemo = lazy(() => import("./pages/demos/CleaningDemo"));
+const LocksmithDemo = lazy(() => import("./pages/demos/LocksmithDemo"));
+const CarpentryDemo = lazy(() => import("./pages/demos/CarpentryDemo"));
+const AutoRepairDemo = lazy(() => import("./pages/demos/AutoRepairDemo"));
+const PestControlDemo = lazy(() => import("./pages/demos/PestControlDemo"));
+const PhotographyDemo = lazy(() => import("./pages/demos/PhotographyDemo"));
+const CateringDemo = lazy(() => import("./pages/demos/CateringDemo"));
+const FitnessDemo = lazy(() => import("./pages/demos/FitnessDemo"));
+const BeautySalonDemo = lazy(() => import("./pages/demos/BeautySalonDemo"));
+const MovingDemo = lazy(() => import("./pages/demos/MovingDemo"));
+const ITServicesDemo = lazy(() => import("./pages/demos/ITServicesDemo"));
+const EshopDemo = lazy(() => import("./pages/demos/EshopDemo"));
+const WomenInBusinessDemo = lazy(() => import("./pages/demos/WomenInBusinessDemo"));
+const VirtualAssistantDemo = lazy(() => import("./pages/demos/VirtualAssistantDemo"));
+const WeddingPlannerDemo = lazy(() => import("./pages/demos/WeddingPlannerDemo"));
+const FloristDemo = lazy(() => import("./pages/demos/FloristDemo"));
+const BakeryDemo = lazy(() => import("./pages/demos/BakeryDemo"));
+const YogaDemo = lazy(() => import("./pages/demos/YogaDemo"));
+const NailSalonDemo = lazy(() => import("./pages/demos/NailSalonDemo"));
+const MassageDemo = lazy(() => import("./pages/demos/MassageDemo"));
+const PetGroomingDemo = lazy(() => import("./pages/demos/PetGroomingDemo"));
+const NutritionistDemo = lazy(() => import("./pages/demos/NutritionistDemo"));
+const HandmadeDemo = lazy(() => import("./pages/demos/HandmadeDemo"));
+const ChildcareDemo = lazy(() => import("./pages/demos/ChildcareDemo"));
 
 const queryClient = new QueryClient();
+
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -97,6 +108,7 @@ const App = () => (
           <AdminToolbar />
           <WhatsAppFloat />
           <EmbedCodeInjector />
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/blog" element={<Blog />} />
@@ -171,6 +183,7 @@ const App = () => (
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
         </BrowserRouter>
         </PreviewModeProvider>
       </LanguageProvider>
