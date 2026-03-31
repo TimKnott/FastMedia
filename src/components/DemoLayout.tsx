@@ -174,6 +174,9 @@ const DemoLayout = ({
             <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
               {language === 'cs' ? 'Galerie' : language === 'en' ? 'Gallery' : 'Galerie'}
             </a>
+            <a href="#booking" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
+              {language === 'cs' ? 'Rezervace' : language === 'en' ? 'Booking' : 'Buchung'}
+            </a>
             <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
               {language === 'cs' ? 'Recenze' : language === 'en' ? 'Reviews' : 'Bewertungen'}
             </a>
