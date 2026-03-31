@@ -14,6 +14,7 @@ import EditableImage from '@/components/EditableImage';
 import { useImageContent } from '@/hooks/useImageContent';
 import SEOHead from '@/components/SEOHead';
 import DemoShareBar from '@/components/DemoShareBar';
+import DemoBookingCalendar from '@/components/DemoBookingCalendar';
 
 interface DemoLayoutProps {
   tradeName: string;
@@ -144,6 +145,9 @@ const DemoLayout = ({
             <a href="#gallery" className="text-muted-foreground hover:text-foreground transition-colors">
               {language === 'cs' ? 'Galerie' : language === 'en' ? 'Gallery' : 'Galerie'}
             </a>
+            <a href="#booking" className="text-muted-foreground hover:text-foreground transition-colors">
+              {language === 'cs' ? 'Rezervace' : language === 'en' ? 'Booking' : 'Buchung'}
+            </a>
             <a href="#reviews" className="text-muted-foreground hover:text-foreground transition-colors">
               {language === 'cs' ? 'Recenze' : language === 'en' ? 'Reviews' : 'Bewertungen'}
             </a>
@@ -169,6 +173,9 @@ const DemoLayout = ({
             <a href="#services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">{t('demo.services')}</a>
             <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
               {language === 'cs' ? 'Galerie' : language === 'en' ? 'Gallery' : 'Galerie'}
+            </a>
+            <a href="#booking" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
+              {language === 'cs' ? 'Rezervace' : language === 'en' ? 'Booking' : 'Buchung'}
             </a>
             <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-accent transition-colors">
               {language === 'cs' ? 'Recenze' : language === 'en' ? 'Reviews' : 'Bewertungen'}
@@ -392,6 +399,9 @@ const DemoLayout = ({
           </div>
         </div>
       </section>
+
+      {/* Booking Calendar */}
+      <DemoBookingCalendar primaryColor={primaryColor} gradientClass={gradientClass} tradeName={tradeName} />
 
       {/* Team Section */}
       <section className="py-16 lg:py-24">
