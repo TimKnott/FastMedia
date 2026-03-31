@@ -14,6 +14,7 @@ import EditableImage from '@/components/EditableImage';
 import { useImageContent } from '@/hooks/useImageContent';
 import SEOHead from '@/components/SEOHead';
 import DemoShareBar from '@/components/DemoShareBar';
+import DemoBookingCalendar from '@/components/DemoBookingCalendar';
 
 interface DemoLayoutProps {
   tradeName: string;
