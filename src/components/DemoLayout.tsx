@@ -145,6 +145,9 @@ const DemoLayout = ({
             <a href="#gallery" className="text-muted-foreground hover:text-foreground transition-colors">
               {language === 'cs' ? 'Galerie' : language === 'en' ? 'Gallery' : 'Galerie'}
             </a>
+            <a href="#booking" className="text-muted-foreground hover:text-foreground transition-colors">
+              {language === 'cs' ? 'Rezervace' : language === 'en' ? 'Booking' : 'Buchung'}
+            </a>
             <a href="#reviews" className="text-muted-foreground hover:text-foreground transition-colors">
               {language === 'cs' ? 'Recenze' : language === 'en' ? 'Reviews' : 'Bewertungen'}
             </a>
