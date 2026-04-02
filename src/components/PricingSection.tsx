@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 interface PricingTier {
   nameKey: string;
@@ -22,10 +23,25 @@ const tiers: PricingTier[] = [
   { nameKey: 'pricing.enterprise.name', priceKey: 'pricing.enterprise.price', hostingKey: 'pricing.enterprise.hosting', descKey: 'pricing.enterprise.desc', featuresKey: 'pricing.enterprise.features' },
 ];
 
+const pricingLearnMore = {
+  title: { cs: 'Proč ukazovat ceny?', en: 'Why Show Prices?', de: 'Warum Preise zeigen?' },
+  explanation: {
+    cs: 'Transparentní ceník pomáhá zákazníkům rychleji se rozhodnout a buduje důvěru ve vaše služby.',
+    en: 'Transparent pricing helps customers decide faster and builds trust in your services.',
+    de: 'Transparente Preise helfen Kunden, sich schneller zu entscheiden und Vertrauen aufzubauen.',
+  },
+  benefits: {
+    cs: ['Snižuje počet zbytečných dotazů', 'Zvyšuje konverze o 15–25%', 'Buduje profesionální důvěru'],
+    en: ['Reduces unnecessary inquiries', 'Increases conversions by 15–25%', 'Builds professional trust'],
+    de: ['Reduziert unnötige Anfragen', 'Steigert Konversionen um 15–25%', 'Baut professionelles Vertrauen auf'],
+  },
+};
+
 const PricingSection = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { getContent, invalidate } = useSiteContent();
+  const lang = language as 'cs' | 'en' | 'de';
 
   const scrollToBooking = () => {
     document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
@@ -41,8 +57,13 @@ const PricingSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <span className="text-accent font-semibold text-sm uppercase tracking-wider">
+          <span className="text-accent font-semibold text-sm uppercase tracking-wider inline-flex items-center gap-1.5">
             {t('pricing.label')}
+            <LearnMoreModal
+              title={pricingLearnMore.title[lang]}
+              explanation={pricingLearnMore.explanation[lang]}
+              benefits={pricingLearnMore.benefits[lang]}
+            />
           </span>
           <EditableText
             contentKey="pricing.title"

@@ -16,6 +16,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import SEOHead from '@/components/SEOHead';
 import HomeJsonLd from '@/components/HomeJsonLd';
 import PromoBanner from '@/components/PromoBanner';
+import StickyCTABar from '@/components/StickyCTABar';
 
 const Index = () => {
   return (
@@ -47,6 +48,7 @@ const Index = () => {
           <BookingSection />
         </main>
         <Footer />
+        <StickyCTABar />
       </div>
     </LanguageProvider>
   );
