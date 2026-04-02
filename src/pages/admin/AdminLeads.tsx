@@ -496,7 +496,7 @@ const AdminLeads = () => {
                         </Select>
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs">Zugewiesen an</Label>
+                        <Label className="text-xs">{t('leads.assigned')}</Label>
                         <Input
                           value={selectedLead.assigned_to || ''}
                           onChange={(e) => handleAssign(selectedLead.id, e.target.value)}
