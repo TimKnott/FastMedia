@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 interface PricingTier {
   nameKey: string;

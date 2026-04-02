@@ -48,6 +48,8 @@ const Index = () => {
           <BookingSection />
         </main>
         <Footer />
+        <StickyCTABar />
+      </div>
       </div>
     </LanguageProvider>
   );
