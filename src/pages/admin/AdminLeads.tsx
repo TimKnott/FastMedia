@@ -537,9 +537,9 @@ const AdminLeads = () => {
 
                   {/* Activity Timeline */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Aktivitäten</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.activities')}</h3>
                     {activities.length === 0 && (
-                      <p className="text-xs text-muted-foreground">Keine Aktivitäten.</p>
+                      <p className="text-xs text-muted-foreground">{t('leads.no_activities')}</p>
                     )}
                     <div className="space-y-2">
                       {activities.map(act => (
