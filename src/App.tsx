@@ -93,6 +93,16 @@ const PetGroomingDemo = lazy(() => import("./pages/demos/PetGroomingDemo"));
 const NutritionistDemo = lazy(() => import("./pages/demos/NutritionistDemo"));
 const HandmadeDemo = lazy(() => import("./pages/demos/HandmadeDemo"));
 const ChildcareDemo = lazy(() => import("./pages/demos/ChildcareDemo"));
+const DentalDemo = lazy(() => import("./pages/demos/DentalDemo"));
+const RealEstateDemo = lazy(() => import("./pages/demos/RealEstateDemo"));
+const AccountingDemo = lazy(() => import("./pages/demos/AccountingDemo"));
+const VeterinaryDemo = lazy(() => import("./pages/demos/VeterinaryDemo"));
+const TattooDemo = lazy(() => import("./pages/demos/TattooDemo"));
+const MusicSchoolDemo = lazy(() => import("./pages/demos/MusicSchoolDemo"));
+const DrivingSchoolDemo = lazy(() => import("./pages/demos/DrivingSchoolDemo"));
+const LaundryDemo = lazy(() => import("./pages/demos/LaundryDemo"));
+const SecurityDemo = lazy(() => import("./pages/demos/SecurityDemo"));
+const TranslationDemo = lazy(() => import("./pages/demos/TranslationDemo"));
 
 const queryClient = new QueryClient();
 
