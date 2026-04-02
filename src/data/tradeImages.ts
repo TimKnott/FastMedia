@@ -254,6 +254,7 @@ export const tradeGalleryImages: Record<string, string[]> = {
   moving: [movingG1, movingG2, movingG3, movingG4, movingG5, movingG6],
   pestcontrol: [pestcontrolG1, pestcontrolG2, pestcontrolG3, pestcontrolG4, pestcontrolG5, pestcontrolG6],
   itservices: [itservicesG1, itservicesG2, itservicesG3, itservicesG4, itservicesG5, itservicesG6],
+  womeninbusiness: [womeninbusinessG1, womeninbusinessG2, womeninbusinessG3, womeninbusinessG4, womeninbusinessG5, womeninbusinessG6],
 };
 
 export const getTradeImage = (tradeId: string): string => {
