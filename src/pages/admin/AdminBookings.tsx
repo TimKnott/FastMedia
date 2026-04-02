@@ -517,8 +517,8 @@ const BookingDetailSheet = ({
               <Send className="w-4 h-4" /> {t('bookings.email_task')}
             </h3>
             <div className="space-y-2">
-              <Input
-                placeholder="E-Mail des Empfängers (Admin/Editor)"
+                <Input
+                placeholder={t('bookings.email_recipient')}
                 id="task-email-recipient"
               />
               <Button
