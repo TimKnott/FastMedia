@@ -4,6 +4,7 @@ import { MessageCircle, Contact } from 'lucide-react';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 const Footer = () => {
   const { t } = useLanguage();
