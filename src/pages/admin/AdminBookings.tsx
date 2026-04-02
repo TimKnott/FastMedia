@@ -247,8 +247,8 @@ const AdminBookings = () => {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label>Service *</Label>
-                <Input value={newBooking.service} onChange={e => setNewBooking(p => ({ ...p, service: e.target.value }))} placeholder="z.B. Sanitär – Rohrleitungsinstallation" />
+                <Label>{t('bookings.service_label')} *</Label>
+                <Input value={newBooking.service} onChange={e => setNewBooking(p => ({ ...p, service: e.target.value }))} placeholder={t('bookings.service_placeholder')} />
               </div>
               <div className="space-y-1.5">
                 <Label>{t('bookings.appointment')} *</Label>
