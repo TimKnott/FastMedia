@@ -110,6 +110,8 @@ const App = () => (
           <AdminToolbar />
           <WhatsAppFloat />
           <EmbedCodeInjector />
+          <CookieConsentBanner />
+          <AccessibilityToolbar />
           <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
