@@ -438,7 +438,7 @@ const BookingDetailSheet = ({
         <div className="mt-6 space-y-6">
           {/* Contact */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t('bookings.contact')}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="w-4 h-4" /> <span>{booking.customer_email}</span>
