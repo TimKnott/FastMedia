@@ -303,7 +303,7 @@ const AdminLeads = () => {
                           {statusConfig[lead.status].label}
                         </span>
                       </TableCell>
-                      <TableCell className="text-sm font-medium">{lead.quote_one_time.toLocaleString('de-DE')} Kč</TableCell>
+                      <TableCell className="text-sm font-medium">{lead.quote_one_time.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {format(new Date(lead.created_at), 'dd.MM.yyyy')}
                       </TableCell>
