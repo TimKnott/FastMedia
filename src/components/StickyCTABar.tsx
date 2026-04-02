@@ -43,6 +43,9 @@ const StickyCTABar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Hide on admin pages
+  if (pathname.startsWith('/admin')) return null;
+
   const scrollToBooking = () => {
     if (pathname === '/') {
       document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
