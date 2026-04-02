@@ -1,218 +1,221 @@
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MapPin, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import {
+  Globe, Languages, Camera, Video, Server, Palette, Bot,
+  Search, BarChart3, ShieldCheck, Smartphone, Clock, Headphones,
+} from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
-const SERVICE_CENTER = { lat: 50.0755, lng: 14.4378 }; // Prague
-const SERVICE_RADIUS_KM = 80;
+const services = [
+  {
+    icon: Globe,
+    label: { cs: 'Celosvětové pokrytí', en: 'Worldwide Service', de: 'Weltweiter Service' },
+    desc: {
+      cs: 'Tvoříme weby pro klienty po celém světě — bez geografických omezení.',
+      en: 'We build websites for clients across the globe — no geographic limits.',
+      de: 'Wir erstellen Websites für Kunden weltweit — ohne geografische Grenzen.',
+    },
+  },
+  {
+    icon: Languages,
+    label: { cs: 'Neomezený počet jazyků', en: 'Any Language', de: 'Jede Sprache' },
+    desc: {
+      cs: 'Váš web dodáme v jakémkoli jazyce — čeština, angličtina, němčina, španělština a další.',
+      en: 'We deliver your site in any language — English, Czech, German, Spanish, and more.',
+      de: 'Ihre Website in jeder Sprache — Englisch, Tschechisch, Deutsch, Spanisch und mehr.',
+    },
+  },
+  {
+    icon: Palette,
+    label: { cs: 'Grafika & design', en: 'Graphics & Design', de: 'Grafik & Design' },
+    desc: {
+      cs: 'Kompletní grafický návrh — loga, bannery, infografiky, vizuální identita.',
+      en: 'Full graphic design — logos, banners, infographics, and visual identity.',
+      de: 'Komplettes Grafikdesign — Logos, Banner, Infografiken und visuelle Identität.',
+    },
+  },
+  {
+    icon: Camera,
+    label: { cs: 'Profesionální fotografie', en: 'Professional Photography', de: 'Professionelle Fotografie' },
+    desc: {
+      cs: 'Dodáváme kvalitní fotografický obsah pro váš web i marketing.',
+      en: 'We provide professional photo content for your website and marketing.',
+      de: 'Wir liefern professionelle Fotoinhalte für Ihre Website und Ihr Marketing.',
+    },
+  },
+  {
+    icon: Video,
+    label: { cs: 'Video obsah', en: 'Video Production', de: 'Videoproduktion' },
+    desc: {
+      cs: 'Promo videa, klientské reference, produktové záběry — vše na klíč.',
+      en: 'Promo videos, client testimonials, product shots — all done for you.',
+      de: 'Promo-Videos, Kundenreferenzen, Produktaufnahmen — alles aus einer Hand.',
+    },
+  },
+  {
+    icon: Server,
+    label: { cs: 'Hosting & správa', en: 'Hosting & Maintenance', de: 'Hosting & Wartung' },
+    desc: {
+      cs: 'Rychlý, bezpečný hosting s SSL, zálohy a průběžná údržba.',
+      en: 'Fast, secure hosting with SSL, backups, and ongoing maintenance.',
+      de: 'Schnelles, sicheres Hosting mit SSL, Backups und laufender Wartung.',
+    },
+  },
+  {
+    icon: Bot,
+    label: { cs: 'AI chatbot & automatizace', en: 'AI Chatbot & Automation', de: 'AI-Chatbot & Automatisierung' },
+    desc: {
+      cs: 'Inteligentní chatbot pro zákaznický servis a automatizaci poptávek.',
+      en: 'Smart chatbot for customer service and automated lead capture.',
+      de: 'Intelligenter Chatbot für Kundenservice und automatisierte Lead-Erfassung.',
+    },
+  },
+  {
+    icon: Search,
+    label: { cs: 'SEO optimalizace', en: 'SEO Optimization', de: 'SEO-Optimierung' },
+    desc: {
+      cs: 'On-page SEO, rychlé načítání, strukturovaná data pro lepší pozice.',
+      en: 'On-page SEO, fast load times, structured data for better rankings.',
+      de: 'On-Page-SEO, schnelle Ladezeiten, strukturierte Daten für bessere Rankings.',
+    },
+  },
+  {
+    icon: BarChart3,
+    label: { cs: 'Analytics & reporting', en: 'Analytics & Reporting', de: 'Analyse & Berichte' },
+    desc: {
+      cs: 'Přehledné statistiky návštěvnosti, konverzí a výkonu webu.',
+      en: 'Clear traffic, conversion, and performance analytics dashboards.',
+      de: 'Übersichtliche Traffic-, Konversions- und Leistungsanalysen.',
+    },
+  },
+  {
+    icon: ShieldCheck,
+    label: { cs: 'GDPR & zabezpečení', en: 'GDPR & Security', de: 'DSGVO & Sicherheit' },
+    desc: {
+      cs: 'Plný soulad s GDPR, cookie consent, SSL šifrování.',
+      en: 'Full GDPR compliance, cookie consent, SSL encryption.',
+      de: 'Volle DSGVO-Konformität, Cookie-Zustimmung, SSL-Verschlüsselung.',
+    },
+  },
+  {
+    icon: Smartphone,
+    label: { cs: 'Responzivní design', en: 'Responsive Design', de: 'Responsives Design' },
+    desc: {
+      cs: 'Dokonalé zobrazení na mobilu, tabletu i desktopu.',
+      en: 'Perfect display on mobile, tablet, and desktop devices.',
+      de: 'Perfekte Darstellung auf Mobil, Tablet und Desktop.',
+    },
+  },
+  {
+    icon: Headphones,
+    label: { cs: 'Podpora & konzultace', en: 'Support & Consulting', de: 'Support & Beratung' },
+    desc: {
+      cs: 'Osobní podpora, strategické konzultace a průběžné vylepšování.',
+      en: 'Personal support, strategic consulting, and continuous improvement.',
+      de: 'Persönlicher Support, strategische Beratung und kontinuierliche Verbesserung.',
+    },
+  },
+];
 
 const learnMore = {
-  title: { cs: 'Mapa pokrytí', en: 'Service Area Map', de: 'Servicebereiche' },
+  title: { cs: 'Co vše dodáváme', en: 'What We Deliver', de: 'Was wir liefern' },
   explanation: {
-    cs: 'Interaktivní mapa ukazuje oblasti, kde poskytujeme naše služby. Zadejte svou adresu a zjistěte, zda jsme dostupní ve vaší lokalitě.',
-    en: 'Interactive map shows the areas where we provide our services. Enter your address to check if we\'re available in your area.',
-    de: 'Interaktive Karte zeigt die Gebiete, in denen wir unsere Dienstleistungen anbieten. Geben Sie Ihre Adresse ein, um zu prüfen, ob wir in Ihrem Gebiet verfügbar sind.',
+    cs: 'FastMedia.Pro je kompletní řešení — od návrhu přes obsah až po hosting a podporu. Nemusíte řešit nic sami.',
+    en: 'FastMedia.Pro is a complete solution — from design through content to hosting and support. You don\'t have to handle anything yourself.',
+    de: 'FastMedia.Pro ist eine Komplettlösung — von Design über Inhalte bis hin zu Hosting und Support.',
   },
   benefits: {
-    cs: ['Eliminuje dotazy mimo oblast pokrytí', 'Šetří čas zákazníkům i nám', 'Jasně komunikuje dosah služeb'],
-    en: ['Eliminates out-of-area inquiries', 'Saves time for customers and us', 'Clearly communicates service reach'],
-    de: ['Eliminiert Anfragen außerhalb des Gebiets', 'Spart Zeit für Kunden und uns', 'Kommuniziert klar die Servicereichweite'],
+    cs: ['Vše na jednom místě', 'Žádné skryté náklady', 'Globální dosah bez omezení'],
+    en: ['Everything in one place', 'No hidden costs', 'Global reach without limits'],
+    de: ['Alles an einem Ort', 'Keine versteckten Kosten', 'Globale Reichweite ohne Grenzen'],
   },
 };
 
 const ServiceAreaMap = () => {
   const { language } = useLanguage();
   const lang = language as 'cs' | 'en' | 'de';
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const [address, setAddress] = useState('');
-  const [result, setResult] = useState<{ inArea: boolean; message: string } | null>(null);
-  const [loaded, setLoaded] = useState(false);
 
   const title = {
-    cs: 'Kde působíme',
-    en: 'Our Service Area',
-    de: 'Unser Servicegebiet',
+    cs: 'Naše služby po celém světě',
+    en: 'Serving Clients Worldwide',
+    de: 'Weltweit für unsere Kunden da',
   };
 
   const subtitle = {
-    cs: `Poskytujeme služby v okruhu ${SERVICE_RADIUS_KM} km od Prahy.`,
-    en: `We provide services within ${SERVICE_RADIUS_KM} km of Prague.`,
-    de: `Wir bieten Dienstleistungen im Umkreis von ${SERVICE_RADIUS_KM} km um Prag an.`,
-  };
-
-  useEffect(() => {
-    if (loaded) return;
-
-    // Load Leaflet CSS
-    if (!document.querySelector('link[href*="leaflet"]')) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(link);
-    }
-
-    // Load Leaflet JS
-    const loadLeaflet = () => {
-      return new Promise<void>((resolve) => {
-        if ((window as any).L) {
-          resolve();
-          return;
-        }
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        script.onload = () => resolve();
-        document.head.appendChild(script);
-      });
-    };
-
-    loadLeaflet().then(() => {
-      if (!mapRef.current || mapInstanceRef.current) return;
-      const L = (window as any).L;
-      const map = L.map(mapRef.current, {
-        scrollWheelZoom: false,
-      }).setView([SERVICE_CENTER.lat, SERVICE_CENTER.lng], 8);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
-        maxZoom: 18,
-      }).addTo(map);
-
-      // Service area circle
-      L.circle([SERVICE_CENTER.lat, SERVICE_CENTER.lng], {
-        radius: SERVICE_RADIUS_KM * 1000,
-        color: 'hsl(var(--accent))',
-        fillColor: 'hsl(var(--accent))',
-        fillOpacity: 0.12,
-        weight: 2,
-      }).addTo(map);
-
-      // Center marker
-      L.marker([SERVICE_CENTER.lat, SERVICE_CENTER.lng]).addTo(map)
-        .bindPopup('FastMedia.Pro — Praha');
-
-      mapInstanceRef.current = map;
-      setLoaded(true);
-    });
-  }, [loaded]);
-
-  const checkAddress = async () => {
-    if (!address.trim()) return;
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`);
-      const data = await res.json();
-      if (data.length === 0) {
-        setResult({
-          inArea: false,
-          message: lang === 'cs' ? 'Adresa nenalezena. Zkuste jiný formát.' : lang === 'de' ? 'Adresse nicht gefunden.' : 'Address not found. Try a different format.',
-        });
-        return;
-      }
-      const { lat, lon } = data[0];
-      const distance = getDistanceKm(SERVICE_CENTER.lat, SERVICE_CENTER.lng, parseFloat(lat), parseFloat(lon));
-      const inArea = distance <= SERVICE_RADIUS_KM;
-
-      // Add marker on map
-      if (mapInstanceRef.current) {
-        const L = (window as any).L;
-        L.marker([parseFloat(lat), parseFloat(lon)], {
-          icon: L.divIcon({
-            className: '',
-            html: `<div style="width:12px;height:12px;border-radius:50%;background:${inArea ? '#22c55e' : '#ef4444'};border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>`,
-            iconSize: [12, 12],
-            iconAnchor: [6, 6],
-          }),
-        }).addTo(mapInstanceRef.current);
-        mapInstanceRef.current.flyTo([parseFloat(lat), parseFloat(lon)], 10);
-      }
-
-      setResult({
-        inArea,
-        message: inArea
-          ? (lang === 'cs' ? `✅ Skvělé! Vaše lokalita (${Math.round(distance)} km) je v našem dosahu.` : lang === 'de' ? `✅ Großartig! Ihr Standort (${Math.round(distance)} km) liegt in unserem Servicegebiet.` : `✅ Great! Your location (${Math.round(distance)} km) is within our service area.`)
-          : (lang === 'cs' ? `⚠️ Vaše lokalita (${Math.round(distance)} km) je mimo standardní dosah. Kontaktujte nás pro individuální nabídku.` : lang === 'de' ? `⚠️ Ihr Standort (${Math.round(distance)} km) liegt außerhalb unseres Standardgebiets. Kontaktieren Sie uns.` : `⚠️ Your location (${Math.round(distance)} km) is outside our standard area. Contact us for a custom quote.`),
-      });
-    } catch {
-      setResult({
-        inArea: false,
-        message: lang === 'cs' ? 'Chyba při hledání. Zkuste to znovu.' : 'Error looking up address. Please try again.',
-      });
-    }
+    cs: 'Tvoříme profesionální weby bez geografických nebo jazykových omezení. Dodáváme vše — design, obsah, hosting i podporu.',
+    en: 'We create professional websites with no geographic or language limits. We deliver everything — design, content, hosting, and support.',
+    de: 'Wir erstellen professionelle Websites ohne geografische oder sprachliche Grenzen. Wir liefern alles — Design, Inhalte, Hosting und Support.',
   };
 
   return (
-    <section className="py-16 lg:py-24 bg-background">
+    <section id="global-reach" className="py-16 lg:py-24 bg-muted/40">
       <div className="container mx-auto px-4 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center max-w-2xl mx-auto mb-10"
+          className="text-center max-w-3xl mx-auto mb-14"
         >
           <span className="text-accent font-semibold text-sm uppercase tracking-wider inline-flex items-center gap-1.5">
-            <MapPin className="w-4 h-4" />
-            {lang === 'cs' ? 'Oblast pokrytí' : lang === 'de' ? 'Servicegebiet' : 'Service Area'}
+            <Globe className="w-4 h-4" />
+            {lang === 'cs' ? 'Globální dosah' : lang === 'de' ? 'Globale Reichweite' : 'Global Reach'}
             <LearnMoreModal
               title={learnMore.title[lang]}
               explanation={learnMore.explanation[lang]}
               benefits={learnMore.benefits[lang]}
             />
           </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-foreground mt-3 mb-2">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-foreground mt-3 mb-3">
             {title[lang]}
           </h2>
-          <p className="text-muted-foreground">{subtitle[lang]}</p>
+          <p className="text-muted-foreground text-lg leading-relaxed">{subtitle[lang]}</p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto space-y-4">
-          {/* Address lookup */}
-          <div className="flex gap-2">
-            <Input
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder={lang === 'cs' ? 'Zadejte adresu nebo město...' : lang === 'de' ? 'Adresse oder Stadt eingeben...' : 'Enter address or city...'}
-              className="h-11"
-              onKeyDown={(e) => e.key === 'Enter' && checkAddress()}
-            />
-            <Button onClick={checkAddress} className="h-11 px-5 gap-2 shrink-0">
-              <Search className="w-4 h-4" />
-              {lang === 'cs' ? 'Ověřit' : lang === 'de' ? 'Prüfen' : 'Check'}
-            </Button>
-          </div>
-
-          {result && (
-            <motion.p
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`text-sm font-medium px-4 py-2.5 rounded-lg ${
-                result.inArea ? 'bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
-              }`}
-            >
-              {result.message}
-            </motion.p>
-          )}
-
-          {/* Map container */}
-          <div
-            ref={mapRef}
-            className="w-full h-[400px] rounded-2xl border border-border overflow-hidden shadow-sm"
-            style={{ zIndex: 1 }}
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 max-w-7xl mx-auto">
+          {services.map((svc, i) => {
+            const Icon = svc.icon;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.04 }}
+                className="group bg-card rounded-2xl border border-border p-6 hover:shadow-lg hover:border-accent/30 transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
+                  <Icon className="w-5 h-5 text-accent" />
+                </div>
+                <h3 className="font-display font-semibold text-foreground mb-1.5 text-sm">
+                  {svc.label[lang]}
+                </h3>
+                <p className="text-muted-foreground text-xs leading-relaxed">
+                  {svc.desc[lang]}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {/* Tagline */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-12 text-center"
+        >
+          <p className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-full px-6 py-3">
+            <Clock className="w-4 h-4 text-accent" />
+            {lang === 'cs'
+              ? 'Dodání do 10 pracovních dní — odkudkoli na světě'
+              : lang === 'de'
+                ? 'Lieferung innerhalb von 10 Werktagen — von überall auf der Welt'
+                : 'Delivery within 10 business days — from anywhere in the world'}
+          </p>
+        </motion.div>
       </div>
     </section>
   );
 };
-
-function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
 
 export default ServiceAreaMap;
