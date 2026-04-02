@@ -874,60 +874,59 @@ const DemoLayout = ({
       <DemoFAQSection tradeId={tradeId} tradeName={tradeName} gradientClass={gradientClass} />
 
       {/* Trade-specific footer */}
-      <footer className="bg-foreground text-background py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+      <footer className="relative py-14 text-white overflow-hidden" style={{ backgroundColor: primaryColor }}>
+        {/* Subtle overlay for depth */}
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid md:grid-cols-4 gap-8 mb-10">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className={`w-10 h-10 ${gradientClass} rounded-lg flex items-center justify-center text-xl`}>
+                <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center text-xl">
                   {tradeIcon}
                 </div>
                 <span className="font-display font-bold text-lg">{tradeName}</span>
               </div>
-              <p className="text-background/70 text-sm">
+              <p className="text-white/70 text-sm leading-relaxed">
                 {language === 'cs' ? 'Profesionální služby pro vaše potřeby. Kvalita a spolehlivost na prvním místě.' : language === 'en' ? 'Professional services for your needs. Quality and reliability first.' : 'Professionelle Dienstleistungen für Ihre Bedürfnisse. Qualität und Zuverlässigkeit an erster Stelle.'}
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">{language === 'cs' ? 'Rychlé odkazy' : language === 'en' ? 'Quick Links' : 'Schnelllinks'}</h4>
-              <ul className="space-y-2 text-sm text-background/70">
-                <li><a href="#about" className="hover:text-background transition-colors">{t('demo.about')}</a></li>
-                <li><a href="#services" className="hover:text-background transition-colors">{t('demo.services')}</a></li>
-                <li><a href="#gallery" className="hover:text-background transition-colors">{language === 'cs' ? 'Galerie' : language === 'en' ? 'Gallery' : 'Galerie'}</a></li>
-                <li><a href="#contact" className="hover:text-background transition-colors">{t('demo.contact')}</a></li>
+              <h4 className="font-semibold mb-4 text-white/90">{language === 'cs' ? 'Rychlé odkazy' : language === 'en' ? 'Quick Links' : 'Schnelllinks'}</h4>
+              <ul className="space-y-2 text-sm text-white/70">
+                <li><a href="#about" className="hover:text-white transition-colors">{t('demo.about')}</a></li>
+                <li><a href="#services" className="hover:text-white transition-colors">{t('demo.services')}</a></li>
+                <li><a href="#gallery" className="hover:text-white transition-colors">{language === 'cs' ? 'Galerie' : language === 'en' ? 'Gallery' : 'Galerie'}</a></li>
+                <li><a href="#contact" className="hover:text-white transition-colors">{t('demo.contact')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">{t('demo.services')}</h4>
-              <ul className="space-y-2 text-sm text-background/70">
+              <h4 className="font-semibold mb-4 text-white/90">{t('demo.services')}</h4>
+              <ul className="space-y-2 text-sm text-white/70">
                 {services.slice(0, 4).map((service, index) => (
-                  <li key={index}><a href="#services" className="hover:text-background transition-colors">{service.title[language]}</a></li>
+                  <li key={index}><a href="#services" className="hover:text-white transition-colors">{service.title[language]}</a></li>
                 ))}
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">{t('demo.contact')}</h4>
-              <ul className="space-y-2 text-sm text-background/70">
+              <h4 className="font-semibold mb-4 text-white/90">{t('demo.contact')}</h4>
+              <ul className="space-y-2.5 text-sm text-white/70">
                 <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> +420 797 864 432</li>
                 <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@fastmedia.pro</li>
                 <li className="flex items-center gap-2"><MapPin className="w-4 h-4" /> Praha 1</li>
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-background/20 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-background/70 text-sm">
-              © 2024 {tradeName}. {language === 'cs' ? 'Všechna práva vyhrazena.' : language === 'en' ? 'All rights reserved.' : 'Alle Rechte vorbehalten.'}
+          <div className="pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-white/60 text-sm">
+              © {new Date().getFullYear()} {tradeName}. {language === 'cs' ? 'Všechna práva vyhrazena.' : language === 'en' ? 'All rights reserved.' : 'Alle Rechte vorbehalten.'}
             </p>
-            <Link to="/" className="text-accent text-sm hover:underline flex items-center gap-2">
-              <span className={`w-5 h-5 ${gradientClass} rounded flex items-center justify-center text-xs`}>⚡</span>
+            <Link to="/" className="text-white/80 text-sm hover:text-white transition-colors flex items-center gap-2">
+              <span className="w-5 h-5 bg-white/20 rounded flex items-center justify-center text-xs">⚡</span>
               {language === 'cs' ? 'Web vytvořen pomocí FastMedia.Pro' : language === 'en' ? 'Website created by FastMedia.Pro' : 'Website erstellt von FastMedia.Pro'}
             </Link>
           </div>
         </div>
       </footer>
-
-      {/* Main site footer with navigation */}
-      <Footer />
     </div>
   );
 };
