@@ -387,7 +387,7 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
                 </span>
               </TableCell>
               <TableCell className="text-sm">{formatDate(b.scheduled_at)}</TableCell>
-              <TableCell className="text-sm">{b.duration_minutes} Min.</TableCell>
+              <TableCell className="text-sm">{b.duration_minutes} {t('bookings.min')}</TableCell>
               <TableCell className="text-sm text-muted-foreground">{b.assigned_to || '—'}</TableCell>
               <TableCell>
                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={e => { e.stopPropagation(); onSelect(b); }}>
