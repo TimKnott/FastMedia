@@ -251,7 +251,7 @@ const AdminBookings = () => {
                 <Input value={newBooking.service} onChange={e => setNewBooking(p => ({ ...p, service: e.target.value }))} placeholder="z.B. Sanitär – Rohrleitungsinstallation" />
               </div>
               <div className="space-y-1.5">
-                <Label>Termin *</Label>
+                <Label>{t('bookings.appointment')} *</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !newBooking.scheduled_at && "text-muted-foreground")}>
