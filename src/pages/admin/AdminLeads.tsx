@@ -269,7 +269,7 @@ const AdminLeads = () => {
                 {!loading && filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center text-muted-foreground py-12">
-                      Keine Leads gefunden.
+                      {t('leads.none')}
                     </TableCell>
                   </TableRow>
                 )}
