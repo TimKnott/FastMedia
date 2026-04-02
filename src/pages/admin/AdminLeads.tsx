@@ -363,7 +363,7 @@ const AdminLeads = () => {
 
                   {/* Contact */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.contact')}</h3>
                     <div className="space-y-1.5 text-sm">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Mail className="w-4 h-4" />{selectedLead.email}
