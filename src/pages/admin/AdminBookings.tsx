@@ -514,7 +514,7 @@ const BookingDetailSheet = ({
           {/* Email task to team */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <Send className="w-4 h-4" /> Aufgabe per E-Mail senden
+              <Send className="w-4 h-4" /> {t('bookings.email_task')}
             </h3>
             <div className="space-y-2">
               <Input
