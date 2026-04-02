@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, ChevronLeft, Menu, X, Share2, MessageCircle, Copy, Newspaper } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, ChevronLeft, Menu, X, Share2, MessageCircle, Copy, Newspaper, Heart, Bookmark } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import useEmblaCarousel from 'embla-carousel-react';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
@@ -21,6 +21,10 @@ import expertImg2 from '@/assets/team/expert-2.jpg';
 import expertImg3 from '@/assets/team/expert-3.jpg';
 
 const expertPhotos = [expertImg1, expertImg2, expertImg3];
+
+import blogImg1 from '@/assets/blog/demo-blog-1.jpg';
+import blogImg2 from '@/assets/blog/demo-blog-2.jpg';
+import blogImg3 from '@/assets/blog/demo-blog-3.jpg';
 
 interface DemoLayoutProps {
   tradeName: string;
@@ -626,68 +630,132 @@ const DemoLayout = ({
               {language === 'cs' ? 'Sdílejte svůj příběh se světem' : language === 'en' ? 'Share Your Story with the World' : 'Teilen Sie Ihre Geschichte mit der Welt'}
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              {language === 'cs' 
-                ? 'Váš web obsahuje vestavěný blog, kde můžete sdílet novinky, tipy a příběhy ze svého podnikání. Každý článek lze jedním kliknutím sdílet na sociální sítě – WhatsApp, Facebook, LinkedIn, X (Twitter), e-mailem nebo zkopírovat odkaz.'
+              {language === 'cs'
+                ? 'Váš web obsahuje vestavěný blog se sdílením na sociální sítě – WhatsApp, Facebook, LinkedIn, e-mail a další.'
                 : language === 'en'
-                ? 'Your website includes a built-in blog where you can share news, tips, and stories from your business. Every article can be shared with one click to social media – WhatsApp, Facebook, LinkedIn, X (Twitter), email, or copy the link.'
-                : 'Ihre Website enthält einen integrierten Blog, in dem Sie Neuigkeiten, Tipps und Geschichten aus Ihrem Unternehmen teilen können. Jeder Artikel kann mit einem Klick in sozialen Medien geteilt werden – WhatsApp, Facebook, LinkedIn, X (Twitter), E-Mail oder Link kopieren.'}
+                ? 'Your website includes a built-in blog with social sharing – WhatsApp, Facebook, LinkedIn, email, and more.'
+                : 'Ihre Website enthält einen integrierten Blog mit Social-Sharing – WhatsApp, Facebook, LinkedIn, E-Mail und mehr.'}
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {[
+          {/* Blog Preview Cards */}
+          {(() => {
+            const blogPosts = [
               {
-                icon: Share2,
-                title: { cs: 'Sdílení na sociální sítě', en: 'Social Media Sharing', de: 'Social Media Teilen' },
-                desc: { cs: 'Sdílejte obsah na Facebook, Instagram, LinkedIn, X a další platformy jedním kliknutím.', en: 'Share content to Facebook, Instagram, LinkedIn, X and other platforms with one click.', de: 'Teilen Sie Inhalte mit einem Klick auf Facebook, Instagram, LinkedIn, X und andere Plattformen.' }
+                img: blogImg1,
+                title: { cs: '5 tipů jak zvýšit online viditelnost', en: '5 Tips to Boost Your Online Visibility', de: '5 Tipps zur Steigerung Ihrer Online-Sichtbarkeit' },
+                excerpt: { cs: 'Zjistěte, jak jednoduchými kroky přitáhnout více zákazníků na váš web…', en: 'Discover how simple steps can attract more customers to your website…', de: 'Erfahren Sie, wie einfache Schritte mehr Kunden auf Ihre Website bringen…' },
+                category: { cs: 'Marketing', en: 'Marketing', de: 'Marketing' },
+                date: '28.03.2026',
+                readTime: '4 min',
               },
               {
-                icon: MessageCircle,
-                title: { cs: 'WhatsApp & E-mail', en: 'WhatsApp & Email', de: 'WhatsApp & E-Mail' },
-                desc: { cs: 'Pošlete články přímo klientům přes WhatsApp nebo e-mail. Osobní doporučení fungují nejlépe.', en: 'Send articles directly to clients via WhatsApp or email. Personal recommendations work best.', de: 'Senden Sie Artikel direkt an Kunden per WhatsApp oder E-Mail. Persönliche Empfehlungen wirken am besten.' }
+                img: blogImg2,
+                title: { cs: 'Proč potřebujete profesionální web', en: 'Why You Need a Professional Website', de: 'Warum Sie eine professionelle Website brauchen' },
+                excerpt: { cs: 'V dnešní době je web vaší vizitkou. Podívejte se na klíčové důvody…', en: 'In today\'s world, your website is your business card. See the key reasons…', de: 'In der heutigen Zeit ist Ihre Website Ihre Visitenkarte. Die wichtigsten Gründe…' },
+                category: { cs: 'Podnikání', en: 'Business', de: 'Geschäft' },
+                date: '15.03.2026',
+                readTime: '6 min',
               },
               {
-                icon: Copy,
-                title: { cs: 'Kopírování odkazu', en: 'Copy Link', de: 'Link kopieren' },
-                desc: { cs: 'Zkopírujte odkaz a vložte kamkoli – do chatu, e-mailu nebo na web. Jednoduché a rychlé.', en: 'Copy the link and paste anywhere – chat, email, or website. Simple and fast.', de: 'Kopieren Sie den Link und fügen Sie ihn überall ein – Chat, E-Mail oder Website. Einfach und schnell.' }
+                img: blogImg3,
+                title: { cs: 'Zákaznické recenze: Síla doporučení', en: 'Customer Reviews: The Power of Referrals', de: 'Kundenbewertungen: Die Kraft der Empfehlungen' },
+                excerpt: { cs: 'Jak sbírat a využívat recenze pro růst vašeho podnikání…', en: 'How to collect and leverage reviews to grow your business…', de: 'Wie Sie Bewertungen sammeln und für Ihr Geschäftswachstum nutzen…' },
+                category: { cs: 'Tipy', en: 'Tips', de: 'Tipps' },
+                date: '02.03.2026',
+                readTime: '3 min',
               },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                className="bg-card rounded-2xl p-6 shadow-card text-center"
-              >
-                <div className={`w-14 h-14 mx-auto ${gradientClass} rounded-xl flex items-center justify-center text-primary-foreground mb-4`}>
-                  <item.icon className="w-7 h-7" />
-                </div>
-                <h3 className="font-display font-bold text-lg text-foreground mb-2">{item.title[language]}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc[language]}</p>
-              </motion.div>
-            ))}
-          </div>
+            ];
 
+            return (
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
+                {blogPosts.map((post, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.12 }}
+                    className="bg-card rounded-2xl overflow-hidden shadow-card group hover:shadow-lg transition-shadow"
+                  >
+                    <div className="relative overflow-hidden aspect-[3/2]">
+                      <img
+                        src={post.img}
+                        alt={post.title[language]}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        width={960}
+                        height={640}
+                      />
+                      <span
+                        className="absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full text-white"
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        {post.category[language]}
+                      </span>
+                      <button className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                        <Bookmark className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                        <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {post.date}</span>
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {post.readTime}</span>
+                      </div>
+                      <h3 className="font-display font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                        {post.title[language]}
+                      </h3>
+                      <p className="text-muted-foreground text-sm line-clamp-2 mb-4">{post.excerpt[language]}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium flex items-center gap-1" style={{ color: primaryColor }}>
+                          {language === 'cs' ? 'Číst více' : language === 'en' ? 'Read more' : 'Weiterlesen'}
+                          <ChevronRight className="w-4 h-4" />
+                        </span>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <button className="hover:text-red-500 transition-colors"><Heart className="w-4 h-4" /></button>
+                          <button className="hover:text-primary transition-colors"><Share2 className="w-4 h-4" /></button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            );
+          })()}
+
+          {/* Social sharing explainer + CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-card rounded-2xl p-8 shadow-card max-w-2xl mx-auto text-center"
+            className="bg-card rounded-2xl p-8 shadow-card max-w-3xl mx-auto"
           >
-            <p className="text-foreground font-medium mb-4">
-              {language === 'cs'
-                ? '📢 Tip: Pravidelné sdílení článků na sociálních sítích zvyšuje viditelnost vaší firmy a přitahuje nové klienty automaticky!'
-                : language === 'en'
-                ? '📢 Tip: Regularly sharing articles on social media increases your business visibility and attracts new clients automatically!'
-                : '📢 Tipp: Regelmäßiges Teilen von Artikeln in sozialen Medien erhöht die Sichtbarkeit Ihres Unternehmens und zieht automatisch neue Kunden an!'}
-            </p>
-            <Link to="/blog">
-              <Button className={`${gradientClass} text-primary-foreground font-semibold`}>
-                {language === 'cs' ? 'Prohlédnout blog' : language === 'en' ? 'Browse Blog' : 'Blog durchsuchen'}
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="flex gap-3 shrink-0">
+                {[Share2, MessageCircle, Copy].map((Icon, i) => (
+                  <div key={i} className="w-12 h-12 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: primaryColor, opacity: 1 - i * 0.15 }}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                ))}
+              </div>
+              <div className="text-center sm:text-left">
+                <p className="text-foreground font-medium mb-1">
+                  {language === 'cs'
+                    ? '📢 Každý článek lze sdílet jedním kliknutím na WhatsApp, Facebook, LinkedIn, e-mailem nebo zkopírovat odkaz.'
+                    : language === 'en'
+                    ? '📢 Every article can be shared with one click to WhatsApp, Facebook, LinkedIn, email, or copy the link.'
+                    : '📢 Jeder Artikel kann mit einem Klick auf WhatsApp, Facebook, LinkedIn, E-Mail geteilt oder der Link kopiert werden.'}
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 text-center">
+              <Link to="/blog">
+                <Button className={`${gradientClass} text-primary-foreground font-semibold`}>
+                  {language === 'cs' ? 'Prohlédnout blog' : language === 'en' ? 'Browse Blog' : 'Blog durchsuchen'}
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
