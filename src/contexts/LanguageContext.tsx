@@ -317,6 +317,9 @@ export const translations: Translations = {
   'admin.vbout': { cs: 'Vbout', en: 'Vbout', de: 'Vbout' },
   'admin.accounting': { cs: 'Účetnictví', en: 'Accounting', de: 'Buchhaltung' },
   'admin.emails': { cs: 'E-Maily', en: 'Emails', de: 'E-Mails' },
+  'admin.hr': { cs: 'Personální', en: 'HR', de: 'Personal' },
+  'admin.integrations': { cs: 'Integrace', en: 'Integrations', de: 'Integrationen' },
+  'admin.export': { cs: 'Export dat', en: 'Data Export', de: 'Datenexport' },
 
   // Admin Bookings
   'bookings.title': { cs: 'Rezervace', en: 'Bookings', de: 'Buchungen' },
