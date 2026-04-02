@@ -203,7 +203,15 @@ const AdminBookings = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Buchungen</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-display font-bold text-foreground">Buchungen</h1>
+            <LearnMoreModal
+              title="Kanban Task Management"
+              explanation="Visual workflow management for scheduling jobs efficiently. Drag cards between status columns, assign tasks, and track due dates."
+              benefits={['Improves team coordination', 'Reduces missed appointments', 'Visual progress tracking']}
+              triggerSize="md"
+            />
+          </div>
           <p className="text-muted-foreground mt-1">Termine verwalten und nachverfolgen.</p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
