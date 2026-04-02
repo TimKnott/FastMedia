@@ -57,8 +57,13 @@ const PricingSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <span className="text-accent font-semibold text-sm uppercase tracking-wider">
+          <span className="text-accent font-semibold text-sm uppercase tracking-wider inline-flex items-center gap-1.5">
             {t('pricing.label')}
+            <LearnMoreModal
+              title={pricingLearnMore.title[lang]}
+              explanation={pricingLearnMore.explanation[lang]}
+              benefits={pricingLearnMore.benefits[lang]}
+            />
           </span>
           <EditableText
             contentKey="pricing.title"
