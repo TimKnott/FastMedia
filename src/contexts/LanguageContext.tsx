@@ -269,6 +269,16 @@ export const translations: Translations = {
   'trade.nutritionist': { cs: 'Výživové poradenství', en: 'Nutritionist', de: 'Ernährungsberatung' },
   'trade.handmade': { cs: 'Handmade & řemesla', en: 'Handmade & Crafts', de: 'Handgemacht & Kunsthandwerk' },
   'trade.childcare': { cs: 'Hlídání dětí', en: 'Childcare', de: 'Kinderbetreuung' },
+  'trade.dental': { cs: 'Zubní klinika', en: 'Dental Clinic', de: 'Zahnarztpraxis' },
+  'trade.realestate': { cs: 'Reality', en: 'Real Estate', de: 'Immobilien' },
+  'trade.accounting': { cs: 'Účetnictví', en: 'Accounting', de: 'Buchhaltung' },
+  'trade.veterinary': { cs: 'Veterinář', en: 'Veterinary', de: 'Tierarzt' },
+  'trade.tattoo': { cs: 'Tetovací studio', en: 'Tattoo Studio', de: 'Tattoostudio' },
+  'trade.musicschool': { cs: 'Hudební škola', en: 'Music School', de: 'Musikschule' },
+  'trade.drivingschool': { cs: 'Autoškola', en: 'Driving School', de: 'Fahrschule' },
+  'trade.laundry': { cs: 'Prádelna', en: 'Laundry', de: 'Wäscherei' },
+  'trade.security': { cs: 'Bezpečnostní služby', en: 'Security Services', de: 'Sicherheitsdienste' },
+  'trade.translation': { cs: 'Překlady', en: 'Translation', de: 'Übersetzung' },
 
   // Calculator Showcase — clear value proposition
   'calculator_showcase.label': { cs: 'AI Nástroj', en: 'AI-Powered Tool', de: 'KI-gestütztes Tool' },
