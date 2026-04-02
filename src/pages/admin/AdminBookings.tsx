@@ -478,7 +478,7 @@ const BookingDetailSheet = ({
                 </div>
               </div>
               <div>
-                <p className="text-muted-foreground text-xs">Zugewiesen an</p>
+                <p className="text-muted-foreground text-xs">{t('bookings.assigned_to')}</p>
                 <p className="font-medium">{booking.assigned_to || '—'}</p>
               </div>
               {booking.lead_id && (
