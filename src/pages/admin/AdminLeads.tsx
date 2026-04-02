@@ -6,6 +6,7 @@ import {
   TrendingUp, User, Flame, Snowflake, Zap, Plus, Send as SendIcon, X, Tag
 } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
