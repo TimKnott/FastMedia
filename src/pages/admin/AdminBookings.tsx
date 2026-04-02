@@ -356,7 +356,7 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Kunde</TableHead>
+          <TableHead>{t('bookings.customer')}</TableHead>
           <TableHead>{t('bookings.service')}</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>{t('bookings.appointment')}</TableHead>
