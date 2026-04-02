@@ -83,6 +83,7 @@ const statusConfig: Record<LeadStatus, { label: string; dot: string }> = {
 };
 
 const AdminLeads = () => {
+  const { t } = useLanguage();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');

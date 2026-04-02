@@ -34,7 +34,7 @@ const AdminBlog = () => {
                 <div className="flex gap-2 flex-shrink-0">
                   <Button variant="outline" size="sm" className="h-7 text-xs" disabled>
                     <Edit className="w-3 h-3 mr-1" />
-                    Bearbeiten
+                    {t('landing.edit')}
                   </Button>
                   <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
                     <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer">
