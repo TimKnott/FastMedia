@@ -446,7 +446,7 @@ const AdminLeads = () => {
                     )}
                     {selectedLead.special_request && (
                       <div className="mt-2">
-                        <p className="text-muted-foreground text-xs">Sonderwunsch</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.special_request')}</p>
                         <p className="text-sm mt-1 p-2 rounded bg-muted/50">{selectedLead.special_request}</p>
                       </div>
                     )}
