@@ -318,7 +318,7 @@ const AdminBookings = () => {
         <CardContent>
           <Tabs defaultValue="all">
             <TabsList className="flex-wrap">
-              <TabsTrigger value="all">Alle ({filtered.length})</TabsTrigger>
+              <TabsTrigger value="all">{t('bookings.all_tab')} ({filtered.length})</TabsTrigger>
               {pipelineStages.map(s => (
                 <TabsTrigger key={s.key} value={s.key}>{s.label} ({counts[s.key] ?? 0})</TabsTrigger>
               ))}
