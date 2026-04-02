@@ -192,7 +192,7 @@ const AdminLeads = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-display font-bold text-foreground">Lead-Management</h1>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('leads.title')}</h1>
         <LearnMoreModal
           title="Customer Relationship Management (CRM)"
           explanation="Organize customer data for personalized communication and service quality improvements. Track lead scoring, service history, and conversion funnels."
@@ -206,7 +206,7 @@ const AdminLeads = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: t('leads.total'), value: statCounts.total, icon: User },
-          { label: 'Hot / Priority', value: statCounts.hot, icon: Flame },
+          { label: t('leads.hot_priority'), value: statCounts.hot, icon: Flame },
           { label: t('leads.status.new'), value: statCounts.new, icon: TrendingUp },
           { label: t('leads.status.converted'), value: statCounts.converted, icon: Zap },
         ].map((stat) => (
@@ -303,7 +303,7 @@ const AdminLeads = () => {
                           {statusConfig[lead.status].label}
                         </span>
                       </TableCell>
-                      <TableCell className="text-sm font-medium">{lead.quote_one_time.toLocaleString('de-DE')} Kč</TableCell>
+                      <TableCell className="text-sm font-medium">{lead.quote_one_time.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {format(new Date(lead.created_at), 'dd.MM.yyyy')}
                       </TableCell>
@@ -363,7 +363,7 @@ const AdminLeads = () => {
 
                   {/* Contact */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.contact')}</h3>
                     <div className="space-y-1.5 text-sm">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Mail className="w-4 h-4" />{selectedLead.email}
@@ -389,15 +389,15 @@ const AdminLeads = () => {
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                       <Tag className="w-4 h-4" />
-                      Kundenprofil
+                      {t('leads.profile')}
                     </h3>
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div className="p-2 rounded bg-muted/50">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Sprache</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('leads.language_label')}</p>
                         <p className="font-medium">{selectedLead.language === 'cs' ? '🇨🇿 Čeština' : selectedLead.language === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English'}</p>
                       </div>
                       <div className="p-2 rounded bg-muted/50">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Quelle</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('leads.source_label')}</p>
                         <p className="font-medium capitalize">{selectedLead.source}</p>
                       </div>
                       <div className="p-2 rounded bg-muted/50">
@@ -405,7 +405,7 @@ const AdminLeads = () => {
                         <p className="font-medium">{selectedLead.score}/100</p>
                       </div>
                       <div className="p-2 rounded bg-muted/50">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Gewerk</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('leads.trade_label')}</p>
                         <p className="font-medium capitalize">{selectedLead.trade}</p>
                       </div>
                     </div>
@@ -413,23 +413,23 @@ const AdminLeads = () => {
 
                   {/* Quote details */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Angebotsdaten</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.quote_data')}</h3>
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
-                        <p className="text-muted-foreground text-xs">Gewerk</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.trade_label')}</p>
                         <p className="font-medium capitalize">{selectedLead.trade}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground text-xs">Einmalkosten</p>
-                        <p className="font-medium">{selectedLead.quote_one_time.toLocaleString('de-DE')} Kč</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.one_time')}</p>
+                        <p className="font-medium">{selectedLead.quote_one_time.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground text-xs">Monatlich</p>
-                        <p className="font-medium">{selectedLead.quote_monthly.toLocaleString('de-DE')} Kč/Mon.</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.monthly')}</p>
+                        <p className="font-medium">{selectedLead.quote_monthly.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč{t('leads.month_unit')}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground text-xs">Arbeitsstunden</p>
-                        <p className="font-medium">{selectedLead.labor_hours} Std</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.labor_hours')}</p>
+                        <p className="font-medium">{selectedLead.labor_hours} {t('leads.hours')}</p>
                       </div>
                     </div>
                     {selectedLead.selected_features && selectedLead.selected_features.length > 0 && (
@@ -446,7 +446,7 @@ const AdminLeads = () => {
                     )}
                     {selectedLead.special_request && (
                       <div className="mt-2">
-                        <p className="text-muted-foreground text-xs">Sonderwunsch</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.special_request')}</p>
                         <p className="text-sm mt-1 p-2 rounded bg-muted/50">{selectedLead.special_request}</p>
                       </div>
                     )}
@@ -457,14 +457,14 @@ const AdminLeads = () => {
                     <div className="space-y-2">
                       <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                         <Zap className="w-4 h-4 text-primary" />
-                        AI-Analyse
+                        {t('leads.ai_analysis')}
                       </h3>
                       <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 text-sm space-y-2">
                         {selectedLead.ai_analysis.summary && (
                           <p>{selectedLead.ai_analysis.summary}</p>
                         )}
                         {selectedLead.ai_analysis.recommended_approach && (
-                          <p className="text-muted-foreground text-xs"><strong>Strategie:</strong> {selectedLead.ai_analysis.recommended_approach}</p>
+                          <p className="text-muted-foreground text-xs"><strong>{t('leads.strategy')}:</strong> {selectedLead.ai_analysis.recommended_approach}</p>
                         )}
                         {selectedLead.ai_analysis.upsell_opportunities?.length > 0 && (
                           <div>
@@ -482,7 +482,7 @@ const AdminLeads = () => {
 
                   {/* Workflow */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Workflow</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.workflow')}</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
                         <Label className="text-xs">Status</Label>
@@ -518,7 +518,7 @@ const AdminLeads = () => {
                         value={newNote}
                         onChange={(e) => setNewNote(e.target.value)}
                         rows={2}
-                        placeholder="Notiz hinzufügen…"
+                        placeholder={t('leads.add_note')}
                         className="text-sm"
                       />
                       <Button size="sm" onClick={addNote} disabled={!newNote.trim() || savingNote} className="self-end">

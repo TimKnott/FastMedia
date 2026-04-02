@@ -181,12 +181,12 @@ const AdminBookings = () => {
   const filterByStatus = (status: BookingStatus) => filtered.filter(b => b.status === status);
 
   const formatDate = (iso: string) => {
-    try { return format(new Date(iso), 'dd.MM.yyyy, HH:mm', { locale: de }); }
+    try { return format(new Date(iso), 'dd.MM.yyyy, HH:mm', { locale: dateLocale }); }
     catch { return iso; }
   };
 
   const formatDateShort = (iso: string) => {
-    try { return format(new Date(iso), 'dd.MM.yyyy', { locale: de }); }
+    try { return format(new Date(iso), 'dd.MM.yyyy', { locale: dateLocale }); }
     catch { return iso; }
   };
 
@@ -228,18 +228,18 @@ const AdminBookings = () => {
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Name *</Label>
-                  <Input value={newBooking.customer_name} onChange={e => setNewBooking(p => ({ ...p, customer_name: e.target.value }))} placeholder="Max Mustermann" />
+                  <Label>{t('bookings.name_label')} *</Label>
+                  <Input value={newBooking.customer_name} onChange={e => setNewBooking(p => ({ ...p, customer_name: e.target.value }))} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>E-Mail *</Label>
-                  <Input type="email" value={newBooking.customer_email} onChange={e => setNewBooking(p => ({ ...p, customer_email: e.target.value }))} placeholder="max@beispiel.de" />
+                  <Label>{t('bookings.email_label')} *</Label>
+                  <Input type="email" value={newBooking.customer_email} onChange={e => setNewBooking(p => ({ ...p, customer_email: e.target.value }))} placeholder={t('bookings.email_placeholder')} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Telefon</Label>
-                  <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} placeholder="+49 170 …" />
+                  <Label>{t('bookings.phone_label')}</Label>
+                  <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} />
                 </div>
                 <div className="space-y-1.5">
                   <Label>{t('bookings.duration_min')}</Label>
@@ -247,8 +247,8 @@ const AdminBookings = () => {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label>Service *</Label>
-                <Input value={newBooking.service} onChange={e => setNewBooking(p => ({ ...p, service: e.target.value }))} placeholder="z.B. Sanitär – Rohrleitungsinstallation" />
+                <Label>{t('bookings.service_label')} *</Label>
+                <Input value={newBooking.service} onChange={e => setNewBooking(p => ({ ...p, service: e.target.value }))} placeholder={t('bookings.service_placeholder')} />
               </div>
               <div className="space-y-1.5">
                 <Label>{t('bookings.appointment')} *</Label>
@@ -256,7 +256,7 @@ const AdminBookings = () => {
                   <PopoverTrigger asChild>
                     <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !newBooking.scheduled_at && "text-muted-foreground")}>
                       <CalendarDays className="mr-2 h-4 w-4" />
-                      {newBooking.scheduled_at ? format(newBooking.scheduled_at, 'PPP', { locale: dateLocale }) : (language === 'cs' ? 'Vybrat datum' : language === 'en' ? 'Select date' : 'Datum wählen')}
+                      {newBooking.scheduled_at ? format(newBooking.scheduled_at, 'PPP', { locale: dateLocale }) : t('bookings.select_date')}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -305,7 +305,7 @@ const AdminBookings = () => {
       <div className="flex gap-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Suche nach Name, E-Mail, Service…" className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
+          <Input placeholder={t('bookings.search')} className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
       </div>
 
@@ -318,7 +318,7 @@ const AdminBookings = () => {
         <CardContent>
           <Tabs defaultValue="all">
             <TabsList className="flex-wrap">
-              <TabsTrigger value="all">Alle ({filtered.length})</TabsTrigger>
+              <TabsTrigger value="all">{t('bookings.all_tab')} ({filtered.length})</TabsTrigger>
               {pipelineStages.map(s => (
                 <TabsTrigger key={s.key} value={s.key}>{s.label} ({counts[s.key] ?? 0})</TabsTrigger>
               ))}
@@ -356,7 +356,7 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Kunde</TableHead>
+          <TableHead>{t('bookings.customer')}</TableHead>
           <TableHead>{t('bookings.service')}</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>{t('bookings.appointment')}</TableHead>
@@ -387,7 +387,7 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
                 </span>
               </TableCell>
               <TableCell className="text-sm">{formatDate(b.scheduled_at)}</TableCell>
-              <TableCell className="text-sm">{b.duration_minutes} Min.</TableCell>
+              <TableCell className="text-sm">{b.duration_minutes} {t('bookings.min')}</TableCell>
               <TableCell className="text-sm text-muted-foreground">{b.assigned_to || '—'}</TableCell>
               <TableCell>
                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={e => { e.stopPropagation(); onSelect(b); }}>
@@ -438,7 +438,7 @@ const BookingDetailSheet = ({
         <div className="mt-6 space-y-6">
           {/* Contact */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t('bookings.contact')}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="w-4 h-4" /> <span>{booking.customer_email}</span>
@@ -456,12 +456,12 @@ const BookingDetailSheet = ({
             <h3 className="text-sm font-semibold text-foreground">{t('bookings.details')}</h3>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-muted-foreground text-xs">Service</p>
+                <p className="text-muted-foreground text-xs">{t('bookings.service')}</p>
                 <p className="font-medium">{booking.service}</p>
               </div>
               <div>
                 <p className="text-muted-foreground text-xs">{t('bookings.duration')}</p>
-                <p className="font-medium">{booking.duration_minutes} Minuten</p>
+                <p className="font-medium">{booking.duration_minutes} {t('bookings.minutes')}</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <CalendarCheck className="w-3.5 h-3.5 text-muted-foreground" />
@@ -492,7 +492,7 @@ const BookingDetailSheet = ({
 
           {/* Status change */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Status ändern</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t('bookings.change_status')}</h3>
             <Select value={booking.status} onValueChange={v => onStatusChange(booking.id, v)}>
               <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -517,8 +517,8 @@ const BookingDetailSheet = ({
               <Send className="w-4 h-4" /> {t('bookings.email_task')}
             </h3>
             <div className="space-y-2">
-              <Input
-                placeholder="E-Mail des Empfängers (Admin/Editor)"
+                <Input
+                placeholder={t('bookings.email_recipient')}
                 id="task-email-recipient"
               />
               <Button
@@ -528,7 +528,7 @@ const BookingDetailSheet = ({
                   const emailInput = document.getElementById('task-email-recipient') as HTMLInputElement;
                   const recipientEmail = emailInput?.value?.trim();
                   if (!recipientEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
-                    toast.error('Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+                    toast.error(t('bookings.invalid_email'));
                     return;
                   }
                   try {
@@ -549,7 +549,7 @@ const BookingDetailSheet = ({
                     toast.success(t('bookings.email_sent'));
                     emailInput.value = '';
                   } catch {
-                    toast.error('E-Mail konnte nicht gesendet werden.');
+                    toast.error(t('bookings.email_send_error'));
                   }
                 }}
               >
