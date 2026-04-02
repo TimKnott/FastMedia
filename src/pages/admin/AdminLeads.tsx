@@ -240,8 +240,8 @@ const AdminLeads = () => {
       {/* Leads table */}
       <Card className="shadow-card">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-display">Alle Leads</CardTitle>
-          <CardDescription>{filtered.length} Einträge</CardDescription>
+          <CardTitle className="text-lg font-display">{t('leads.all')}</CardTitle>
+          <CardDescription>{filtered.length} {t('leads.entries')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
