@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Search, Plus, MoreHorizontal, Phone, Mail, Clock, CalendarDays, List,
-  User, StickyNote, CalendarCheck, Loader2, Send, MessageCircle,
+  User, StickyNote, CalendarCheck, Loader2, Send, MessageCircle, Video,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -110,7 +110,7 @@ const AdminBookings = () => {
   }, [bookings]);
 
   const handleCreate = async () => {
-    if (!newBooking.customer_name || !newBooking.customer_email || !newBooking.service || !newBooking.scheduled_at) {
+    if (!newBooking.customer_name || !newBooking.customer_email || !newBooking.phone || !newBooking.service || !newBooking.scheduled_at) {
       toast.error(t('common.required_fields'));
       return;
     }
@@ -238,8 +238,8 @@ const AdminBookings = () => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>{t('bookings.phone_label')}</Label>
-                  <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} />
+                  <Label>{t('bookings.phone_label')} *</Label>
+                  <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} placeholder="+420 ..." />
                 </div>
                 <div className="space-y-1.5">
                   <Label>{t('bookings.duration_min')}</Label>
@@ -558,25 +558,41 @@ const BookingDetailSheet = ({
             </div>
           </div>
 
-          {/* WhatsApp meeting link */}
+          {/* WhatsApp & Google Meet */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <MessageCircle className="w-4 h-4" /> WhatsApp
+              <MessageCircle className="w-4 h-4" /> Meeting Links
             </h3>
-            <Button
-              variant="outline"
-              className="w-full gap-1.5 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700"
-              onClick={() => {
-                const phone = booking.phone ? booking.phone.replace(/\D/g, '') : '';
-                const message = `Hi ${booking.customer_name},\n\nYour meeting with FastMedia.Pro is confirmed!\n\n📅 Date: ${formatDate(booking.scheduled_at)}\n⏱ Duration: ${booking.duration_minutes} min\n🔧 Service: ${booking.service}\n\nIf you need to reschedule, please let us know.\n\nBest regards,\nFastMedia.Pro`;
-                const url = phone
-                  ? `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
-                  : `https://wa.me/?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
-              }}
-            >
-              <MessageCircle className="w-4 h-4" /> Send via WhatsApp
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1 gap-1.5 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700"
+                onClick={() => {
+                  const phone = booking.phone ? booking.phone.replace(/\D/g, '') : '';
+                  const message = `Hi ${booking.customer_name},\n\nYour meeting with FastMedia.Pro is confirmed!\n\n📅 Date: ${formatDate(booking.scheduled_at)}\n⏱ Duration: ${booking.duration_minutes} min\n🔧 Service: ${booking.service}\n\nIf you need to reschedule, please let us know.\n\nBest regards,\nFastMedia.Pro`;
+                  const url = phone
+                    ? `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+                    : `https://wa.me/?text=${encodeURIComponent(message)}`;
+                  window.open(url, '_blank');
+                }}
+              >
+                <MessageCircle className="w-4 h-4" /> WhatsApp
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 gap-1.5 border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                onClick={() => {
+                  const startDate = new Date(booking.scheduled_at);
+                  const endDate = new Date(startDate.getTime() + booking.duration_minutes * 60000);
+                  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+                  const details = `Service: ${booking.service}\nCustomer: ${booking.customer_name}\nEmail: ${booking.customer_email}${booking.phone ? `\nPhone: ${booking.phone}` : ''}${booking.notes ? `\nNotes: ${booking.notes}` : ''}`;
+                  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Meeting: ${booking.customer_name} – ${booking.service}`)}&dates=${fmt(startDate)}/${fmt(endDate)}&details=${encodeURIComponent(details)}&add=${encodeURIComponent(booking.customer_email)}&conf=meet`;
+                  window.open(url, '_blank');
+                }}
+              >
+                <Video className="w-4 h-4" /> Google Meet
+              </Button>
+            </div>
           </div>
           <div className="flex gap-2 pt-2">
             <Button className="gradient-primary text-primary-foreground flex-1" onClick={() => onSaveNotes(booking.id, notes)}>{t('bookings.save')}</Button>
