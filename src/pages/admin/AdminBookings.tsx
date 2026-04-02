@@ -217,7 +217,7 @@ const AdminBookings = () => {
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button className="gradient-primary text-primary-foreground gap-1.5">
-              <Plus className="w-4 h-4" /> Neue Buchung
+              <Plus className="w-4 h-4" /> {t('bookings.new')}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-lg">
