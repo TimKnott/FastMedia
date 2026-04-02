@@ -23,6 +23,7 @@ import fitnessHero from '@/assets/trades/fitness-hero.jpg';
 import movingHero from '@/assets/trades/moving-hero.jpg';
 import pestcontrolHero from '@/assets/trades/pestcontrol-hero.jpg';
 import itservicesHero from '@/assets/trades/itservices-hero.jpg';
+import womeninbusinessHero from '@/assets/trades/womeninbusiness-hero.jpg';
 
 // Gallery images - Plumbing
 import plumbingG1 from '@/assets/trades/gallery/plumbing-1.jpg';
