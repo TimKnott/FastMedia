@@ -379,7 +379,7 @@ const AdminLeads = () => {
                       </div>
                       {selectedLead.assigned_to && (
                         <div className="flex items-center gap-2 text-muted-foreground">
-                          <User className="w-4 h-4" />Zugewiesen: {selectedLead.assigned_to}
+                          <User className="w-4 h-4" />{t('leads.assigned')}: {selectedLead.assigned_to}
                         </div>
                       )}
                     </div>
