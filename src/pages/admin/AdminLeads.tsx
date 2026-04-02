@@ -424,8 +424,8 @@ const AdminLeads = () => {
                         <p className="font-medium">{selectedLead.quote_one_time.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground text-xs">Monatlich</p>
-                        <p className="font-medium">{selectedLead.quote_monthly.toLocaleString('de-DE')} Kč/Mon.</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.monthly')}</p>
+                        <p className="font-medium">{selectedLead.quote_monthly.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč{t('leads.month_unit')}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground text-xs">Arbeitsstunden</p>
