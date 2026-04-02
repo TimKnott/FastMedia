@@ -193,6 +193,13 @@ import itservicesG3 from '@/assets/trades/gallery/itservices-3.jpg';
 import itservicesG4 from '@/assets/trades/gallery/itservices-4.jpg';
 import itservicesG5 from '@/assets/trades/gallery/itservices-5.jpg';
 import itservicesG6 from '@/assets/trades/gallery/itservices-6.jpg';
+// Gallery images - Women in Business
+import womeninbusinessG1 from '@/assets/trades/gallery/womeninbusiness-1.jpg';
+import womeninbusinessG2 from '@/assets/trades/gallery/womeninbusiness-2.jpg';
+import womeninbusinessG3 from '@/assets/trades/gallery/womeninbusiness-3.jpg';
+import womeninbusinessG4 from '@/assets/trades/gallery/womeninbusiness-4.jpg';
+import womeninbusinessG5 from '@/assets/trades/gallery/womeninbusiness-5.jpg';
+import womeninbusinessG6 from '@/assets/trades/gallery/womeninbusiness-6.jpg';
 
 export const tradeImages: Record<string, string> = {
   plumbing: plumberHero,
