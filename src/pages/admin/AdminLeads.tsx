@@ -200,7 +200,7 @@ const AdminLeads = () => {
           triggerSize="md"
         />
       </div>
-      <p className="text-muted-foreground mt-1">Qualifizierte Leads aus dem AI-Kalkulator verwalten.</p>
+      <p className="text-muted-foreground mt-1">{t('leads.subtitle')}</p>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
