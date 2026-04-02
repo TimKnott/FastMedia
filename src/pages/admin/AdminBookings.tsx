@@ -151,6 +151,12 @@ const AdminBookings = () => {
           },
         },
       }).catch(() => {});
+
+      // Auto-open WhatsApp confirmation message
+      const phone = newBooking.phone.replace(/\D/g, '');
+      const waMessage = `Hi ${newBooking.customer_name},\n\nYour meeting with FastMedia.Pro is confirmed!\n\n📅 Date: ${scheduledFormatted}\n⏱ Duration: ${newBooking.duration_minutes} min\n🔧 Service: ${newBooking.service}\n\nIf you need to reschedule, please let us know.\n\nBest regards,\nFastMedia.Pro`;
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(waMessage)}`, '_blank');
+
       setCreateOpen(false);
       setNewBooking({ customer_name: '', customer_email: '', phone: '', service: '', scheduled_at: undefined, duration_minutes: 60, notes: '', assigned_to: '' });
       fetchBookings();
