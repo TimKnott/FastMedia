@@ -187,10 +187,16 @@ const AdminLeads = () => {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center gap-2">
         <h1 className="text-2xl font-display font-bold text-foreground">Lead-Management</h1>
-        <p className="text-muted-foreground mt-1">Qualifizierte Leads aus dem AI-Kalkulator verwalten.</p>
+        <LearnMoreModal
+          title="Customer Relationship Management (CRM)"
+          explanation="Organize customer data for personalized communication and service quality improvements. Track lead scoring, service history, and conversion funnels."
+          benefits={['Drives customer loyalty', 'Improves retention rates', 'Enables personalized outreach']}
+          triggerSize="md"
+        />
       </div>
+      <p className="text-muted-foreground mt-1">Qualifizierte Leads aus dem AI-Kalkulator verwalten.</p>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
