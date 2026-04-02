@@ -34,7 +34,7 @@ const GalleryCarousel = ({ galleryImages, tradeId, language, getImageUrl, invali
   tradeId: string;
   language: 'cs' | 'en' | 'de';
   getImageUrl: (key: string) => string | undefined;
-  invalidateImage: () => void;
+  invalidateImage: (...args: any[]) => void;
 }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start', slidesToScroll: 1 });
 
