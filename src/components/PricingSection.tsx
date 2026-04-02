@@ -23,10 +23,25 @@ const tiers: PricingTier[] = [
   { nameKey: 'pricing.enterprise.name', priceKey: 'pricing.enterprise.price', hostingKey: 'pricing.enterprise.hosting', descKey: 'pricing.enterprise.desc', featuresKey: 'pricing.enterprise.features' },
 ];
 
+const pricingLearnMore = {
+  title: { cs: 'Proč ukazovat ceny?', en: 'Why Show Prices?', de: 'Warum Preise zeigen?' },
+  explanation: {
+    cs: 'Transparentní ceník pomáhá zákazníkům rychleji se rozhodnout a buduje důvěru ve vaše služby.',
+    en: 'Transparent pricing helps customers decide faster and builds trust in your services.',
+    de: 'Transparente Preise helfen Kunden, sich schneller zu entscheiden und Vertrauen aufzubauen.',
+  },
+  benefits: {
+    cs: ['Snižuje počet zbytečných dotazů', 'Zvyšuje konverze o 15–25%', 'Buduje profesionální důvěru'],
+    en: ['Reduces unnecessary inquiries', 'Increases conversions by 15–25%', 'Builds professional trust'],
+    de: ['Reduziert unnötige Anfragen', 'Steigert Konversionen um 15–25%', 'Baut professionelles Vertrauen auf'],
+  },
+};
+
 const PricingSection = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { getContent, invalidate } = useSiteContent();
+  const lang = language as 'cs' | 'en' | 'de';
 
   const scrollToBooking = () => {
     document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
