@@ -1,10 +1,11 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, Menu, X } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, ChevronLeft, Menu, X, Share2, MessageCircle, Copy, Newspaper } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import useEmblaCarousel from 'embla-carousel-react';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import DemoFAQSection from '@/components/DemoFAQSection';
 import Footer from '@/components/Footer';
@@ -27,6 +28,67 @@ interface DemoLayoutProps {
   gradientClass: string;
   children?: ReactNode;
 }
+
+const GalleryCarousel = ({ galleryImages, tradeId, language, getImageUrl, invalidateImage }: {
+  galleryImages: { src: string; title: { cs: string; en: string; de: string } }[];
+  tradeId: string;
+  language: 'cs' | 'en' | 'de';
+  getImageUrl: (key: string) => string | undefined;
+  invalidateImage: (...args: any[]) => void;
+}) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start', slidesToScroll: 1 });
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+        <div className="flex gap-4">
+          {galleryImages.map((image, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              className="flex-[0_0_80%] sm:flex-[0_0_45%] md:flex-[0_0_32%] min-w-0"
+            >
+              <div className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer">
+                <EditableImage
+                  contentKey={`demo.${tradeId}.gallery.${index}`}
+                  defaultSrc={image.src}
+                  overrideSrc={getImageUrl(`demo.${tradeId}.gallery.${index}`)}
+                  onSave={invalidateImage}
+                  alt={image.title[language]}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <div className="text-primary-foreground">
+                    <p className="font-semibold">{image.title[language]}</p>
+                    <p className="text-sm text-primary-foreground/80">{language === 'cs' ? 'Zobrazit detail' : language === 'en' ? 'View details' : 'Details anzeigen'}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+      <button
+        onClick={scrollPrev}
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-background transition-colors z-10"
+      >
+        <ChevronLeft className="w-5 h-5 text-foreground" />
+      </button>
+      <button
+        onClick={scrollNext}
+        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-background transition-colors z-10"
+      >
+        <ChevronRight className="w-5 h-5 text-foreground" />
+      </button>
+    </div>
+  );
+};
 
 const DemoLayout = ({
   tradeName,
@@ -449,7 +511,7 @@ const DemoLayout = ({
         </div>
       </section>
 
-      {/* Gallery */}
+      {/* Gallery Carousel */}
       <section id="gallery" className="py-16 lg:py-24 bg-secondary/30">
         <div className="container mx-auto px-4">
           <motion.div
@@ -466,36 +528,14 @@ const DemoLayout = ({
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {galleryImages.map((image, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
-              >
-                <EditableImage
-                  contentKey={`demo.${tradeId}.gallery.${index}`}
-                  defaultSrc={image.src}
-                  overrideSrc={getImageUrl(`demo.${tradeId}.gallery.${index}`)}
-                  onSave={invalidateImage}
-                  alt={image.title[language]}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                  <div className="text-primary-foreground">
-                    <p className="font-semibold">{image.title[language]}</p>
-                    <p className="text-sm text-primary-foreground/80">{language === 'cs' ? 'Zobrazit detail' : language === 'en' ? 'View details' : 'Details anzeigen'}</p>
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 w-10 h-10 bg-primary-foreground/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Play className="w-5 h-5 text-primary-foreground" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {/* Embla Carousel */}
+          <GalleryCarousel
+            galleryImages={galleryImages}
+            tradeId={tradeId}
+            language={language}
+            getImageUrl={getImageUrl}
+            invalidateImage={invalidateImage}
+          />
         </div>
       </section>
 
@@ -563,6 +603,89 @@ const DemoLayout = ({
 
       {/* Why This Website Works */}
       <WhyThisWebsiteWorks />
+
+      {/* Blog & Social Sharing Section */}
+      <section className="py-16 lg:py-24 bg-secondary/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-12"
+          >
+            <span className={`inline-block text-sm font-semibold uppercase tracking-wider mb-3`} style={{ color: primaryColor }}>
+              <Newspaper className="w-4 h-4 inline mr-2" />
+              {language === 'cs' ? 'Blog & Novinky' : language === 'en' ? 'Blog & News' : 'Blog & Neuigkeiten'}
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">
+              {language === 'cs' ? 'Sdílejte svůj příběh se světem' : language === 'en' ? 'Share Your Story with the World' : 'Teilen Sie Ihre Geschichte mit der Welt'}
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              {language === 'cs' 
+                ? 'Váš web obsahuje vestavěný blog, kde můžete sdílet novinky, tipy a příběhy ze svého podnikání. Každý článek lze jedním kliknutím sdílet na sociální sítě – WhatsApp, Facebook, LinkedIn, X (Twitter), e-mailem nebo zkopírovat odkaz.'
+                : language === 'en'
+                ? 'Your website includes a built-in blog where you can share news, tips, and stories from your business. Every article can be shared with one click to social media – WhatsApp, Facebook, LinkedIn, X (Twitter), email, or copy the link.'
+                : 'Ihre Website enthält einen integrierten Blog, in dem Sie Neuigkeiten, Tipps und Geschichten aus Ihrem Unternehmen teilen können. Jeder Artikel kann mit einem Klick in sozialen Medien geteilt werden – WhatsApp, Facebook, LinkedIn, X (Twitter), E-Mail oder Link kopieren.'}
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {[
+              {
+                icon: Share2,
+                title: { cs: 'Sdílení na sociální sítě', en: 'Social Media Sharing', de: 'Social Media Teilen' },
+                desc: { cs: 'Sdílejte obsah na Facebook, Instagram, LinkedIn, X a další platformy jedním kliknutím.', en: 'Share content to Facebook, Instagram, LinkedIn, X and other platforms with one click.', de: 'Teilen Sie Inhalte mit einem Klick auf Facebook, Instagram, LinkedIn, X und andere Plattformen.' }
+              },
+              {
+                icon: MessageCircle,
+                title: { cs: 'WhatsApp & E-mail', en: 'WhatsApp & Email', de: 'WhatsApp & E-Mail' },
+                desc: { cs: 'Pošlete články přímo klientům přes WhatsApp nebo e-mail. Osobní doporučení fungují nejlépe.', en: 'Send articles directly to clients via WhatsApp or email. Personal recommendations work best.', de: 'Senden Sie Artikel direkt an Kunden per WhatsApp oder E-Mail. Persönliche Empfehlungen wirken am besten.' }
+              },
+              {
+                icon: Copy,
+                title: { cs: 'Kopírování odkazu', en: 'Copy Link', de: 'Link kopieren' },
+                desc: { cs: 'Zkopírujte odkaz a vložte kamkoli – do chatu, e-mailu nebo na web. Jednoduché a rychlé.', en: 'Copy the link and paste anywhere – chat, email, or website. Simple and fast.', de: 'Kopieren Sie den Link und fügen Sie ihn überall ein – Chat, E-Mail oder Website. Einfach und schnell.' }
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15 }}
+                className="bg-card rounded-2xl p-6 shadow-card text-center"
+              >
+                <div className={`w-14 h-14 mx-auto ${gradientClass} rounded-xl flex items-center justify-center text-primary-foreground mb-4`}>
+                  <item.icon className="w-7 h-7" />
+                </div>
+                <h3 className="font-display font-bold text-lg text-foreground mb-2">{item.title[language]}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc[language]}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-card rounded-2xl p-8 shadow-card max-w-2xl mx-auto text-center"
+          >
+            <p className="text-foreground font-medium mb-4">
+              {language === 'cs'
+                ? '📢 Tip: Pravidelné sdílení článků na sociálních sítích zvyšuje viditelnost vaší firmy a přitahuje nové klienty automaticky!'
+                : language === 'en'
+                ? '📢 Tip: Regularly sharing articles on social media increases your business visibility and attracts new clients automatically!'
+                : '📢 Tipp: Regelmäßiges Teilen von Artikeln in sozialen Medien erhöht die Sichtbarkeit Ihres Unternehmens und zieht automatisch neue Kunden an!'}
+            </p>
+            <Link to="/blog">
+              <Button className={`${gradientClass} text-primary-foreground font-semibold`}>
+                {language === 'cs' ? 'Prohlédnout blog' : language === 'en' ? 'Browse Blog' : 'Blog durchsuchen'}
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className={`py-16 lg:py-24 ${gradientClass} relative overflow-hidden`}>

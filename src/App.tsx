@@ -93,6 +93,16 @@ const PetGroomingDemo = lazy(() => import("./pages/demos/PetGroomingDemo"));
 const NutritionistDemo = lazy(() => import("./pages/demos/NutritionistDemo"));
 const HandmadeDemo = lazy(() => import("./pages/demos/HandmadeDemo"));
 const ChildcareDemo = lazy(() => import("./pages/demos/ChildcareDemo"));
+const DentalDemo = lazy(() => import("./pages/demos/DentalDemo"));
+const RealEstateDemo = lazy(() => import("./pages/demos/RealEstateDemo"));
+const AccountingDemo = lazy(() => import("./pages/demos/AccountingDemo"));
+const VeterinaryDemo = lazy(() => import("./pages/demos/VeterinaryDemo"));
+const TattooDemo = lazy(() => import("./pages/demos/TattooDemo"));
+const MusicSchoolDemo = lazy(() => import("./pages/demos/MusicSchoolDemo"));
+const DrivingSchoolDemo = lazy(() => import("./pages/demos/DrivingSchoolDemo"));
+const LaundryDemo = lazy(() => import("./pages/demos/LaundryDemo"));
+const SecurityDemo = lazy(() => import("./pages/demos/SecurityDemo"));
+const TranslationDemo = lazy(() => import("./pages/demos/TranslationDemo"));
 
 const queryClient = new QueryClient();
 
@@ -157,6 +167,16 @@ const App = () => (
             <Route path="/demo/nutritionist" element={<NutritionistDemo />} />
             <Route path="/demo/handmade" element={<HandmadeDemo />} />
             <Route path="/demo/childcare" element={<ChildcareDemo />} />
+            <Route path="/demo/dental" element={<DentalDemo />} />
+            <Route path="/demo/realestate" element={<RealEstateDemo />} />
+            <Route path="/demo/accounting" element={<AccountingDemo />} />
+            <Route path="/demo/veterinary" element={<VeterinaryDemo />} />
+            <Route path="/demo/tattoo" element={<TattooDemo />} />
+            <Route path="/demo/musicschool" element={<MusicSchoolDemo />} />
+            <Route path="/demo/drivingschool" element={<DrivingSchoolDemo />} />
+            <Route path="/demo/laundry" element={<LaundryDemo />} />
+            <Route path="/demo/security" element={<SecurityDemo />} />
+            <Route path="/demo/translation" element={<TranslationDemo />} />
             <Route path="/consultant/tereza" element={<ConsultantTereza />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />

@@ -23,6 +23,7 @@ import fitnessHero from '@/assets/trades/fitness-hero.jpg';
 import movingHero from '@/assets/trades/moving-hero.jpg';
 import pestcontrolHero from '@/assets/trades/pestcontrol-hero.jpg';
 import itservicesHero from '@/assets/trades/itservices-hero.jpg';
+import womeninbusinessHero from '@/assets/trades/womeninbusiness-hero.jpg';
 
 // Gallery images - Plumbing
 import plumbingG1 from '@/assets/trades/gallery/plumbing-1.jpg';
@@ -192,6 +193,13 @@ import itservicesG3 from '@/assets/trades/gallery/itservices-3.jpg';
 import itservicesG4 from '@/assets/trades/gallery/itservices-4.jpg';
 import itservicesG5 from '@/assets/trades/gallery/itservices-5.jpg';
 import itservicesG6 from '@/assets/trades/gallery/itservices-6.jpg';
+// Gallery images - Women in Business
+import womeninbusinessG1 from '@/assets/trades/gallery/womeninbusiness-1.jpg';
+import womeninbusinessG2 from '@/assets/trades/gallery/womeninbusiness-2.jpg';
+import womeninbusinessG3 from '@/assets/trades/gallery/womeninbusiness-3.jpg';
+import womeninbusinessG4 from '@/assets/trades/gallery/womeninbusiness-4.jpg';
+import womeninbusinessG5 from '@/assets/trades/gallery/womeninbusiness-5.jpg';
+import womeninbusinessG6 from '@/assets/trades/gallery/womeninbusiness-6.jpg';
 
 export const tradeImages: Record<string, string> = {
   plumbing: plumberHero,
@@ -218,6 +226,7 @@ export const tradeImages: Record<string, string> = {
   moving: movingHero,
   pestcontrol: pestcontrolHero,
   itservices: itservicesHero,
+  womeninbusiness: womeninbusinessHero,
 };
 
 export const tradeGalleryImages: Record<string, string[]> = {
@@ -245,6 +254,7 @@ export const tradeGalleryImages: Record<string, string[]> = {
   moving: [movingG1, movingG2, movingG3, movingG4, movingG5, movingG6],
   pestcontrol: [pestcontrolG1, pestcontrolG2, pestcontrolG3, pestcontrolG4, pestcontrolG5, pestcontrolG6],
   itservices: [itservicesG1, itservicesG2, itservicesG3, itservicesG4, itservicesG5, itservicesG6],
+  womeninbusiness: [womeninbusinessG1, womeninbusinessG2, womeninbusinessG3, womeninbusinessG4, womeninbusinessG5, womeninbusinessG6],
 };
 
 export const getTradeImage = (tradeId: string): string => {
