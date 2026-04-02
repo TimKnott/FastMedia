@@ -428,8 +428,8 @@ const AdminLeads = () => {
                         <p className="font-medium">{selectedLead.quote_monthly.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč{t('leads.month_unit')}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground text-xs">Arbeitsstunden</p>
-                        <p className="font-medium">{selectedLead.labor_hours} Std</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.labor_hours')}</p>
+                        <p className="font-medium">{selectedLead.labor_hours} {t('leads.hours')}</p>
                       </div>
                     </div>
                     {selectedLead.selected_features && selectedLead.selected_features.length > 0 && (
