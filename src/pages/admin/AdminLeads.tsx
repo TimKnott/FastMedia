@@ -482,7 +482,7 @@ const AdminLeads = () => {
 
                   {/* Workflow */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Workflow</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.workflow')}</h3>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
                         <Label className="text-xs">Status</Label>
