@@ -16,11 +16,75 @@ import { useImageContent } from '@/hooks/useImageContent';
 import SEOHead from '@/components/SEOHead';
 import DemoShareBar from '@/components/DemoShareBar';
 import DemoBookingCalendar from '@/components/DemoBookingCalendar';
-import expertImg1 from '@/assets/team/expert-1.jpg';
-import expertImg2 from '@/assets/team/expert-2.jpg';
-import expertImg3 from '@/assets/team/expert-3.jpg';
+// Team photo imports by category
+import teamConstruction1 from '@/assets/team/team-construction-1.jpg';
+import teamConstruction2 from '@/assets/team/team-construction-2.jpg';
+import teamConstruction3 from '@/assets/team/team-construction-3.jpg';
+import teamBeauty1 from '@/assets/team/team-beauty-1.jpg';
+import teamBeauty2 from '@/assets/team/team-beauty-2.jpg';
+import teamBeauty3 from '@/assets/team/team-beauty-3.jpg';
+import teamBusiness1 from '@/assets/team/team-business-1.jpg';
+import teamBusiness2 from '@/assets/team/team-business-2.jpg';
+import teamBusiness3 from '@/assets/team/team-business-3.jpg';
+import teamFood1 from '@/assets/team/team-food-1.jpg';
+import teamFood2 from '@/assets/team/team-food-2.jpg';
+import teamFood3 from '@/assets/team/team-food-3.jpg';
+import teamMedical1 from '@/assets/team/team-medical-1.jpg';
+import teamMedical2 from '@/assets/team/team-medical-2.jpg';
+import teamMedical3 from '@/assets/team/team-medical-3.jpg';
+import teamCreative1 from '@/assets/team/team-creative-1.jpg';
+import teamCreative2 from '@/assets/team/team-creative-2.jpg';
+import teamCreative3 from '@/assets/team/team-creative-3.jpg';
+import teamFitness1 from '@/assets/team/team-fitness-1.jpg';
+import teamFitness2 from '@/assets/team/team-fitness-2.jpg';
+import teamFitness3 from '@/assets/team/team-fitness-3.jpg';
+import teamEducation1 from '@/assets/team/team-education-1.jpg';
+import teamEducation2 from '@/assets/team/team-education-2.jpg';
+import teamEducation3 from '@/assets/team/team-education-3.jpg';
+import teamAuto1 from '@/assets/team/team-auto-1.jpg';
+import teamAuto2 from '@/assets/team/team-auto-2.jpg';
+import teamAuto3 from '@/assets/team/team-auto-3.jpg';
 
-const expertPhotos = [expertImg1, expertImg2, expertImg3];
+const teamPhotoSets: Record<string, string[]> = {
+  construction: [teamConstruction1, teamConstruction2, teamConstruction3],
+  beauty: [teamBeauty1, teamBeauty2, teamBeauty3],
+  business: [teamBusiness1, teamBusiness2, teamBusiness3],
+  food: [teamFood1, teamFood2, teamFood3],
+  medical: [teamMedical1, teamMedical2, teamMedical3],
+  creative: [teamCreative1, teamCreative2, teamCreative3],
+  fitness: [teamFitness1, teamFitness2, teamFitness3],
+  education: [teamEducation1, teamEducation2, teamEducation3],
+  auto: [teamAuto1, teamAuto2, teamAuto3],
+};
+
+const tradeToTeamCategory: Record<string, string> = {
+  plumbing: 'construction', electrical: 'construction', roofing: 'construction',
+  building: 'construction', painting: 'construction', drywall: 'construction',
+  wells: 'construction', heating: 'construction', heatpumps: 'construction',
+  solar: 'construction', exterior: 'construction', locksmith: 'construction',
+  carpentry: 'construction',
+  beautysalon: 'beauty', nailsalon: 'beauty', massage: 'beauty',
+  womeninbusiness: 'beauty',
+  interior: 'business', itservices: 'business', eshop: 'business',
+  virtualassistant: 'business', realestate: 'business', accounting: 'business',
+  translation: 'business', security: 'business',
+  catering: 'food', bakery: 'food', florist: 'food',
+  dental: 'medical', veterinary: 'medical', petgrooming: 'medical',
+  nutritionist: 'medical',
+  photography: 'creative', tattoo: 'creative', handmade: 'creative',
+  weddingplanner: 'creative',
+  fitness: 'fitness', yoga: 'fitness', moving: 'fitness',
+  musicschool: 'education', drivingschool: 'education', childcare: 'education',
+  laundry: 'construction',
+  autorepair: 'auto',
+  cleaning: 'construction', gardening: 'construction',
+  pestcontrol: 'construction',
+};
+
+const getTeamPhotos = (tradeId: string): string[] => {
+  const category = tradeToTeamCategory[tradeId] || 'construction';
+  return teamPhotoSets[category] || teamPhotoSets.construction;
+};
 
 import blogImg1 from '@/assets/blog/demo-blog-1.jpg';
 import blogImg2 from '@/assets/blog/demo-blog-2.jpg';
@@ -503,7 +567,7 @@ const DemoLayout = ({
               >
                 <div className="relative mb-4 inline-block">
                   <div className="w-32 h-32 mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform">
-                    <img src={expertPhotos[index % expertPhotos.length]} alt={member.name} className="w-full h-full object-cover" loading="lazy" width={512} height={512} />
+                    <img src={getTeamPhotos(tradeId)[index % getTeamPhotos(tradeId).length]} alt={member.name} className="w-full h-full object-cover" loading="lazy" width={512} height={512} />
                   </div>
                   <div className={`absolute bottom-0 right-0 w-10 h-10 ${gradientClass} rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold`}>
                     {member.experience}+
