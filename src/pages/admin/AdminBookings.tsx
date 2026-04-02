@@ -222,8 +222,8 @@ const AdminBookings = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-              <DialogTitle className="font-display">Neue Buchung erstellen</DialogTitle>
-              <DialogDescription>Füllen Sie die Details aus, um einen neuen Termin anzulegen.</DialogDescription>
+              <DialogTitle className="font-display">{t('bookings.create_title')}</DialogTitle>
+              <DialogDescription>{t('bookings.create_desc')}</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-3">
