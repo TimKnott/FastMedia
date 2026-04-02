@@ -498,8 +498,8 @@ const DemoLayout = ({
                 className="text-center group"
               >
                 <div className="relative mb-4 inline-block">
-                  <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-muted to-secondary flex items-center justify-center text-5xl overflow-hidden group-hover:scale-105 transition-transform">
-                    👷
+                  <div className="w-32 h-32 mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform">
+                    <img src={expertPhotos[index % expertPhotos.length]} alt={member.name} className="w-full h-full object-cover" loading="lazy" width={512} height={512} />
                   </div>
                   <div className={`absolute bottom-0 right-0 w-10 h-10 ${gradientClass} rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold`}>
                     {member.experience}+
