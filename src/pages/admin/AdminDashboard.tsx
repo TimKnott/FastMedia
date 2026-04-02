@@ -94,6 +94,8 @@ const AdminDashboard = () => {
         ))}
       </div>
 
+      <DashboardCharts />
+
       <TrackingDiagnostics />
 
       <Card className="shadow-card">
