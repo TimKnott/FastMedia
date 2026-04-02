@@ -34,9 +34,6 @@ const StickyCTABar = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
 
-  // Hide on admin pages
-  if (pathname.startsWith('/admin')) return null;
-
   useEffect(() => {
     const handleScroll = () => {
       setVisible(window.scrollY > 500);
