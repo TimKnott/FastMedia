@@ -74,13 +74,16 @@ const classificationConfig: Record<LeadClassification, { label: string; icon: Re
   high_priority: { label: 'High Priority', icon: Zap, color: 'text-red-500', bg: 'bg-red-500/10' },
 };
 
-const statusConfig: Record<LeadStatus, { label: string; dot: string }> = {
-  new: { label: 'Neu', dot: 'bg-blue-400' },
-  contacted: { label: 'Kontaktiert', dot: 'bg-amber-400' },
-  qualified: { label: 'Qualifiziert', dot: 'bg-purple-400' },
-  converted: { label: 'Konvertiert', dot: 'bg-green-500' },
-  lost: { label: 'Verloren', dot: 'bg-muted-foreground' },
-};
+const AdminLeads = () => {
+  const { t, language } = useLanguage();
+
+  const statusConfig: Record<LeadStatus, { label: string; dot: string }> = {
+    new: { label: t('leads.status.new'), dot: 'bg-blue-400' },
+    contacted: { label: t('leads.status.contacted'), dot: 'bg-amber-400' },
+    qualified: { label: t('leads.status.qualified'), dot: 'bg-purple-400' },
+    converted: { label: t('leads.status.converted'), dot: 'bg-green-500' },
+    lost: { label: t('leads.status.lost'), dot: 'bg-muted-foreground' },
+  };
 
 const AdminLeads = () => {
   const { t } = useLanguage();
