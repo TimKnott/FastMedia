@@ -365,6 +365,13 @@ export const translations: Translations = {
   'bookings.lead_id': { cs: 'Lead ID', en: 'Lead ID', de: 'Lead-ID' },
   'bookings.minutes': { cs: 'minut', en: 'minutes', de: 'Minuten' },
   'bookings.min': { cs: 'min', en: 'min', de: 'Min.' },
+  'bookings.assigned_to': { cs: 'Přiřazeno komu', en: 'Assigned to', de: 'Zugewiesen an' },
+  'bookings.assigned_placeholder': { cs: 'Jméno pracovníka', en: 'Employee name', de: 'Mitarbeiter-Name' },
+  'bookings.optional_notes': { cs: 'Volitelné poznámky…', en: 'Optional notes…', de: 'Optionale Notizen…' },
+  'bookings.cancel': { cs: 'Zrušit', en: 'Cancel', de: 'Abbrechen' },
+  'bookings.create_btn': { cs: 'Vytvořit', en: 'Create', de: 'Erstellen' },
+  'bookings.duration_min': { cs: 'Trvání (min.)', en: 'Duration (min.)', de: 'Dauer (Min.)' },
+  'bookings.email_sent': { cs: 'Úkol odeslán e-mailem!', en: 'Task sent by email!', de: 'Aufgabe per E-Mail gesendet!' },
 
   // Admin Emails Dashboard
   'emails.title': { cs: 'E-mailový přehled', en: 'Email Dashboard', de: 'E-Mail Dashboard' },

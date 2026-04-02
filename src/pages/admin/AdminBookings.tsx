@@ -204,7 +204,7 @@ const AdminBookings = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-display font-bold text-foreground">Buchungen</h1>
+            <h1 className="text-2xl font-display font-bold text-foreground">{t('bookings.title')}</h1>
             <LearnMoreModal
               title="Kanban Task Management"
               explanation="Visual workflow management for scheduling jobs efficiently. Drag cards between status columns, assign tasks, and track due dates."
@@ -212,18 +212,18 @@ const AdminBookings = () => {
               triggerSize="md"
             />
           </div>
-          <p className="text-muted-foreground mt-1">Termine verwalten und nachverfolgen.</p>
+          <p className="text-muted-foreground mt-1">{t('bookings.subtitle')}</p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button className="gradient-primary text-primary-foreground gap-1.5">
-              <Plus className="w-4 h-4" /> Neue Buchung
+              <Plus className="w-4 h-4" /> {t('bookings.new')}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-              <DialogTitle className="font-display">Neue Buchung erstellen</DialogTitle>
-              <DialogDescription>Füllen Sie die Details aus, um einen neuen Termin anzulegen.</DialogDescription>
+              <DialogTitle className="font-display">{t('bookings.create_title')}</DialogTitle>
+              <DialogDescription>{t('bookings.create_desc')}</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-3">
@@ -242,7 +242,7 @@ const AdminBookings = () => {
                   <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} placeholder="+49 170 …" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Dauer (Min.)</Label>
+                  <Label>{t('bookings.duration_min')}</Label>
                   <Input type="number" value={newBooking.duration_minutes} onChange={e => setNewBooking(p => ({ ...p, duration_minutes: Number(e.target.value) }))} />
                 </div>
               </div>
@@ -251,12 +251,12 @@ const AdminBookings = () => {
                 <Input value={newBooking.service} onChange={e => setNewBooking(p => ({ ...p, service: e.target.value }))} placeholder="z.B. Sanitär – Rohrleitungsinstallation" />
               </div>
               <div className="space-y-1.5">
-                <Label>Termin *</Label>
+                <Label>{t('bookings.appointment')} *</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !newBooking.scheduled_at && "text-muted-foreground")}>
                       <CalendarDays className="mr-2 h-4 w-4" />
-                      {newBooking.scheduled_at ? format(newBooking.scheduled_at, 'PPP', { locale: de }) : 'Datum wählen'}
+                      {newBooking.scheduled_at ? format(newBooking.scheduled_at, 'PPP', { locale: dateLocale }) : (language === 'cs' ? 'Vybrat datum' : language === 'en' ? 'Select date' : 'Datum wählen')}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -265,19 +265,19 @@ const AdminBookings = () => {
                 </Popover>
               </div>
               <div className="space-y-1.5">
-                <Label>Zugewiesen an</Label>
-                <Input value={newBooking.assigned_to} onChange={e => setNewBooking(p => ({ ...p, assigned_to: e.target.value }))} placeholder="Mitarbeiter-Name" />
+                <Label>{t('bookings.assigned_to')}</Label>
+                <Input value={newBooking.assigned_to} onChange={e => setNewBooking(p => ({ ...p, assigned_to: e.target.value }))} placeholder={t('bookings.assigned_placeholder')} />
               </div>
               <div className="space-y-1.5">
-                <Label>Notizen</Label>
-                <Textarea value={newBooking.notes} onChange={e => setNewBooking(p => ({ ...p, notes: e.target.value }))} rows={3} placeholder="Optionale Notizen…" />
+                <Label>{t('bookings.notes')}</Label>
+                <Textarea value={newBooking.notes} onChange={e => setNewBooking(p => ({ ...p, notes: e.target.value }))} rows={3} placeholder={t('bookings.optional_notes')} />
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setCreateOpen(false)}>Abbrechen</Button>
+              <Button variant="outline" onClick={() => setCreateOpen(false)}>{t('bookings.cancel')}</Button>
               <Button className="gradient-primary text-primary-foreground" onClick={handleCreate} disabled={saving}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
-                Erstellen
+                {t('bookings.create_btn')}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -312,8 +312,8 @@ const AdminBookings = () => {
       {/* Table */}
       <Card className="shadow-card">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-display">Alle Buchungen</CardTitle>
-          <CardDescription>{filtered.length} Einträge</CardDescription>
+          <CardTitle className="text-lg font-display">{t('bookings.all')}</CardTitle>
+          <CardDescription>{filtered.length} {t('bookings.entries')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="all">
@@ -357,18 +357,18 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
       <TableHeader>
         <TableRow>
           <TableHead>Kunde</TableHead>
-          <TableHead>Service</TableHead>
+          <TableHead>{t('bookings.service')}</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Termin</TableHead>
-          <TableHead>Dauer</TableHead>
-          <TableHead>Zugewiesen</TableHead>
+          <TableHead>{t('bookings.appointment')}</TableHead>
+          <TableHead>{t('bookings.duration')}</TableHead>
+          <TableHead>{t('bookings.assigned')}</TableHead>
           <TableHead className="w-10" />
         </TableRow>
       </TableHeader>
       <TableBody>
         {bookings.length === 0 && (
           <TableRow>
-            <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Keine Buchungen gefunden.</TableCell>
+            <TableCell colSpan={7} className="text-center text-muted-foreground py-8">{t('bookings.none')}</TableCell>
           </TableRow>
         )}
         {bookings.map(b => {
@@ -453,32 +453,32 @@ const BookingDetailSheet = ({
 
           {/* Details */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Buchungsdetails</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t('bookings.details')}</h3>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <p className="text-muted-foreground text-xs">Service</p>
                 <p className="font-medium">{booking.service}</p>
               </div>
               <div>
-                <p className="text-muted-foreground text-xs">Dauer</p>
+                <p className="text-muted-foreground text-xs">{t('bookings.duration')}</p>
                 <p className="font-medium">{booking.duration_minutes} Minuten</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <CalendarCheck className="w-3.5 h-3.5 text-muted-foreground" />
                 <div>
-                  <p className="text-muted-foreground text-xs">Termin</p>
+                  <p className="text-muted-foreground text-xs">{t('bookings.appointment')}</p>
                   <p className="font-medium">{formatDate(booking.scheduled_at)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                 <div>
-                  <p className="text-muted-foreground text-xs">Erstellt</p>
+                  <p className="text-muted-foreground text-xs">{t('bookings.created')}</p>
                   <p className="font-medium">{formatDate(booking.created_at)}</p>
                 </div>
               </div>
               <div>
-                <p className="text-muted-foreground text-xs">Zugewiesen an</p>
+                <p className="text-muted-foreground text-xs">{t('bookings.assigned_to')}</p>
                 <p className="font-medium">{booking.assigned_to || '—'}</p>
               </div>
               {booking.lead_id && (
@@ -506,15 +506,15 @@ const BookingDetailSheet = ({
           {/* Notes */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <StickyNote className="w-4 h-4" /> Notizen
+              <StickyNote className="w-4 h-4" /> {t('bookings.notes')}
             </h3>
-            <Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} placeholder="Notizen hinzufügen…" />
+            <Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} placeholder={t('bookings.notes_placeholder')} />
           </div>
 
           {/* Email task to team */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <Send className="w-4 h-4" /> Aufgabe per E-Mail senden
+              <Send className="w-4 h-4" /> {t('bookings.email_task')}
             </h3>
             <div className="space-y-2">
               <Input
@@ -546,21 +546,21 @@ const BookingDetailSheet = ({
                         },
                       },
                     });
-                    toast.success('Aufgabe per E-Mail gesendet!');
+                    toast.success(t('bookings.email_sent'));
                     emailInput.value = '';
                   } catch {
                     toast.error('E-Mail konnte nicht gesendet werden.');
                   }
                 }}
               >
-                <Send className="w-4 h-4" /> Aufgabe senden
+                <Send className="w-4 h-4" /> {t('bookings.send_task')}
               </Button>
             </div>
           </div>
 
           <div className="flex gap-2 pt-2">
-            <Button className="gradient-primary text-primary-foreground flex-1" onClick={() => onSaveNotes(booking.id, notes)}>Speichern</Button>
-            <Button variant="outline" onClick={onClose}>Schließen</Button>
+            <Button className="gradient-primary text-primary-foreground flex-1" onClick={() => onSaveNotes(booking.id, notes)}>{t('bookings.save')}</Button>
+            <Button variant="outline" onClick={onClose}>{t('bookings.close')}</Button>
           </div>
         </div>
       </SheetContent>

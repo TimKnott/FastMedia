@@ -74,16 +74,17 @@ const classificationConfig: Record<LeadClassification, { label: string; icon: Re
   high_priority: { label: 'High Priority', icon: Zap, color: 'text-red-500', bg: 'bg-red-500/10' },
 };
 
-const statusConfig: Record<LeadStatus, { label: string; dot: string }> = {
-  new: { label: 'Neu', dot: 'bg-blue-400' },
-  contacted: { label: 'Kontaktiert', dot: 'bg-amber-400' },
-  qualified: { label: 'Qualifiziert', dot: 'bg-purple-400' },
-  converted: { label: 'Konvertiert', dot: 'bg-green-500' },
-  lost: { label: 'Verloren', dot: 'bg-muted-foreground' },
-};
-
 const AdminLeads = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  const statusConfig: Record<LeadStatus, { label: string; dot: string }> = {
+    new: { label: t('leads.status.new'), dot: 'bg-blue-400' },
+    contacted: { label: t('leads.status.contacted'), dot: 'bg-amber-400' },
+    qualified: { label: t('leads.status.qualified'), dot: 'bg-purple-400' },
+    converted: { label: t('leads.status.converted'), dot: 'bg-green-500' },
+    lost: { label: t('leads.status.lost'), dot: 'bg-muted-foreground' },
+  };
+
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -199,15 +200,15 @@ const AdminLeads = () => {
           triggerSize="md"
         />
       </div>
-      <p className="text-muted-foreground mt-1">Qualifizierte Leads aus dem AI-Kalkulator verwalten.</p>
+      <p className="text-muted-foreground mt-1">{t('leads.subtitle')}</p>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'Gesamt', value: statCounts.total, icon: User },
+          { label: t('leads.total'), value: statCounts.total, icon: User },
           { label: 'Hot / Priority', value: statCounts.hot, icon: Flame },
-          { label: 'Neue Leads', value: statCounts.new, icon: TrendingUp },
-          { label: 'Konvertiert', value: statCounts.converted, icon: Zap },
+          { label: t('leads.status.new'), value: statCounts.new, icon: TrendingUp },
+          { label: t('leads.status.converted'), value: statCounts.converted, icon: Zap },
         ].map((stat) => (
           <Card key={stat.label} className="shadow-card">
             <CardContent className="p-4">
@@ -374,11 +375,11 @@ const AdminLeads = () => {
                       )}
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <CalendarIcon className="w-4 h-4" />
-                        Erstellt: {format(new Date(selectedLead.created_at), 'dd.MM.yyyy HH:mm')}
+                        {t('leads.created')}: {format(new Date(selectedLead.created_at), 'dd.MM.yyyy HH:mm')}
                       </div>
                       {selectedLead.assigned_to && (
                         <div className="flex items-center gap-2 text-muted-foreground">
-                          <User className="w-4 h-4" />Zugewiesen: {selectedLead.assigned_to}
+                          <User className="w-4 h-4" />{t('leads.assigned')}: {selectedLead.assigned_to}
                         </div>
                       )}
                     </div>
@@ -495,7 +496,7 @@ const AdminLeads = () => {
                         </Select>
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs">Zugewiesen an</Label>
+                        <Label className="text-xs">{t('leads.assigned')}</Label>
                         <Input
                           value={selectedLead.assigned_to || ''}
                           onChange={(e) => handleAssign(selectedLead.id, e.target.value)}
@@ -510,7 +511,7 @@ const AdminLeads = () => {
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                       <StickyNote className="w-4 h-4" />
-                      Notizen
+                      {t('leads.notes')}
                     </h3>
                     <div className="flex gap-2">
                       <Textarea
@@ -555,7 +556,7 @@ const AdminLeads = () => {
                     </div>
                   </div>
 
-                  <Button variant="outline" className="w-full" onClick={() => setSelectedLead(null)}>Schließen</Button>
+                  <Button variant="outline" className="w-full" onClick={() => setSelectedLead(null)}>{t('leads.close')}</Button>
                 </div>
               </>
             );
