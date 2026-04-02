@@ -20,6 +20,9 @@ import {
   Send,
   Code2,
   Receipt,
+  UserCog,
+  Plug,
+  Download,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
