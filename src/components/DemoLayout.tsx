@@ -450,7 +450,7 @@ const DemoLayout = ({
         </div>
       </section>
 
-      {/* Gallery */}
+      {/* Gallery Carousel */}
       <section id="gallery" className="py-16 lg:py-24 bg-secondary/30">
         <div className="container mx-auto px-4">
           <motion.div
@@ -467,36 +467,14 @@ const DemoLayout = ({
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {galleryImages.map((image, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
-              >
-                <EditableImage
-                  contentKey={`demo.${tradeId}.gallery.${index}`}
-                  defaultSrc={image.src}
-                  overrideSrc={getImageUrl(`demo.${tradeId}.gallery.${index}`)}
-                  onSave={invalidateImage}
-                  alt={image.title[language]}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                  <div className="text-primary-foreground">
-                    <p className="font-semibold">{image.title[language]}</p>
-                    <p className="text-sm text-primary-foreground/80">{language === 'cs' ? 'Zobrazit detail' : language === 'en' ? 'View details' : 'Details anzeigen'}</p>
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 w-10 h-10 bg-primary-foreground/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Play className="w-5 h-5 text-primary-foreground" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {/* Embla Carousel */}
+          <GalleryCarousel
+            galleryImages={galleryImages}
+            tradeId={tradeId}
+            language={language}
+            getImageUrl={getImageUrl}
+            invalidateImage={invalidateImage}
+          />
         </div>
       </section>
 
