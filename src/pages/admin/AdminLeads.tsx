@@ -47,6 +47,7 @@ interface Lead {
   ai_analysis: any;
   source: string;
   language: string;
+  gdpr_consent: boolean;
   created_at: string;
   updated_at: string;
 }
