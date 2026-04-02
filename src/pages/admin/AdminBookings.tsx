@@ -460,7 +460,7 @@ const BookingDetailSheet = ({
                 <p className="font-medium">{booking.service}</p>
               </div>
               <div>
-                <p className="text-muted-foreground text-xs">Dauer</p>
+                <p className="text-muted-foreground text-xs">{t('bookings.duration')}</p>
                 <p className="font-medium">{booking.duration_minutes} Minuten</p>
               </div>
               <div className="flex items-center gap-1.5">
