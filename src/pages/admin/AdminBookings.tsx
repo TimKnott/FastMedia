@@ -559,8 +559,8 @@ const BookingDetailSheet = ({
           </div>
 
           <div className="flex gap-2 pt-2">
-            <Button className="gradient-primary text-primary-foreground flex-1" onClick={() => onSaveNotes(booking.id, notes)}>Speichern</Button>
-            <Button variant="outline" onClick={onClose}>Schließen</Button>
+            <Button className="gradient-primary text-primary-foreground flex-1" onClick={() => onSaveNotes(booking.id, notes)}>{t('bookings.save')}</Button>
+            <Button variant="outline" onClick={onClose}>{t('bookings.close')}</Button>
           </div>
         </div>
       </SheetContent>
