@@ -226,6 +226,7 @@ export const tradeImages: Record<string, string> = {
   moving: movingHero,
   pestcontrol: pestcontrolHero,
   itservices: itservicesHero,
+  womeninbusiness: womeninbusinessHero,
 };
 
 export const tradeGalleryImages: Record<string, string[]> = {
