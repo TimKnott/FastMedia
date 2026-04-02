@@ -274,10 +274,10 @@ const AdminBookings = () => {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setCreateOpen(false)}>Abbrechen</Button>
+              <Button variant="outline" onClick={() => setCreateOpen(false)}>{t('bookings.cancel')}</Button>
               <Button className="gradient-primary text-primary-foreground" onClick={handleCreate} disabled={saving}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
-                Erstellen
+                {t('bookings.create_btn')}
               </Button>
             </DialogFooter>
           </DialogContent>
