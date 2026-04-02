@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Search, Plus, MoreHorizontal, Phone, Mail, Clock, CalendarDays, List,
-  User, StickyNote, CalendarCheck, Loader2, Send,
+  User, StickyNote, CalendarCheck, Loader2, Send, MessageCircle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
