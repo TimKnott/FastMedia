@@ -269,8 +269,8 @@ const AdminBookings = () => {
                 <Input value={newBooking.assigned_to} onChange={e => setNewBooking(p => ({ ...p, assigned_to: e.target.value }))} placeholder={t('bookings.assigned_placeholder')} />
               </div>
               <div className="space-y-1.5">
-                <Label>Notizen</Label>
-                <Textarea value={newBooking.notes} onChange={e => setNewBooking(p => ({ ...p, notes: e.target.value }))} rows={3} placeholder="Optionale Notizen…" />
+                <Label>{t('bookings.notes')}</Label>
+                <Textarea value={newBooking.notes} onChange={e => setNewBooking(p => ({ ...p, notes: e.target.value }))} rows={3} placeholder={t('bookings.optional_notes')} />
               </div>
             </div>
             <DialogFooter>
