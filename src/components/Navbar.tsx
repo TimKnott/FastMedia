@@ -72,12 +72,12 @@ const Navbar = () => {
           {/* Desktop Navigation — two rows */}
           <div className="hidden lg:flex flex-col items-end gap-0.5 flex-1 min-w-0 ml-4">
             {/* Row 1: section anchors */}
-            <div className="flex items-center gap-4 flex-wrap justify-end">
+            <div className="flex items-center gap-2 xl:gap-4 flex-wrap justify-end">
               {navLinks.filter(l => !l.mobileOnly && !l.isRoute).map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors relative group whitespace-nowrap"
+                  className="text-xs xl:text-sm text-muted-foreground hover:text-foreground font-medium transition-colors relative group whitespace-nowrap"
                 >
                   {link.label}
                   <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-accent transition-all group-hover:w-full" />
@@ -85,12 +85,12 @@ const Navbar = () => {
               ))}
             </div>
             {/* Row 2: page links */}
-            <div className="flex items-center gap-4 flex-wrap justify-end">
+            <div className="flex items-center gap-2 xl:gap-4 flex-wrap justify-end">
               {navLinks.filter(l => !l.mobileOnly && l.isRoute).map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors relative group whitespace-nowrap"
+                  className="text-xs xl:text-sm text-muted-foreground hover:text-foreground font-medium transition-colors relative group whitespace-nowrap"
                 >
                   {link.label}
                   <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-accent transition-all group-hover:w-full" />
