@@ -405,7 +405,7 @@ const AdminLeads = () => {
                         <p className="font-medium">{selectedLead.score}/100</p>
                       </div>
                       <div className="p-2 rounded bg-muted/50">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Gewerk</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('leads.trade_label')}</p>
                         <p className="font-medium capitalize">{selectedLead.trade}</p>
                       </div>
                     </div>
