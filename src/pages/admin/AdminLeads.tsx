@@ -206,7 +206,7 @@ const AdminLeads = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: t('leads.total'), value: statCounts.total, icon: User },
-          { label: 'Hot / Priority', value: statCounts.hot, icon: Flame },
+          { label: t('leads.hot_priority'), value: statCounts.hot, icon: Flame },
           { label: t('leads.status.new'), value: statCounts.new, icon: TrendingUp },
           { label: t('leads.status.converted'), value: statCounts.converted, icon: Zap },
         ].map((stat) => (
