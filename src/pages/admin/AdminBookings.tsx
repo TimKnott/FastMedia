@@ -461,7 +461,7 @@ const BookingDetailSheet = ({
               </div>
               <div>
                 <p className="text-muted-foreground text-xs">{t('bookings.duration')}</p>
-                <p className="font-medium">{booking.duration_minutes} Minuten</p>
+                <p className="font-medium">{booking.duration_minutes} {t('bookings.minutes')}</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <CalendarCheck className="w-3.5 h-3.5 text-muted-foreground" />
