@@ -17,6 +17,10 @@ import SEOHead from '@/components/SEOHead';
 import HomeJsonLd from '@/components/HomeJsonLd';
 import PromoBanner from '@/components/PromoBanner';
 import StickyCTABar from '@/components/StickyCTABar';
+import CertificationsSection from '@/components/CertificationsSection';
+import TeamSection from '@/components/TeamSection';
+import AppointmentPoliciesSection from '@/components/AppointmentPoliciesSection';
+import ServiceAreaMap from '@/components/ServiceAreaMap';
 
 const Index = () => {
   return (
@@ -36,15 +40,19 @@ const Index = () => {
           <HeroSection />
           <PromoBanner variant="compact" />
           <WhyFastMediaSection />
+          <CertificationsSection />
           <AutomationSection />
           <DemosSection />
           <CalculatorShowcase />
           <ServicesSection />
           <PromoBanner variant="full" />
           <ReviewsSection />
+          <TeamSection />
           <PricingSection />
           <FAQSection />
+          <AppointmentPoliciesSection />
           <ConsultantSection />
+          <ServiceAreaMap />
           <BookingSection />
         </main>
         <Footer />
