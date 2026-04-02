@@ -558,6 +558,26 @@ const BookingDetailSheet = ({
             </div>
           </div>
 
+          {/* WhatsApp meeting link */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+              <MessageCircle className="w-4 h-4" /> WhatsApp
+            </h3>
+            <Button
+              variant="outline"
+              className="w-full gap-1.5 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700"
+              onClick={() => {
+                const phone = booking.phone ? booking.phone.replace(/\D/g, '') : '';
+                const message = `Hi ${booking.customer_name},\n\nYour meeting with FastMedia.Pro is confirmed!\n\n📅 Date: ${formatDate(booking.scheduled_at)}\n⏱ Duration: ${booking.duration_minutes} min\n🔧 Service: ${booking.service}\n\nIf you need to reschedule, please let us know.\n\nBest regards,\nFastMedia.Pro`;
+                const url = phone
+                  ? `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+                  : `https://wa.me/?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
+              }}
+            >
+              <MessageCircle className="w-4 h-4" /> Send via WhatsApp
+            </Button>
+          </div>
           <div className="flex gap-2 pt-2">
             <Button className="gradient-primary text-primary-foreground flex-1" onClick={() => onSaveNotes(booking.id, notes)}>{t('bookings.save')}</Button>
             <Button variant="outline" onClick={onClose}>{t('bookings.close')}</Button>
