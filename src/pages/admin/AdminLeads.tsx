@@ -420,8 +420,8 @@ const AdminLeads = () => {
                         <p className="font-medium capitalize">{selectedLead.trade}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground text-xs">Einmalkosten</p>
-                        <p className="font-medium">{selectedLead.quote_one_time.toLocaleString('de-DE')} Kč</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.one_time')}</p>
+                        <p className="font-medium">{selectedLead.quote_one_time.toLocaleString(language === 'en' ? 'en-US' : language === 'de' ? 'de-DE' : 'cs-CZ')} Kč</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground text-xs">Monatlich</p>
