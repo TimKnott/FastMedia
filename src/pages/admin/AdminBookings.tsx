@@ -110,7 +110,7 @@ const AdminBookings = () => {
   }, [bookings]);
 
   const handleCreate = async () => {
-    if (!newBooking.customer_name || !newBooking.customer_email || !newBooking.service || !newBooking.scheduled_at) {
+    if (!newBooking.customer_name || !newBooking.customer_email || !newBooking.phone || !newBooking.service || !newBooking.scheduled_at) {
       toast.error(t('common.required_fields'));
       return;
     }
