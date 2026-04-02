@@ -368,7 +368,7 @@ const BookingsTableView = ({ bookings, onSelect, formatDate }: { bookings: DbBoo
       <TableBody>
         {bookings.length === 0 && (
           <TableRow>
-            <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Keine Buchungen gefunden.</TableCell>
+            <TableCell colSpan={7} className="text-center text-muted-foreground py-8">{t('bookings.none')}</TableCell>
           </TableRow>
         )}
         {bookings.map(b => {
