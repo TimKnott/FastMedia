@@ -457,7 +457,7 @@ const AdminLeads = () => {
                     <div className="space-y-2">
                       <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                         <Zap className="w-4 h-4 text-primary" />
-                        AI-Analyse
+                        {t('leads.ai_analysis')}
                       </h3>
                       <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 text-sm space-y-2">
                         {selectedLead.ai_analysis.summary && (
