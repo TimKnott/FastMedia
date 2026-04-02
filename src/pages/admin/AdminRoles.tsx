@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
 import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 type AppRole = Database['public']['Enums']['app_role'];
 interface UserWithRole { user_id: string; email: string; role: AppRole; created_at: string; }
