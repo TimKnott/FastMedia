@@ -413,7 +413,7 @@ const AdminLeads = () => {
 
                   {/* Quote details */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Angebotsdaten</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.quote_data')}</h3>
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
                         <p className="text-muted-foreground text-xs">Gewerk</p>
