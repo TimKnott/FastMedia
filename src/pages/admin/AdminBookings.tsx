@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { de, enUS } from 'date-fns/locale';
+import LearnMoreModal from '@/components/LearnMoreModal';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
