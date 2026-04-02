@@ -204,7 +204,7 @@ const AdminBookings = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-display font-bold text-foreground">Buchungen</h1>
+            <h1 className="text-2xl font-display font-bold text-foreground">{t('bookings.title')}</h1>
             <LearnMoreModal
               title="Kanban Task Management"
               explanation="Visual workflow management for scheduling jobs efficiently. Drag cards between status columns, assign tasks, and track due dates."
