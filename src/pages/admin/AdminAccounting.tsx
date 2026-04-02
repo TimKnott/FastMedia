@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import LearnMoreModal from '@/components/LearnMoreModal';
 import { motion } from 'framer-motion';
 import {
   Search, Plus, FileText, RefreshCw, Euro, Clock, CheckCircle2, XCircle,
@@ -285,7 +286,15 @@ const AdminAccounting = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Buchhaltung & Rechnungen</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-display font-bold text-foreground">Buchhaltung & Rechnungen</h1>
+            <LearnMoreModal
+              title="Invoicing & Payment Tracking"
+              explanation="Generate invoices, track payments received/outstanding, and manage recurring billing — all from one dashboard."
+              benefits={['Keeps finances organized', 'Reduces errors', 'Improves cash flow visibility']}
+              triggerSize="md"
+            />
+          </div>
           <p className="text-muted-foreground mt-1">Rechnungen erstellen, verwalten und wiederkehrende Rechnungen konfigurieren.</p>
         </div>
         <div className="flex gap-2">

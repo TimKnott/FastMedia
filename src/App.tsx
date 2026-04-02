@@ -50,6 +50,9 @@ const AdminVbout = lazy(() => import("./pages/admin/AdminVbout"));
 const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
+const AdminHR = lazy(() => import("./pages/admin/AdminHR"));
+const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
+const AdminExport = lazy(() => import("./pages/admin/AdminExport"));
 const ProtectedRoute = lazy(() => import("./components/admin/ProtectedRoute"));
 
 // Demo pages (lazy)
@@ -184,6 +187,9 @@ const App = () => (
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
+              <Route path="hr" element={<AdminHR />} />
+              <Route path="integrations" element={<AdminIntegrations />} />
+              <Route path="export" element={<AdminExport />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -20,6 +20,9 @@ import {
   Send,
   Code2,
   Receipt,
+  UserCog,
+  Plug,
+  Download,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -58,6 +61,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
   { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
+  { titleKey: 'admin.hr', url: '/admin/hr', icon: UserCog, minRole: 'admin' },
 ];
 
 const contentItems: MenuItem[] = [
@@ -78,6 +82,8 @@ const adminItems: MenuItem[] = [
 
 const settingsItems: MenuItem[] = [
   { titleKey: 'admin.embed_codes', url: '/admin/embed-codes', icon: Code2, minRole: 'super_admin' },
+  { titleKey: 'admin.integrations', url: '/admin/integrations', icon: Plug, minRole: 'admin' },
+  { titleKey: 'admin.export', url: '/admin/export', icon: Download, minRole: 'admin' },
   { titleKey: 'admin.settings', url: '/admin/settings', icon: Settings, minRole: 'admin' },
 ];
 
