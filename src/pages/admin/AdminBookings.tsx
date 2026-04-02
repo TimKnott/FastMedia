@@ -242,7 +242,7 @@ const AdminBookings = () => {
                   <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} placeholder="+49 170 …" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Dauer (Min.)</Label>
+                  <Label>{t('bookings.duration_min')}</Label>
                   <Input type="number" value={newBooking.duration_minutes} onChange={e => setNewBooking(p => ({ ...p, duration_minutes: Number(e.target.value) }))} />
                 </div>
               </div>
