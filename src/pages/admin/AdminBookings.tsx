@@ -466,7 +466,7 @@ const BookingDetailSheet = ({
               <div className="flex items-center gap-1.5">
                 <CalendarCheck className="w-3.5 h-3.5 text-muted-foreground" />
                 <div>
-                  <p className="text-muted-foreground text-xs">Termin</p>
+                  <p className="text-muted-foreground text-xs">{t('bookings.appointment')}</p>
                   <p className="font-medium">{formatDate(booking.scheduled_at)}</p>
                 </div>
               </div>
