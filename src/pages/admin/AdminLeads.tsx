@@ -262,7 +262,7 @@ const AdminLeads = () => {
                 {loading && (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center text-muted-foreground py-12">
-                      Laden…
+                      {t('leads.loading')}
                     </TableCell>
                   </TableRow>
                 )}
