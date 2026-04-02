@@ -546,7 +546,7 @@ const BookingDetailSheet = ({
                         },
                       },
                     });
-                    toast.success('Aufgabe per E-Mail gesendet!');
+                    toast.success(t('bookings.email_sent'));
                     emailInput.value = '';
                   } catch {
                     toast.error('E-Mail konnte nicht gesendet werden.');
