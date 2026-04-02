@@ -528,7 +528,7 @@ const BookingDetailSheet = ({
                   const emailInput = document.getElementById('task-email-recipient') as HTMLInputElement;
                   const recipientEmail = emailInput?.value?.trim();
                   if (!recipientEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
-                    toast.error('Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+                    toast.error(t('bookings.invalid_email'));
                     return;
                   }
                   try {
