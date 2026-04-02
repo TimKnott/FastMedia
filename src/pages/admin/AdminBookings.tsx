@@ -212,7 +212,7 @@ const AdminBookings = () => {
               triggerSize="md"
             />
           </div>
-          <p className="text-muted-foreground mt-1">Termine verwalten und nachverfolgen.</p>
+          <p className="text-muted-foreground mt-1">{t('bookings.subtitle')}</p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
