@@ -389,7 +389,7 @@ const AdminLeads = () => {
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                       <Tag className="w-4 h-4" />
-                      Kundenprofil
+                      {t('leads.profile')}
                     </h3>
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div className="p-2 rounded bg-muted/50">
