@@ -90,6 +90,7 @@ const GalleryCarousel = ({ galleryImages, tradeId, language, getImageUrl, invali
   );
 };
 
+const DemoLayout = ({
   tradeName,
   tradeId,
   tradeIcon,
