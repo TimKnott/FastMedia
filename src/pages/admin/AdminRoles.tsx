@@ -56,10 +56,16 @@ const AdminRoles = () => {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center gap-2">
         <h1 className="text-2xl font-display font-bold text-foreground">Role Management</h1>
-        <p className="text-muted-foreground mt-1">Assign roles to users and manage the access hierarchy.</p>
+        <LearnMoreModal
+          title="Role-Based Access Controls"
+          explanation="Control user permissions by role to protect sensitive data. The hierarchy ensures only authorized staff can access admin functions."
+          benefits={['Protects sensitive data', 'Prevents unauthorized access', 'Enforces principle of least privilege']}
+          triggerSize="md"
+        />
       </div>
+      <p className="text-muted-foreground mt-1">Assign roles to users and manage the access hierarchy.</p>
 
       <Card className="shadow-card border-primary/20 bg-primary/5">
         <CardContent className="pt-5 pb-4">
