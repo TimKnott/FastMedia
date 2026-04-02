@@ -553,7 +553,7 @@ const BookingDetailSheet = ({
                   }
                 }}
               >
-                <Send className="w-4 h-4" /> Aufgabe senden
+                <Send className="w-4 h-4" /> {t('bookings.send_task')}
               </Button>
             </div>
           </div>
