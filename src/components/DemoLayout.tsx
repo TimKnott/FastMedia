@@ -29,7 +29,67 @@ interface DemoLayoutProps {
   children?: ReactNode;
 }
 
-const DemoLayout = ({
+const GalleryCarousel = ({ galleryImages, tradeId, language, getImageUrl, invalidateImage }: {
+  galleryImages: { src: string; title: { cs: string; en: string; de: string } }[];
+  tradeId: string;
+  language: 'cs' | 'en' | 'de';
+  getImageUrl: (key: string) => string | undefined;
+  invalidateImage: () => void;
+}) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start', slidesToScroll: 1 });
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+        <div className="flex gap-4">
+          {galleryImages.map((image, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              className="flex-[0_0_80%] sm:flex-[0_0_45%] md:flex-[0_0_32%] min-w-0"
+            >
+              <div className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer">
+                <EditableImage
+                  contentKey={`demo.${tradeId}.gallery.${index}`}
+                  defaultSrc={image.src}
+                  overrideSrc={getImageUrl(`demo.${tradeId}.gallery.${index}`)}
+                  onSave={invalidateImage}
+                  alt={image.title[language]}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <div className="text-primary-foreground">
+                    <p className="font-semibold">{image.title[language]}</p>
+                    <p className="text-sm text-primary-foreground/80">{language === 'cs' ? 'Zobrazit detail' : language === 'en' ? 'View details' : 'Details anzeigen'}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+      <button
+        onClick={scrollPrev}
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-background transition-colors z-10"
+      >
+        <ChevronLeft className="w-5 h-5 text-foreground" />
+      </button>
+      <button
+        onClick={scrollNext}
+        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-background transition-colors z-10"
+      >
+        <ChevronRight className="w-5 h-5 text-foreground" />
+      </button>
+    </div>
+  );
+};
+
   tradeName,
   tradeId,
   tradeIcon,
