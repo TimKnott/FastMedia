@@ -312,8 +312,8 @@ const AdminBookings = () => {
       {/* Table */}
       <Card className="shadow-card">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-display">Alle Buchungen</CardTitle>
-          <CardDescription>{filtered.length} Einträge</CardDescription>
+          <CardTitle className="text-lg font-display">{t('bookings.all')}</CardTitle>
+          <CardDescription>{filtered.length} {t('bookings.entries')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="all">
