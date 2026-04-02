@@ -492,7 +492,7 @@ const BookingDetailSheet = ({
 
           {/* Status change */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Status ändern</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t('bookings.change_status')}</h3>
             <Select value={booking.status} onValueChange={v => onStatusChange(booking.id, v)}>
               <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
               <SelectContent>
