@@ -248,13 +248,13 @@ const AdminLeads = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Gewerk</TableHead>
+                   <TableHead>{t('common.name')}</TableHead>
+                  <TableHead>{t('leads.trade')}</TableHead>
                   <TableHead>Score</TableHead>
-                  <TableHead>Klassifizierung</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Angebot</TableHead>
-                  <TableHead>Erstellt</TableHead>
+                  <TableHead>{t('leads.classification')}</TableHead>
+                  <TableHead>{t('common.status')}</TableHead>
+                  <TableHead>{t('leads.quote')}</TableHead>
+                  <TableHead>{t('common.created')}</TableHead>
                   <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
