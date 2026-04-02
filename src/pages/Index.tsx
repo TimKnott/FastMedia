@@ -50,7 +50,6 @@ const Index = () => {
         <Footer />
         <StickyCTABar />
       </div>
-      </div>
     </LanguageProvider>
   );
 };
