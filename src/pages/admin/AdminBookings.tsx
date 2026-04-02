@@ -265,8 +265,8 @@ const AdminBookings = () => {
                 </Popover>
               </div>
               <div className="space-y-1.5">
-                <Label>Zugewiesen an</Label>
-                <Input value={newBooking.assigned_to} onChange={e => setNewBooking(p => ({ ...p, assigned_to: e.target.value }))} placeholder="Mitarbeiter-Name" />
+                <Label>{t('bookings.assigned_to')}</Label>
+                <Input value={newBooking.assigned_to} onChange={e => setNewBooking(p => ({ ...p, assigned_to: e.target.value }))} placeholder={t('bookings.assigned_placeholder')} />
               </div>
               <div className="space-y-1.5">
                 <Label>Notizen</Label>
