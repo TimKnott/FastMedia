@@ -456,7 +456,7 @@ const BookingDetailSheet = ({
             <h3 className="text-sm font-semibold text-foreground">{t('bookings.details')}</h3>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-muted-foreground text-xs">Service</p>
+                <p className="text-muted-foreground text-xs">{t('bookings.service')}</p>
                 <p className="font-medium">{booking.service}</p>
               </div>
               <div>
