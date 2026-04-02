@@ -506,7 +506,7 @@ const BookingDetailSheet = ({
           {/* Notes */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <StickyNote className="w-4 h-4" /> Notizen
+              <StickyNote className="w-4 h-4" /> {t('bookings.notes')}
             </h3>
             <Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} placeholder="Notizen hinzufügen…" />
           </div>
