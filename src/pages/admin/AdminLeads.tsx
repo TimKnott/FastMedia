@@ -375,7 +375,7 @@ const AdminLeads = () => {
                       )}
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <CalendarIcon className="w-4 h-4" />
-                        Erstellt: {format(new Date(selectedLead.created_at), 'dd.MM.yyyy HH:mm')}
+                        {t('leads.created')}: {format(new Date(selectedLead.created_at), 'dd.MM.yyyy HH:mm')}
                       </div>
                       {selectedLead.assigned_to && (
                         <div className="flex items-center gap-2 text-muted-foreground">
