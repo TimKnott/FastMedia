@@ -16,6 +16,11 @@ import { useImageContent } from '@/hooks/useImageContent';
 import SEOHead from '@/components/SEOHead';
 import DemoShareBar from '@/components/DemoShareBar';
 import DemoBookingCalendar from '@/components/DemoBookingCalendar';
+import expertImg1 from '@/assets/team/expert-1.jpg';
+import expertImg2 from '@/assets/team/expert-2.jpg';
+import expertImg3 from '@/assets/team/expert-3.jpg';
+
+const expertPhotos = [expertImg1, expertImg2, expertImg3];
 
 interface DemoLayoutProps {
   tradeName: string;
