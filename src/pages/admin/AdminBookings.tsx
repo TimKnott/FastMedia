@@ -238,8 +238,8 @@ const AdminBookings = () => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Telefon</Label>
-                  <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} placeholder="+49 170 …" />
+                  <Label>{t('bookings.phone_label')}</Label>
+                  <Input value={newBooking.phone} onChange={e => setNewBooking(p => ({ ...p, phone: e.target.value }))} />
                 </div>
                 <div className="space-y-1.5">
                   <Label>{t('bookings.duration_min')}</Label>
