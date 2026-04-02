@@ -549,7 +549,7 @@ const BookingDetailSheet = ({
                     toast.success(t('bookings.email_sent'));
                     emailInput.value = '';
                   } catch {
-                    toast.error('E-Mail konnte nicht gesendet werden.');
+                    toast.error(t('bookings.email_send_error'));
                   }
                 }}
               >
