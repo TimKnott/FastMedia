@@ -192,7 +192,7 @@ const AdminLeads = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-display font-bold text-foreground">Lead-Management</h1>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('leads.title')}</h1>
         <LearnMoreModal
           title="Customer Relationship Management (CRM)"
           explanation="Organize customer data for personalized communication and service quality improvements. Track lead scoring, service history, and conversion funnels."
