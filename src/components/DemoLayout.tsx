@@ -8,7 +8,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import useEmblaCarousel from 'embla-carousel-react';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import DemoFAQSection from '@/components/DemoFAQSection';
-import Footer from '@/components/Footer';
+
 import { getTradeImage, getTradeGalleryImages } from '@/data/tradeImages';
 import { tradeGalleryDescriptions } from '@/data/tradeGalleryImages';
 import EditableImage from '@/components/EditableImage';
