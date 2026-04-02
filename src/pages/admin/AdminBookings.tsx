@@ -228,12 +228,12 @@ const AdminBookings = () => {
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Name *</Label>
-                  <Input value={newBooking.customer_name} onChange={e => setNewBooking(p => ({ ...p, customer_name: e.target.value }))} placeholder="Max Mustermann" />
+                  <Label>{t('bookings.name_label')} *</Label>
+                  <Input value={newBooking.customer_name} onChange={e => setNewBooking(p => ({ ...p, customer_name: e.target.value }))} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>E-Mail *</Label>
-                  <Input type="email" value={newBooking.customer_email} onChange={e => setNewBooking(p => ({ ...p, customer_email: e.target.value }))} placeholder="max@beispiel.de" />
+                  <Label>{t('bookings.email_label')} *</Label>
+                  <Input type="email" value={newBooking.customer_email} onChange={e => setNewBooking(p => ({ ...p, customer_email: e.target.value }))} placeholder={t('bookings.email_placeholder')} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
