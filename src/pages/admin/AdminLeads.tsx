@@ -511,7 +511,7 @@ const AdminLeads = () => {
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                       <StickyNote className="w-4 h-4" />
-                      Notizen
+                      {t('leads.notes')}
                     </h3>
                     <div className="flex gap-2">
                       <Textarea
