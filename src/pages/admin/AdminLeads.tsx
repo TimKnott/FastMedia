@@ -85,8 +85,6 @@ const AdminLeads = () => {
     lost: { label: t('leads.status.lost'), dot: 'bg-muted-foreground' },
   };
 
-const AdminLeads = () => {
-  const { t } = useLanguage();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
