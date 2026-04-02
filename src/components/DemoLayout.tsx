@@ -1,10 +1,11 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, Menu, X } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, MapPin, Clock, Star, CheckCircle, Users, Award, Shield, Calendar, Facebook, Instagram, Twitter, Linkedin, Play, ChevronRight, ChevronLeft, Menu, X, Share2, MessageCircle, Copy, Newspaper } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import useEmblaCarousel from 'embla-carousel-react';
 import WhyThisWebsiteWorks from '@/components/WhyThisWebsiteWorks';
 import DemoFAQSection from '@/components/DemoFAQSection';
 import Footer from '@/components/Footer';
