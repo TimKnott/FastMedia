@@ -3,18 +3,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { blogPosts } from '@/data/blogPosts';
 import { ExternalLink, Edit, Plus } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminBlog = () => {
+  const { t } = useLanguage();
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Blog verwalten</h1>
-          <p className="text-muted-foreground mt-1">{blogPosts.length} Artikel veröffentlicht.</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t('admin.blog')}</h1>
+          <p className="text-muted-foreground mt-1">{blogPosts.length} {t('blog.articles_published')}</p>
         </div>
         <Button size="sm" disabled>
           <Plus className="w-4 h-4 mr-1" />
-          Neuer Artikel
+          {t('blog.new_article')}
         </Button>
       </div>
 
