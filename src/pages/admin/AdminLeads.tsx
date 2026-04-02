@@ -556,7 +556,7 @@ const AdminLeads = () => {
                     </div>
                   </div>
 
-                  <Button variant="outline" className="w-full" onClick={() => setSelectedLead(null)}>Schließen</Button>
+                  <Button variant="outline" className="w-full" onClick={() => setSelectedLead(null)}>{t('leads.close')}</Button>
                 </div>
               </>
             );
