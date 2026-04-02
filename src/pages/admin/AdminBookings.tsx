@@ -305,7 +305,7 @@ const AdminBookings = () => {
       <div className="flex gap-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Suche nach Name, E-Mail, Service…" className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
+          <Input placeholder={t('bookings.search')} className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
       </div>
 
