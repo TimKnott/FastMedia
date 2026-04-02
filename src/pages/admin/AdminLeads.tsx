@@ -518,7 +518,7 @@ const AdminLeads = () => {
                         value={newNote}
                         onChange={(e) => setNewNote(e.target.value)}
                         rows={2}
-                        placeholder="Notiz hinzufügen…"
+                        placeholder={t('leads.add_note')}
                         className="text-sm"
                       />
                       <Button size="sm" onClick={addNote} disabled={!newNote.trim() || savingNote} className="self-end">
