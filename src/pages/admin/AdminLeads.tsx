@@ -416,7 +416,7 @@ const AdminLeads = () => {
                     <h3 className="text-sm font-semibold text-foreground">{t('leads.quote_data')}</h3>
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
-                        <p className="text-muted-foreground text-xs">Gewerk</p>
+                        <p className="text-muted-foreground text-xs">{t('leads.trade_label')}</p>
                         <p className="font-medium capitalize">{selectedLead.trade}</p>
                       </div>
                       <div>
