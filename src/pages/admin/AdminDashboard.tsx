@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, CalendarCheck, ScrollText, TrendingUp, Mail, Flame } from 'lucide-react';
+import { Users, CalendarCheck, ScrollText, TrendingUp, Mail, Flame, Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import TrackingDiagnostics from '@/components/admin/TrackingDiagnostics';
+import DashboardCharts from '@/components/admin/DashboardCharts';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 interface DashboardStats {
   users: number;
