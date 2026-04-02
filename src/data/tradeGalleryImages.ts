@@ -496,5 +496,25 @@ export const tradeGalleryDescriptions: Record<string, {
       { cs: "WiFi řešení", en: "WiFi Solutions", de: "WLAN-Lösungen" },
       { cs: "IT podpora", en: "IT Support", de: "IT-Support" }
     ]
+  },
+  womeninbusiness: {
+    hero: "Professional businesswoman at executive desk in modern office",
+    about: "Women business leaders collaborating in boardroom",
+    gallery: [
+      "Businesswoman leading team meeting at whiteboard",
+      "Female entrepreneur working on laptop in stylish office",
+      "Two businesswomen collaborating on strategy",
+      "Woman giving keynote speech at business conference",
+      "Professional women at networking event",
+      "Confident female business owner in her office"
+    ],
+    galleryTitles: [
+      { cs: "Vedení týmu", en: "Team Leadership", de: "Teamführung" },
+      { cs: "Digitální podnikání", en: "Digital Business", de: "Digitales Business" },
+      { cs: "Strategická spolupráce", en: "Strategic Collaboration", de: "Strategische Zusammenarbeit" },
+      { cs: "Konferenční prezentace", en: "Conference Presentation", de: "Konferenzpräsentation" },
+      { cs: "Networking", en: "Networking", de: "Networking" },
+      { cs: "Osobní branding", en: "Personal Branding", de: "Personal Branding" }
+    ]
   }
 };
