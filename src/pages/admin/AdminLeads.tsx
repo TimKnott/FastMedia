@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import {
   Search, Filter, MoreHorizontal, Mail, Phone, MapPin, StickyNote,
   Calendar as CalendarIcon, Clock, LayoutGrid, List, CalendarDays,
-  TrendingUp, User, Flame, Snowflake, Zap, Plus, Send as SendIcon, X
+  TrendingUp, User, Flame, Snowflake, Zap, Plus, Send as SendIcon, X, Tag
 } from 'lucide-react';
+import LearnMoreModal from '@/components/LearnMoreModal';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
