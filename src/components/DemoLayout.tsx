@@ -22,6 +22,10 @@ import expertImg3 from '@/assets/team/expert-3.jpg';
 
 const expertPhotos = [expertImg1, expertImg2, expertImg3];
 
+import blogImg1 from '@/assets/blog/demo-blog-1.jpg';
+import blogImg2 from '@/assets/blog/demo-blog-2.jpg';
+import blogImg3 from '@/assets/blog/demo-blog-3.jpg';
+
 interface DemoLayoutProps {
   tradeName: string;
   tradeId: string;
