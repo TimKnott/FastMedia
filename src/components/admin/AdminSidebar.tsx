@@ -61,6 +61,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
   { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
+  { titleKey: 'admin.hr', url: '/admin/hr', icon: UserCog, minRole: 'admin' },
 ];
 
 const contentItems: MenuItem[] = [
