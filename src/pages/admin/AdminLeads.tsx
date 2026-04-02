@@ -393,7 +393,7 @@ const AdminLeads = () => {
                     </h3>
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div className="p-2 rounded bg-muted/50">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Sprache</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('leads.language_label')}</p>
                         <p className="font-medium">{selectedLead.language === 'cs' ? '🇨🇿 Čeština' : selectedLead.language === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English'}</p>
                       </div>
                       <div className="p-2 rounded bg-muted/50">
