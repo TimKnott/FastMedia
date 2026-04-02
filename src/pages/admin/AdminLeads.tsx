@@ -464,7 +464,7 @@ const AdminLeads = () => {
                           <p>{selectedLead.ai_analysis.summary}</p>
                         )}
                         {selectedLead.ai_analysis.recommended_approach && (
-                          <p className="text-muted-foreground text-xs"><strong>Strategie:</strong> {selectedLead.ai_analysis.recommended_approach}</p>
+                          <p className="text-muted-foreground text-xs"><strong>{t('leads.strategy')}:</strong> {selectedLead.ai_analysis.recommended_approach}</p>
                         )}
                         {selectedLead.ai_analysis.upsell_opportunities?.length > 0 && (
                           <div>
