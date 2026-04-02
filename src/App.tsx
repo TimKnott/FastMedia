@@ -167,6 +167,16 @@ const App = () => (
             <Route path="/demo/nutritionist" element={<NutritionistDemo />} />
             <Route path="/demo/handmade" element={<HandmadeDemo />} />
             <Route path="/demo/childcare" element={<ChildcareDemo />} />
+            <Route path="/demo/dental" element={<DentalDemo />} />
+            <Route path="/demo/realestate" element={<RealEstateDemo />} />
+            <Route path="/demo/accounting" element={<AccountingDemo />} />
+            <Route path="/demo/veterinary" element={<VeterinaryDemo />} />
+            <Route path="/demo/tattoo" element={<TattooDemo />} />
+            <Route path="/demo/musicschool" element={<MusicSchoolDemo />} />
+            <Route path="/demo/drivingschool" element={<DrivingSchoolDemo />} />
+            <Route path="/demo/laundry" element={<LaundryDemo />} />
+            <Route path="/demo/security" element={<SecurityDemo />} />
+            <Route path="/demo/translation" element={<TranslationDemo />} />
             <Route path="/consultant/tereza" element={<ConsultantTereza />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />
