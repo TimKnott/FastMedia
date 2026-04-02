@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, CalendarCheck, ScrollText, TrendingUp, Mail, Flame } from 'lucide-react';
+import { Users, CalendarCheck, ScrollText, TrendingUp, Mail, Flame, Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import TrackingDiagnostics from '@/components/admin/TrackingDiagnostics';
+import DashboardCharts from '@/components/admin/DashboardCharts';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 interface DashboardStats {
   users: number;
@@ -54,10 +56,16 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="flex items-center gap-2">
         <h1 className="text-2xl font-display font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Overview of your admin portal.</p>
+        <LearnMoreModal
+          title="Analytics & Marketing Impact"
+          explanation="Monitor how marketing activities affect traffic and sales in real time. Track leads, bookings, and conversion trends with interactive charts."
+          benefits={['Enables data-driven decisions', 'Tracks marketing ROI', 'Identifies growth opportunities']}
+          triggerSize="md"
+        />
       </div>
+      <p className="text-muted-foreground mt-1">Overview of your admin portal.</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card, i) => (
@@ -85,6 +93,8 @@ const AdminDashboard = () => {
           </motion.div>
         ))}
       </div>
+
+      <DashboardCharts />
 
       <TrackingDiagnostics />
 

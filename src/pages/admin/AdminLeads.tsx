@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import {
   Search, Filter, MoreHorizontal, Mail, Phone, MapPin, StickyNote,
   Calendar as CalendarIcon, Clock, LayoutGrid, List, CalendarDays,
-  TrendingUp, User, Flame, Snowflake, Zap, Plus, Send as SendIcon, X
+  TrendingUp, User, Flame, Snowflake, Zap, Plus, Send as SendIcon, X, Tag
 } from 'lucide-react';
+import LearnMoreModal from '@/components/LearnMoreModal';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -46,6 +47,7 @@ interface Lead {
   ai_analysis: any;
   source: string;
   language: string;
+  gdpr_consent: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -186,10 +188,16 @@ const AdminLeads = () => {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center gap-2">
         <h1 className="text-2xl font-display font-bold text-foreground">Lead-Management</h1>
-        <p className="text-muted-foreground mt-1">Qualifizierte Leads aus dem AI-Kalkulator verwalten.</p>
+        <LearnMoreModal
+          title="Customer Relationship Management (CRM)"
+          explanation="Organize customer data for personalized communication and service quality improvements. Track lead scoring, service history, and conversion funnels."
+          benefits={['Drives customer loyalty', 'Improves retention rates', 'Enables personalized outreach']}
+          triggerSize="md"
+        />
       </div>
+      <p className="text-muted-foreground mt-1">Qualifizierte Leads aus dem AI-Kalkulator verwalten.</p>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -330,6 +338,26 @@ const AdminLeads = () => {
                 </SheetHeader>
 
                 <div className="mt-6 space-y-6">
+                  {/* Customer Profile Card */}
+                  <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-4 border border-border">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-lg">
+                        {selectedLead.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </div>
+                      <div>
+                        <h3 className="font-display font-bold text-foreground">{selectedLead.name}</h3>
+                        <p className="text-xs text-muted-foreground capitalize">{selectedLead.trade} • {selectedLead.source} • {selectedLead.language.toUpperCase()}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      <Badge className="text-[10px]" variant="secondary">{selectedLead.classification}</Badge>
+                      <Badge className="text-[10px]" variant="outline">{selectedLead.status}</Badge>
+                      {selectedLead.score >= 70 && <Badge className="text-[10px] bg-amber-500/10 text-amber-600 border-amber-200">⚡ High Value</Badge>}
+                      {selectedLead.quote_monthly > 2000 && <Badge className="text-[10px] bg-green-500/10 text-green-600 border-green-200">💰 Premium</Badge>}
+                      {selectedLead.gdpr_consent !== false && <Badge className="text-[10px] bg-blue-500/10 text-blue-600 border-blue-200">✓ GDPR</Badge>}
+                    </div>
+                  </div>
+
                   {/* Contact */}
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-foreground">Kontakt</h3>
@@ -342,6 +370,41 @@ const AdminLeads = () => {
                           <Phone className="w-4 h-4" />{selectedLead.phone}
                         </div>
                       )}
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <CalendarIcon className="w-4 h-4" />
+                        Erstellt: {format(new Date(selectedLead.created_at), 'dd.MM.yyyy HH:mm')}
+                      </div>
+                      {selectedLead.assigned_to && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <User className="w-4 h-4" />Zugewiesen: {selectedLead.assigned_to}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Customer Preferences / Tags */}
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                      <Tag className="w-4 h-4" />
+                      Kundenprofil
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="p-2 rounded bg-muted/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Sprache</p>
+                        <p className="font-medium">{selectedLead.language === 'cs' ? '🇨🇿 Čeština' : selectedLead.language === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English'}</p>
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Quelle</p>
+                        <p className="font-medium capitalize">{selectedLead.source}</p>
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Lead Score</p>
+                        <p className="font-medium">{selectedLead.score}/100</p>
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Gewerk</p>
+                        <p className="font-medium capitalize">{selectedLead.trade}</p>
+                      </div>
                     </div>
                   </div>
 
