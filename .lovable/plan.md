@@ -1,41 +1,22 @@
 
 
-## Add WhatsApp Meeting Link to Booking Detail Sheet
+## Fix: Consolidate email_send_log RLS policies
 
-Add a "Send via WhatsApp" button to the booking detail panel that generates a pre-filled WhatsApp message containing the meeting date, time, service, and duration. No API key needed — it uses the standard `wa.me` URL with a `text` parameter.
+**Problem**: The `email_send_log` table has service_role policies granted `TO public` instead of `TO service_role`. While functionally safe (the `auth.role() = 'service_role'` check blocks anon), the pattern is fragile and confusing.
 
-### What the user will see
+**Solution**: Drop the three service_role policies that use `TO public` and recreate them scoped to the `service_role` role directly. This makes the intent explicit and removes the fragile dual-policy pattern.
 
-In the booking detail side-panel (the sheet that opens when you click a booking), a new green WhatsApp button will appear below the existing "Email Task" section. Clicking it opens WhatsApp (web or app) with a pre-composed message like:
+### Migration
 
-```
-Hi Thomas Müller,
+1. Drop existing service_role policies on `email_send_log`:
+   - "Service role can insert send log" (INSERT, TO public)
+   - "Service role can read send log" (SELECT, TO public)
+   - "Service role can update send log" (UPDATE, TO public)
 
-Your meeting with FastMedia.Pro is confirmed!
+2. Recreate them with `TO service_role` (no USING/WITH CHECK needed since service_role bypasses RLS by default, but we keep them for explicitness):
+   - INSERT policy TO `service_role`
+   - SELECT policy TO `service_role`
+   - UPDATE policy TO `service_role`
 
-📅 Date: 15 Mar 2026, 14:00
-⏱ Duration: 60 minutes
-🔧 Service: Web Development Consultation
-
-If you need to reschedule, please let us know.
-
-Best regards,
-FastMedia.Pro
-```
-
-If the booking has a phone number, the link will target that number directly (`wa.me/49170...`). If no phone number exists, it will open a blank WhatsApp compose so the admin can paste/select the recipient.
-
-### Technical changes
-
-**File: `src/pages/admin/AdminBookings.tsx`**
-
-1. Import the `MessageCircle` icon from lucide-react (already available in the project)
-2. Add a helper function `buildWhatsAppLink(booking, formatDate)` that:
-   - Strips non-numeric chars from the phone number
-   - Constructs the message text with booking details
-   - Returns `https://wa.me/{phone}?text={encodedMessage}`
-3. Add a new section in the `BookingDetailSheet` between the Email Task section and the Save/Close buttons, containing a green WhatsApp button that opens the link in a new tab
-4. Add translation keys for the button label (or use inline text since the section is admin-only)
-
-Single file change, no database changes, no API keys, no edge functions needed.
+The admin SELECT policy on `{authenticated}` remains unchanged.
 
