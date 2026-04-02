@@ -256,7 +256,7 @@ const AdminBookings = () => {
                   <PopoverTrigger asChild>
                     <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !newBooking.scheduled_at && "text-muted-foreground")}>
                       <CalendarDays className="mr-2 h-4 w-4" />
-                      {newBooking.scheduled_at ? format(newBooking.scheduled_at, 'PPP', { locale: de }) : 'Datum wählen'}
+                      {newBooking.scheduled_at ? format(newBooking.scheduled_at, 'PPP', { locale: dateLocale }) : (language === 'cs' ? 'Vybrat datum' : language === 'en' ? 'Select date' : 'Datum wählen')}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
