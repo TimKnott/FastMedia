@@ -4,6 +4,7 @@ import { MessageCircle, Contact } from 'lucide-react';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -89,8 +90,13 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h4 className="font-display font-semibold text-sm uppercase tracking-wider text-background/80 mb-4">
+            <h4 className="font-display font-semibold text-sm uppercase tracking-wider text-background/80 mb-4 inline-flex items-center gap-1.5">
               {t('footer.terms')}
+              <LearnMoreModal
+                title="Accessibility & Compliance"
+                explanation="FastMedia.Pro is committed to accessibility (WCAG 2.1 AA), GDPR compliance, and transparent data handling across all our websites."
+                benefits={['WCAG 2.1 AA accessible', 'GDPR compliant data handling', 'Multi-language support (CS/EN/DE)']}
+              />
             </h4>
             <ul className="space-y-2.5">
               <li>

@@ -9,6 +9,8 @@ import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
 import AdminToolbar from "@/components/AdminToolbar";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
+import CookieConsentBanner from "./components/CookieConsentBanner";
+import AccessibilityToolbar from "./components/AccessibilityToolbar";
 
 // Critical pages loaded eagerly
 import Index from "./pages/Index";
@@ -108,6 +110,8 @@ const App = () => (
           <AdminToolbar />
           <WhatsAppFloat />
           <EmbedCodeInjector />
+          <CookieConsentBanner />
+          <AccessibilityToolbar />
           <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
