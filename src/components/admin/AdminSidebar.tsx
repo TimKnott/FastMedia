@@ -82,6 +82,8 @@ const adminItems: MenuItem[] = [
 
 const settingsItems: MenuItem[] = [
   { titleKey: 'admin.embed_codes', url: '/admin/embed-codes', icon: Code2, minRole: 'super_admin' },
+  { titleKey: 'admin.integrations', url: '/admin/integrations', icon: Plug, minRole: 'admin' },
+  { titleKey: 'admin.export', url: '/admin/export', icon: Download, minRole: 'admin' },
   { titleKey: 'admin.settings', url: '/admin/settings', icon: Settings, minRole: 'admin' },
 ];
 
