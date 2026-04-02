@@ -7,37 +7,60 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import LearnMoreModal from '@/components/LearnMoreModal';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type ExportTarget = 'leads' | 'bookings' | 'invoices' | 'employees' | 'newsletter';
 
 interface ExportConfig {
   id: ExportTarget;
-  label: string;
-  description: string;
+  labelKey: string;
+  descKey: string;
   icon: string;
   table: string;
 }
 
-const EXPORTS: ExportConfig[] = [
-  { id: 'leads', label: 'Leads', description: 'Alle qualifizierten Leads exportieren.', icon: '📋', table: 'leads' },
-  { id: 'bookings', label: 'Buchungen', description: 'Terminbuchungen und Status exportieren.', icon: '📅', table: 'bookings' },
-  { id: 'invoices', label: 'Rechnungen', description: 'Rechnungsdaten für Buchhaltung exportieren.', icon: '💶', table: 'invoices' },
-  { id: 'employees', label: 'Mitarbeiter', description: 'Personaldaten exportieren.', icon: '👥', table: 'employees' },
-  { id: 'newsletter', label: 'Newsletter', description: 'Abonnentenliste exportieren.', icon: '✉️', table: 'newsletter_subscribers' },
+const EXPORT_CONFIGS: Omit<ExportConfig, 'labelKey' | 'descKey'>[] = [
+  { id: 'leads', icon: '📋', table: 'leads' },
+  { id: 'bookings', icon: '📅', table: 'bookings' },
+  { id: 'invoices', icon: '💶', table: 'invoices' },
+  { id: 'employees', icon: '👥', table: 'employees' },
+  { id: 'newsletter', icon: '✉️', table: 'newsletter_subscribers' },
 ];
 
 const AdminExport = () => {
+  const { t, language } = useLanguage();
   const [exporting, setExporting] = useState<ExportTarget | null>(null);
   const [lastExports, setLastExports] = useState<Record<string, string>>({});
 
-  const exportCSV = async (config: ExportConfig) => {
+  const getLabel = (id: ExportTarget) => {
+    const map: Record<ExportTarget, string> = {
+      leads: t('export.leads'),
+      bookings: t('export.bookings'),
+      invoices: t('export.invoices'),
+      employees: t('export.employees_label'),
+      newsletter: t('export.newsletter'),
+    };
+    return map[id];
+  };
+
+  const getDesc = (id: ExportTarget) => {
+    const map: Record<ExportTarget, string> = {
+      leads: t('export.leads_desc'),
+      bookings: t('export.bookings_desc'),
+      invoices: t('export.invoices_desc'),
+      employees: t('export.employees_desc'),
+      newsletter: t('export.newsletter_desc'),
+    };
+    return map[id];
+  };
+
+  const exportCSV = async (config: typeof EXPORT_CONFIGS[number]) => {
     setExporting(config.id);
     try {
       const { data, error } = await supabase.from(config.table as any).select('*').order('created_at', { ascending: false });
       if (error) throw error;
-      if (!data || data.length === 0) { toast.error('Keine Daten zum Exportieren'); setExporting(null); return; }
+      if (!data || data.length === 0) { toast.error(t('export.no_data')); setExporting(null); return; }
 
-      // Convert to CSV
       const headers = Object.keys(data[0]);
       const csvRows = [
         headers.join(','),
@@ -52,7 +75,6 @@ const AdminExport = () => {
       ];
       const csv = csvRows.join('\n');
 
-      // Download
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -61,10 +83,11 @@ const AdminExport = () => {
       a.click();
       URL.revokeObjectURL(url);
 
-      setLastExports(prev => ({ ...prev, [config.id]: new Date().toLocaleString('de-DE') }));
-      toast.success(`${config.label} erfolgreich exportiert (${data.length} Einträge)`);
+      const locale = language === 'de' ? 'de-DE' : language === 'en' ? 'en-US' : 'cs-CZ';
+      setLastExports(prev => ({ ...prev, [config.id]: new Date().toLocaleString(locale) }));
+      toast.success(`${getLabel(config.id)} ${t('export.success')} (${data.length} ${t('export.entries')})`);
     } catch (err: any) {
-      toast.error(err.message || 'Export fehlgeschlagen');
+      toast.error(err.message || t('export.failed'));
     }
     setExporting(null);
   };
@@ -72,7 +95,7 @@ const AdminExport = () => {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-display font-bold text-foreground">Backup & Datenexport</h1>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('export.title')}</h1>
         <LearnMoreModal
           title="Backup & Data Export Tools"
           explanation="Export your business data in CSV format for audits, accounting, or backup purposes. Download leads, bookings, invoices, and more with one click."
@@ -80,17 +103,17 @@ const AdminExport = () => {
           triggerSize="md"
         />
       </div>
-      <p className="text-muted-foreground">Geschäftsdaten als CSV exportieren für Audits und Buchhaltung.</p>
+      <p className="text-muted-foreground">{t('export.subtitle')}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {EXPORTS.map(config => (
+        {EXPORT_CONFIGS.map(config => (
           <Card key={config.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{config.icon}</span>
-                <CardTitle className="text-base">{config.label}</CardTitle>
+                <CardTitle className="text-base">{getLabel(config.id)}</CardTitle>
               </div>
-              <CardDescription className="text-xs">{config.description}</CardDescription>
+              <CardDescription className="text-xs">{getDesc(config.id)}</CardDescription>
             </CardHeader>
             <CardContent>
               <Button
@@ -101,15 +124,15 @@ const AdminExport = () => {
                 size="sm"
               >
                 {exporting === config.id ? (
-                  <><Loader2 className="w-4 h-4 mr-1 animate-spin" />Exportiere…</>
+                  <><Loader2 className="w-4 h-4 mr-1 animate-spin" />{t('export.exporting')}</>
                 ) : lastExports[config.id] ? (
-                  <><CheckCircle2 className="w-4 h-4 mr-1 text-green-600" />Erneut exportieren</>
+                  <><CheckCircle2 className="w-4 h-4 mr-1 text-green-600" />{t('export.re_export')}</>
                 ) : (
-                  <><Download className="w-4 h-4 mr-1" />CSV exportieren</>
+                  <><Download className="w-4 h-4 mr-1" />{t('export.csv_export')}</>
                 )}
               </Button>
               {lastExports[config.id] && (
-                <p className="text-[10px] text-muted-foreground mt-2 text-center">Letzter Export: {lastExports[config.id]}</p>
+                <p className="text-[10px] text-muted-foreground mt-2 text-center">{t('export.last_export')}: {lastExports[config.id]}</p>
               )}
             </CardContent>
           </Card>

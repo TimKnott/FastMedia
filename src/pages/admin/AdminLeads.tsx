@@ -6,6 +6,7 @@ import {
   TrendingUp, User, Flame, Snowflake, Zap, Plus, Send as SendIcon, X, Tag
 } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -82,6 +83,7 @@ const statusConfig: Record<LeadStatus, { label: string; dot: string }> = {
 };
 
 const AdminLeads = () => {
+  const { t } = useLanguage();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -228,7 +230,7 @@ const AdminLeads = () => {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Suche nach Name, E-Mail, Gewerk…"
+            placeholder={t('leads.search')}
             className="pl-9 h-9"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -239,21 +241,21 @@ const AdminLeads = () => {
       {/* Leads table */}
       <Card className="shadow-card">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-display">Alle Leads</CardTitle>
-          <CardDescription>{filtered.length} Einträge</CardDescription>
+          <CardTitle className="text-lg font-display">{t('leads.all')}</CardTitle>
+          <CardDescription>{filtered.length} {t('leads.entries')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Gewerk</TableHead>
+                   <TableHead>{t('common.name')}</TableHead>
+                  <TableHead>{t('leads.trade')}</TableHead>
                   <TableHead>Score</TableHead>
-                  <TableHead>Klassifizierung</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Angebot</TableHead>
-                  <TableHead>Erstellt</TableHead>
+                  <TableHead>{t('leads.classification')}</TableHead>
+                  <TableHead>{t('common.status')}</TableHead>
+                  <TableHead>{t('leads.quote')}</TableHead>
+                  <TableHead>{t('common.created')}</TableHead>
                   <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
@@ -261,14 +263,14 @@ const AdminLeads = () => {
                 {loading && (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center text-muted-foreground py-12">
-                      Laden…
+                      {t('leads.loading')}
                     </TableCell>
                   </TableRow>
                 )}
                 {!loading && filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center text-muted-foreground py-12">
-                      Keine Leads gefunden.
+                      {t('leads.none')}
                     </TableCell>
                   </TableRow>
                 )}
@@ -536,9 +538,9 @@ const AdminLeads = () => {
 
                   {/* Activity Timeline */}
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Aktivitäten</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('leads.activities')}</h3>
                     {activities.length === 0 && (
-                      <p className="text-xs text-muted-foreground">Keine Aktivitäten.</p>
+                      <p className="text-xs text-muted-foreground">{t('leads.no_activities')}</p>
                     )}
                     <div className="space-y-2">
                       {activities.map(act => (

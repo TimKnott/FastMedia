@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import {
   Users, Plus, Search, UserCheck, UserX, Clock, Calendar,
@@ -18,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import LearnMoreModal from '@/components/LearnMoreModal';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Employee {
   id: string;
@@ -53,6 +53,7 @@ interface Attendance {
 }
 
 const AdminHR = () => {
+  const { t } = useLanguage();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [attendance, setAttendance] = useState<Attendance[]>([]);
@@ -62,7 +63,6 @@ const AdminHR = () => {
   const [showAddShift, setShowAddShift] = useState(false);
   const [showAddAttendance, setShowAddAttendance] = useState(false);
 
-  // New employee form
   const [newEmployee, setNewEmployee] = useState({
     full_name: '', email: '', phone: '', position: '', department: '', status: 'active', hire_date: format(new Date(), 'yyyy-MM-dd'),
   });
@@ -89,10 +89,10 @@ const AdminHR = () => {
   };
 
   const addEmployee = async () => {
-    if (!newEmployee.full_name || !newEmployee.email) { toast.error('Name und E-Mail erforderlich'); return; }
+    if (!newEmployee.full_name || !newEmployee.email) { toast.error(t('hr.name_email_required')); return; }
     const { error } = await supabase.from('employees').insert([newEmployee] as any);
     if (error) { toast.error(error.message); return; }
-    toast.success('Mitarbeiter hinzugefügt');
+    toast.success(t('hr.employee_added'));
     setShowAddEmployee(false);
     setNewEmployee({ full_name: '', email: '', phone: '', position: '', department: '', status: 'active', hire_date: format(new Date(), 'yyyy-MM-dd') });
     fetchAll();
@@ -101,27 +101,27 @@ const AdminHR = () => {
   const deleteEmployee = async (id: string) => {
     const { error } = await supabase.from('employees').delete().eq('id', id);
     if (error) { toast.error(error.message); return; }
-    toast.success('Mitarbeiter gelöscht');
+    toast.success(t('hr.employee_deleted'));
     fetchAll();
   };
 
   const addShift = async () => {
-    if (!newShift.employee_id) { toast.error('Mitarbeiter auswählen'); return; }
+    if (!newShift.employee_id) { toast.error(t('hr.select_employee')); return; }
     const { error } = await supabase.from('shifts').insert([{ ...newShift, notes: newShift.notes || null }] as any);
     if (error) { toast.error(error.message); return; }
-    toast.success('Schicht hinzugefügt');
+    toast.success(t('hr.shift_added'));
     setShowAddShift(false);
     fetchAll();
   };
 
   const addAttendance = async () => {
-    if (!newAttendance.employee_id) { toast.error('Mitarbeiter auswählen'); return; }
+    if (!newAttendance.employee_id) { toast.error(t('hr.select_employee')); return; }
     const { error } = await supabase.from('attendance').insert([{
       ...newAttendance, notes: newAttendance.notes || null,
       check_in: newAttendance.status === 'present' ? new Date().toISOString() : null,
     }] as any);
     if (error) { toast.error(error.message); return; }
-    toast.success('Anwesenheit erfasst');
+    toast.success(t('hr.attendance_recorded'));
     setShowAddAttendance(false);
     fetchAll();
   };
@@ -137,11 +137,25 @@ const AdminHR = () => {
 
   const getEmployeeName = (id: string) => employees.find(e => e.id === id)?.full_name ?? '—';
 
+  const statusLabel = (status: string) => {
+    if (status === 'active') return t('hr.status.active');
+    if (status === 'on_leave') return t('hr.status.on_leave');
+    return t('hr.status.inactive');
+  };
+
+  const attendanceStatusLabel = (status: string) => {
+    if (status === 'present') return t('hr.status.present');
+    if (status === 'absent') return t('hr.status.absent');
+    if (status === 'late') return t('hr.status.late');
+    if (status === 'excused') return t('hr.status.excused');
+    return status;
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-display font-bold text-foreground">Personalverwaltung</h1>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t('hr.title')}</h1>
           <LearnMoreModal
             title="Human Resources (HR) Module"
             explanation="Centralizes staff management: employee profiles, shift scheduling, and attendance tracking in one place."
@@ -155,23 +169,23 @@ const AdminHR = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card><CardContent className="pt-4 flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center"><Users className="w-5 h-5 text-primary" /></div>
-          <div><p className="text-2xl font-bold">{activeCount}</p><p className="text-xs text-muted-foreground">Aktive Mitarbeiter</p></div>
+          <div><p className="text-2xl font-bold">{activeCount}</p><p className="text-xs text-muted-foreground">{t('hr.active_employees')}</p></div>
         </CardContent></Card>
         <Card><CardContent className="pt-4 flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center"><Clock className="w-5 h-5 text-accent" /></div>
-          <div><p className="text-2xl font-bold">{todayShifts}</p><p className="text-xs text-muted-foreground">Schichten heute</p></div>
+          <div><p className="text-2xl font-bold">{todayShifts}</p><p className="text-xs text-muted-foreground">{t('hr.shifts_today')}</p></div>
         </CardContent></Card>
         <Card><CardContent className="pt-4 flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center"><UserCheck className="w-5 h-5 text-green-600" /></div>
-          <div><p className="text-2xl font-bold">{todayPresent}</p><p className="text-xs text-muted-foreground">Anwesend heute</p></div>
+          <div><p className="text-2xl font-bold">{todayPresent}</p><p className="text-xs text-muted-foreground">{t('hr.present_today')}</p></div>
         </CardContent></Card>
       </div>
 
       <Tabs defaultValue="employees">
         <TabsList>
-          <TabsTrigger value="employees">Mitarbeiter</TabsTrigger>
-          <TabsTrigger value="shifts">Schichtplan</TabsTrigger>
-          <TabsTrigger value="attendance">Anwesenheit</TabsTrigger>
+          <TabsTrigger value="employees">{t('hr.employees')}</TabsTrigger>
+          <TabsTrigger value="shifts">{t('hr.shifts')}</TabsTrigger>
+          <TabsTrigger value="attendance">{t('hr.attendance')}</TabsTrigger>
         </TabsList>
 
         {/* EMPLOYEES TAB */}
@@ -179,27 +193,27 @@ const AdminHR = () => {
           <div className="flex items-center gap-3">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Suchen…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+              <Input placeholder={t('hr.search')} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
             </div>
-            <Button onClick={() => setShowAddEmployee(true)} size="sm"><Plus className="w-4 h-4 mr-1" />Hinzufügen</Button>
+            <Button onClick={() => setShowAddEmployee(true)} size="sm"><Plus className="w-4 h-4 mr-1" />{t('hr.add')}</Button>
           </div>
           <Card>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Abteilung</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Eingestellt</TableHead>
+                  <TableHead>{t('common.name')}</TableHead>
+                  <TableHead>{t('hr.position')}</TableHead>
+                  <TableHead>{t('hr.department')}</TableHead>
+                  <TableHead>{t('common.status')}</TableHead>
+                  <TableHead>{t('hr.hired')}</TableHead>
                   <TableHead className="w-10"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Laden…</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">{t('hr.loading')}</TableCell></TableRow>
                 ) : filtered.length === 0 ? (
-                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Keine Mitarbeiter</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">{t('hr.no_employees')}</TableCell></TableRow>
                 ) : filtered.map((emp) => (
                   <TableRow key={emp.id}>
                     <TableCell>
@@ -212,7 +226,7 @@ const AdminHR = () => {
                     <TableCell>{emp.department || '—'}</TableCell>
                     <TableCell>
                       <Badge variant={emp.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-                        {emp.status === 'active' ? 'Aktiv' : emp.status === 'on_leave' ? 'Abwesend' : 'Inaktiv'}
+                        {statusLabel(emp.status)}
                       </Badge>
                     </TableCell>
                     <TableCell>{format(new Date(emp.hire_date), 'dd.MM.yyyy')}</TableCell>
@@ -229,22 +243,22 @@ const AdminHR = () => {
         {/* SHIFTS TAB */}
         <TabsContent value="shifts" className="space-y-4">
           <div className="flex justify-end">
-            <Button onClick={() => setShowAddShift(true)} size="sm"><Plus className="w-4 h-4 mr-1" />Schicht erstellen</Button>
+            <Button onClick={() => setShowAddShift(true)} size="sm"><Plus className="w-4 h-4 mr-1" />{t('hr.create_shift')}</Button>
           </div>
           <Card>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Mitarbeiter</TableHead>
-                  <TableHead>Datum</TableHead>
-                  <TableHead>Von</TableHead>
-                  <TableHead>Bis</TableHead>
-                  <TableHead>Typ</TableHead>
+                  <TableHead>{t('hr.employee')}</TableHead>
+                  <TableHead>{t('hr.date')}</TableHead>
+                  <TableHead>{t('hr.from')}</TableHead>
+                  <TableHead>{t('hr.to')}</TableHead>
+                  <TableHead>{t('hr.type')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {shifts.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Keine Schichten</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">{t('hr.no_shifts')}</TableCell></TableRow>
                 ) : shifts.map((s) => (
                   <TableRow key={s.id}>
                     <TableCell className="font-medium">{getEmployeeName(s.employee_id)}</TableCell>
@@ -262,22 +276,22 @@ const AdminHR = () => {
         {/* ATTENDANCE TAB */}
         <TabsContent value="attendance" className="space-y-4">
           <div className="flex justify-end">
-            <Button onClick={() => setShowAddAttendance(true)} size="sm"><Plus className="w-4 h-4 mr-1" />Anwesenheit erfassen</Button>
+            <Button onClick={() => setShowAddAttendance(true)} size="sm"><Plus className="w-4 h-4 mr-1" />{t('hr.record_attendance')}</Button>
           </div>
           <Card>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Mitarbeiter</TableHead>
-                  <TableHead>Datum</TableHead>
-                  <TableHead>Check-in</TableHead>
-                  <TableHead>Check-out</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{t('hr.employee')}</TableHead>
+                  <TableHead>{t('hr.date')}</TableHead>
+                  <TableHead>{t('hr.checkin')}</TableHead>
+                  <TableHead>{t('hr.checkout')}</TableHead>
+                  <TableHead>{t('common.status')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {attendance.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Keine Einträge</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">{t('hr.no_records')}</TableCell></TableRow>
                 ) : attendance.map((a) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-medium">{getEmployeeName(a.employee_id)}</TableCell>
@@ -286,7 +300,7 @@ const AdminHR = () => {
                     <TableCell>{a.check_out ? format(new Date(a.check_out), 'HH:mm') : '—'}</TableCell>
                     <TableCell>
                       <Badge variant={a.status === 'present' ? 'default' : a.status === 'absent' ? 'destructive' : 'secondary'} className="text-xs capitalize">
-                        {a.status === 'present' ? 'Anwesend' : a.status === 'absent' ? 'Abwesend' : a.status === 'late' ? 'Verspätet' : a.status}
+                        {attendanceStatusLabel(a.status)}
                       </Badge>
                     </TableCell>
                   </TableRow>
@@ -300,99 +314,99 @@ const AdminHR = () => {
       {/* Add Employee Dialog */}
       <Dialog open={showAddEmployee} onOpenChange={setShowAddEmployee}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Mitarbeiter hinzufügen</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t('hr.add_employee')}</DialogTitle></DialogHeader>
           <div className="grid gap-3">
-            <div><Label>Name *</Label><Input value={newEmployee.full_name} onChange={(e) => setNewEmployee({ ...newEmployee, full_name: e.target.value })} /></div>
-            <div><Label>E-Mail *</Label><Input type="email" value={newEmployee.email} onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })} /></div>
-            <div><Label>Telefon</Label><Input value={newEmployee.phone} onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })} /></div>
+            <div><Label>{t('common.name')} *</Label><Input value={newEmployee.full_name} onChange={(e) => setNewEmployee({ ...newEmployee, full_name: e.target.value })} /></div>
+            <div><Label>{t('common.email')} *</Label><Input type="email" value={newEmployee.email} onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })} /></div>
+            <div><Label>{t('common.phone')}</Label><Input value={newEmployee.phone} onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Position</Label><Input value={newEmployee.position} onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })} /></div>
-              <div><Label>Abteilung</Label><Input value={newEmployee.department} onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })} /></div>
+              <div><Label>{t('hr.position')}</Label><Input value={newEmployee.position} onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })} /></div>
+              <div><Label>{t('hr.department')}</Label><Input value={newEmployee.department} onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })} /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Einstellungsdatum</Label><Input type="date" value={newEmployee.hire_date} onChange={(e) => setNewEmployee({ ...newEmployee, hire_date: e.target.value })} /></div>
+              <div><Label>{t('hr.hire_date')}</Label><Input type="date" value={newEmployee.hire_date} onChange={(e) => setNewEmployee({ ...newEmployee, hire_date: e.target.value })} /></div>
               <div>
-                <Label>Status</Label>
+                <Label>{t('common.status')}</Label>
                 <Select value={newEmployee.status} onValueChange={(v) => setNewEmployee({ ...newEmployee, status: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">Aktiv</SelectItem>
-                    <SelectItem value="on_leave">Abwesend</SelectItem>
-                    <SelectItem value="inactive">Inaktiv</SelectItem>
+                    <SelectItem value="active">{t('hr.status.active')}</SelectItem>
+                    <SelectItem value="on_leave">{t('hr.status.on_leave')}</SelectItem>
+                    <SelectItem value="inactive">{t('hr.status.inactive')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
           </div>
-          <DialogFooter><Button onClick={addEmployee}>Speichern</Button></DialogFooter>
+          <DialogFooter><Button onClick={addEmployee}>{t('common.save')}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Add Shift Dialog */}
       <Dialog open={showAddShift} onOpenChange={setShowAddShift}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Schicht erstellen</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t('hr.create_shift')}</DialogTitle></DialogHeader>
           <div className="grid gap-3">
             <div>
-              <Label>Mitarbeiter *</Label>
+              <Label>{t('hr.employee')} *</Label>
               <Select value={newShift.employee_id} onValueChange={(v) => setNewShift({ ...newShift, employee_id: v })}>
-                <SelectTrigger><SelectValue placeholder="Auswählen…" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t('hr.select')} /></SelectTrigger>
                 <SelectContent>{employees.filter(e => e.status === 'active').map(e => (
                   <SelectItem key={e.id} value={e.id}>{e.full_name}</SelectItem>
                 ))}</SelectContent>
               </Select>
             </div>
-            <div><Label>Datum</Label><Input type="date" value={newShift.shift_date} onChange={(e) => setNewShift({ ...newShift, shift_date: e.target.value })} /></div>
+            <div><Label>{t('hr.date')}</Label><Input type="date" value={newShift.shift_date} onChange={(e) => setNewShift({ ...newShift, shift_date: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Von</Label><Input type="time" value={newShift.start_time} onChange={(e) => setNewShift({ ...newShift, start_time: e.target.value })} /></div>
-              <div><Label>Bis</Label><Input type="time" value={newShift.end_time} onChange={(e) => setNewShift({ ...newShift, end_time: e.target.value })} /></div>
+              <div><Label>{t('hr.from')}</Label><Input type="time" value={newShift.start_time} onChange={(e) => setNewShift({ ...newShift, start_time: e.target.value })} /></div>
+              <div><Label>{t('hr.to')}</Label><Input type="time" value={newShift.end_time} onChange={(e) => setNewShift({ ...newShift, end_time: e.target.value })} /></div>
             </div>
             <div>
-              <Label>Typ</Label>
+              <Label>{t('hr.type')}</Label>
               <Select value={newShift.shift_type} onValueChange={(v) => setNewShift({ ...newShift, shift_type: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="regular">Regulär</SelectItem>
-                  <SelectItem value="overtime">Überstunden</SelectItem>
-                  <SelectItem value="holiday">Feiertag</SelectItem>
-                  <SelectItem value="sick">Krankheit</SelectItem>
+                  <SelectItem value="regular">{t('hr.shift_type.regular')}</SelectItem>
+                  <SelectItem value="overtime">{t('hr.shift_type.overtime')}</SelectItem>
+                  <SelectItem value="holiday">{t('hr.shift_type.holiday')}</SelectItem>
+                  <SelectItem value="sick">{t('hr.shift_type.sick')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-          <DialogFooter><Button onClick={addShift}>Erstellen</Button></DialogFooter>
+          <DialogFooter><Button onClick={addShift}>{t('common.create')}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Add Attendance Dialog */}
       <Dialog open={showAddAttendance} onOpenChange={setShowAddAttendance}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Anwesenheit erfassen</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t('hr.record_attendance')}</DialogTitle></DialogHeader>
           <div className="grid gap-3">
             <div>
-              <Label>Mitarbeiter *</Label>
+              <Label>{t('hr.employee')} *</Label>
               <Select value={newAttendance.employee_id} onValueChange={(v) => setNewAttendance({ ...newAttendance, employee_id: v })}>
-                <SelectTrigger><SelectValue placeholder="Auswählen…" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t('hr.select')} /></SelectTrigger>
                 <SelectContent>{employees.filter(e => e.status === 'active').map(e => (
                   <SelectItem key={e.id} value={e.id}>{e.full_name}</SelectItem>
                 ))}</SelectContent>
               </Select>
             </div>
-            <div><Label>Datum</Label><Input type="date" value={newAttendance.date} onChange={(e) => setNewAttendance({ ...newAttendance, date: e.target.value })} /></div>
+            <div><Label>{t('hr.date')}</Label><Input type="date" value={newAttendance.date} onChange={(e) => setNewAttendance({ ...newAttendance, date: e.target.value })} /></div>
             <div>
-              <Label>Status</Label>
+              <Label>{t('common.status')}</Label>
               <Select value={newAttendance.status} onValueChange={(v) => setNewAttendance({ ...newAttendance, status: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="present">Anwesend</SelectItem>
-                  <SelectItem value="absent">Abwesend</SelectItem>
-                  <SelectItem value="late">Verspätet</SelectItem>
-                  <SelectItem value="excused">Entschuldigt</SelectItem>
+                  <SelectItem value="present">{t('hr.status.present')}</SelectItem>
+                  <SelectItem value="absent">{t('hr.status.absent')}</SelectItem>
+                  <SelectItem value="late">{t('hr.status.late')}</SelectItem>
+                  <SelectItem value="excused">{t('hr.status.excused')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-          <DialogFooter><Button onClick={addAttendance}>Erfassen</Button></DialogFooter>
+          <DialogFooter><Button onClick={addAttendance}>{t('hr.record')}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </motion.div>

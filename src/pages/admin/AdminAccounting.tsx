@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { cs, enUS, de } from 'date-fns/locale';
 import LearnMoreModal from '@/components/LearnMoreModal';
 import { motion } from 'framer-motion';
 import {
@@ -31,6 +31,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 
@@ -84,21 +85,25 @@ interface RecurringInvoice {
   created_at: string;
 }
 
-const statusConfig: Record<InvoiceStatus, { label: string; dot: string; variant: string }> = {
-  draft: { label: 'Entwurf', dot: 'bg-muted-foreground', variant: 'outline' },
-  sent: { label: 'Gesendet', dot: 'bg-blue-500', variant: 'secondary' },
-  paid: { label: 'Bezahlt', dot: 'bg-green-500', variant: 'default' },
-  overdue: { label: 'Überfällig', dot: 'bg-destructive', variant: 'destructive' },
-  cancelled: { label: 'Storniert', dot: 'bg-muted-foreground', variant: 'outline' },
-};
-
-const frequencyLabels: Record<string, string> = {
-  daily: 'Täglich',
-  weekly: 'Wöchentlich',
-  monthly: 'Monatlich',
-};
-
 const AdminAccounting = () => {
+  const { t, language } = useLanguage();
+
+  const dateFnsLocale = language === 'de' ? de : language === 'en' ? enUS : cs;
+
+  const statusConfig: Record<InvoiceStatus, { label: string; dot: string; variant: string }> = {
+    draft: { label: t('accounting.status.draft'), dot: 'bg-muted-foreground', variant: 'outline' },
+    sent: { label: t('accounting.status.sent'), dot: 'bg-blue-500', variant: 'secondary' },
+    paid: { label: t('accounting.status.paid'), dot: 'bg-green-500', variant: 'default' },
+    overdue: { label: t('accounting.status.overdue'), dot: 'bg-destructive', variant: 'destructive' },
+    cancelled: { label: t('accounting.status.cancelled'), dot: 'bg-muted-foreground', variant: 'outline' },
+  };
+
+  const frequencyLabels: Record<string, string> = {
+    daily: t('accounting.daily'),
+    weekly: t('accounting.weekly'),
+    monthly: t('accounting.monthly_freq'),
+  };
+
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [recurring, setRecurring] = useState<RecurringInvoice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,9 +142,9 @@ const AdminAccounting = () => {
       supabase.from('invoices').select('*').order('created_at', { ascending: false }),
       supabase.from('recurring_invoices').select('*').order('created_at', { ascending: false }),
     ]);
-    if (invRes.error) toast.error('Fehler beim Laden der Rechnungen.');
+    if (invRes.error) toast.error(t('common.error_generic'));
     else setInvoices((invRes.data ?? []) as unknown as Invoice[]);
-    if (recRes.error) toast.error('Fehler beim Laden der wiederkehrenden Rechnungen.');
+    if (recRes.error) toast.error(t('common.error_generic'));
     else setRecurring((recRes.data ?? []) as unknown as RecurringInvoice[]);
     setLoading(false);
   };
@@ -170,7 +175,7 @@ const AdminAccounting = () => {
 
   const handleCreateInvoice = async () => {
     if (!newInvoice.customer_name || !newInvoice.customer_email || !newInvoice.item_description || newInvoice.item_unit_price <= 0) {
-      toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
+      toast.error(t('common.required_fields'));
       return;
     }
     setSaving(true);
@@ -194,9 +199,9 @@ const AdminAccounting = () => {
     });
     setSaving(false);
     if (error) {
-      toast.error('Rechnung konnte nicht erstellt werden.');
+      toast.error(t('common.error_generic'));
     } else {
-      toast.success('Rechnung erstellt.');
+      toast.success(t('common.success_created'));
       setCreateOpen(false);
       setNewInvoice({ customer_name: '', customer_email: '', customer_address: '', item_description: '', item_quantity: 1, item_unit_price: 0, tax_rate: 21, due_at: undefined, notes: '' });
       fetchData();
@@ -205,7 +210,7 @@ const AdminAccounting = () => {
 
   const handleCreateRecurring = async () => {
     if (!newRecurring.customer_name || !newRecurring.customer_email || !newRecurring.item_description || newRecurring.item_unit_price <= 0) {
-      toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
+      toast.error(t('common.required_fields'));
       return;
     }
     setSaving(true);
@@ -213,8 +218,6 @@ const AdminAccounting = () => {
     const taxAmount = itemTotal * (newRecurring.tax_rate / 100);
     const total = itemTotal + taxAmount;
     const items = [{ description: newRecurring.item_description, quantity: newRecurring.item_quantity, unit_price: newRecurring.item_unit_price, total: itemTotal }];
-
-    const freqInterval = newRecurring.frequency === 'daily' ? '1 day' : newRecurring.frequency === 'weekly' ? '7 days' : '1 month';
 
     const { error } = await supabase.from('recurring_invoices').insert({
       customer_name: newRecurring.customer_name,
@@ -230,9 +233,9 @@ const AdminAccounting = () => {
     });
     setSaving(false);
     if (error) {
-      toast.error('Wiederkehrende Rechnung konnte nicht erstellt werden.');
+      toast.error(t('common.error_generic'));
     } else {
-      toast.success('Wiederkehrende Rechnung erstellt.');
+      toast.success(t('common.success_created'));
       setCreateRecurringOpen(false);
       setNewRecurring({ customer_name: '', customer_email: '', customer_address: '', item_description: '', item_quantity: 1, item_unit_price: 0, tax_rate: 21, frequency: 'monthly', notes: '' });
       fetchData();
@@ -244,34 +247,34 @@ const AdminAccounting = () => {
     if (newStatus === 'paid') updates.paid_at = new Date().toISOString();
     const { error } = await supabase.from('invoices').update(updates).eq('id', invoiceId);
     if (error) {
-      toast.error('Status konnte nicht aktualisiert werden.');
+      toast.error(t('common.error_generic'));
     } else {
       setInvoices(prev => prev.map(i => i.id === invoiceId ? { ...i, ...updates } : i));
       if (selectedInvoice?.id === invoiceId) setSelectedInvoice(prev => prev ? { ...prev, ...updates } : null);
-      toast.success('Status aktualisiert.');
+      toast.success(t('common.success_updated'));
     }
   };
 
   const handleDeleteRecurring = async (id: string) => {
     const { error } = await supabase.from('recurring_invoices').delete().eq('id', id);
-    if (error) toast.error('Konnte nicht gelöscht werden.');
-    else { toast.success('Gelöscht.'); fetchData(); }
+    if (error) toast.error(t('common.error_generic'));
+    else { toast.success(t('common.deleted')); fetchData(); }
   };
 
   const handleToggleRecurring = async (id: string, isActive: boolean) => {
     const { error } = await supabase.from('recurring_invoices').update({ is_active: !isActive }).eq('id', id);
-    if (error) toast.error('Konnte nicht aktualisiert werden.');
-    else { toast.success(isActive ? 'Deaktiviert.' : 'Aktiviert.'); fetchData(); }
+    if (error) toast.error(t('common.error_generic'));
+    else { toast.success(isActive ? t('common.deactivated') : t('common.activated')); fetchData(); }
   };
 
   const formatDate = (iso: string | null) => {
     if (!iso) return '—';
-    try { return format(new Date(iso), 'dd.MM.yyyy', { locale: de }); }
+    try { return format(new Date(iso), 'dd.MM.yyyy', { locale: dateFnsLocale }); }
     catch { return iso; }
   };
 
   const formatCurrency = (amount: number, currency = 'CZK') =>
-    new Intl.NumberFormat('cs-CZ', { style: 'currency', currency }).format(amount);
+    new Intl.NumberFormat(language === 'de' ? 'de-DE' : language === 'en' ? 'en-US' : 'cs-CZ', { style: 'currency', currency }).format(amount);
 
   if (loading) {
     return (
@@ -287,7 +290,7 @@ const AdminAccounting = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-display font-bold text-foreground">Buchhaltung & Rechnungen</h1>
+            <h1 className="text-2xl font-display font-bold text-foreground">{t('accounting.title')}</h1>
             <LearnMoreModal
               title="Invoicing & Payment Tracking"
               explanation="Generate invoices, track payments received/outstanding, and manage recurring billing — all from one dashboard."
@@ -295,73 +298,73 @@ const AdminAccounting = () => {
               triggerSize="md"
             />
           </div>
-          <p className="text-muted-foreground mt-1">Rechnungen erstellen, verwalten und wiederkehrende Rechnungen konfigurieren.</p>
+          <p className="text-muted-foreground mt-1">{t('accounting.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <Dialog open={createRecurringOpen} onOpenChange={setCreateRecurringOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" className="gap-1.5">
-                <Repeat className="w-4 h-4" /> Wiederkehrend
+                <Repeat className="w-4 h-4" /> {t('accounting.recurring')}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle className="font-display">Wiederkehrende Rechnung erstellen</DialogTitle>
-                <DialogDescription>Automatische Rechnungserstellung nach Zeitplan.</DialogDescription>
+                <DialogTitle className="font-display">{t('accounting.create_recurring')}</DialogTitle>
+                <DialogDescription>{t('accounting.create_recurring_desc')}</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label>Kunde *</Label>
-                    <Input value={newRecurring.customer_name} onChange={e => setNewRecurring(p => ({ ...p, customer_name: e.target.value }))} placeholder="Firmenname" />
+                    <Label>{t('accounting.customer')} *</Label>
+                    <Input value={newRecurring.customer_name} onChange={e => setNewRecurring(p => ({ ...p, customer_name: e.target.value }))} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>E-Mail *</Label>
-                    <Input type="email" value={newRecurring.customer_email} onChange={e => setNewRecurring(p => ({ ...p, customer_email: e.target.value }))} placeholder="kunde@firma.de" />
+                    <Label>{t('common.email')} *</Label>
+                    <Input type="email" value={newRecurring.customer_email} onChange={e => setNewRecurring(p => ({ ...p, customer_email: e.target.value }))} />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Adresse</Label>
-                  <Input value={newRecurring.customer_address} onChange={e => setNewRecurring(p => ({ ...p, customer_address: e.target.value }))} placeholder="Straße, PLZ Stadt" />
+                  <Label>{t('accounting.address')}</Label>
+                  <Input value={newRecurring.customer_address} onChange={e => setNewRecurring(p => ({ ...p, customer_address: e.target.value }))} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Leistung *</Label>
-                  <Input value={newRecurring.item_description} onChange={e => setNewRecurring(p => ({ ...p, item_description: e.target.value }))} placeholder="z.B. Webhosting Premium" />
+                  <Label>{t('accounting.service_item')} *</Label>
+                  <Input value={newRecurring.item_description} onChange={e => setNewRecurring(p => ({ ...p, item_description: e.target.value }))} />
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
-                    <Label>Menge</Label>
+                    <Label>{t('accounting.quantity')}</Label>
                     <Input type="number" min={1} value={newRecurring.item_quantity} onChange={e => setNewRecurring(p => ({ ...p, item_quantity: Number(e.target.value) }))} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Preis (CZK) *</Label>
+                    <Label>{t('accounting.price')} *</Label>
                     <Input type="number" min={0} value={newRecurring.item_unit_price} onChange={e => setNewRecurring(p => ({ ...p, item_unit_price: Number(e.target.value) }))} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>MwSt (%)</Label>
+                    <Label>{t('accounting.vat')}</Label>
                     <Input type="number" min={0} value={newRecurring.tax_rate} onChange={e => setNewRecurring(p => ({ ...p, tax_rate: Number(e.target.value) }))} />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Häufigkeit *</Label>
+                  <Label>{t('accounting.frequency')} *</Label>
                   <Select value={newRecurring.frequency} onValueChange={v => setNewRecurring(p => ({ ...p, frequency: v }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="daily">Täglich</SelectItem>
-                      <SelectItem value="weekly">Wöchentlich</SelectItem>
-                      <SelectItem value="monthly">Monatlich</SelectItem>
+                      <SelectItem value="daily">{t('accounting.daily')}</SelectItem>
+                      <SelectItem value="weekly">{t('accounting.weekly')}</SelectItem>
+                      <SelectItem value="monthly">{t('accounting.monthly_freq')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Notizen</Label>
+                  <Label>{t('accounting.notes')}</Label>
                   <Textarea value={newRecurring.notes} onChange={e => setNewRecurring(p => ({ ...p, notes: e.target.value }))} rows={2} />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setCreateRecurringOpen(false)}>Abbrechen</Button>
+                <Button variant="outline" onClick={() => setCreateRecurringOpen(false)}>{t('common.cancel')}</Button>
                 <Button className="gradient-primary text-primary-foreground" onClick={handleCreateRecurring} disabled={saving}>
-                  {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />} Erstellen
+                  {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />} {t('common.create')}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -370,54 +373,54 @@ const AdminAccounting = () => {
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
               <Button className="gradient-primary text-primary-foreground gap-1.5">
-                <Plus className="w-4 h-4" /> Neue Rechnung
+                <Plus className="w-4 h-4" /> {t('accounting.new_invoice')}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle className="font-display">Neue Rechnung erstellen</DialogTitle>
-                <DialogDescription>Erstellen Sie eine Einmalrechnung für einen Kunden.</DialogDescription>
+                <DialogTitle className="font-display">{t('accounting.create_invoice')}</DialogTitle>
+                <DialogDescription>{t('accounting.create_invoice_desc')}</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label>Kunde *</Label>
-                    <Input value={newInvoice.customer_name} onChange={e => setNewInvoice(p => ({ ...p, customer_name: e.target.value }))} placeholder="Firmenname" />
+                    <Label>{t('accounting.customer')} *</Label>
+                    <Input value={newInvoice.customer_name} onChange={e => setNewInvoice(p => ({ ...p, customer_name: e.target.value }))} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>E-Mail *</Label>
-                    <Input type="email" value={newInvoice.customer_email} onChange={e => setNewInvoice(p => ({ ...p, customer_email: e.target.value }))} placeholder="kunde@firma.de" />
+                    <Label>{t('common.email')} *</Label>
+                    <Input type="email" value={newInvoice.customer_email} onChange={e => setNewInvoice(p => ({ ...p, customer_email: e.target.value }))} />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Adresse</Label>
-                  <Input value={newInvoice.customer_address} onChange={e => setNewInvoice(p => ({ ...p, customer_address: e.target.value }))} placeholder="Straße, PLZ Stadt" />
+                  <Label>{t('accounting.address')}</Label>
+                  <Input value={newInvoice.customer_address} onChange={e => setNewInvoice(p => ({ ...p, customer_address: e.target.value }))} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Leistung *</Label>
-                  <Input value={newInvoice.item_description} onChange={e => setNewInvoice(p => ({ ...p, item_description: e.target.value }))} placeholder="z.B. Website-Erstellung Professional" />
+                  <Label>{t('accounting.service_item')} *</Label>
+                  <Input value={newInvoice.item_description} onChange={e => setNewInvoice(p => ({ ...p, item_description: e.target.value }))} />
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
-                    <Label>Menge</Label>
+                    <Label>{t('accounting.quantity')}</Label>
                     <Input type="number" min={1} value={newInvoice.item_quantity} onChange={e => setNewInvoice(p => ({ ...p, item_quantity: Number(e.target.value) }))} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Preis (CZK) *</Label>
+                    <Label>{t('accounting.price')} *</Label>
                     <Input type="number" min={0} value={newInvoice.item_unit_price} onChange={e => setNewInvoice(p => ({ ...p, item_unit_price: Number(e.target.value) }))} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>MwSt (%)</Label>
+                    <Label>{t('accounting.vat')}</Label>
                     <Input type="number" min={0} value={newInvoice.tax_rate} onChange={e => setNewInvoice(p => ({ ...p, tax_rate: Number(e.target.value) }))} />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Fällig am</Label>
+                  <Label>{t('accounting.due_date')}</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !newInvoice.due_at && "text-muted-foreground")}>
                         <CalendarDays className="mr-2 h-4 w-4" />
-                        {newInvoice.due_at ? format(newInvoice.due_at, 'PPP', { locale: de }) : 'Datum wählen'}
+                        {newInvoice.due_at ? format(newInvoice.due_at, 'PPP', { locale: dateFnsLocale }) : t('common.select_date')}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -426,14 +429,14 @@ const AdminAccounting = () => {
                   </Popover>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Notizen</Label>
+                  <Label>{t('accounting.notes')}</Label>
                   <Textarea value={newInvoice.notes} onChange={e => setNewInvoice(p => ({ ...p, notes: e.target.value }))} rows={2} />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setCreateOpen(false)}>Abbrechen</Button>
+                <Button variant="outline" onClick={() => setCreateOpen(false)}>{t('common.cancel')}</Button>
                 <Button className="gradient-primary text-primary-foreground" onClick={handleCreateInvoice} disabled={saving}>
-                  {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />} Erstellen
+                  {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />} {t('common.create')}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -444,10 +447,10 @@ const AdminAccounting = () => {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: 'Gesamt', value: formatCurrency(stats.total), icon: FileText, dot: 'bg-primary' },
-          { label: 'Bezahlt', value: formatCurrency(stats.paid), icon: CheckCircle2, dot: 'bg-green-500' },
-          { label: 'Ausstehend', value: formatCurrency(stats.outstanding), icon: Clock, dot: 'bg-blue-500' },
-          { label: 'Überfällig', value: String(stats.overdue), icon: XCircle, dot: 'bg-destructive' },
+          { label: t('accounting.total'), value: formatCurrency(stats.total), icon: FileText, dot: 'bg-primary' },
+          { label: t('accounting.paid'), value: formatCurrency(stats.paid), icon: CheckCircle2, dot: 'bg-green-500' },
+          { label: t('accounting.outstanding'), value: formatCurrency(stats.outstanding), icon: Clock, dot: 'bg-blue-500' },
+          { label: t('accounting.overdue'), value: String(stats.overdue), icon: XCircle, dot: 'bg-destructive' },
         ].map((s, i) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
             <Card className="shadow-card">
@@ -466,15 +469,14 @@ const AdminAccounting = () => {
       {/* Tabs: Invoices & Recurring */}
       <Tabs defaultValue="invoices">
         <TabsList>
-          <TabsTrigger value="invoices" className="gap-1.5"><FileText className="w-4 h-4" /> Rechnungen ({invoices.length})</TabsTrigger>
-          <TabsTrigger value="recurring" className="gap-1.5"><Repeat className="w-4 h-4" /> Wiederkehrend ({recurring.length})</TabsTrigger>
+          <TabsTrigger value="invoices" className="gap-1.5"><FileText className="w-4 h-4" /> {t('accounting.invoices')} ({invoices.length})</TabsTrigger>
+          <TabsTrigger value="recurring" className="gap-1.5"><Repeat className="w-4 h-4" /> {t('accounting.recurring')} ({recurring.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="invoices" className="mt-4 space-y-4">
-          {/* Search */}
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Suche Rechnungsnr., Kunde…" className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
+            <Input placeholder={t('accounting.search')} className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
           </div>
 
           <Card className="shadow-card">
@@ -483,19 +485,19 @@ const AdminAccounting = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Nr.</TableHead>
-                      <TableHead>Kunde</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Betrag</TableHead>
-                      <TableHead>Ausgestellt</TableHead>
-                      <TableHead>Fällig</TableHead>
+                      <TableHead>{t('accounting.nr')}</TableHead>
+                      <TableHead>{t('accounting.customer')}</TableHead>
+                      <TableHead>{t('common.status')}</TableHead>
+                      <TableHead className="text-right">{t('accounting.amount')}</TableHead>
+                      <TableHead>{t('accounting.issued')}</TableHead>
+                      <TableHead>{t('accounting.due')}</TableHead>
                       <TableHead className="w-10" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filtered.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Keine Rechnungen gefunden.</TableCell>
+                        <TableCell colSpan={7} className="text-center text-muted-foreground py-8">{t('accounting.no_invoices')}</TableCell>
                       </TableRow>
                     )}
                     {filtered.map(inv => {
@@ -534,26 +536,26 @@ const AdminAccounting = () => {
         <TabsContent value="recurring" className="mt-4">
           <Card className="shadow-card">
             <CardHeader>
-              <CardTitle className="text-lg font-display">Wiederkehrende Rechnungen</CardTitle>
-              <CardDescription>Automatische Rechnungserstellung nach Zeitplan.</CardDescription>
+              <CardTitle className="text-lg font-display">{t('accounting.recurring_invoices')}</CardTitle>
+              <CardDescription>{t('accounting.recurring_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Kunde</TableHead>
-                      <TableHead>Häufigkeit</TableHead>
-                      <TableHead className="text-right">Betrag</TableHead>
-                      <TableHead>Nächste</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>{t('accounting.customer')}</TableHead>
+                      <TableHead>{t('accounting.frequency')}</TableHead>
+                      <TableHead className="text-right">{t('accounting.amount')}</TableHead>
+                      <TableHead>{t('accounting.next')}</TableHead>
+                      <TableHead>{t('common.status')}</TableHead>
                       <TableHead className="w-20" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {recurring.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center text-muted-foreground py-8">Keine wiederkehrenden Rechnungen.</TableCell>
+                        <TableCell colSpan={6} className="text-center text-muted-foreground py-8">{t('accounting.no_recurring')}</TableCell>
                       </TableRow>
                     )}
                     {recurring.map(r => (
@@ -569,7 +571,7 @@ const AdminAccounting = () => {
                         <TableCell className="text-sm">{formatDate(r.next_invoice_at)}</TableCell>
                         <TableCell>
                           <Badge variant={r.is_active ? 'default' : 'outline'} className="text-xs">
-                            {r.is_active ? 'Aktiv' : 'Inaktiv'}
+                            {r.is_active ? t('accounting.active') : t('accounting.inactive')}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -598,7 +600,7 @@ const AdminAccounting = () => {
           {selectedInvoice && (
             <>
               <SheetHeader>
-                <SheetTitle className="font-display">Rechnung {selectedInvoice.invoice_number}</SheetTitle>
+                <SheetTitle className="font-display">{t('accounting.invoice')} {selectedInvoice.invoice_number}</SheetTitle>
                 <SheetDescription>
                   <Badge variant={statusConfig[selectedInvoice.status as InvoiceStatus]?.variant as any} className="text-xs">
                     {statusConfig[selectedInvoice.status as InvoiceStatus]?.label ?? selectedInvoice.status}
@@ -608,14 +610,14 @@ const AdminAccounting = () => {
 
               <div className="mt-6 space-y-6">
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-foreground">Kunde</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{t('accounting.customer')}</h3>
                   <p className="text-sm">{selectedInvoice.customer_name}</p>
                   <p className="text-sm text-muted-foreground">{selectedInvoice.customer_email}</p>
                   {selectedInvoice.customer_address && <p className="text-sm text-muted-foreground">{selectedInvoice.customer_address}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-foreground">Positionen</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{t('accounting.items')}</h3>
                   {(selectedInvoice.items as InvoiceItem[]).map((item, idx) => (
                     <div key={idx} className="flex justify-between text-sm border-b border-border pb-2">
                       <div>
@@ -626,48 +628,48 @@ const AdminAccounting = () => {
                     </div>
                   ))}
                   <div className="flex justify-between text-sm pt-2">
-                    <span className="text-muted-foreground">Zwischensumme</span>
+                    <span className="text-muted-foreground">{t('accounting.subtotal')}</span>
                     <span>{formatCurrency(Number(selectedInvoice.subtotal))}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">MwSt ({selectedInvoice.tax_rate}%)</span>
+                    <span className="text-muted-foreground">{t('accounting.vat')} ({selectedInvoice.tax_rate}%)</span>
                     <span>{formatCurrency(Number(selectedInvoice.tax_amount))}</span>
                   </div>
                   <div className="flex justify-between text-sm font-bold pt-2 border-t border-border">
-                    <span>Gesamt</span>
+                    <span>{t('accounting.total')}</span>
                     <span>{formatCurrency(Number(selectedInvoice.total), selectedInvoice.currency)}</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-foreground">Daten</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{t('accounting.dates')}</h3>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Ausgestellt</span>
+                    <span className="text-muted-foreground">{t('accounting.issued')}</span>
                     <span>{formatDate(selectedInvoice.issued_at)}</span>
-                    <span className="text-muted-foreground">Fällig</span>
+                    <span className="text-muted-foreground">{t('accounting.due')}</span>
                     <span>{formatDate(selectedInvoice.due_at)}</span>
-                    <span className="text-muted-foreground">Bezahlt</span>
+                    <span className="text-muted-foreground">{t('accounting.paid')}</span>
                     <span>{formatDate(selectedInvoice.paid_at)}</span>
                   </div>
                 </div>
 
                 {selectedInvoice.notes && (
                   <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-foreground">Notizen</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('accounting.notes')}</h3>
                     <p className="text-sm text-muted-foreground">{selectedInvoice.notes}</p>
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-foreground">Status ändern</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{t('accounting.change_status')}</h3>
                   <Select value={selectedInvoice.status} onValueChange={v => handleStatusChange(selectedInvoice.id, v)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="draft">Entwurf</SelectItem>
-                      <SelectItem value="sent">Gesendet</SelectItem>
-                      <SelectItem value="paid">Bezahlt</SelectItem>
-                      <SelectItem value="overdue">Überfällig</SelectItem>
-                      <SelectItem value="cancelled">Storniert</SelectItem>
+                      <SelectItem value="draft">{t('accounting.status.draft')}</SelectItem>
+                      <SelectItem value="sent">{t('accounting.status.sent')}</SelectItem>
+                      <SelectItem value="paid">{t('accounting.status.paid')}</SelectItem>
+                      <SelectItem value="overdue">{t('accounting.status.overdue')}</SelectItem>
+                      <SelectItem value="cancelled">{t('accounting.status.cancelled')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
