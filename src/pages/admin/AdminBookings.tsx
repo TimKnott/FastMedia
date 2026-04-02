@@ -181,12 +181,12 @@ const AdminBookings = () => {
   const filterByStatus = (status: BookingStatus) => filtered.filter(b => b.status === status);
 
   const formatDate = (iso: string) => {
-    try { return format(new Date(iso), 'dd.MM.yyyy, HH:mm', { locale: de }); }
+    try { return format(new Date(iso), 'dd.MM.yyyy, HH:mm', { locale: dateLocale }); }
     catch { return iso; }
   };
 
   const formatDateShort = (iso: string) => {
-    try { return format(new Date(iso), 'dd.MM.yyyy', { locale: de }); }
+    try { return format(new Date(iso), 'dd.MM.yyyy', { locale: dateLocale }); }
     catch { return iso; }
   };
 
