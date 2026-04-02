@@ -463,6 +463,33 @@ export const translations: Translations = {
   'accounting.dates': { cs: 'Data', en: 'Dates', de: 'Daten' },
   'accounting.change_status': { cs: 'Změnit stav', en: 'Change Status', de: 'Status ändern' },
 
+  // Integrations
+  'integrations.title': { cs: 'API integrace', en: 'API Integrations', de: 'API-Integrationen' },
+  'integrations.subtitle': { cs: 'Připojení a správa externích služeb.', en: 'Connect and manage external services.', de: 'Externe Dienste verbinden und verwalten.' },
+  'integrations.connected': { cs: 'Připojeno', en: 'Connected', de: 'Verbunden' },
+  'integrations.available': { cs: 'Dostupné', en: 'Available', de: 'Verfügbar' },
+  'integrations.configure': { cs: 'Konfigurovat', en: 'Configure', de: 'Konfigurieren' },
+  'integrations.cat_marketing': { cs: 'Marketing', en: 'Marketing', de: 'Marketing' },
+  'integrations.cat_payments': { cs: 'Platby', en: 'Payments', de: 'Zahlungen' },
+  'integrations.cat_analytics': { cs: 'Analytika', en: 'Analytics', de: 'Analytics' },
+  'integrations.cat_communication': { cs: 'Komunikace', en: 'Communication', de: 'Kommunikation' },
+  'integrations.cat_email': { cs: 'E-mail', en: 'Email', de: 'E-Mail' },
+  'integrations.cat_planning': { cs: 'Plánování', en: 'Planning', de: 'Planung' },
+  'integrations.cat_automation': { cs: 'Automatizace', en: 'Automation', de: 'Automatisierung' },
+  'integrations.cat_development': { cs: 'Vývoj', en: 'Development', de: 'Entwicklung' },
+  'integrations.vbout_desc': { cs: 'Marketingová automatizace, e-mailové kampaně a sledování leadů.', en: 'Marketing automation, email campaigns and lead tracking.', de: 'Marketing-Automatisierung, E-Mail-Kampagnen und Lead-Tracking.' },
+  'integrations.stripe_desc': { cs: 'Online zpracování plateb a fakturace.', en: 'Online payment processing and invoicing.', de: 'Online-Zahlungsabwicklung und Rechnungsstellung.' },
+  'integrations.ga_desc': { cs: 'Analýza návštěvnosti a chování uživatelů.', en: 'Analyze website traffic and user behavior.', de: 'Website-Traffic und Nutzerverhalten analysieren.' },
+  'integrations.slack_desc': { cs: 'Týmová oznámení a interní komunikace.', en: 'Team notifications and internal communication.', de: 'Team-Benachrichtigungen und interne Kommunikation.' },
+  'integrations.resend_desc': { cs: 'Odesílání transakčních e-mailů.', en: 'Send transactional emails.', de: 'Transaktions-E-Mails versenden.' },
+  'integrations.calendar_desc': { cs: 'Synchronizace rezervací s kalendářem.', en: 'Sync bookings with calendar.', de: 'Terminbuchungen mit Kalender synchronisieren.' },
+  'integrations.zapier_desc': { cs: 'Automatizované pracovní postupy mezi aplikacemi.', en: 'Automated workflows between apps.', de: 'Automatisierte Workflows zwischen Apps.' },
+  'integrations.sentry_desc': { cs: 'Monitorování chyb a výkonu.', en: 'Error monitoring and performance tracking.', de: 'Fehler-Monitoring und Performance-Tracking.' },
+
+  // Blog admin
+  'blog.articles_published': { cs: 'článků publikováno', en: 'articles published', de: 'Artikel veröffentlicht' },
+  'blog.new_article': { cs: 'Nový článek', en: 'New Article', de: 'Neuer Artikel' },
+
   // Admin Landing Page
   'landing.title': { cs: 'Úprava hlavní stránky', en: 'Edit Homepage', de: 'Startseite bearbeiten' },
   'landing.subtitle': { cs: 'Správa všech sekcí hlavní stránky.', en: 'Manage all sections of the landing page.', de: 'Verwalten Sie alle Abschnitte der Landing Page.' },
