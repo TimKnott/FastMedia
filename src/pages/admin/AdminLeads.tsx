@@ -397,7 +397,7 @@ const AdminLeads = () => {
                         <p className="font-medium">{selectedLead.language === 'cs' ? '🇨🇿 Čeština' : selectedLead.language === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English'}</p>
                       </div>
                       <div className="p-2 rounded bg-muted/50">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Quelle</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('leads.source_label')}</p>
                         <p className="font-medium capitalize">{selectedLead.source}</p>
                       </div>
                       <div className="p-2 rounded bg-muted/50">
