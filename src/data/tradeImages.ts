@@ -24,6 +24,29 @@ import movingHero from '@/assets/trades/moving-hero.jpg';
 import pestcontrolHero from '@/assets/trades/pestcontrol-hero.jpg';
 import itservicesHero from '@/assets/trades/itservices-hero.jpg';
 import womeninbusinessHero from '@/assets/trades/womeninbusiness-hero.jpg';
+// New hero images
+import eshopHero from '@/assets/trades/eshop-hero.jpg';
+import virtualassistantHero from '@/assets/trades/virtualassistant-hero.jpg';
+import weddingplannerHero from '@/assets/trades/weddingplanner-hero.jpg';
+import floristHero from '@/assets/trades/florist-hero.jpg';
+import bakeryHero from '@/assets/trades/bakery-hero.jpg';
+import yogaHero from '@/assets/trades/yoga-hero.jpg';
+import nailsalonHero from '@/assets/trades/nailsalon-hero.jpg';
+import massageHero from '@/assets/trades/massage-hero.jpg';
+import petgroomingHero from '@/assets/trades/petgrooming-hero.jpg';
+import nutritionistHero from '@/assets/trades/nutritionist-hero.jpg';
+import handmadeHero from '@/assets/trades/handmade-hero.jpg';
+import childcareHero from '@/assets/trades/childcare-hero.jpg';
+import dentalHero from '@/assets/trades/dental-hero.jpg';
+import realestateHero from '@/assets/trades/realestate-hero.jpg';
+import accountingHero from '@/assets/trades/accounting-hero.jpg';
+import veterinaryHero from '@/assets/trades/veterinary-hero.jpg';
+import tattooHero from '@/assets/trades/tattoo-hero.jpg';
+import musicschoolHero from '@/assets/trades/musicschool-hero.jpg';
+import drivingschoolHero from '@/assets/trades/drivingschool-hero.jpg';
+import laundryHero from '@/assets/trades/laundry-hero.jpg';
+import securityHero from '@/assets/trades/security-hero.jpg';
+import translationHero from '@/assets/trades/translation-hero.jpg';
 
 // Gallery images - Plumbing
 import plumbingG1 from '@/assets/trades/gallery/plumbing-1.jpg';
@@ -227,6 +250,28 @@ export const tradeImages: Record<string, string> = {
   pestcontrol: pestcontrolHero,
   itservices: itservicesHero,
   womeninbusiness: womeninbusinessHero,
+  eshop: eshopHero,
+  virtualassistant: virtualassistantHero,
+  weddingplanner: weddingplannerHero,
+  florist: floristHero,
+  bakery: bakeryHero,
+  yoga: yogaHero,
+  nailsalon: nailsalonHero,
+  massage: massageHero,
+  petgrooming: petgroomingHero,
+  nutritionist: nutritionistHero,
+  handmade: handmadeHero,
+  childcare: childcareHero,
+  dental: dentalHero,
+  realestate: realestateHero,
+  accounting: accountingHero,
+  veterinary: veterinaryHero,
+  tattoo: tattooHero,
+  musicschool: musicschoolHero,
+  drivingschool: drivingschoolHero,
+  laundry: laundryHero,
+  security: securityHero,
+  translation: translationHero,
 };
 
 export const tradeGalleryImages: Record<string, string[]> = {
@@ -258,9 +303,13 @@ export const tradeGalleryImages: Record<string, string[]> = {
 };
 
 export const getTradeImage = (tradeId: string): string => {
-  return tradeImages[tradeId] || plumberHero;
+  return tradeImages[tradeId] || tradeImages.plumbing;
 };
 
 export const getTradeGalleryImages = (tradeId: string): string[] => {
-  return tradeGalleryImages[tradeId] || [plumberHero];
+  if (tradeGalleryImages[tradeId]) return tradeGalleryImages[tradeId];
+  // For trades without dedicated gallery images, use the trade's hero image
+  const hero = tradeImages[tradeId];
+  if (hero) return [hero, hero, hero, hero, hero, hero];
+  return [tradeImages.plumbing];
 };
