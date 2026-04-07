@@ -68,6 +68,53 @@ const RichContentRenderer = ({ sections, language }: { sections: ContentBlock[];
             </div>
           );
 
+        case 'video-embed':
+          return (
+            <figure key={i} className="my-8">
+              <div className="aspect-video rounded-xl overflow-hidden bg-muted border border-border">
+                <iframe
+                  src={block.url.replace('watch?v=', 'embed/')}
+                  title={block.caption[language]}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+              <figcaption className="text-xs text-muted-foreground mt-2 text-center italic">{block.caption[language]}</figcaption>
+            </figure>
+          );
+
+        case 'cta':
+          return (
+            <div key={i} className="my-8 p-6 rounded-xl gradient-accent text-center">
+              <a
+                href={block.href}
+                onClick={() => {
+                  if (block.trackingLabel && typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('analytics', { detail: { event: 'blog_cta_click', label: block.trackingLabel } }));
+                  }
+                }}
+                className="text-accent-foreground font-bold text-lg hover:underline"
+              >
+                {block.text[language]}
+              </a>
+            </div>
+          );
+
+        case 'download':
+          return (
+            <div key={i} className="my-6">
+              <a
+                href={block.href}
+                download
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+              >
+                📥 {block.label[language]}
+              </a>
+            </div>
+          );
+
         default:
           return null;
       }
