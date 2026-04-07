@@ -1,4 +1,5 @@
 import { industryBlogPosts } from './industryBlogPosts';
+import { performanceBlogPosts } from './performanceBlogPosts';
 import blogWebsiteTrends from '@/assets/blog/blog-website-trends.jpg';
 import blogSeoTips from '@/assets/blog/blog-seo-tips.jpg';
 import blogSocialMedia from '@/assets/blog/blog-social-media.jpg';
@@ -24,7 +25,10 @@ export type ContentBlock =
   | { type: 'list'; items: { cs: string; en: string; de: string }[] }
   | { type: 'image'; src: string; alt: { cs: string; en: string; de: string }; caption?: { cs: string; en: string; de: string } }
   | { type: 'quote'; text: { cs: string; en: string; de: string }; author?: string }
-  | { type: 'callout'; text: { cs: string; en: string; de: string } };
+  | { type: 'callout'; text: { cs: string; en: string; de: string } }
+  | { type: 'video-embed'; url: string; caption: { cs: string; en: string; de: string } }
+  | { type: 'cta'; text: { cs: string; en: string; de: string }; href: string; trackingLabel?: string }
+  | { type: 'download'; href: string; label: { cs: string; en: string; de: string } };
 
 export interface BlogPost {
   id: string;
@@ -571,4 +575,5 @@ export const blogPosts: BlogPost[] = [
     tags: ['rezervace', 'automatizace', 'produktivita'],
   },
   ...industryBlogPosts,
+  ...performanceBlogPosts,
 ];
