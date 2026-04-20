@@ -318,6 +318,51 @@ export type Database = {
         }
         Relationships: []
       }
+      inbound_emails: {
+        Row: {
+          ai_reply: string | null
+          body_html: string | null
+          body_plain: string | null
+          created_at: string
+          error_message: string | null
+          from_address: string
+          id: string
+          mailgun_event_id: string | null
+          processed_at: string | null
+          status: string
+          subject: string | null
+          to_address: string
+        }
+        Insert: {
+          ai_reply?: string | null
+          body_html?: string | null
+          body_plain?: string | null
+          created_at?: string
+          error_message?: string | null
+          from_address: string
+          id?: string
+          mailgun_event_id?: string | null
+          processed_at?: string | null
+          status?: string
+          subject?: string | null
+          to_address: string
+        }
+        Update: {
+          ai_reply?: string | null
+          body_html?: string | null
+          body_plain?: string | null
+          created_at?: string
+          error_message?: string | null
+          from_address?: string
+          id?: string
+          mailgun_event_id?: string | null
+          processed_at?: string | null
+          status?: string
+          subject?: string | null
+          to_address?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           booking_id: string | null
