@@ -100,7 +100,7 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
         }
       } else {
         toast.success(labels.subscribed[language]);
-        // Send welcome email (fire-and-forget)
+        // Send welcome email to subscriber (fire-and-forget)
         const subId = crypto.randomUUID();
         supabase.functions.invoke('send-transactional-email', {
           body: {
@@ -108,6 +108,18 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
             recipientEmail: trimmedEmail,
             idempotencyKey: `newsletter-welcome-${subId}`,
             templateData: { email: trimmedEmail },
+          },
+        }).catch(() => {});
+        // Notify admin of the new subscriber (fire-and-forget)
+        supabase.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'admin-newsletter-notification',
+            recipientEmail: 'support@fastmedia.pro',
+            idempotencyKey: `admin-newsletter-notify-${subId}`,
+            templateData: {
+              subscriberEmail: trimmedEmail,
+              subscribedAt: new Date().toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            },
           },
         }).catch(() => {});
       }
