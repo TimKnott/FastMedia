@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 
 type Language = 'cs' | 'en' | 'de';
 
@@ -429,7 +429,7 @@ export const translations: Translations = {
   'leads.quote_data': { cs: 'Údaje nabídky', en: 'Quote Data', de: 'Angebotsdaten' },
   'leads.one_time': { cs: 'Jednorázově', en: 'One-time', de: 'Einmalkosten' },
   'leads.monthly': { cs: 'Měsíčně', en: 'Monthly', de: 'Monatlich' },
-  'leads.labor_hours': { cs: 'Pracovní hodiny', en: 'Labor Hours', de: 'Arbeitsstunden' },
+  'leads.labor_hours': { cs: 'Pracovní hodiny', en: 'Labour Hours', de: 'Arbeitsstunden' },
   'leads.special_request': { cs: 'Speciální požadavek', en: 'Special Request', de: 'Sonderwunsch' },
   'leads.ai_analysis': { cs: 'AI analýza', en: 'AI Analysis', de: 'AI-Analyse' },
   'leads.strategy': { cs: 'Strategie', en: 'Strategy', de: 'Strategie' },
@@ -512,10 +512,10 @@ export const translations: Translations = {
   'integrations.cat_development': { cs: 'Vývoj', en: 'Development', de: 'Entwicklung' },
   'integrations.vbout_desc': { cs: 'Marketingová automatizace, e-mailové kampaně a sledování leadů.', en: 'Marketing automation, email campaigns and lead tracking.', de: 'Marketing-Automatisierung, E-Mail-Kampagnen und Lead-Tracking.' },
   'integrations.stripe_desc': { cs: 'Online zpracování plateb a fakturace.', en: 'Online payment processing and invoicing.', de: 'Online-Zahlungsabwicklung und Rechnungsstellung.' },
-  'integrations.ga_desc': { cs: 'Analýza návštěvnosti a chování uživatelů.', en: 'Analyze website traffic and user behavior.', de: 'Website-Traffic und Nutzerverhalten analysieren.' },
+  'integrations.ga_desc': { cs: 'Analýza návštěvnosti a chování uživatelů.', en: 'Analyse website traffic and user behaviour.', de: 'Website-Traffic und Nutzerverhalten analysieren.' },
   'integrations.slack_desc': { cs: 'Týmová oznámení a interní komunikace.', en: 'Team notifications and internal communication.', de: 'Team-Benachrichtigungen und interne Kommunikation.' },
   'integrations.resend_desc': { cs: 'Odesílání transakčních e-mailů.', en: 'Send transactional emails.', de: 'Transaktions-E-Mails versenden.' },
-  'integrations.calendar_desc': { cs: 'Synchronizace rezervací s kalendářem.', en: 'Sync bookings with calendar.', de: 'Terminbuchungen mit Kalender synchronisieren.' },
+  'integrations.calendar_desc': { cs: 'Synchronisace rezervací s kalendářem.', en: 'Sync bookings with calendar.', de: 'Terminbuchungen mit Kalender synchronisieren.' },
   'integrations.zapier_desc': { cs: 'Automatizované pracovní postupy mezi aplikacemi.', en: 'Automated workflows between apps.', de: 'Automatisierte Workflows zwischen Apps.' },
   'integrations.sentry_desc': { cs: 'Monitorování chyb a výkonu.', en: 'Error monitoring and performance tracking.', de: 'Fehler-Monitoring und Performance-Tracking.' },
 
@@ -697,20 +697,28 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('fastmedia-language');
-    return (saved === 'cs' || saved === 'en' || saved === 'de') ? saved : 'cs';
-  });
-
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem('fastmedia-language', lang);
+  // Site is locked to UK English. The setter is a no-op so any UI calling
+  // setLanguage() simply has no effect — Czech and German are no longer offered.
+  const language: Language = 'en';
+  const handleSetLanguage = (_lang: Language) => {
+    // intentionally a no-op
   };
+
+  // Force any persisted preference back to English on mount.
+  if (typeof window !== 'undefined') {
+    try {
+      if (localStorage.getItem('fastmedia-language') !== 'en') {
+        localStorage.setItem('fastmedia-language', 'en');
+      }
+    } catch {
+      /* ignore storage errors */
+    }
+  }
 
   const t = (key: string): string => {
     const translation = translations[key];
     if (!translation) return key;
-    return translation[language] || translation['cs'] || key;
+    return translation['en'] || translation['cs'] || key;
   };
 
   return (
