@@ -152,6 +152,25 @@ const AdminBookings = () => {
         },
       }).catch(() => {});
 
+      // Notify admin inbox of new booking (fire-and-forget)
+      supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'admin-booking-notification',
+          recipientEmail: 'support@fastmedia.pro',
+          idempotencyKey: `admin-booking-notify-${bookingId}`,
+          templateData: {
+            customerName: newBooking.customer_name,
+            customerEmail: newBooking.customer_email,
+            customerPhone: newBooking.phone || undefined,
+            service: newBooking.service,
+            scheduledAt: scheduledFormatted,
+            durationMinutes: newBooking.duration_minutes,
+            assignedTo: newBooking.assigned_to || undefined,
+            notes: newBooking.notes || undefined,
+          },
+        },
+      }).catch(() => {});
+
       // Auto-open WhatsApp confirmation message
       const phone = newBooking.phone.replace(/\D/g, '');
       const waMessage = `Hi ${newBooking.customer_name},\n\nYour meeting with FastMedia.Pro is confirmed!\n\n📅 Date: ${scheduledFormatted}\n⏱ Duration: ${newBooking.duration_minutes} min\n🔧 Service: ${newBooking.service}\n\nIf you need to reschedule, please let us know.\n\nBest regards,\nFastMedia.Pro`;
