@@ -302,14 +302,29 @@ export const tradeGalleryImages: Record<string, string[]> = {
   womeninbusiness: [womeninbusinessG1, womeninbusinessG2, womeninbusinessG3, womeninbusinessG4, womeninbusinessG5, womeninbusinessG6],
 };
 
+// Runtime overrides for AI-generated custom demos
+const customTradeImages: Record<string, string> = {};
+const customTradeGalleries: Record<string, string[]> = {};
+
+export const registerCustomTradeImages = (tradeId: string, hero: string | null, gallery: string[]) => {
+  if (hero) customTradeImages[tradeId] = hero;
+  if (gallery && gallery.length > 0) customTradeGalleries[tradeId] = gallery;
+};
+
 export const getTradeImage = (tradeId: string): string => {
-  return tradeImages[tradeId] || tradeImages.plumbing;
+  return customTradeImages[tradeId] || tradeImages[tradeId] || tradeImages.plumbing;
 };
 
 export const getTradeGalleryImages = (tradeId: string): string[] => {
+  if (customTradeGalleries[tradeId]) {
+    const g = customTradeGalleries[tradeId];
+    // pad to 6 by repeating
+    while (g.length < 6) g.push(g[g.length % g.length]);
+    return g.slice(0, 6);
+  }
   if (tradeGalleryImages[tradeId]) return tradeGalleryImages[tradeId];
   // For trades without dedicated gallery images, use the trade's hero image
-  const hero = tradeImages[tradeId];
+  const hero = customTradeImages[tradeId] || tradeImages[tradeId];
   if (hero) return [hero, hero, hero, hero, hero, hero];
   return [tradeImages.plumbing];
 };
