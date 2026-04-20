@@ -697,20 +697,28 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('fastmedia-language');
-    return (saved === 'cs' || saved === 'en' || saved === 'de') ? saved : 'cs';
-  });
-
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem('fastmedia-language', lang);
+  // Site is locked to UK English. The setter is a no-op so any UI calling
+  // setLanguage() simply has no effect — Czech and German are no longer offered.
+  const language: Language = 'en';
+  const handleSetLanguage = (_lang: Language) => {
+    // intentionally a no-op
   };
+
+  // Force any persisted preference back to English on mount.
+  if (typeof window !== 'undefined') {
+    try {
+      if (localStorage.getItem('fastmedia-language') !== 'en') {
+        localStorage.setItem('fastmedia-language', 'en');
+      }
+    } catch {
+      /* ignore storage errors */
+    }
+  }
 
   const t = (key: string): string => {
     const translation = translations[key];
     if (!translation) return key;
-    return translation[language] || translation['cs'] || key;
+    return translation['en'] || translation['cs'] || key;
   };
 
   return (
