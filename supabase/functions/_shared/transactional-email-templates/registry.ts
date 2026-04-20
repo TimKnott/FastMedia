@@ -15,6 +15,7 @@ import { template as newsletterWelcome } from './newsletter-welcome.tsx'
 import { template as kanbanTaskAssignment } from './kanban-task-assignment.tsx'
 import { template as adminBookingNotification } from './admin-booking-notification.tsx'
 import { template as adminNewsletterNotification } from './admin-newsletter-notification.tsx'
+import { template as aiInboundReply } from './ai-inbound-reply.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'lead-notification': leadNotification,
@@ -23,4 +24,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'kanban-task-assignment': kanbanTaskAssignment,
   'admin-booking-notification': adminBookingNotification,
   'admin-newsletter-notification': adminNewsletterNotification,
+  'ai-inbound-reply': aiInboundReply,
 }
