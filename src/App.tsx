@@ -103,6 +103,7 @@ const DrivingSchoolDemo = lazy(() => import("./pages/demos/DrivingSchoolDemo"));
 const LaundryDemo = lazy(() => import("./pages/demos/LaundryDemo"));
 const SecurityDemo = lazy(() => import("./pages/demos/SecurityDemo"));
 const TranslationDemo = lazy(() => import("./pages/demos/TranslationDemo"));
+const CustomDemoPage = lazy(() => import("./pages/demos/CustomDemoPage"));
 
 const queryClient = new QueryClient();
 
@@ -177,6 +178,8 @@ const App = () => (
             <Route path="/demo/laundry" element={<LaundryDemo />} />
             <Route path="/demo/security" element={<SecurityDemo />} />
             <Route path="/demo/translation" element={<TranslationDemo />} />
+            {/* Dynamic catch-all for AI-generated custom demos (must be LAST demo route) */}
+            <Route path="/demo/:tradeId" element={<CustomDemoPage />} />
             <Route path="/consultant/tereza" element={<ConsultantTereza />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />

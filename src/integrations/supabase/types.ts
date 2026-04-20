@@ -91,6 +91,63 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          ai_generated: boolean
+          author: string
+          category: string
+          content: Json
+          created_at: string
+          created_by: string | null
+          excerpt: Json
+          hero_image_url: string | null
+          id: string
+          published_at: string | null
+          read_time_minutes: number
+          slug: string
+          status: string
+          tags: Json
+          title: Json
+          updated_at: string
+        }
+        Insert: {
+          ai_generated?: boolean
+          author?: string
+          category?: string
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          excerpt?: Json
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          read_time_minutes?: number
+          slug: string
+          status?: string
+          tags?: Json
+          title?: Json
+          updated_at?: string
+        }
+        Update: {
+          ai_generated?: boolean
+          author?: string
+          category?: string
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          excerpt?: Json
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          read_time_minutes?: number
+          slug?: string
+          status?: string
+          tags?: Json
+          title?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           assigned_to: string | null
@@ -146,6 +203,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      custom_demos: {
+        Row: {
+          calculator_prompts: Json
+          created_at: string
+          created_by: string | null
+          description: Json
+          display_order: number
+          faqs: Json
+          gallery_images: Json
+          gradient: string
+          hero_image_url: string | null
+          icon: string
+          id: string
+          is_active: boolean
+          name: Json
+          services: Json
+          tagline: Json
+          trade_id: string
+          updated_at: string
+        }
+        Insert: {
+          calculator_prompts?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: Json
+          display_order?: number
+          faqs?: Json
+          gallery_images?: Json
+          gradient?: string
+          hero_image_url?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: Json
+          services?: Json
+          tagline?: Json
+          trade_id: string
+          updated_at?: string
+        }
+        Update: {
+          calculator_prompts?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: Json
+          display_order?: number
+          faqs?: Json
+          gallery_images?: Json
+          gradient?: string
+          hero_image_url?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: Json
+          services?: Json
+          tagline?: Json
+          trade_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       email_send_log: {
         Row: {
