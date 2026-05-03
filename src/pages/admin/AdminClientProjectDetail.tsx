@@ -408,6 +408,7 @@ const AdminClientProjectDetail = () => {
                       <Trash2 className="w-3.5 h-3.5 text-destructive" />
                     </Button>
                   )}
+                  </div>
                 </div>
               );
             })}
