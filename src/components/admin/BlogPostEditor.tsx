@@ -92,12 +92,12 @@ const BlogPostEditor = ({ post, open, onClose, onSaved }: Props) => {
         slug: slug.trim(),
         category: category.trim(),
         hero_image_url: heroUrl.trim() || null,
-        title,
-        excerpt,
+        title: { cs: legacyCs.title, en: title.en, de: legacyDe.title },
+        excerpt: { cs: legacyCs.excerpt, en: excerpt.en, de: legacyDe.excerpt },
         content: {
-          cs: { sections: textToSections(body.cs) },
+          cs: { sections: legacyCs.sections },
           en: { sections: textToSections(body.en) },
-          de: { sections: textToSections(body.de) },
+          de: { sections: legacyDe.sections },
         },
       };
       if (publishAfter) {
