@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Loader2, MessageSquarePlus, FileText, Check, Trash2, ExternalLink } from 'lucide-react';
+import { Loader2, MessageSquarePlus, FileText, Check, Trash2, ExternalLink, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PortalNote {
@@ -201,6 +201,24 @@ const ClientPortal = () => {
     }
   };
 
+  const [resendLoading, setResendLoading] = useState(false);
+  const resendDraftEmail = async () => {
+    setResendLoading(true);
+    try {
+      const res = await callApi('resend_draft');
+      toast.success(`Draft link sent to ${res.sent_to}`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Could not resend';
+      if (msg.includes('rate_limited')) {
+        toast.error('Please wait a few minutes before resending again.');
+      } else {
+        toast.error(msg);
+      }
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -270,7 +288,7 @@ const ClientPortal = () => {
                 <article className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
                   {project.agreement_template}
                 </article>
-                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between gap-3">
+                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between gap-3 flex-wrap">
                   {project.agreement_acknowledged_at ? (
                     <p className="text-xs text-muted-foreground">
                       Acknowledged on {new Date(project.agreement_acknowledged_at).toLocaleString()}
@@ -280,13 +298,24 @@ const ClientPortal = () => {
                       By acknowledging, you confirm you've read and accept the terms above.
                     </p>
                   )}
-                  <Button
-                    onClick={acknowledgeAgreement}
-                    disabled={ackLoading || !!project.agreement_acknowledged_at}
-                    size="sm"
-                  >
-                    {project.agreement_acknowledged_at ? 'Already acknowledged' : 'I acknowledge'}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={resendDraftEmail}
+                      disabled={resendLoading}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <Mail className="w-4 h-4 mr-1.5" />
+                      {resendLoading ? 'Sending…' : 'Resend draft email'}
+                    </Button>
+                    <Button
+                      onClick={acknowledgeAgreement}
+                      disabled={ackLoading || !!project.agreement_acknowledged_at}
+                      size="sm"
+                    >
+                      {project.agreement_acknowledged_at ? 'Already acknowledged' : 'I acknowledge'}
+                    </Button>
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>
