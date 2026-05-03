@@ -470,7 +470,7 @@ const AdminClientProjectDetail = () => {
             </p>
           </div>
         </div>
-        <Button onClick={saveProject} disabled={saving} size="sm">
+        <Button onClick={() => saveProject()} disabled={saving} size="sm">
           {saving ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Save className="w-4 h-4 mr-1.5" />} Save all changes
         </Button>
       </Card>
