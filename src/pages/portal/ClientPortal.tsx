@@ -339,7 +339,7 @@ const ClientPortal = () => {
 
       <main className="flex-1 relative bg-muted/30">
         <iframe
-          src={project.staging_url}
+          src={iframeSrc}
           title={project.name}
           className="absolute inset-0 w-full h-full border-0 bg-background"
           sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
