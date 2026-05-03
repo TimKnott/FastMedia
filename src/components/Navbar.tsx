@@ -1,15 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2, Download, MessageCircle, Contact } from 'lucide-react';
+import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.jpeg';
 
 const Navbar = () => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthed(!!session);
+    });
+    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+    return () => { sub.subscription.unsubscribe(); };
+  }, []);
 
   const navLinks: { href: string; label: string; isRoute?: boolean; mobileOnly?: boolean }[] = [
     { href: '#demos', label: t('nav.demos') },
@@ -68,6 +78,20 @@ const Navbar = () => {
               </a>
             </div>
 
+            {/* Website Builder shortcut — visible whenever a user is signed in */}
+            {isAuthed && (
+              <Link to="/admin/client-projects" className="shrink-0">
+                <Button
+                  size="sm"
+                  className="h-9 px-3 sm:px-4 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-glow border border-accent/40"
+                  title="Open the Website Builder"
+                >
+                  <LayoutDashboard className="w-4 h-4 sm:mr-1.5" />
+                  <span className="hidden sm:inline">Builder</span>
+                </Button>
+              </Link>
+            )}
+
             <LanguageSwitcher />
 
             {/* CTA Button - hidden on mobile, visible sm+ */}
@@ -99,6 +123,19 @@ const Navbar = () => {
             className="bg-card border-t border-border"
           >
             <div className="container mx-auto px-4 py-4 space-y-3">
+              {isAuthed && (
+                <Link
+                  to="/admin/client-projects"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-between gap-3 p-3 rounded-lg bg-primary text-primary-foreground font-semibold shadow-glow"
+                >
+                  <span className="flex items-center gap-2">
+                    <LayoutDashboard className="w-4 h-4" />
+                    Open Website Builder
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wide opacity-80">Signed in</span>
+                </Link>
+              )}
               {navLinks.map((link) =>
                 link.isRoute ? (
                   <Link
