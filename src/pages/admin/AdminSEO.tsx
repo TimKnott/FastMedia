@@ -69,7 +69,7 @@ const CharCounter = ({ value, max }: { value: string; max: number }) => {
 
 const AdminSEO = () => {
   const queryClient = useQueryClient();
-  const [language, setLanguage] = useState('cs');
+  const [language, setLanguage] = useState('en');
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [form, setForm] = useState<SeoForm>(emptyForm);
   const [search, setSearch] = useState('');
