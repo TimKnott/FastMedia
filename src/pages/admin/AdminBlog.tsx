@@ -104,6 +104,9 @@ const AdminBlog = () => {
                       <p className="text-[11px] font-mono text-muted-foreground mt-1">/blog/{post.slug}</p>
                     </div>
                     <div className="flex gap-1 flex-shrink-0">
+                      <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setEditing(post)}>
+                        <Pencil className="w-3 h-3 mr-1" /> Edit
+                      </Button>
                       <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => togglePublish(post.id, post.status)}>
                         {post.status === 'published' ? <EyeOff className="w-3 h-3 mr-1" /> : <Eye className="w-3 h-3 mr-1" />}
                         {post.status === 'published' ? 'Unpublish' : 'Publish'}
