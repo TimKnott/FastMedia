@@ -256,7 +256,7 @@ serve(async (req) => {
       .filter(Boolean)
       .join("; ");
 
-    const slot = nextMissingSlot(history);
+    const slot = nextMissingSlot(history, { specialRequest: body.specialRequest });
     if (!slot) {
       const brief = await aiSummarise(language, context, history);
       return new Response(
