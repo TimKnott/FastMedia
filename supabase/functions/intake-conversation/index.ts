@@ -17,36 +17,113 @@ type Body = {
   history?: Turn[];
 };
 
-// Deterministic question slots, asked in this order if missing.
-// `key` is the slot we're trying to fill; `seed` is the canonical English question
-// that the AI will rephrase in the user's language/tone.
-const SLOTS: { key: string; seed: string; required?: boolean }[] = [
-  { key: "timeline", seed: "When would you ideally like the website to be live?", required: true },
-  { key: "decision_maker", seed: "Will you be the one signing off the project, or is someone else involved in the decision?", required: true },
-  { key: "budget_fit", seed: "Does the estimated budget shown on screen feel comfortable for you, or would you like to adjust scope?", required: true },
-  { key: "success_metric", seed: "What would make this project a clear success for you in the first 6 months?" },
-  { key: "content_readiness", seed: "Do you already have brand assets, copy and photos, or would you like us to produce them?" },
-  { key: "tone", seed: "How would you describe the tone you want the site to convey (e.g. premium, friendly, technical, playful)?" },
-  { key: "extra", seed: "Is there anything else we should know before we put a proposal together?" },
-];
+// Deterministic question slots. `key` is the slot we're trying to fill.
+// `seed` is the canonical English question that the AI will rephrase in the
+// user's language/tone. Branching between slots is decided by inspecting the
+// prior answers + project context — see nextMissingSlot below.
+const SLOTS: Record<string, { seed: string; required?: boolean }> = {
+  timeline: { seed: "When would you ideally like the website to be live?", required: true },
+  urgency_reason: { seed: "That's a tight timeline — what's driving the deadline (launch event, marketing campaign, season)?" },
+  decision_maker: { seed: "Will you be the one signing off the project, or is someone else involved in the decision?", required: true },
+  decision_maker_who: { seed: "Who else needs to sign off, and what would help them feel confident in saying yes?" },
+  budget_fit: { seed: "Does the estimated budget shown on screen feel comfortable for you, or would you like to adjust scope?", required: true },
+  budget_adjust: { seed: "Which features feel essential vs. nice-to-have, so we can shape a proposal that fits your budget?" },
+  content_readiness: { seed: "Do you already have brand assets, copy and photos, or would you like us to produce them?" },
+  success_metric: { seed: "What would make this project a clear success for you in the first 6 months?" },
+  tone: { seed: "How would you describe the tone you want the site to convey (e.g. premium, friendly, technical, playful)?" },
+  extra: { seed: "Is there anything else we should know before we put a proposal together?" },
+};
 
-function nextMissingSlot(history: Turn[]): { key: string; seed: string } | null {
+const norm = (s?: string) => (s || "").toLowerCase();
+
+const answerSignals = {
+  // Timeline answer suggests urgency
+  urgent: (a: string) =>
+    /(asap|urgent|hned|sofort|this week|tento týden|diese woche|next week|příští týden|nächste woche|<\s*4|under (a |one )?month|do měsíce|innerhalb eines monats|deadline|launch|spuštění|start)/i.test(
+      a,
+    ),
+  // Decision-maker answer indicates someone else / committee involved
+  hasOtherDecider: (a: string) =>
+    /(partner|spoluvlastník|mitinhaber|committee|board|představenstvo|vorstand|wife|husband|manžel|frau|mann|team|kolegové|kolleg|company|firm|s.r.o\.?|sro|gmbh|other(s)?|další|weitere|jiný|jiné|another|someone else|nikdo jiný|kein|both|oba|beide)/i.test(
+      a,
+    ),
+  // Budget-fit answer signals discomfort
+  budgetDiscomfort: (a: string) =>
+    /(too high|too much|expensive|drahé|drahy|teuer|tight|napjatý|tighter|less|menší|kleiner|reduce|snížit|reduzieren|cut|adjust|upravit|anpassen|smaller|out of (our )?budget|nad (náš )?rozpočet|über (unser )?budget)/i.test(
+      a,
+    ),
+  // Already covered content readiness in special request or any answer
+  contentMentioned: (text: string) =>
+    /(have\b[^.]*\b(copy|photos?|brand|assets|logo|content|images?)|máme\s+(?:už\s+)?(texty|fotky|fotografie|brand|loga|obsah)|haben\s+(?:bereits\s+|schon\s+)?(texte|fotos|marke|logos|inhalte|bilder)|need (copy|photos?|content|images?)|potřebujeme (texty|fotky|obsah)|brauchen (texte|fotos|inhalte))/i.test(
+      text,
+    ),
+  // Already conveyed tone in special request or any answer
+  toneMentioned: (text: string) =>
+    /(premium|luxury|luxusní|luxuriös|playful|hravé|verspielt|technical|technick|technisch|friendly|přátelsk|freundlich|modern|minimalist|minimalist|edgy|bold|elegant|elegantní|professional|profesionální|professionell|warm|fun|seriös|seriózní)/i.test(
+      text,
+    ),
+};
+
+function answerFor(history: Turn[], key: string): string | undefined {
+  return history.find((h) => h.key === key)?.answer;
+}
+
+const MAX_TURNS = 7;
+
+function nextMissingSlot(
+  history: Turn[],
+  context: { specialRequest?: string },
+): { key: string; seed: string } | null {
   const answered = new Set(history.map((h) => h.key));
-  // Critical-first: if any required slot still missing, ask it next.
-  for (const s of SLOTS) {
-    if (!answered.has(s.key)) {
-      // Stop the conversation early once we have ≥3 answers AND all required slots are covered AND we're past the required block.
-      if (
-        history.length >= 3 &&
-        SLOTS.filter((x) => x.required).every((x) => answered.has(x.key)) &&
-        !s.required
-      ) {
-        // Allow up to 7 turns total before forcing close.
-        if (history.length >= 7) return null;
-        return s;
-      }
-      return s;
+  const allText = [context.specialRequest || "", ...history.map((h) => h.answer)].join(" ");
+
+  // Build the dynamic, answer-aware slot order
+  const order: string[] = [];
+
+  // 1) timeline (required) — and conditional follow-up if urgent
+  order.push("timeline");
+  const tl = answerFor(history, "timeline");
+  if (tl && answerSignals.urgent(tl)) order.push("urgency_reason");
+
+  // 2) decision_maker (required) — and conditional follow-up if someone else involved
+  order.push("decision_maker");
+  const dm = answerFor(history, "decision_maker");
+  if (dm && answerSignals.hasOtherDecider(dm)) order.push("decision_maker_who");
+
+  // 3) budget_fit (required) — and conditional adjust step if discomfort
+  order.push("budget_fit");
+  const bf = answerFor(history, "budget_fit");
+  if (bf && answerSignals.budgetDiscomfort(bf)) order.push("budget_adjust");
+
+  // 4) content_readiness — skip if already covered in special request or any answer
+  if (!answerSignals.contentMentioned(allText)) order.push("content_readiness");
+
+  // 5) success_metric — always asked once we're past required block (high signal for proposal)
+  order.push("success_metric");
+
+  // 6) tone — skip if already conveyed in special request or earlier answers
+  if (!answerSignals.toneMentioned(allText)) order.push("tone");
+
+  // 7) extra — final catch-all, only used if we still have headroom
+  order.push("extra");
+
+  // Required slots
+  const requiredKeys = Object.entries(SLOTS).filter(([, v]) => v.required).map(([k]) => k);
+  const allRequiredAnswered = requiredKeys.every((k) => answered.has(k));
+
+  // Walk the dynamic order, skipping anything already answered
+  for (const key of order) {
+    if (answered.has(key)) continue;
+    const slot = SLOTS[key];
+    if (!slot) continue;
+
+    // Stop early once we've covered required + at least 3 turns total, and the
+    // next candidate is optional, but still allow up to MAX_TURNS.
+    if (history.length >= 3 && allRequiredAnswered && !slot.required) {
+      if (history.length >= MAX_TURNS) return null;
+      return { key, seed: slot.seed };
     }
+    return { key, seed: slot.seed };
   }
   return null;
 }
@@ -86,15 +163,19 @@ async function aiRephrase(seed: string, language: string, history: Turn[], conte
 
 async function aiSummarise(language: string, context: string, history: Turn[]) {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  const get = (k: string) => history.find((h) => h.key === k)?.answer ?? null;
   const fallback = {
     summary: history.map((h) => `${h.question} — ${h.answer}`).join("\n"),
     intent: {
-      timeline: history.find((h) => h.key === "timeline")?.answer ?? null,
-      decision_maker: history.find((h) => h.key === "decision_maker")?.answer ?? null,
-      budget_fit: history.find((h) => h.key === "budget_fit")?.answer ?? null,
-      success_metric: history.find((h) => h.key === "success_metric")?.answer ?? null,
-      content_readiness: history.find((h) => h.key === "content_readiness")?.answer ?? null,
-      tone: history.find((h) => h.key === "tone")?.answer ?? null,
+      timeline: get("timeline"),
+      urgency_reason: get("urgency_reason"),
+      decision_maker: get("decision_maker"),
+      decision_maker_who: get("decision_maker_who"),
+      budget_fit: get("budget_fit"),
+      budget_adjust: get("budget_adjust"),
+      success_metric: get("success_metric"),
+      content_readiness: get("content_readiness"),
+      tone: get("tone"),
       urgency: "medium" as const,
       readiness: "medium" as const,
     },
@@ -131,8 +212,11 @@ async function aiSummarise(language: string, context: string, history: Turn[]) {
                     type: "object",
                     properties: {
                       timeline: { type: "string" },
+                      urgency_reason: { type: "string" },
                       decision_maker: { type: "string" },
+                      decision_maker_who: { type: "string" },
                       budget_fit: { type: "string" },
+                      budget_adjust: { type: "string" },
                       success_metric: { type: "string" },
                       content_readiness: { type: "string" },
                       tone: { type: "string" },
@@ -179,7 +263,7 @@ serve(async (req) => {
       .filter(Boolean)
       .join("; ");
 
-    const slot = nextMissingSlot(history);
+    const slot = nextMissingSlot(history, { specialRequest: body.specialRequest });
     if (!slot) {
       const brief = await aiSummarise(language, context, history);
       return new Response(
