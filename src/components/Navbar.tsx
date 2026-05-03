@@ -96,7 +96,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-card border-t border-border"
+            className="bg-card border-t border-border"
           >
             <div className="container mx-auto px-4 py-4 space-y-3">
               {navLinks.map((link) =>
