@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json()
-    const { project_id, email, expires_in_days } = body || {}
+    const { project_id, email, expires_in_days, suppress_email } = body || {}
     if (!project_id || !email) {
       return new Response(JSON.stringify({ error: 'project_id and email required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
@@ -95,22 +95,25 @@ Deno.serve(async (req) => {
     })
 
     // Send email via existing transactional pipeline (best-effort; do not fail
-    // the invite if the email queue is not yet wired)
-    try {
-      await admin.functions.invoke('send-transactional-email', {
-        body: {
-          templateName: 'portal-invite',
-          recipientEmail: email,
-          idempotencyKey: `portal-invite-${token}`,
-          templateData: {
-            recipientName: project.client_name,
-            projectName: project.name,
-            portalUrl,
+    // the invite if the email queue is not yet wired). Skipped when suppress_email
+    // is true (e.g. when called by stage-email helpers that send their own copy).
+    if (!suppress_email) {
+      try {
+        await admin.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'portal-invite',
+            recipientEmail: email,
+            idempotencyKey: `portal-invite-${token}`,
+            templateData: {
+              recipientName: project.client_name,
+              projectName: project.name,
+              portalUrl,
+            },
           },
-        },
-      })
-    } catch (emailErr) {
-      console.warn('Email send skipped:', emailErr)
+        })
+      } catch (emailErr) {
+        console.warn('Email send skipped:', emailErr)
+      }
     }
 
     return new Response(JSON.stringify({ ok: true, token, portal_url: portalUrl }), {

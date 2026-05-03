@@ -17,6 +17,7 @@ import { template as adminBookingNotification } from './admin-booking-notificati
 import { template as adminNewsletterNotification } from './admin-newsletter-notification.tsx'
 import { template as aiInboundReply } from './ai-inbound-reply.tsx'
 import { template as portalInvite } from './portal-invite.tsx'
+import { template as clientStageUpdate } from './client-stage-update.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'lead-notification': leadNotification,
@@ -27,4 +28,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'admin-newsletter-notification': adminNewsletterNotification,
   'ai-inbound-reply': aiInboundReply,
   'portal-invite': portalInvite,
+  'client-stage-update': clientStageUpdate,
 }

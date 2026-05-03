@@ -225,8 +225,11 @@ export type Database = {
           created_at: string
           created_by: string | null
           currency: string
+          deposit_paid_amount: number | null
+          deposit_paid_at: string | null
           deposit_pct: number
           dev_fee: number
+          draft_emailed_at: string | null
           existing_website_url: string | null
           fee_line_items: Json
           hosting_fee_yearly: number
@@ -259,8 +262,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           currency?: string
+          deposit_paid_amount?: number | null
+          deposit_paid_at?: string | null
           deposit_pct?: number
           dev_fee?: number
+          draft_emailed_at?: string | null
           existing_website_url?: string | null
           fee_line_items?: Json
           hosting_fee_yearly?: number
@@ -293,8 +299,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           currency?: string
+          deposit_paid_amount?: number | null
+          deposit_paid_at?: string | null
           deposit_pct?: number
           dev_fee?: number
+          draft_emailed_at?: string | null
           existing_website_url?: string | null
           fee_line_items?: Json
           hosting_fee_yearly?: number

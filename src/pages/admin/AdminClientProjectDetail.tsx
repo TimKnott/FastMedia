@@ -139,9 +139,84 @@ const AdminClientProjectDetail = () => {
     }
   };
 
-  const saveProject = async () => {
+  const ensureValidPortalUrl = async (): Promise<string | null> => {
+    if (!project) return null;
+    // Reuse newest non-revoked, non-expired token if any; otherwise issue a fresh one
+    const live = tokens.find(
+      (t) => !t.revoked_at && (!t.expires_at || new Date(t.expires_at) > new Date())
+    );
+    if (live) return portalUrlForToken(live.token);
+    if (!project.client_email) return null;
+    try {
+      const { data, error } = await supabase.functions.invoke('portal-issue-invite', {
+        body: { project_id: project.id, email: project.client_email, expires_in_days: expiryDays, suppress_email: true },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data?.portal_url ?? null;
+    } catch {
+      return null;
+    }
+  };
+
+  const sendStageEmail = async (
+    stage: 'draft_created' | 'admin_edited' | 'signed_off' | 'deposit_paid',
+    extra?: { amount?: string; currency?: string }
+  ) => {
+    if (!project?.client_email) {
+      toast.error('Client email is required before sending stage emails');
+      return false;
+    }
+    const portalUrl = await ensureValidPortalUrl();
+    const baseData = {
+      recipientName: project.client_name || undefined,
+      projectName: project.name,
+      portalUrl: portalUrl || undefined,
+      stage,
+      amount: extra?.amount,
+      currency: extra?.currency || project.currency,
+      clientEmail: project.client_email,
+    };
+    const idem = `stage-${stage}-${project.id}-${Date.now()}`;
+    try {
+      // Client copy
+      const clientRes = await supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'client-stage-update',
+          recipientEmail: project.client_email,
+          idempotencyKey: `${idem}-client`,
+          templateData: { ...baseData, audience: 'client' },
+        },
+      });
+      if (clientRes.error) throw clientRes.error;
+      // Admin copy (best-effort — uses NOTIFICATION_EMAIL configured server-side via fallback to support)
+      await supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'client-stage-update',
+          recipientEmail: 'support@fastmedia.pro',
+          idempotencyKey: `${idem}-admin`,
+          templateData: { ...baseData, audience: 'admin' },
+        },
+      });
+      await supabase.from('project_audit_log').insert({
+        project_id: project.id,
+        actor_type: 'admin',
+        actor_label: 'admin',
+        action: `stage_email_${stage}`,
+        details: { recipient: project.client_email, has_portal_link: !!portalUrl },
+      });
+      return true;
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Failed to send stage email');
+      return false;
+    }
+  };
+
+  const saveProject = async (opts?: { silent?: boolean }) => {
     if (!project) return;
     setSaving(true);
+    const wasDraftEmailed = !!project.draft_emailed_at;
+    const hasAgreement = !!(project.agreement_template && project.agreement_template.trim().length > 0);
     const { error } = await supabase
       .from('client_projects')
       .update({
@@ -168,8 +243,58 @@ const AdminClientProjectDetail = () => {
       })
       .eq('id', project.id);
     setSaving(false);
-    if (error) toast.error(error.message);
-    else toast.success('Saved');
+    if (error) { toast.error(error.message); return; }
+    if (!opts?.silent) toast.success('Saved');
+
+    // Stage email logic
+    if (hasAgreement && project.client_email) {
+      if (!wasDraftEmailed) {
+        const ok = await sendStageEmail('draft_created');
+        if (ok) {
+          await supabase.from('client_projects').update({ draft_emailed_at: new Date().toISOString() }).eq('id', project.id);
+          setProject({ ...project, draft_emailed_at: new Date().toISOString() });
+          toast.success('Draft agreement emailed to client');
+        }
+      } else if (project.agreement_signed_off_at == null) {
+        // Only fire "edited" emails for projects that haven't yet been signed off
+        await sendStageEmail('admin_edited');
+        toast.success('Update email sent to client');
+      }
+    }
+  };
+
+  const markSignedOff = async () => {
+    if (!project) return;
+    if (project.agreement_signed_off_at) {
+      if (!confirm('Already marked signed-off. Re-send sign-off email?')) return;
+    }
+    const ts = new Date().toISOString();
+    const { error } = await supabase
+      .from('client_projects')
+      .update({ agreement_signed_off_at: ts, status: 'approved' })
+      .eq('id', project.id);
+    if (error) { toast.error(error.message); return; }
+    setProject({ ...project, agreement_signed_off_at: ts, status: 'approved' });
+    await sendStageEmail('signed_off');
+    toast.success('Signed off — client notified');
+  };
+
+  const markDepositPaid = async () => {
+    if (!project) return;
+    const dep = Number(project.dev_fee || 0) * (Number(project.deposit_pct || 25) / 100);
+    const amountStr = prompt(`Deposit amount received (${project.currency || 'CZK'})`, dep.toFixed(0));
+    if (amountStr == null) return;
+    const amount = Number(amountStr);
+    if (!isFinite(amount) || amount <= 0) { toast.error('Invalid amount'); return; }
+    const ts = new Date().toISOString();
+    const { error } = await supabase
+      .from('client_projects')
+      .update({ deposit_paid_at: ts, deposit_paid_amount: amount })
+      .eq('id', project.id);
+    if (error) { toast.error(error.message); return; }
+    setProject({ ...project, deposit_paid_at: ts, deposit_paid_amount: amount });
+    await sendStageEmail('deposit_paid', { amount: amount.toLocaleString('en-GB'), currency: project.currency });
+    toast.success('Deposit recorded — client notified');
   };
 
   const portalUrlForToken = (tokenStr: string) => {
@@ -194,6 +319,7 @@ const AdminClientProjectDetail = () => {
       toast.error(e instanceof Error ? e.message : 'Failed');
     }
   };
+
 
   const extendExpiry = async (t: Token, days: number) => {
     const newExpiry = new Date(Date.now() + days * 86400_000).toISOString();
@@ -344,7 +470,7 @@ const AdminClientProjectDetail = () => {
             </p>
           </div>
         </div>
-        <Button onClick={saveProject} disabled={saving} size="sm">
+        <Button onClick={() => saveProject()} disabled={saving} size="sm">
           {saving ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Save className="w-4 h-4 mr-1.5" />} Save all changes
         </Button>
       </Card>
@@ -483,6 +609,42 @@ const AdminClientProjectDetail = () => {
             ✓ Acknowledged by client {new Date(project.agreement_acknowledged_at).toLocaleString()} · IP {project.agreement_ack_ip}
           </p>
         )}
+
+        {/* Stage actions — branded client emails per stage */}
+        <div className="mt-3 pt-3 border-t border-border space-y-2">
+          <h3 className="text-xs font-semibold text-foreground uppercase tracking-wide">Agreement stages</h3>
+          <p className="text-[11px] text-muted-foreground">
+            Each action sends a branded email to the client (and a copy to admin) with a link to their private project area.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-2 text-xs">
+              <Badge variant={project.draft_emailed_at ? 'default' : 'outline'}>
+                {project.draft_emailed_at ? `✓ Draft sent ${new Date(project.draft_emailed_at).toLocaleDateString()}` : 'Draft not sent'}
+              </Badge>
+              <span className="text-muted-foreground">(auto on first save)</span>
+            </div>
+            <Button
+              size="sm"
+              variant={project.agreement_signed_off_at ? 'outline' : 'default'}
+              onClick={markSignedOff}
+              disabled={!project.agreement_template || !project.client_email}
+            >
+              {project.agreement_signed_off_at
+                ? `✓ Signed off ${new Date(project.agreement_signed_off_at).toLocaleDateString()} — resend`
+                : 'Mark signed-off & email client'}
+            </Button>
+            <Button
+              size="sm"
+              variant={project.deposit_paid_at ? 'outline' : 'default'}
+              onClick={markDepositPaid}
+              disabled={!project.client_email}
+            >
+              {project.deposit_paid_at
+                ? `✓ Deposit paid ${new Date(project.deposit_paid_at).toLocaleDateString()} — resend`
+                : 'Mark deposit paid & email client'}
+            </Button>
+          </div>
+        </div>
       </Card>
 
       {/* Active invites */}
