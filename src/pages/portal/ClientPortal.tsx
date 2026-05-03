@@ -201,6 +201,24 @@ const ClientPortal = () => {
     }
   };
 
+  const [resendLoading, setResendLoading] = useState(false);
+  const resendDraftEmail = async () => {
+    setResendLoading(true);
+    try {
+      const res = await callApi('resend_draft');
+      toast.success(`Draft link sent to ${res.sent_to}`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Could not resend';
+      if (msg.includes('rate_limited')) {
+        toast.error('Please wait a few minutes before resending again.');
+      } else {
+        toast.error(msg);
+      }
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
