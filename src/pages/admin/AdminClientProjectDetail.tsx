@@ -378,7 +378,7 @@ const AdminClientProjectDetail = () => {
                     </select>
                   )}
                   {!t.revoked_at && (
-                    <Button size="sm" variant="ghost" onClick={() => revokeToken(t.id)}>
+                    <Button size="sm" variant="ghost" onClick={() => revokeToken(t)} title={`Revoke ${t.email}`}>
                       <Trash2 className="w-3.5 h-3.5 text-destructive" />
                     </Button>
                   )}
