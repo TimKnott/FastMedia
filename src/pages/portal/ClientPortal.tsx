@@ -104,6 +104,32 @@ const ClientPortal = () => {
     }
   }, [data]);
 
+  // Lock the portal (and the embedded marketing site) to British English regardless
+  // of any preference the visitor's browser may have stored from a previous visit.
+  useEffect(() => {
+    try {
+      localStorage.setItem('fastmedia-language', 'en');
+      document.documentElement.setAttribute('lang', 'en-GB');
+    } catch {
+      /* ignore storage errors */
+    }
+  }, []);
+
+  // Always append ?lang=en to the iframe URL so the marketing site picks up
+  // English even on its first paint.
+  const iframeSrc = useMemo(() => {
+    const raw = data?.project?.staging_url || '';
+    if (!raw) return '';
+    try {
+      const u = new URL(raw);
+      u.searchParams.set('lang', 'en');
+      return u.toString();
+    } catch {
+      return raw + (raw.includes('?') ? '&' : '?') + 'lang=en';
+    }
+  }, [data?.project?.staging_url]);
+
+
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (overlayMode !== 'pin') return;
     const rect = overlayRef.current?.getBoundingClientRect();
