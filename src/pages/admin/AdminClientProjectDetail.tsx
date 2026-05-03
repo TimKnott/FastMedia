@@ -226,6 +226,11 @@ const AdminClientProjectDetail = () => {
                   <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(url); toast.success('Copied'); }}>
                     <Copy className="w-3.5 h-3.5" />
                   </Button>
+                  {!t.revoked_at && !expired && (
+                    <Button size="sm" variant="outline" onClick={() => resendInvite(t)} title={`Resend to ${t.email}`}>
+                      <Mail className="w-3.5 h-3.5 mr-1" /> Resend
+                    </Button>
+                  )}
                   {!t.revoked_at && (
                     <Button size="sm" variant="ghost" onClick={() => revokeToken(t.id)}>
                       <Trash2 className="w-3.5 h-3.5 text-destructive" />
