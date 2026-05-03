@@ -25,7 +25,8 @@ import { trades } from '@/data/trades';
 import { getTradePrompts } from '@/data/tradeIdeaPrompts';
 
 type SelectedFeature = { id: string; quantity: number };
-type Step = 'trade' | 'features' | 'special' | 'contact' | 'summary';
+type Step = 'trade' | 'features' | 'special' | 'intent' | 'contact' | 'summary';
+type IntentTurn = { key: string; question: string; answer: string };
 
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
