@@ -843,6 +843,7 @@ export type Database = {
         Row: {
           ai_analysis: Json | null
           assigned_to: string | null
+          budget_range: string | null
           classification: Database["public"]["Enums"]["lead_classification"]
           consent_timestamp: string | null
           created_at: string
@@ -868,6 +869,7 @@ export type Database = {
         Insert: {
           ai_analysis?: Json | null
           assigned_to?: string | null
+          budget_range?: string | null
           classification?: Database["public"]["Enums"]["lead_classification"]
           consent_timestamp?: string | null
           created_at?: string
@@ -893,6 +895,7 @@ export type Database = {
         Update: {
           ai_analysis?: Json | null
           assigned_to?: string | null
+          budget_range?: string | null
           classification?: Database["public"]["Enums"]["lead_classification"]
           consent_timestamp?: string | null
           created_at?: string
