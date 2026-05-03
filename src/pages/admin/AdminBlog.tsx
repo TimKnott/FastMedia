@@ -158,6 +158,13 @@ const AdminBlog = () => {
           )}
         </div>
       </div>
+
+      <BlogPostEditor
+        post={editing}
+        open={!!editing}
+        onClose={() => setEditing(null)}
+        onSaved={reload}
+      />
     </div>
   );
 };
