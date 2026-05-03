@@ -43,77 +43,45 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* Quick contact actions - desktop only */}
-          <div className="hidden lg:flex items-center gap-1.5 ml-8 mr-4 shrink-0">
-            <a
-              href="https://wa.me/4407926400060"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-lg text-muted-foreground hover:text-green-500 hover:bg-green-500/10 transition-colors"
-              aria-label="WhatsApp"
-              title="WhatsApp"
-            >
-              <MessageCircle className="w-4.5 h-4.5" />
-            </a>
-            <a
-              href="/tim-knott.vcf"
-              download="tim-knott.vcf"
-              className="p-2 rounded-lg text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
-              aria-label="Save Contact"
-              title="Save Contact"
-            >
-              <Contact className="w-4.5 h-4.5" />
-            </a>
-          </div>
-
-          {/* Separator */}
-          <div className="hidden lg:block w-px h-8 bg-border/60 mr-6 shrink-0" />
-
-          {/* Desktop Navigation — two rows */}
-          <div className="hidden lg:flex flex-col items-end gap-0.5 flex-1 min-w-0 ml-4">
-            {/* Row 1: section anchors */}
-            <div className="flex items-center gap-2 xl:gap-4 flex-wrap justify-end">
-              {navLinks.filter(l => !l.mobileOnly && !l.isRoute).map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-xs xl:text-sm text-muted-foreground hover:text-foreground font-medium transition-colors relative group whitespace-nowrap"
-                >
-                  {link.label}
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-accent transition-all group-hover:w-full" />
-                </a>
-              ))}
-            </div>
-            {/* Row 2: page links */}
-            <div className="flex items-center gap-2 xl:gap-4 flex-wrap justify-end">
-              {navLinks.filter(l => !l.mobileOnly && l.isRoute).map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className="text-xs xl:text-sm text-muted-foreground hover:text-foreground font-medium transition-colors relative group whitespace-nowrap"
-                >
-                  {link.label}
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-accent transition-all group-hover:w-full" />
-                </Link>
-              ))}
-            </div>
-          </div>
-
           {/* Right side */}
-          <div className="flex items-center gap-1 sm:gap-2 lg:gap-4 ml-auto">
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 ml-auto">
+            {/* Quick contact actions - desktop only */}
+            <div className="hidden md:flex items-center gap-1.5 mr-1">
+              <a
+                href="https://wa.me/4407926400060"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg text-muted-foreground hover:text-green-500 hover:bg-green-500/10 transition-colors"
+                aria-label="WhatsApp"
+                title="WhatsApp"
+              >
+                <MessageCircle className="w-4.5 h-4.5" />
+              </a>
+              <a
+                href="/tim-knott.vcf"
+                download="tim-knott.vcf"
+                className="p-2 rounded-lg text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
+                aria-label="Save Contact"
+                title="Save Contact"
+              >
+                <Contact className="w-4.5 h-4.5" />
+              </a>
+            </div>
+
             <LanguageSwitcher />
 
-            {/* CTA Button - hidden on mobile, visible sm+ desktop */}
+            {/* CTA Button - hidden on mobile, visible sm+ */}
             <a href="#contact" className="hidden sm:block">
               <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity">
                 {t('nav.book')}
               </Button>
             </a>
 
-            {/* Mobile Menu Toggle - always visible on mobile */}
+            {/* Hamburger Menu Toggle - always visible */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 text-foreground shrink-0"
+              className="p-2 text-foreground shrink-0 rounded-lg hover:bg-muted/50 transition-colors"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
