@@ -150,12 +150,32 @@ const AdminClientProjectDetail = () => {
         staging_url: project.staging_url,
         status: project.status,
         brand_color: project.brand_color,
+        brand_color_secondary: project.brand_color_secondary,
+        logo_url: project.logo_url,
+        existing_website_url: project.existing_website_url,
+        brand_notes: project.brand_notes,
         agreement_template: project.agreement_template,
+        currency: project.currency,
+        dev_fee: project.dev_fee,
+        hosting_fee_yearly: project.hosting_fee_yearly,
+        ai_token_ratio: project.ai_token_ratio,
+        ai_cost_per_unit: project.ai_cost_per_unit,
+        ai_units_per_user: project.ai_units_per_user,
+        deposit_pct: project.deposit_pct,
+        late_penalty_pct_per_day: project.late_penalty_pct_per_day,
+        fee_line_items: project.fee_line_items,
       })
       .eq('id', project.id);
     setSaving(false);
     if (error) toast.error(error.message);
     else toast.success('Saved');
+  };
+
+  const portalUrlForToken = (tokenStr: string) => {
+    const slug = (project?.slug || '').replace(/[^a-z0-9-]/gi, '').toLowerCase();
+    return slug
+      ? `${window.location.origin}/portal/${slug}/${tokenStr}`
+      : `${window.location.origin}/portal/${tokenStr}`;
   };
 
   const sendInvite = async () => {
