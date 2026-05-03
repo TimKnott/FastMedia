@@ -39,6 +39,9 @@ const COLUMNS: Array<{ id: Note['status']; label: string }> = [
   { id: 'done', label: 'Done' },
 ];
 
+const EXPIRY_OPTIONS = [7, 14, 30, 60, 90] as const;
+const DEFAULT_EXPIRY_DAYS = 30;
+
 const AdminClientProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -48,6 +51,7 @@ const AdminClientProjectDetail = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [expiryDays, setExpiryDays] = useState<number>(DEFAULT_EXPIRY_DAYS);
 
   const load = async () => {
     if (!id) return;
