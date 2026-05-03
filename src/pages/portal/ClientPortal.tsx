@@ -288,7 +288,7 @@ const ClientPortal = () => {
                 <article className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
                   {project.agreement_template}
                 </article>
-                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between gap-3">
+                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between gap-3 flex-wrap">
                   {project.agreement_acknowledged_at ? (
                     <p className="text-xs text-muted-foreground">
                       Acknowledged on {new Date(project.agreement_acknowledged_at).toLocaleString()}
@@ -298,13 +298,24 @@ const ClientPortal = () => {
                       By acknowledging, you confirm you've read and accept the terms above.
                     </p>
                   )}
-                  <Button
-                    onClick={acknowledgeAgreement}
-                    disabled={ackLoading || !!project.agreement_acknowledged_at}
-                    size="sm"
-                  >
-                    {project.agreement_acknowledged_at ? 'Already acknowledged' : 'I acknowledge'}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={resendDraftEmail}
+                      disabled={resendLoading}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <Mail className="w-4 h-4 mr-1.5" />
+                      {resendLoading ? 'Sending…' : 'Resend draft email'}
+                    </Button>
+                    <Button
+                      onClick={acknowledgeAgreement}
+                      disabled={ackLoading || !!project.agreement_acknowledged_at}
+                      size="sm"
+                    >
+                      {project.agreement_acknowledged_at ? 'Already acknowledged' : 'I acknowledge'}
+                    </Button>
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>
