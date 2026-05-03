@@ -33,6 +33,17 @@ interface Token {
   created_at: string;
 }
 
+interface AuditEntry {
+  id: string;
+  action: string;
+  actor_type: string;
+  actor_label: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  details: any;
+  created_at: string;
+}
+
 const COLUMNS: Array<{ id: Note['status']; label: string }> = [
   { id: 'todo', label: 'To do' },
   { id: 'in_progress', label: 'In progress' },
@@ -41,6 +52,30 @@ const COLUMNS: Array<{ id: Note['status']; label: string }> = [
 
 const EXPIRY_OPTIONS = [7, 14, 30, 60, 90] as const;
 const DEFAULT_EXPIRY_DAYS = 30;
+
+const AUDIT_FILTERS: Array<{ value: string; label: string }> = [
+  { value: 'all', label: 'All events' },
+  { value: 'portal_loaded', label: 'Portal opened' },
+  { value: 'note_added', label: 'Note added' },
+  { value: 'note_updated', label: 'Note updated' },
+  { value: 'note_deleted', label: 'Note deleted' },
+  { value: 'agreement_acknowledged', label: 'Agreement signed' },
+  { value: 'invite_issued', label: 'Invite issued' },
+  { value: 'invite_resent', label: 'Invite resent' },
+  { value: 'invite_extended', label: 'Invite extended' },
+  { value: 'invite_revoked', label: 'Invite revoked' },
+  { value: 'all_invites_revoked', label: 'All invites revoked' },
+];
+
+const auditLabel = (action: string) =>
+  AUDIT_FILTERS.find((f) => f.value === action)?.label ?? action.replace(/_/g, ' ');
+
+const auditBadge = (action: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  if (action.includes('revoked') || action.includes('deleted')) return 'destructive';
+  if (action === 'portal_loaded' || action === 'agreement_acknowledged') return 'default';
+  if (action.startsWith('invite_')) return 'secondary';
+  return 'outline';
+};
 
 const AdminClientProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
