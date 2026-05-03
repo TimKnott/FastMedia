@@ -396,6 +396,77 @@ const AdminClientProjectDetail = () => {
         )}
       </Card>
 
+      {/* Access audit */}
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-primary" />
+            <h2 className="font-display font-semibold text-foreground">Access audit</h2>
+            <Badge variant="outline" className="text-[10px]">{audit.length}</Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <select
+              value={auditFilter}
+              onChange={(e) => setAuditFilter(e.target.value)}
+              className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+            >
+              {AUDIT_FILTERS.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </select>
+            <Button size="sm" variant="ghost" onClick={() => id && loadAudit(id)} disabled={auditLoading}>
+              <RefreshCw className={`w-3.5 h-3.5 ${auditLoading ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
+        </div>
+        {auditLoading && audit.length === 0 ? (
+          <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+        ) : audit.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No portal activity recorded yet.</p>
+        ) : (
+          <div className="max-h-[420px] overflow-y-auto divide-y divide-border">
+            {audit
+              .filter((a) => auditFilter === 'all' || a.action === auditFilter)
+              .map((a) => {
+                const when = new Date(a.created_at);
+                const actor = a.actor_type === 'client'
+                  ? (a.actor_label || a.details?.email || 'Client')
+                  : (a.actor_label || 'Admin');
+                return (
+                  <div key={a.id} className="py-2.5 flex items-start gap-3 text-sm">
+                    <Badge variant={auditBadge(a.action)} className="text-[10px] shrink-0 mt-0.5">
+                      {auditLabel(a.action)}
+                    </Badge>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-foreground">{actor}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{a.actor_type}</span>
+                        {a.ip_address && (
+                          <code className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">{a.ip_address}</code>
+                        )}
+                      </div>
+                      {a.details && Object.keys(a.details).length > 0 && (
+                        <p className="text-[11px] text-muted-foreground mt-0.5 truncate" title={JSON.stringify(a.details)}>
+                          {Object.entries(a.details)
+                            .filter(([k]) => !['emails'].includes(k))
+                            .map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`)
+                            .join(' · ')}
+                        </p>
+                      )}
+                      {a.user_agent && (
+                        <p className="text-[10px] text-muted-foreground/70 mt-0.5 truncate" title={a.user_agent}>{a.user_agent}</p>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap">
+                      {when.toLocaleString()}
+                    </span>
+                  </div>
+                );
+              })}
+          </div>
+        )}
+      </Card>
+
       {/* Kanban */}
       <div>
         <h2 className="font-display font-semibold text-foreground mb-3">Feedback kanban</h2>
