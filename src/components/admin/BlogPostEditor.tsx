@@ -49,29 +49,38 @@ const textToSections = (text: string): BlogSection[] => {
 };
 
 const BlogPostEditor = ({ post, open, onClose, onSaved }: Props) => {
-  const [lang, setLang] = useState<Lang>('cs');
+  const [lang, setLang] = useState<Lang>('en');
   const [mode, setMode] = useState<'edit' | 'preview'>('edit');
   const [saving, setSaving] = useState(false);
-  const [title, setTitle] = useState<Record<Lang, string>>({ cs: '', en: '', de: '' });
-  const [excerpt, setExcerpt] = useState<Record<Lang, string>>({ cs: '', en: '', de: '' });
-  const [body, setBody] = useState<Record<Lang, string>>({ cs: '', en: '', de: '' });
+  // Legacy CS/DE values are preserved on save but no longer editable in UI.
+  const [legacyCs, setLegacyCs] = useState<{ title: string; excerpt: string; sections: BlogSection[] }>({ title: '', excerpt: '', sections: [] });
+  const [legacyDe, setLegacyDe] = useState<{ title: string; excerpt: string; sections: BlogSection[] }>({ title: '', excerpt: '', sections: [] });
+  const [title, setTitle] = useState<Record<Lang, string>>({ en: '' });
+  const [excerpt, setExcerpt] = useState<Record<Lang, string>>({ en: '' });
+  const [body, setBody] = useState<Record<Lang, string>>({ en: '' });
   const [slug, setSlug] = useState('');
   const [category, setCategory] = useState('');
   const [heroUrl, setHeroUrl] = useState('');
 
   useEffect(() => {
     if (!post) return;
-    setTitle({ cs: post.title?.cs || '', en: post.title?.en || '', de: post.title?.de || '' });
-    setExcerpt({ cs: post.excerpt?.cs || '', en: post.excerpt?.en || '', de: post.excerpt?.de || '' });
-    setBody({
-      cs: sectionsToText(post.content?.cs?.sections),
-      en: sectionsToText(post.content?.en?.sections),
-      de: sectionsToText(post.content?.de?.sections),
+    setLegacyCs({
+      title: post.title?.cs || '',
+      excerpt: post.excerpt?.cs || '',
+      sections: post.content?.cs?.sections || [],
     });
+    setLegacyDe({
+      title: post.title?.de || '',
+      excerpt: post.excerpt?.de || '',
+      sections: post.content?.de?.sections || [],
+    });
+    setTitle({ en: post.title?.en || '' });
+    setExcerpt({ en: post.excerpt?.en || '' });
+    setBody({ en: sectionsToText(post.content?.en?.sections) });
     setSlug(post.slug);
     setCategory(post.category);
     setHeroUrl(post.hero_image_url || '');
-    setLang('cs');
+    setLang('en');
     setMode('edit');
   }, [post]);
 
