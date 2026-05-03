@@ -38,6 +38,9 @@ interface LeadInput {
   laborHours: number;
   language: string;
   gdprConsent: boolean;
+  intent?: Record<string, unknown> | null;
+  intentSummary?: string | null;
+  intentTranscript?: { key: string; question: string; answer: string }[] | null;
 }
 
 function classifyScore(score: number): string {
