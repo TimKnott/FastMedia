@@ -242,9 +242,9 @@ const ClientPortal = () => {
           {project.agreement_template && (
             <Dialog open={showAgreement} onOpenChange={setShowAgreement}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant={project.agreement_acknowledged_at ? 'outline' : 'default'}>
                   <FileText className="w-4 h-4 mr-1.5" />
-                  Agreement
+                  {project.agreement_acknowledged_at ? 'Agreement' : 'View draft agreement'}
                   {project.agreement_acknowledged_at && (
                     <Check className="w-3.5 h-3.5 ml-1 text-emerald-500" />
                   )}
