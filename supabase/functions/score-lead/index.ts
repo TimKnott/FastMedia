@@ -246,33 +246,111 @@ serve(async (req) => {
       metadata: { features_count: featureCount, quote_total: totalBudget },
     });
 
-    // Send admin notification via transactional email (fire-and-forget)
-    try {
-      const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
-      await fetch(notifyUrl, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          templateName: "lead-notification",
-          recipientEmail: Deno.env.get("NOTIFICATION_EMAIL") || "support@fastmedia.pro",
-          idempotencyKey: `lead-notify-${lead.id}`,
-          templateData: {
-            name: body.name.trim(),
-            email: body.email.trim().toLowerCase(),
-            trade: body.trade,
-            score,
-            classification,
-            quoteOneTime: body.quoteOneTime,
-            specialRequest: body.specialRequest || undefined,
+    // Helper: invoke transactional email (fire-and-forget)
+    const sendEmail = async (templateName: string, recipientEmail: string, idempotencyKey: string, templateData: Record<string, any>) => {
+      try {
+        const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
+        await fetch(notifyUrl, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+            "Content-Type": "application/json",
           },
-        }),
-      });
-    } catch (notifyErr) {
-      console.error("Notification error (non-blocking):", notifyErr instanceof Error ? notifyErr.message : "Unknown");
+          body: JSON.stringify({ templateName, recipientEmail, idempotencyKey, templateData }),
+        });
+      } catch (notifyErr) {
+        console.error(`Email error (${templateName}, non-blocking):`, notifyErr instanceof Error ? notifyErr.message : "Unknown");
+      }
+    };
+
+    const adminEmail = Deno.env.get("NOTIFICATION_EMAIL") || "support@fastmedia.pro";
+    const intakeSummary = body.intentSummary || aiAnalysis?.summary || null;
+
+    // Always: notify admin a new lead is ready for review
+    await sendEmail("lead-notification", adminEmail, `lead-notify-${lead.id}`, {
+      name: body.name.trim(),
+      email: body.email.trim().toLowerCase(),
+      trade: body.trade,
+      score,
+      classification,
+      quoteOneTime: body.quoteOneTime,
+      specialRequest: body.specialRequest || undefined,
+    });
+
+    // Always: confirm receipt to the client
+    await sendEmail("intake-received", body.email.trim().toLowerCase(), `intake-received-${lead.id}`, {
+      recipientName: body.name.trim().split(" ")[0],
+      trade: body.trade,
+      summary: intakeSummary || undefined,
+    });
+
+    // Hot / high_priority: auto-create a client_projects draft in `in_review`
+    let autoProjectId: string | null = null;
+    if (classification === "hot" || classification === "high_priority") {
+      try {
+        const feeLineItems = (body.selectedFeatures || []).slice(0, 50).map((f) => ({
+          label: f.id,
+          quantity: Number(f.quantity) || 1,
+          unit_price: 0,
+        }));
+
+        const { data: project, error: projErr } = await supabaseAdmin
+          .from("client_projects")
+          .insert({
+            name: `${body.name.trim()} — ${body.trade}`,
+            client_name: body.name.trim(),
+            client_email: body.email.trim().toLowerCase(),
+            staging_url: "https://fastmedia.pro",
+            status: "in_review",
+            currency: "CZK",
+            dev_fee: Number(body.quoteOneTime) || 0,
+            hosting_fee_yearly: (Number(body.quoteMonthly) || 0) * 12,
+            fee_line_items: feeLineItems,
+            agreement_terms: {
+              source: "auto_intake",
+              lead_id: lead.id,
+              classification,
+              score,
+              intake_summary: intakeSummary,
+              special_request: body.specialRequest || null,
+            },
+          })
+          .select("id, slug, name")
+          .single();
+
+        if (projErr) {
+          console.error("Auto-create project error:", projErr.message);
+        } else if (project) {
+          autoProjectId = project.id;
+          await supabaseAdmin.from("project_audit_log").insert({
+            project_id: project.id,
+            actor_type: "system",
+            actor_label: "score-lead auto-promotion",
+            action: "auto_draft_created",
+            details: { lead_id: lead.id, classification, score },
+          });
+          await supabaseAdmin.from("lead_activities").insert({
+            lead_id: lead.id,
+            activity_type: "promoted",
+            description: `Auto-promoted to draft project (${classification}). Project ${project.id}`,
+            metadata: { project_id: project.id, project_slug: project.slug },
+          });
+
+          const adminPortalUrl = `https://fastmedia.pro/admin/clients/${project.id}`;
+          // Notify admin the draft is ready for review
+          await sendEmail("client-stage-update", adminEmail, `stage-admin-draft-${project.id}`, {
+            audience: "admin",
+            stage: "draft_created",
+            projectName: project.name,
+            clientEmail: body.email.trim().toLowerCase(),
+            portalUrl: adminPortalUrl,
+          });
+        }
+      } catch (autoErr) {
+        console.error("Auto-promotion error (non-blocking):", autoErr instanceof Error ? autoErr.message : "Unknown");
+      }
     }
+
 
     return new Response(
       JSON.stringify({
