@@ -254,12 +254,23 @@ const AdminClientProjectDetail = () => {
             {tokens.map((t) => {
               const url = `${window.location.origin}/portal/${t.token}`;
               const expired = t.expires_at && new Date(t.expires_at) < new Date();
+              const daysLeft = t.expires_at && !expired
+                ? Math.max(0, Math.ceil((new Date(t.expires_at).getTime() - Date.now()) / 86400_000))
+                : null;
               return (
                 <div key={t.id} className="flex items-center gap-2 text-sm flex-wrap">
                   <code className="px-2 py-1 bg-muted rounded text-xs flex-1 min-w-[200px] truncate">{url}</code>
                   <Badge variant={t.revoked_at ? 'destructive' : expired ? 'outline' : 'default'} className="text-[10px]">
                     {t.revoked_at ? 'Revoked' : expired ? 'Expired' : 'Active'}
                   </Badge>
+                  {!t.revoked_at && !expired && t.expires_at && (
+                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                      {daysLeft === 0 ? 'expires today' : `${daysLeft}d left`}
+                    </span>
+                  )}
+                  {!t.revoked_at && !t.expires_at && (
+                    <Badge variant="outline" className="text-[10px] border-amber-500 text-amber-600">Never expires</Badge>
+                  )}
                   <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(url); toast.success('Copied'); }}>
                     <Copy className="w-3.5 h-3.5" />
                   </Button>
@@ -267,6 +278,19 @@ const AdminClientProjectDetail = () => {
                     <Button size="sm" variant="outline" onClick={() => resendInvite(t)} title={`Resend to ${t.email}`}>
                       <Mail className="w-3.5 h-3.5 mr-1" /> Resend
                     </Button>
+                  )}
+                  {!t.revoked_at && (
+                    <select
+                      onChange={(e) => { const v = Number(e.target.value); if (v) { extendExpiry(t, v); e.currentTarget.value = ''; } }}
+                      defaultValue=""
+                      className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+                      title="Extend expiry from now"
+                    >
+                      <option value="" disabled>Extend…</option>
+                      {EXPIRY_OPTIONS.map((d) => (
+                        <option key={d} value={d}>+{d} days</option>
+                      ))}
+                    </select>
                   )}
                   {!t.revoked_at && (
                     <Button size="sm" variant="ghost" onClick={() => revokeToken(t.id)}>
