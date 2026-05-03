@@ -48,6 +48,13 @@ const CalculatorPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leadResult, setLeadResult] = useState<{ score: number; classification: string; leadId: string } | null>(null);
 
+  // Conversational intake state
+  const [intentHistory, setIntentHistory] = useState<IntentTurn[]>([]);
+  const [intentCurrent, setIntentCurrent] = useState<{ key: string; question: string } | null>(null);
+  const [intentAnswer, setIntentAnswer] = useState('');
+  const [intentLoading, setIntentLoading] = useState(false);
+  const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
+
   const lang = language as 'cs' | 'en' | 'de';
 
   const formatPrice = (value: number): string => {
