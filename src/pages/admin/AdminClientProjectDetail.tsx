@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -7,8 +7,12 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail, ShieldOff, RefreshCw, Activity } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail, ShieldOff, RefreshCw, Activity, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import { ClientBrandingEditor } from '@/components/admin/ClientBrandingEditor';
+import { ClientProjectFeesEditor, type ProjectFees } from '@/components/admin/ClientProjectFeesEditor';
+import { DEFAULT_AGREEMENT_TEMPLATE, renderAgreement } from '@/lib/agreementTemplate';
 
 interface Note {
   id: string;
