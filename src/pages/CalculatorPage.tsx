@@ -380,7 +380,7 @@ const CalculatorPage = () => {
     toast({ title: lang === 'cs' ? 'Nabídka exportována!' : 'Quote exported!' });
   };
 
-  const allSteps: Step[] = ['trade', 'features', 'special', 'contact', 'summary'];
+  const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'contact', 'summary'];
 
   const goNext = () => {
     setDirection(1);
