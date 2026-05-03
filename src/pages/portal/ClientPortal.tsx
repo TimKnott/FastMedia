@@ -106,13 +106,26 @@ const ClientPortal = () => {
 
   // Lock the portal (and the embedded marketing site) to British English regardless
   // of any preference the visitor's browser may have stored from a previous visit.
+  // Re-applied on every render and via a storage listener so a stale value cannot
+  // bleed back in (e.g. another tab writing 'cs' or 'de').
   useEffect(() => {
-    try {
-      localStorage.setItem('fastmedia-language', 'en');
-      document.documentElement.setAttribute('lang', 'en-GB');
-    } catch {
-      /* ignore storage errors */
-    }
+    const enforce = () => {
+      try {
+        if (localStorage.getItem('fastmedia-language') !== 'en') {
+          localStorage.setItem('fastmedia-language', 'en');
+        }
+        document.documentElement.setAttribute('lang', 'en-GB');
+      } catch {
+        /* ignore storage errors */
+      }
+    };
+    enforce();
+    window.addEventListener('storage', enforce);
+    const interval = window.setInterval(enforce, 2000);
+    return () => {
+      window.removeEventListener('storage', enforce);
+      window.clearInterval(interval);
+    };
   }, []);
 
   // Always append ?lang=en to the iframe URL so the marketing site picks up
