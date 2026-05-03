@@ -12,8 +12,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { DbBlogPost, BlogSection } from '@/hooks/useDbBlogPosts';
 
-type Lang = 'cs' | 'en' | 'de';
-const LANGS: Lang[] = ['cs', 'en', 'de'];
+type Lang = 'en';
+const LANGS: Lang[] = ['en'];
 
 interface Props {
   post: DbBlogPost | null;
