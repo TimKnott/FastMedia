@@ -25,7 +25,8 @@ import { trades } from '@/data/trades';
 import { getTradePrompts } from '@/data/tradeIdeaPrompts';
 
 type SelectedFeature = { id: string; quantity: number };
-type Step = 'trade' | 'features' | 'special' | 'contact' | 'summary';
+type Step = 'trade' | 'features' | 'special' | 'intent' | 'contact' | 'summary';
+type IntentTurn = { key: string; question: string; answer: string };
 
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
@@ -46,6 +47,13 @@ const CalculatorPage = () => {
   const [gdprConsent, setGdprConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leadResult, setLeadResult] = useState<{ score: number; classification: string; leadId: string } | null>(null);
+
+  // Conversational intake state
+  const [intentHistory, setIntentHistory] = useState<IntentTurn[]>([]);
+  const [intentCurrent, setIntentCurrent] = useState<{ key: string; question: string } | null>(null);
+  const [intentAnswer, setIntentAnswer] = useState('');
+  const [intentLoading, setIntentLoading] = useState(false);
+  const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
 
   const lang = language as 'cs' | 'en' | 'de';
 
@@ -296,6 +304,51 @@ const CalculatorPage = () => {
     }
   };
 
+  // Conversational intake
+  const fetchNextIntent = useCallback(async (history: IntentTurn[]) => {
+    setIntentLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('intake-conversation', {
+        body: {
+          language: lang,
+          trade: selectedTrade,
+          selectedFeatures,
+          specialRequest: specialRequest.trim() || undefined,
+          quoteOneTime: grandTotalOneTime,
+          quoteMonthly: totalMonthly,
+          history,
+        },
+      });
+      if (error) throw error;
+      if (data?.done) {
+        setIntentBrief({ summary: data.summary, intent: data.intent });
+        setIntentCurrent(null);
+      } else if (data?.question) {
+        setIntentCurrent({ key: data.key, question: data.question });
+        setIntentAnswer('');
+      }
+    } catch (e) {
+      console.error(e);
+      // Soft-fail: let the user proceed even if AI is down
+      setIntentCurrent(null);
+      setIntentBrief({ summary: '', intent: {} });
+    } finally {
+      setIntentLoading(false);
+    }
+  }, [lang, selectedTrade, selectedFeatures, specialRequest, grandTotalOneTime, totalMonthly]);
+
+  const submitIntentAnswer = useCallback(() => {
+    if (!intentCurrent || !intentAnswer.trim() || intentLoading) return;
+    const next: IntentTurn[] = [
+      ...intentHistory,
+      { key: intentCurrent.key, question: intentCurrent.question, answer: intentAnswer.trim() },
+    ];
+    setIntentHistory(next);
+    setIntentCurrent(null);
+    setIntentAnswer('');
+    fetchNextIntent(next);
+  }, [intentCurrent, intentAnswer, intentLoading, intentHistory, fetchNextIntent]);
+
   // Submit lead
   const submitLead = async () => {
     if (!contactName.trim() || !contactEmail.trim() || !gdprConsent) return;
@@ -320,6 +373,9 @@ const CalculatorPage = () => {
           laborHours: totalLaborHours,
           language: lang,
           gdprConsent: true,
+          intent: intentBrief?.intent ?? null,
+          intentSummary: intentBrief?.summary ?? null,
+          intentTranscript: intentHistory.length ? intentHistory : null,
         },
       });
       if (error) throw error;
@@ -372,12 +428,19 @@ const CalculatorPage = () => {
     toast({ title: lang === 'cs' ? 'Nabídka exportována!' : 'Quote exported!' });
   };
 
-  const allSteps: Step[] = ['trade', 'features', 'special', 'contact', 'summary'];
+  const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'contact', 'summary'];
 
   const goNext = () => {
     setDirection(1);
     const idx = allSteps.indexOf(step);
-    if (idx < allSteps.length - 1) setStep(allSteps[idx + 1]);
+    if (idx < allSteps.length - 1) {
+      const next = allSteps[idx + 1];
+      setStep(next);
+      // Kick off the conversational intake when entering the intent step.
+      if (next === 'intent' && !intentCurrent && !intentBrief && !intentLoading) {
+        fetchNextIntent(intentHistory);
+      }
+    }
   };
 
   const goBack = () => {
@@ -709,7 +772,106 @@ const CalculatorPage = () => {
                 </div>
               )}
 
-              {/* Step 4: Contact Details & Lead Capture */}
+              {/* Step 4: Conversational intake */}
+              {step === 'intent' && (
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                    {lang === 'cs' ? 'Pár otázek navíc' : lang === 'de' ? 'Ein paar zusätzliche Fragen' : 'A few quick questions'}
+                  </h2>
+                  <p className="text-muted-foreground text-sm mb-6">
+                    {lang === 'cs'
+                      ? 'Pomůže nám to připravit přesnější nabídku. Otázky se přizpůsobují vašim odpovědím.'
+                      : lang === 'de'
+                      ? 'So können wir ein passgenaues Angebot erstellen. Die Fragen passen sich Ihren Antworten an.'
+                      : 'It helps us tailor the proposal. Questions adapt to your previous answers.'}
+                  </p>
+
+                  {/* Transcript */}
+                  <div className="space-y-3 mb-4">
+                    {intentHistory.map((turn, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-xl border border-border bg-card p-4"
+                      >
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                          <Sparkles className="w-3 h-3 inline mr-1 text-primary" />
+                          {turn.question}
+                        </p>
+                        <p className="text-sm text-foreground">{turn.answer}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Current question */}
+                  {intentLoading && !intentCurrent && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground p-4 rounded-xl bg-muted/40">
+                      <span className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                      {lang === 'cs' ? 'Připravujeme další otázku…' : lang === 'de' ? 'Nächste Frage wird vorbereitet…' : 'Preparing the next question…'}
+                    </div>
+                  )}
+
+                  {intentCurrent && (
+                    <motion.div
+                      key={intentCurrent.key}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="rounded-xl border-2 border-primary/30 bg-primary/5 p-4"
+                    >
+                      <p className="font-semibold text-foreground mb-3 flex items-start gap-2">
+                        <MessageSquare className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                        {intentCurrent.question}
+                      </p>
+                      <textarea
+                        value={intentAnswer}
+                        onChange={e => setIntentAnswer(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                            e.preventDefault();
+                            submitIntentAnswer();
+                          }
+                        }}
+                        rows={3}
+                        placeholder={lang === 'cs' ? 'Vaše odpověď…' : lang === 'de' ? 'Ihre Antwort…' : 'Your answer…'}
+                        className="w-full rounded-lg border border-border bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      />
+                      <div className="flex justify-end mt-3">
+                        <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
+                          <Send className="w-3.5 h-3.5 mr-2" />
+                          {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Done */}
+                  {intentBrief && !intentCurrent && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="rounded-xl border border-accent/30 bg-accent/5 p-4"
+                    >
+                      <p className="text-sm font-semibold text-accent flex items-center gap-2 mb-2">
+                        <CheckCircle2 className="w-4 h-4" />
+                        {lang === 'cs' ? 'Hotovo, díky!' : lang === 'de' ? 'Fertig, danke!' : 'All set, thanks!'}
+                      </p>
+                      {intentBrief.summary && (
+                        <p className="text-sm text-foreground whitespace-pre-wrap">{intentBrief.summary}</p>
+                      )}
+                      <p className="text-xs text-muted-foreground mt-3">
+                        {lang === 'cs'
+                          ? 'Pokračujte zadáním kontaktních údajů.'
+                          : lang === 'de'
+                          ? 'Bitte geben Sie nun Ihre Kontaktdaten ein.'
+                          : 'Continue to share your contact details.'}
+                      </p>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+
+              {/* Step 5: Contact Details & Lead Capture */}
               {step === 'contact' && (
                 <div>
                   <h2 className="font-display text-2xl font-bold text-foreground mb-2">{l.contactTitle}</h2>
@@ -931,7 +1093,7 @@ const CalculatorPage = () => {
             {step !== 'summary' && step !== 'contact' && (
               <Button
                 onClick={goNext}
-                disabled={step === 'trade' && !selectedTrade}
+                disabled={(step === 'trade' && !selectedTrade) || (step === 'intent' && !intentBrief)}
               >
                 {l.next}
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -952,6 +1114,10 @@ const CalculatorPage = () => {
                   setContactPhone('');
                   setGdprConsent(false);
                   setLeadResult(null);
+                  setIntentHistory([]);
+                  setIntentCurrent(null);
+                  setIntentAnswer('');
+                  setIntentBrief(null);
                 }}
               >
                 {l.startOver}

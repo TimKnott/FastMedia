@@ -38,6 +38,9 @@ interface LeadInput {
   laborHours: number;
   language: string;
   gdprConsent: boolean;
+  intent?: Record<string, unknown> | null;
+  intentSummary?: string | null;
+  intentTranscript?: { key: string; question: string; answer: string }[] | null;
 }
 
 function classifyScore(score: number): string {
@@ -163,6 +166,18 @@ serve(async (req) => {
       } catch (e) {
         console.error("AI analysis error:", e instanceof Error ? e.message : "Unknown");
       }
+    }
+
+    // Merge conversational intake brief into ai_analysis
+    if (body.intent || body.intentSummary || body.intentTranscript) {
+      aiAnalysis = {
+        ...(aiAnalysis || {}),
+        intake: {
+          summary: body.intentSummary || null,
+          intent: body.intent || null,
+          transcript: body.intentTranscript || null,
+        },
+      };
     }
 
     // Insert lead
