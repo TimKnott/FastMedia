@@ -338,19 +338,121 @@ const AdminClientProjectDetail = () => {
               <Input value={project.staging_url} onChange={(e) => setProject({ ...project, staging_url: e.target.value })} />
               <Button variant="outline" size="icon" asChild><a href={project.staging_url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-4 h-4" /></a></Button>
             </div>
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Public portal URL: <code className="bg-muted px-1.5 py-0.5 rounded">{window.location.origin}/portal/{project.slug}/&lt;token&gt;</code>
+            </p>
           </div>
-          <div><Label>Brand colour</Label><Input type="color" value={project.brand_color} onChange={(e) => setProject({ ...project, brand_color: e.target.value })} className="h-10 w-24" /></div>
-        </div>
-        <div>
-          <Label>Agreement template</Label>
-          <Textarea rows={6} value={project.agreement_template || ''} onChange={(e) => setProject({ ...project, agreement_template: e.target.value })} />
-          {project.agreement_acknowledged_at && (
-            <p className="text-xs text-emerald-600 mt-1">Acknowledged {new Date(project.agreement_acknowledged_at).toLocaleString()} · IP {project.agreement_ack_ip}</p>
-          )}
         </div>
         <Button onClick={saveProject} disabled={saving} size="sm">
-          {saving ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Save className="w-4 h-4 mr-1.5" />} Save
+          {saving ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Save className="w-4 h-4 mr-1.5" />} Save all changes
         </Button>
+      </Card>
+
+      {/* Branding */}
+      <Card className="p-4 space-y-3">
+        <h2 className="font-display font-semibold text-foreground">Client branding</h2>
+        <p className="text-xs text-muted-foreground">
+          Upload the client's logo and reference site so we can match their visual identity in the build.
+        </p>
+        <ClientBrandingEditor
+          projectId={project.id}
+          logoUrl={project.logo_url}
+          existingWebsiteUrl={project.existing_website_url}
+          brandColor={project.brand_color || '#0f3a7a'}
+          brandColorSecondary={project.brand_color_secondary}
+          brandNotes={project.brand_notes}
+          onChange={(patch) => setProject({ ...project, ...patch })}
+        />
+      </Card>
+
+      {/* Fees */}
+      <Card className="p-4 space-y-3">
+        <h2 className="font-display font-semibold text-foreground">Fees & deposit</h2>
+        <p className="text-xs text-muted-foreground">
+          Edit pricing here. Totals, deposit and AI worked-example are recalculated live and merged into the agreement template below.
+        </p>
+        <ClientProjectFeesEditor
+          value={{
+            currency: project.currency || 'CZK',
+            dev_fee: Number(project.dev_fee || 0),
+            hosting_fee_yearly: Number(project.hosting_fee_yearly || 0),
+            ai_token_ratio: Number(project.ai_token_ratio || 3),
+            ai_cost_per_unit: Number(project.ai_cost_per_unit || 0.35),
+            ai_units_per_user: Number(project.ai_units_per_user || 1),
+            deposit_pct: Number(project.deposit_pct || 25),
+            late_penalty_pct_per_day: Number(project.late_penalty_pct_per_day || 0.05),
+            fee_line_items: project.fee_line_items || [],
+          }}
+          onChange={(next) => setProject({ ...project, ...next })}
+        />
+      </Card>
+
+      {/* Agreement */}
+      <Card className="p-4 space-y-3">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <h2 className="font-display font-semibold text-foreground">Sales agreement</h2>
+          <div className="flex items-center gap-2">
+            {!project.agreement_template && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setProject({ ...project, agreement_template: DEFAULT_AGREEMENT_TEMPLATE })}
+              >
+                Load master template
+              </Button>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="outline" disabled={!project.agreement_template}>
+                  <Eye className="w-3.5 h-3.5 mr-1" /> Preview
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Agreement preview — {project.name}</DialogTitle>
+                </DialogHeader>
+                <pre className="whitespace-pre-wrap text-sm font-sans text-foreground">
+                  {renderAgreement(project.agreement_template || '', {
+                    client_name: project.client_name || '',
+                    project_name: project.name || '',
+                    service_provider_name: 'Tim Knott, FastMedia.Pro',
+                    service_provider_address: '200 Na Skala, Telce, Peruc 44001',
+                    date: new Date().toLocaleDateString('en-GB'),
+                    currency: project.currency || 'CZK',
+                    dev_fee: Number(project.dev_fee || 0),
+                    hosting_fee_yearly: Number(project.hosting_fee_yearly || 0),
+                    ai_token_ratio: Number(project.ai_token_ratio || 3),
+                    ai_cost_per_unit: Number(project.ai_cost_per_unit || 0.35),
+                    ai_units_per_user: Number(project.ai_units_per_user || 1),
+                    deposit_pct: Number(project.deposit_pct || 25),
+                    late_penalty_pct_per_day: Number(project.late_penalty_pct_per_day || 0.05),
+                    fee_line_items: project.fee_line_items || [],
+                  })}
+                </pre>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          Tokens supported:{' '}
+          <code>{`{{client_name}}`}</code> <code>{`{{project_name}}`}</code> <code>{`{{dev_fee}}`}</code>{' '}
+          <code>{`{{hosting_fee_yearly}}`}</code> <code>{`{{deposit_pct}}`}</code>{' '}
+          <code>{`{{deposit_amount}}`}</code> <code>{`{{balance_due}}`}</code>{' '}
+          <code>{`{{ai_token_ratio}}`}</code> <code>{`{{ai_cost_100}}`}</code>{' '}
+          <code>{`{{late_penalty_pct_per_day}}`}</code> <code>{`{{date}}`}</code>
+        </p>
+        <Textarea
+          rows={14}
+          value={project.agreement_template || ''}
+          onChange={(e) => setProject({ ...project, agreement_template: e.target.value })}
+          className="font-mono text-xs"
+          placeholder="Click 'Load master template' to start from the standard FastMedia agreement…"
+        />
+        {project.agreement_acknowledged_at && (
+          <p className="text-xs text-emerald-600">
+            ✓ Acknowledged by client {new Date(project.agreement_acknowledged_at).toLocaleString()} · IP {project.agreement_ack_ip}
+          </p>
+        )}
       </Card>
 
       {/* Active invites */}
