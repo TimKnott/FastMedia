@@ -2,17 +2,19 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Plus, Sparkles, Trash2, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { ExternalLink, Sparkles, Trash2, Eye, EyeOff, Loader2, Pencil } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useDbBlogPosts } from '@/hooks/useDbBlogPosts';
+import { useDbBlogPosts, type DbBlogPost } from '@/hooks/useDbBlogPosts';
 import { blogPosts as staticPosts } from '@/data/blogPosts';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import BlogPostEditor from '@/components/admin/BlogPostEditor';
 
 const AdminBlog = () => {
   const { t, language } = useLanguage();
   const { posts, loading, reload } = useDbBlogPosts({ status: 'all' });
   const [generating, setGenerating] = useState(false);
+  const [editing, setEditing] = useState<DbBlogPost | null>(null);
 
   const generateNow = async () => {
     setGenerating(true);
