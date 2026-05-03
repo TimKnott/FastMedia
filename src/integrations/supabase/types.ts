@@ -209,15 +209,32 @@ export type Database = {
           agreement_ack_ip: string | null
           agreement_ack_user_agent: string | null
           agreement_acknowledged_at: string | null
+          agreement_signed_off: boolean
+          agreement_signed_off_at: string | null
+          agreement_signed_off_by: string | null
           agreement_template: string | null
           agreement_terms: Json
+          ai_cost_per_unit: number
+          ai_token_ratio: number
+          ai_units_per_user: number
           brand_color: string | null
+          brand_color_secondary: string | null
+          brand_notes: string | null
           client_email: string
           client_name: string
           created_at: string
           created_by: string | null
+          currency: string
+          deposit_pct: number
+          dev_fee: number
+          existing_website_url: string | null
+          fee_line_items: Json
+          hosting_fee_yearly: number
           id: string
+          late_penalty_pct_per_day: number
+          logo_url: string | null
           name: string
+          slug: string | null
           staging_url: string
           status: string
           updated_at: string
@@ -226,15 +243,32 @@ export type Database = {
           agreement_ack_ip?: string | null
           agreement_ack_user_agent?: string | null
           agreement_acknowledged_at?: string | null
+          agreement_signed_off?: boolean
+          agreement_signed_off_at?: string | null
+          agreement_signed_off_by?: string | null
           agreement_template?: string | null
           agreement_terms?: Json
+          ai_cost_per_unit?: number
+          ai_token_ratio?: number
+          ai_units_per_user?: number
           brand_color?: string | null
+          brand_color_secondary?: string | null
+          brand_notes?: string | null
           client_email: string
           client_name: string
           created_at?: string
           created_by?: string | null
+          currency?: string
+          deposit_pct?: number
+          dev_fee?: number
+          existing_website_url?: string | null
+          fee_line_items?: Json
+          hosting_fee_yearly?: number
           id?: string
+          late_penalty_pct_per_day?: number
+          logo_url?: string | null
           name: string
+          slug?: string | null
           staging_url: string
           status?: string
           updated_at?: string
@@ -243,15 +277,32 @@ export type Database = {
           agreement_ack_ip?: string | null
           agreement_ack_user_agent?: string | null
           agreement_acknowledged_at?: string | null
+          agreement_signed_off?: boolean
+          agreement_signed_off_at?: string | null
+          agreement_signed_off_by?: string | null
           agreement_template?: string | null
           agreement_terms?: Json
+          ai_cost_per_unit?: number
+          ai_token_ratio?: number
+          ai_units_per_user?: number
           brand_color?: string | null
+          brand_color_secondary?: string | null
+          brand_notes?: string | null
           client_email?: string
           client_name?: string
           created_at?: string
           created_by?: string | null
+          currency?: string
+          deposit_pct?: number
+          dev_fee?: number
+          existing_website_url?: string | null
+          fee_line_items?: Json
+          hosting_fee_yearly?: number
           id?: string
+          late_penalty_pct_per_day?: number
+          logo_url?: string | null
           name?: string
+          slug?: string | null
           staging_url?: string
           status?: string
           updated_at?: string

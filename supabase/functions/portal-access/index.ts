@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
       case 'load': {
         const { data: project } = await admin
           .from('client_projects')
-          .select('id, name, client_name, staging_url, status, brand_color, agreement_template, agreement_terms, agreement_acknowledged_at')
+          .select('id, name, slug, client_name, staging_url, status, brand_color, brand_color_secondary, logo_url, agreement_template, agreement_terms, agreement_acknowledged_at, currency, dev_fee, hosting_fee_yearly, ai_token_ratio, ai_cost_per_unit, ai_units_per_user, deposit_pct, late_penalty_pct_per_day, fee_line_items')
           .eq('id', projectId)
           .single()
 
