@@ -1093,7 +1093,7 @@ const CalculatorPage = () => {
             {step !== 'summary' && step !== 'contact' && (
               <Button
                 onClick={goNext}
-                disabled={step === 'trade' && !selectedTrade}
+                disabled={(step === 'trade' && !selectedTrade) || (step === 'intent' && !intentBrief)}
               >
                 {l.next}
                 <ArrowRight className="w-4 h-4 ml-2" />
