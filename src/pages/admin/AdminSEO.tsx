@@ -42,9 +42,7 @@ interface SeoForm {
 }
 
 const LANGUAGES = [
-  { value: 'cs', label: 'Čeština' },
   { value: 'en', label: 'English' },
-  { value: 'de', label: 'Deutsch' },
 ];
 
 const indexablePages = sitemapEntries.filter((e) => e.indexable);
