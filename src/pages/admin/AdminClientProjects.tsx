@@ -98,7 +98,7 @@ const AdminClientProjects = () => {
   const sendInvite = async (projectId: string, email: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('portal-issue-invite', {
-        body: { project_id: projectId, email, expires_in_days: 60 },
+        body: { project_id: projectId, email, expires_in_days: 30 },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

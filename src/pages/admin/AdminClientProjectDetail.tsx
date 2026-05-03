@@ -39,6 +39,9 @@ const COLUMNS: Array<{ id: Note['status']; label: string }> = [
   { id: 'done', label: 'Done' },
 ];
 
+const EXPIRY_OPTIONS = [7, 14, 30, 60, 90] as const;
+const DEFAULT_EXPIRY_DAYS = 30;
+
 const AdminClientProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -48,6 +51,7 @@ const AdminClientProjectDetail = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [expiryDays, setExpiryDays] = useState<number>(DEFAULT_EXPIRY_DAYS);
 
   const load = async () => {
     if (!id) return;
@@ -102,16 +106,36 @@ const AdminClientProjectDetail = () => {
     if (!project) return;
     try {
       const { data, error } = await supabase.functions.invoke('portal-issue-invite', {
-        body: { project_id: project.id, email: project.client_email, expires_in_days: 60 },
+        body: { project_id: project.id, email: project.client_email, expires_in_days: expiryDays },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       navigator.clipboard.writeText(data.portal_url).catch(() => {});
-      toast.success('Invite issued — link copied');
+      toast.success(`Invite issued (expires in ${expiryDays} days) — link copied`);
       load();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Failed');
     }
+  };
+
+  const extendExpiry = async (t: Token, days: number) => {
+    const newExpiry = new Date(Date.now() + days * 86400_000).toISOString();
+    const { error } = await supabase
+      .from('project_access_tokens')
+      .update({ expires_at: newExpiry })
+      .eq('id', t.id);
+    if (error) { toast.error(error.message); return; }
+    if (project) {
+      await supabase.from('project_audit_log').insert({
+        project_id: project.id,
+        actor_type: 'admin',
+        actor_label: 'admin',
+        action: 'invite_extended',
+        details: { token_id: t.id, email: t.email, new_expires_at: newExpiry, days },
+      });
+    }
+    toast.success(`Extended ${t.email} by ${days} days`);
+    load();
   };
 
   const revokeToken = async (tokenId: string) => {
@@ -160,13 +184,26 @@ const AdminClientProjectDetail = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <Button variant="ghost" size="sm" onClick={() => navigate('/admin/client-projects')}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1 min-w-0">
           <h1 className="text-xl md:text-2xl font-display font-bold text-foreground truncate">{project.name}</h1>
           <p className="text-xs text-muted-foreground">{project.client_name} · {project.client_email}</p>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Label htmlFor="expiry-select" className="text-xs text-muted-foreground whitespace-nowrap">Expires in</Label>
+          <select
+            id="expiry-select"
+            value={expiryDays}
+            onChange={(e) => setExpiryDays(Number(e.target.value))}
+            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          >
+            {EXPIRY_OPTIONS.map((d) => (
+              <option key={d} value={d}>{d} days</option>
+            ))}
+          </select>
         </div>
         <Button onClick={sendInvite}><Send className="w-4 h-4 mr-1.5" /> Send invite</Button>
       </div>
@@ -217,12 +254,23 @@ const AdminClientProjectDetail = () => {
             {tokens.map((t) => {
               const url = `${window.location.origin}/portal/${t.token}`;
               const expired = t.expires_at && new Date(t.expires_at) < new Date();
+              const daysLeft = t.expires_at && !expired
+                ? Math.max(0, Math.ceil((new Date(t.expires_at).getTime() - Date.now()) / 86400_000))
+                : null;
               return (
                 <div key={t.id} className="flex items-center gap-2 text-sm flex-wrap">
                   <code className="px-2 py-1 bg-muted rounded text-xs flex-1 min-w-[200px] truncate">{url}</code>
                   <Badge variant={t.revoked_at ? 'destructive' : expired ? 'outline' : 'default'} className="text-[10px]">
                     {t.revoked_at ? 'Revoked' : expired ? 'Expired' : 'Active'}
                   </Badge>
+                  {!t.revoked_at && !expired && t.expires_at && (
+                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                      {daysLeft === 0 ? 'expires today' : `${daysLeft}d left`}
+                    </span>
+                  )}
+                  {!t.revoked_at && !t.expires_at && (
+                    <Badge variant="outline" className="text-[10px] border-amber-500 text-amber-600">Never expires</Badge>
+                  )}
                   <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(url); toast.success('Copied'); }}>
                     <Copy className="w-3.5 h-3.5" />
                   </Button>
@@ -230,6 +278,19 @@ const AdminClientProjectDetail = () => {
                     <Button size="sm" variant="outline" onClick={() => resendInvite(t)} title={`Resend to ${t.email}`}>
                       <Mail className="w-3.5 h-3.5 mr-1" /> Resend
                     </Button>
+                  )}
+                  {!t.revoked_at && (
+                    <select
+                      onChange={(e) => { const v = Number(e.target.value); if (v) { extendExpiry(t, v); e.currentTarget.value = ''; } }}
+                      defaultValue=""
+                      className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+                      title="Extend expiry from now"
+                    >
+                      <option value="" disabled>Extend…</option>
+                      {EXPIRY_OPTIONS.map((d) => (
+                        <option key={d} value={d}>+{d} days</option>
+                      ))}
+                    </select>
                   )}
                   {!t.revoked_at && (
                     <Button size="sm" variant="ghost" onClick={() => revokeToken(t.id)}>
