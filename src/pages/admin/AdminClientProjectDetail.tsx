@@ -83,10 +83,26 @@ const AdminClientProjectDetail = () => {
   const [project, setProject] = useState<any | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [tokens, setTokens] = useState<Token[]>([]);
+  const [audit, setAudit] = useState<AuditEntry[]>([]);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [auditFilter, setAuditFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [expiryDays, setExpiryDays] = useState<number>(DEFAULT_EXPIRY_DAYS);
+
+  const loadAudit = async (projectId: string) => {
+    setAuditLoading(true);
+    const { data, error } = await supabase
+      .from('project_audit_log')
+      .select('*')
+      .eq('project_id', projectId)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) toast.error(error.message);
+    setAudit((data as AuditEntry[]) || []);
+    setAuditLoading(false);
+  };
 
   const load = async () => {
     if (!id) return;
@@ -101,6 +117,7 @@ const AdminClientProjectDetail = () => {
     setNotes((n.data as Note[]) || []);
     setTokens((t.data as Token[]) || []);
     setLoading(false);
+    loadAudit(id);
   };
 
   useEffect(() => { load(); }, [id]);
