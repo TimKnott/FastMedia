@@ -1114,6 +1114,10 @@ const CalculatorPage = () => {
                   setContactPhone('');
                   setGdprConsent(false);
                   setLeadResult(null);
+                  setIntentHistory([]);
+                  setIntentCurrent(null);
+                  setIntentAnswer('');
+                  setIntentBrief(null);
                 }}
               >
                 {l.startOver}
