@@ -184,13 +184,26 @@ const AdminClientProjectDetail = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <Button variant="ghost" size="sm" onClick={() => navigate('/admin/client-projects')}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1 min-w-0">
           <h1 className="text-xl md:text-2xl font-display font-bold text-foreground truncate">{project.name}</h1>
           <p className="text-xs text-muted-foreground">{project.client_name} · {project.client_email}</p>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Label htmlFor="expiry-select" className="text-xs text-muted-foreground whitespace-nowrap">Expires in</Label>
+          <select
+            id="expiry-select"
+            value={expiryDays}
+            onChange={(e) => setExpiryDays(Number(e.target.value))}
+            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          >
+            {EXPIRY_OPTIONS.map((d) => (
+              <option key={d} value={d}>{d} days</option>
+            ))}
+          </select>
         </div>
         <Button onClick={sendInvite}><Send className="w-4 h-4 mr-1.5" /> Send invite</Button>
       </div>
