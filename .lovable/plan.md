@@ -1,22 +1,20 @@
+# Always reply in English in the Lovable chat
 
+## What you're asking
+The Lovable assistant chat (where we're talking now) has been surfacing suggestions and instructions in Czech, presumably because the FastMedia project's primary UI language is Czech (cs). You want the assistant to always communicate with you in English unless you explicitly ask for Czech.
 
-## Fix: Restrict attendance table access
+This is not a code change in your FastMedia app — it's a preference about how Lovable talks to you.
 
-**Problem**: The scanner flags that the `attendance` table's single `ALL` policy on `{authenticated}` with `has_role(admin)` lacks an explicit denial for non-admin users and anonymous access. While the existing policy functionally blocks non-admins (the `USING` clause fails), the scanner wants explicit restriction.
+## Plan
 
-**Solution**: Add a `RESTRICTIVE` policy denying all access to `anon` users (matching the pattern used on `employees`). The existing admin-only `ALL` policy already blocks non-admin authenticated users via the `has_role` check, but adding the anon denial makes the intent explicit and satisfies the scanner.
+1. Write a user-level preference to `mem://~user` so it persists across every project and every session:
+   - "Always respond in English. Never default to Czech (or any other language) based on project context. Switch to another language only if I explicitly ask in that message."
 
-### Migration
+2. Apply it immediately in this and all future replies.
 
-```sql
-CREATE POLICY "Anon users cannot access attendance"
-ON public.attendance AS RESTRICTIVE FOR ALL TO anon
-USING (false) WITH CHECK (false);
-```
+## What this does NOT change
+- The FastMedia app itself stays trilingual (CS / EN / DE) — end-user UI, blog, calculator output, edge function responses are untouched.
+- Project memory (which says "Czech primary") is unchanged; it correctly describes your product, not how I should talk to you.
 
-### Details
-- Single migration adding one restrictive RLS policy
-- No code changes needed — this is database-level only
-- Matches the existing pattern on the `employees` table
-- Mark the `attendance_authenticated_read_exposure` finding as resolved
-
+## Confirmation
+Approve and I'll save the user preference and continue in English from here on.
