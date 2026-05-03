@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Note {
@@ -123,6 +123,37 @@ const AdminClientProjectDetail = () => {
     else { toast.success('Revoked'); load(); }
   };
 
+  const resendInvite = async (t: Token) => {
+    if (!project) return;
+    const url = `${window.location.origin}/portal/${t.token}`;
+    try {
+      const { error } = await supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'portal-invite',
+          recipientEmail: t.email,
+          idempotencyKey: `portal-invite-resend-${t.token}-${Date.now()}`,
+          templateData: {
+            recipientName: project.client_name,
+            projectName: project.name,
+            portalUrl: url,
+          },
+        },
+      });
+      if (error) throw error;
+      // Best-effort audit
+      await supabase.from('project_audit_log').insert({
+        project_id: project.id,
+        actor_type: 'admin',
+        actor_label: 'admin',
+        action: 'invite_resent',
+        details: { email: t.email, token_id: t.id },
+      });
+      toast.success(`Invite re-sent to ${t.email}`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Failed to resend');
+    }
+  };
+
   if (loading || !project) {
     return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
   }
@@ -195,6 +226,11 @@ const AdminClientProjectDetail = () => {
                   <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(url); toast.success('Copied'); }}>
                     <Copy className="w-3.5 h-3.5" />
                   </Button>
+                  {!t.revoked_at && !expired && (
+                    <Button size="sm" variant="outline" onClick={() => resendInvite(t)} title={`Resend to ${t.email}`}>
+                      <Mail className="w-3.5 h-3.5 mr-1" /> Resend
+                    </Button>
+                  )}
                   {!t.revoked_at && (
                     <Button size="sm" variant="ghost" onClick={() => revokeToken(t.id)}>
                       <Trash2 className="w-3.5 h-3.5 text-destructive" />
