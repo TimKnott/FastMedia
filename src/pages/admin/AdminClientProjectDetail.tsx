@@ -349,20 +349,39 @@ const AdminClientProjectDetail = () => {
               const daysLeft = t.expires_at && !expired
                 ? Math.max(0, Math.ceil((new Date(t.expires_at).getTime() - Date.now()) / 86400_000))
                 : null;
+              const fmt = (d: string) =>
+                new Date(d).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
               return (
-                <div key={t.id} className="flex items-center gap-2 text-sm flex-wrap">
-                  <code className="px-2 py-1 bg-muted rounded text-xs flex-1 min-w-[200px] truncate">{url}</code>
-                  <Badge variant={t.revoked_at ? 'destructive' : expired ? 'outline' : 'default'} className="text-[10px]">
-                    {t.revoked_at ? 'Revoked' : expired ? 'Expired' : 'Active'}
-                  </Badge>
-                  {!t.revoked_at && !expired && t.expires_at && (
-                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                      {daysLeft === 0 ? 'expires today' : `${daysLeft}d left`}
+                <div key={t.id} className="flex flex-col gap-1.5 text-sm border border-border/60 rounded-md p-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <code className="px-2 py-1 bg-muted rounded text-xs flex-1 min-w-[200px] truncate">{url}</code>
+                    <Badge variant={t.revoked_at ? 'destructive' : expired ? 'outline' : 'default'} className="text-[10px]">
+                      {t.revoked_at ? 'Revoked' : expired ? 'Expired' : 'Active'}
+                    </Badge>
+                    {!t.revoked_at && !expired && t.expires_at && (
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                        {daysLeft === 0 ? 'expires today' : `${daysLeft}d left`}
+                      </span>
+                    )}
+                    {!t.revoked_at && !t.expires_at && (
+                      <Badge variant="outline" className="text-[10px] border-amber-500 text-amber-600">Never expires</Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground flex-wrap">
+                    <span className="font-medium text-foreground/80 truncate max-w-[200px]">{t.email}</span>
+                    <span><span className="opacity-70">Issued:</span> {fmt(t.created_at)}</span>
+                    <span>
+                      <span className="opacity-70">Expires:</span>{' '}
+                      {t.expires_at ? fmt(t.expires_at) : <em className="not-italic text-amber-600">never</em>}
                     </span>
-                  )}
-                  {!t.revoked_at && !t.expires_at && (
-                    <Badge variant="outline" className="text-[10px] border-amber-500 text-amber-600">Never expires</Badge>
-                  )}
+                    {t.last_used_at && (
+                      <span><span className="opacity-70">Last used:</span> {fmt(t.last_used_at)}</span>
+                    )}
+                    {t.revoked_at && (
+                      <span><span className="opacity-70">Revoked:</span> {fmt(t.revoked_at)}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
                   <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(url); toast.success('Copied'); }}>
                     <Copy className="w-3.5 h-3.5" />
                   </Button>
@@ -389,6 +408,7 @@ const AdminClientProjectDetail = () => {
                       <Trash2 className="w-3.5 h-3.5 text-destructive" />
                     </Button>
                   )}
+                  </div>
                 </div>
               );
             })}
