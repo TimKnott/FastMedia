@@ -190,13 +190,46 @@ const AdminClientProjectDetail = () => {
     load();
   };
 
-  const revokeToken = async (tokenId: string) => {
+  const revokeToken = async (t: Token) => {
+    if (!confirm(`Revoke access for ${t.email}? They will be cut off immediately.`)) return;
     const { error } = await supabase
       .from('project_access_tokens')
       .update({ revoked_at: new Date().toISOString() })
-      .eq('id', tokenId);
-    if (error) toast.error(error.message);
-    else { toast.success('Revoked'); load(); }
+      .eq('id', t.id);
+    if (error) { toast.error(error.message); return; }
+    if (project) {
+      await supabase.from('project_audit_log').insert({
+        project_id: project.id,
+        actor_type: 'admin',
+        actor_label: 'admin',
+        action: 'invite_revoked',
+        details: { token_id: t.id, email: t.email },
+      });
+    }
+    toast.success(`Revoked access for ${t.email}`);
+    load();
+  };
+
+  const revokeAllTokens = async () => {
+    if (!project) return;
+    const active = tokens.filter((t) => !t.revoked_at && (!t.expires_at || new Date(t.expires_at) >= new Date()));
+    if (active.length === 0) { toast.info('No active invites to revoke.'); return; }
+    if (!confirm(`Revoke ${active.length} active invite(s)? All clients will lose access immediately.`)) return;
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from('project_access_tokens')
+      .update({ revoked_at: now })
+      .in('id', active.map((t) => t.id));
+    if (error) { toast.error(error.message); return; }
+    await supabase.from('project_audit_log').insert({
+      project_id: project.id,
+      actor_type: 'admin',
+      actor_label: 'admin',
+      action: 'all_invites_revoked',
+      details: { count: active.length, emails: active.map((t) => t.email) },
+    });
+    toast.success(`Revoked ${active.length} invite(s)`);
+    load();
   };
 
   const resendInvite = async (t: Token) => {
