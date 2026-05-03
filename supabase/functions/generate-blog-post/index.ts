@@ -1,7 +1,11 @@
 // AI Blog Post Generator
-// Generates a trilingual blog post (CS/EN/DE) about web design / online business
+// Generates a single English (British English) blog post about web design / online business
 // for FastMedia.Pro's audience (tradespeople, small businesses, service providers).
 // Saves the result as a 'draft' for admin approval.
+//
+// Note: the blog_posts.title/excerpt/content columns are jsonb keyed by language.
+// We write the same English copy under the cs/en/de keys so legacy readers keep working,
+// but only English is ever generated or shown.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
 
@@ -57,13 +61,9 @@ interface ArticlePayload {
   read_time_minutes: number
   tags: string[]
   hero_image_prompt: string
-  title: { cs: string; en: string; de: string }
-  excerpt: { cs: string; en: string; de: string }
-  content: {
-    cs: { sections: Array<{ type: string; text?: string; items?: string[] }> }
-    en: { sections: Array<{ type: string; text?: string; items?: string[] }> }
-    de: { sections: Array<{ type: string; text?: string; items?: string[] }> }
-  }
+  title: string
+  excerpt: string
+  sections: Array<{ type: string; text?: string; items?: string[] }>
 }
 
 async function generateArticle(topic: string): Promise<ArticlePayload> {
@@ -72,23 +72,28 @@ async function generateArticle(topic: string): Promise<ArticlePayload> {
 
   const systemPrompt = `You are the editorial AI for FastMedia.Pro, a high-end web design and digital agency that builds beautiful, conversion-focused websites for tradespeople, service businesses, and small companies (plumbers, photographers, salons, gyms, dentists, gardeners, etc.).
 
-Your job: write a single, beautifully crafted blog article on the given topic, in three languages (Czech, English, German), translated naturally — never word-for-word.
+Your job: write a single, beautifully crafted blog article on the given topic, in BRITISH ENGLISH only.
 
-STRICT RULES:
+LANGUAGE RULES (strict):
+- Use British English spelling throughout (colour, optimise, organisation, behaviour, centre, analyse, programme, licence, traveller, recognise, customise, personalise, etc.).
+- Use British vocabulary and phrasing where it differs from American (e.g. "mobile" not "cell", "high street" not "main street", "shop" not "store", "CV" not "resume", "tradesperson" not "contractor" where appropriate).
+- Use single quotes for inline quotations and the Oxford comma sparingly, in line with British editorial style.
+- Do NOT include any Czech or German text. Do NOT translate. English only.
+
+CONTENT RULES:
 - Never mention specific website-building tools, AI builders, or platform names (no Lovable, Base44, Wix, Squarespace, WordPress, Webflow, etc.).
 - Never mention "AI builders" or "no-code" platforms.
 - Speak about web design principles, what good websites do for businesses, customer psychology, conversion, SEO, photography, branding — focused on the END RESULT for a small business owner.
 - Tone: warm, expert, modern, encouraging — not salesy.
-- Czech is primary, then English, then German.
-- Body length per language: 600–900 words. Use 4–6 short H2 sections, 1–2 short bulleted lists, plus paragraphs.
-- Include a friendly, specific title (not generic clickbait) and a 1-sentence excerpt per language.
+- Length: 600–900 words. Use 4–6 short H2 sections, 1–2 short bulleted lists, plus paragraphs.
+- Include a friendly, specific title (not generic clickbait) and a single-sentence excerpt.
 - Pick a category from: webdesign | seo | marketing | business | tips
 - Suggest 3–5 lowercase tags.
 - Suggest a vivid hero_image_prompt for an image generator: editorial-quality photo, a real-life scene of a tradesperson or small business owner using a beautiful website on a device, or an environment shot — no text, no logos, cinematic lighting.`
 
   const userPrompt = `Topic: ${topic}
 
-Generate the article now using the provided schema. Output content sections as an array of objects: { "type": "paragraph", "text": "..." } or { "type": "heading", "text": "..." } or { "type": "list", "items": ["...", "..."] }. Keep paragraphs reasonably short (2–4 sentences).`
+Generate the article now using the provided schema. Output content sections as an array of objects: { "type": "paragraph", "text": "..." } or { "type": "heading", "text": "..." } or { "type": "list", "items": ["...", "..."] }. Keep paragraphs reasonably short (2–4 sentences). Remember: British English only.`
 
   const response = await fetch(
     'https://ai.gateway.lovable.dev/v1/chat/completions',
@@ -109,7 +114,7 @@ Generate the article now using the provided schema. Output content sections as a
             type: 'function',
             function: {
               name: 'publish_article',
-              description: 'Publish a fully-written trilingual blog article.',
+              description: 'Publish a fully-written British English blog article.',
               parameters: {
                 type: 'object',
                 properties: {
@@ -129,101 +134,25 @@ Generate the article now using the provided schema. Output content sections as a
                     maxItems: 5,
                   },
                   hero_image_prompt: { type: 'string' },
-                  title: {
-                    type: 'object',
-                    properties: {
-                      cs: { type: 'string' },
-                      en: { type: 'string' },
-                      de: { type: 'string' },
-                    },
-                    required: ['cs', 'en', 'de'],
-                  },
-                  excerpt: {
-                    type: 'object',
-                    properties: {
-                      cs: { type: 'string' },
-                      en: { type: 'string' },
-                      de: { type: 'string' },
-                    },
-                    required: ['cs', 'en', 'de'],
-                  },
-                  content: {
-                    type: 'object',
-                    properties: {
-                      cs: {
-                        type: 'object',
-                        properties: {
-                          sections: {
-                            type: 'array',
-                            items: {
-                              type: 'object',
-                              properties: {
-                                type: {
-                                  type: 'string',
-                                  enum: ['paragraph', 'heading', 'list'],
-                                },
-                                text: { type: 'string' },
-                                items: {
-                                  type: 'array',
-                                  items: { type: 'string' },
-                                },
-                              },
-                              required: ['type'],
-                            },
-                          },
+                  title: { type: 'string', description: 'British English title' },
+                  excerpt: { type: 'string', description: 'Single-sentence British English excerpt' },
+                  sections: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        type: {
+                          type: 'string',
+                          enum: ['paragraph', 'heading', 'list'],
                         },
-                        required: ['sections'],
-                      },
-                      en: {
-                        type: 'object',
-                        properties: {
-                          sections: {
-                            type: 'array',
-                            items: {
-                              type: 'object',
-                              properties: {
-                                type: {
-                                  type: 'string',
-                                  enum: ['paragraph', 'heading', 'list'],
-                                },
-                                text: { type: 'string' },
-                                items: {
-                                  type: 'array',
-                                  items: { type: 'string' },
-                                },
-                              },
-                              required: ['type'],
-                            },
-                          },
+                        text: { type: 'string' },
+                        items: {
+                          type: 'array',
+                          items: { type: 'string' },
                         },
-                        required: ['sections'],
                       },
-                      de: {
-                        type: 'object',
-                        properties: {
-                          sections: {
-                            type: 'array',
-                            items: {
-                              type: 'object',
-                              properties: {
-                                type: {
-                                  type: 'string',
-                                  enum: ['paragraph', 'heading', 'list'],
-                                },
-                                text: { type: 'string' },
-                                items: {
-                                  type: 'array',
-                                  items: { type: 'string' },
-                                },
-                              },
-                              required: ['type'],
-                            },
-                          },
-                        },
-                        required: ['sections'],
-                      },
+                      required: ['type'],
                     },
-                    required: ['cs', 'en', 'de'],
                   },
                 },
                 required: [
@@ -234,7 +163,7 @@ Generate the article now using the provided schema. Output content sections as a
                   'hero_image_prompt',
                   'title',
                   'excerpt',
-                  'content',
+                  'sections',
                 ],
               },
             },
@@ -259,7 +188,7 @@ Generate the article now using the provided schema. Output content sections as a
     throw new Error('AI did not return a tool call')
   }
   const parsed = JSON.parse(toolCall.function.arguments) as ArticlePayload
-  parsed.slug = slugify(parsed.slug || parsed.title.en)
+  parsed.slug = slugify(parsed.slug || parsed.title)
   return parsed
 }
 
@@ -365,6 +294,16 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Mirror the British-English copy into the legacy cs/de keys so existing
+    // readers (which may still look up either key) always see the same English text.
+    const titleJson = { cs: article.title, en: article.title, de: article.title }
+    const excerptJson = { cs: article.excerpt, en: article.excerpt, de: article.excerpt }
+    const contentJson = {
+      cs: { sections: article.sections },
+      en: { sections: article.sections },
+      de: { sections: article.sections },
+    }
+
     // Insert as draft (or published if requested)
     const { data: inserted, error: insertErr } = await supabase
       .from('blog_posts')
@@ -374,9 +313,9 @@ Deno.serve(async (req) => {
         read_time_minutes: article.read_time_minutes,
         tags: article.tags,
         hero_image_url: heroUrl,
-        title: article.title,
-        excerpt: article.excerpt,
-        content: article.content,
+        title: titleJson,
+        excerpt: excerptJson,
+        content: contentJson,
         ai_generated: true,
         status: autoPublish ? 'published' : 'draft',
         published_at: autoPublish ? new Date().toISOString() : null,
