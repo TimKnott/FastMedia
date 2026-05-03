@@ -359,6 +359,7 @@ serve(async (req) => {
         score,
         classification,
         aiAnalysis,
+        autoProjectId,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
