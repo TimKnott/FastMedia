@@ -78,6 +78,20 @@ const Navbar = () => {
               </a>
             </div>
 
+            {/* Website Builder shortcut — visible whenever a user is signed in */}
+            {isAuthed && (
+              <Link to="/admin/client-projects" className="shrink-0">
+                <Button
+                  size="sm"
+                  className="h-9 px-3 sm:px-4 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-glow border border-accent/40"
+                  title="Open the Website Builder"
+                >
+                  <LayoutDashboard className="w-4 h-4 sm:mr-1.5" />
+                  <span className="hidden sm:inline">Builder</span>
+                </Button>
+              </Link>
+            )}
+
             <LanguageSwitcher />
 
             {/* CTA Button - hidden on mobile, visible sm+ */}
