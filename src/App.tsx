@@ -53,6 +53,9 @@ const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminHR = lazy(() => import("./pages/admin/AdminHR"));
 const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
 const AdminExport = lazy(() => import("./pages/admin/AdminExport"));
+const AdminClientProjects = lazy(() => import("./pages/admin/AdminClientProjects"));
+const AdminClientProjectDetail = lazy(() => import("./pages/admin/AdminClientProjectDetail"));
+const ClientPortal = lazy(() => import("./pages/portal/ClientPortal"));
 const ProtectedRoute = lazy(() => import("./components/admin/ProtectedRoute"));
 
 // Demo pages (lazy)
@@ -187,6 +190,8 @@ const App = () => (
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
+            {/* Private client review portal — token in URL, no public links */}
+            <Route path="/portal/:token" element={<ClientPortal />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/reset-password" element={<AdminResetPassword />} />
@@ -213,6 +218,8 @@ const App = () => (
               <Route path="hr" element={<AdminHR />} />
               <Route path="integrations" element={<AdminIntegrations />} />
               <Route path="export" element={<AdminExport />} />
+              <Route path="client-projects" element={<AdminClientProjects />} />
+              <Route path="client-projects/:id" element={<AdminClientProjectDetail />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

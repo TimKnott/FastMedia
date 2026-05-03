@@ -204,6 +204,60 @@ export type Database = {
           },
         ]
       }
+      client_projects: {
+        Row: {
+          agreement_ack_ip: string | null
+          agreement_ack_user_agent: string | null
+          agreement_acknowledged_at: string | null
+          agreement_template: string | null
+          agreement_terms: Json
+          brand_color: string | null
+          client_email: string
+          client_name: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          staging_url: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agreement_ack_ip?: string | null
+          agreement_ack_user_agent?: string | null
+          agreement_acknowledged_at?: string | null
+          agreement_template?: string | null
+          agreement_terms?: Json
+          brand_color?: string | null
+          client_email: string
+          client_name: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          staging_url: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agreement_ack_ip?: string | null
+          agreement_ack_user_agent?: string | null
+          agreement_acknowledged_at?: string | null
+          agreement_template?: string | null
+          agreement_terms?: Json
+          brand_color?: string | null
+          client_email?: string
+          client_name?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          staging_url?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       custom_demos: {
         Row: {
           calculator_prompts: Json
@@ -865,6 +919,212 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: []
+      }
+      project_access_tokens: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string
+          email_code_expires_at: string | null
+          email_code_hash: string | null
+          expires_at: string | null
+          id: string
+          last_used_at: string | null
+          project_id: string
+          require_email_code: boolean
+          revoked_at: string | null
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email: string
+          email_code_expires_at?: string | null
+          email_code_hash?: string | null
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          project_id: string
+          require_email_code?: boolean
+          revoked_at?: string | null
+          token: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          email_code_expires_at?: string | null
+          email_code_hash?: string | null
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          project_id?: string
+          require_email_code?: boolean
+          revoked_at?: string | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_access_tokens_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_audit_log: {
+        Row: {
+          action: string
+          actor_label: string | null
+          actor_type: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          project_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_label?: string | null
+          actor_type: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          project_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_label?: string | null
+          actor_type?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          project_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_audit_log_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_notes: {
+        Row: {
+          author_email: string | null
+          author_name: string | null
+          author_type: string
+          color: string
+          created_at: string
+          id: string
+          message: string
+          page_path: string
+          project_id: string
+          resolved_at: string | null
+          selector: string | null
+          status: string
+          updated_at: string
+          viewport_h: number | null
+          viewport_w: number | null
+          x_pct: number | null
+          y_pct: number | null
+        }
+        Insert: {
+          author_email?: string | null
+          author_name?: string | null
+          author_type?: string
+          color?: string
+          created_at?: string
+          id?: string
+          message: string
+          page_path?: string
+          project_id: string
+          resolved_at?: string | null
+          selector?: string | null
+          status?: string
+          updated_at?: string
+          viewport_h?: number | null
+          viewport_w?: number | null
+          x_pct?: number | null
+          y_pct?: number | null
+        }
+        Update: {
+          author_email?: string | null
+          author_name?: string | null
+          author_type?: string
+          color?: string
+          created_at?: string
+          id?: string
+          message?: string
+          page_path?: string
+          project_id?: string
+          resolved_at?: string | null
+          selector?: string | null
+          status?: string
+          updated_at?: string
+          viewport_h?: number | null
+          viewport_w?: number | null
+          x_pct?: number | null
+          y_pct?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_notes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_snapshots: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          label: string
+          notes: string | null
+          project_id: string
+          screenshot_url: string | null
+          staging_url: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label: string
+          notes?: string | null
+          project_id: string
+          screenshot_url?: string | null
+          staging_url: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label?: string
+          notes?: string | null
+          project_id?: string
+          screenshot_url?: string | null
+          staging_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_snapshots_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       recurring_invoices: {
         Row: {
