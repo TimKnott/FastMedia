@@ -30,4 +30,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'ai-inbound-reply': aiInboundReply,
   'portal-invite': portalInvite,
   'client-stage-update': clientStageUpdate,
+  'intake-received': intakeReceived,
 }
