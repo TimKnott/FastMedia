@@ -211,6 +211,7 @@ serve(async (req) => {
         quote_one_time: body.quoteOneTime,
         quote_monthly: body.quoteMonthly,
         labor_hours: body.laborHours,
+        budget_range: classifyBudget(body.quoteOneTime, body.quoteMonthly),
         ai_analysis: aiAnalysis,
         source: "calculator",
         language: body.language || "en",
