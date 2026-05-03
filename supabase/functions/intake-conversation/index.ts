@@ -161,6 +161,101 @@ async function aiRephrase(seed: string, language: string, history: Turn[], conte
   }
 }
 
+// AI-driven slot selection: given the candidate slots that are still unanswered,
+// let the model pick which one to ask next based on what would most de-risk the
+// proposal. Falls back to the rules-based default if anything goes wrong.
+async function aiPickSlot(
+  defaultKey: string,
+  candidates: { key: string; seed: string }[],
+  history: Turn[],
+  context: string,
+  language: string,
+): Promise<{ key: string; reason?: string; done?: boolean }> {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY || candidates.length <= 1) return { key: defaultKey };
+  try {
+    const allowed = candidates.map((c) => c.key);
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-lite",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a senior website-agency intake strategist. Pick the single next question that will most reduce risk in the proposal, given what we already know. Prefer required slots (timeline, decision_maker, budget_fit) before optional ones. If the user has clearly given enough to write a proposal, you MAY return done=true. Always pick from the allowed keys.",
+          },
+          {
+            role: "user",
+            content: `Language: ${language}\nContext: ${context}\nTranscript so far: ${JSON.stringify(
+              history.map((h) => ({ key: h.key, q: h.question, a: h.answer })),
+            )}\nAllowed next keys (in default priority order): ${JSON.stringify(allowed)}\nDefault next: ${defaultKey}`,
+          },
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "pick_next_slot",
+              description: "Pick the most useful next intake question.",
+              parameters: {
+                type: "object",
+                properties: {
+                  key: { type: "string", enum: allowed },
+                  reason: { type: "string", description: "≤15 words on why this question is most useful next." },
+                  done: { type: "boolean", description: "True only if no further question is needed." },
+                },
+                required: ["key"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ],
+        tool_choice: { type: "function", function: { name: "pick_next_slot" } },
+      }),
+    });
+    if (!resp.ok) return { key: defaultKey };
+    const data = await resp.json();
+    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    if (!args) return { key: defaultKey };
+    const parsed = JSON.parse(args);
+    if (!allowed.includes(parsed.key)) return { key: defaultKey };
+    return parsed;
+  } catch {
+    return { key: defaultKey };
+  }
+}
+
+// Build the full ordered list of unanswered candidate slots (rules pass).
+function candidateSlots(
+  history: Turn[],
+  context: { specialRequest?: string },
+): { key: string; seed: string }[] {
+  const answered = new Set(history.map((h) => h.key));
+  const allText = [context.specialRequest || "", ...history.map((h) => h.answer)].join(" ");
+  const order: string[] = ["timeline"];
+  const tl = answerFor(history, "timeline");
+  if (tl && answerSignals.urgent(tl)) order.push("urgency_reason");
+  order.push("decision_maker");
+  const dm = answerFor(history, "decision_maker");
+  if (dm && answerSignals.hasOtherDecider(dm)) order.push("decision_maker_who");
+  order.push("budget_fit");
+  const bf = answerFor(history, "budget_fit");
+  if (bf && answerSignals.budgetDiscomfort(bf)) order.push("budget_adjust");
+  if (!answerSignals.contentMentioned(allText)) order.push("content_readiness");
+  order.push("success_metric");
+  if (!answerSignals.toneMentioned(allText)) order.push("tone");
+  order.push("extra");
+  const out: { key: string; seed: string }[] = [];
+  for (const k of order) {
+    if (answered.has(k)) continue;
+    const slot = SLOTS[k];
+    if (slot) out.push({ key: k, seed: slot.seed });
+  }
+  return out;
+}
+
 async function aiSummarise(language: string, context: string, history: Turn[]) {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   const get = (k: string) => history.find((h) => h.key === k)?.answer ?? null;
@@ -272,9 +367,25 @@ serve(async (req) => {
       );
     }
 
-    const phrased = await aiRephrase(slot.seed, language, history, context);
+    // AI-driven slot selection on top of the rules-based default.
+    const candidates = candidateSlots(history, { specialRequest: body.specialRequest });
+    let chosen = slot;
+    if (history.length >= 2 && candidates.length > 1) {
+      const pick = await aiPickSlot(slot.key, candidates, history, context, language);
+      if (pick.done && history.length >= 3) {
+        const brief = await aiSummarise(language, context, history);
+        return new Response(
+          JSON.stringify({ done: true, ...brief, transcript: history }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      const match = candidates.find((c) => c.key === pick.key);
+      if (match) chosen = match;
+    }
+
+    const phrased = await aiRephrase(chosen.seed, language, history, context);
     return new Response(
-      JSON.stringify({ done: false, key: slot.key, question: phrased }),
+      JSON.stringify({ done: false, key: chosen.key, question: phrased, transcript: history }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
