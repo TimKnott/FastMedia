@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail } from 'lucide-react';
+import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail, ShieldOff, RefreshCw, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Note {
@@ -33,6 +33,17 @@ interface Token {
   created_at: string;
 }
 
+interface AuditEntry {
+  id: string;
+  action: string;
+  actor_type: string;
+  actor_label: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  details: any;
+  created_at: string;
+}
+
 const COLUMNS: Array<{ id: Note['status']; label: string }> = [
   { id: 'todo', label: 'To do' },
   { id: 'in_progress', label: 'In progress' },
@@ -42,16 +53,56 @@ const COLUMNS: Array<{ id: Note['status']; label: string }> = [
 const EXPIRY_OPTIONS = [7, 14, 30, 60, 90] as const;
 const DEFAULT_EXPIRY_DAYS = 30;
 
+const AUDIT_FILTERS: Array<{ value: string; label: string }> = [
+  { value: 'all', label: 'All events' },
+  { value: 'portal_loaded', label: 'Portal opened' },
+  { value: 'note_added', label: 'Note added' },
+  { value: 'note_updated', label: 'Note updated' },
+  { value: 'note_deleted', label: 'Note deleted' },
+  { value: 'agreement_acknowledged', label: 'Agreement signed' },
+  { value: 'invite_issued', label: 'Invite issued' },
+  { value: 'invite_resent', label: 'Invite resent' },
+  { value: 'invite_extended', label: 'Invite extended' },
+  { value: 'invite_revoked', label: 'Invite revoked' },
+  { value: 'all_invites_revoked', label: 'All invites revoked' },
+];
+
+const auditLabel = (action: string) =>
+  AUDIT_FILTERS.find((f) => f.value === action)?.label ?? action.replace(/_/g, ' ');
+
+const auditBadge = (action: string): 'default' | 'destructive' | 'outline' | 'secondary' => {
+  if (action.includes('revoked') || action.includes('deleted')) return 'destructive';
+  if (action === 'portal_loaded' || action === 'agreement_acknowledged') return 'default';
+  if (action.startsWith('invite_')) return 'secondary';
+  return 'outline';
+};
+
 const AdminClientProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<any | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [tokens, setTokens] = useState<Token[]>([]);
+  const [audit, setAudit] = useState<AuditEntry[]>([]);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [auditFilter, setAuditFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [expiryDays, setExpiryDays] = useState<number>(DEFAULT_EXPIRY_DAYS);
+
+  const loadAudit = async (projectId: string) => {
+    setAuditLoading(true);
+    const { data, error } = await supabase
+      .from('project_audit_log')
+      .select('*')
+      .eq('project_id', projectId)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) toast.error(error.message);
+    setAudit((data as AuditEntry[]) || []);
+    setAuditLoading(false);
+  };
 
   const load = async () => {
     if (!id) return;
@@ -66,6 +117,7 @@ const AdminClientProjectDetail = () => {
     setNotes((n.data as Note[]) || []);
     setTokens((t.data as Token[]) || []);
     setLoading(false);
+    loadAudit(id);
   };
 
   useEffect(() => { load(); }, [id]);
@@ -138,13 +190,46 @@ const AdminClientProjectDetail = () => {
     load();
   };
 
-  const revokeToken = async (tokenId: string) => {
+  const revokeToken = async (t: Token) => {
+    if (!confirm(`Revoke access for ${t.email}? They will be cut off immediately.`)) return;
     const { error } = await supabase
       .from('project_access_tokens')
       .update({ revoked_at: new Date().toISOString() })
-      .eq('id', tokenId);
-    if (error) toast.error(error.message);
-    else { toast.success('Revoked'); load(); }
+      .eq('id', t.id);
+    if (error) { toast.error(error.message); return; }
+    if (project) {
+      await supabase.from('project_audit_log').insert({
+        project_id: project.id,
+        actor_type: 'admin',
+        actor_label: 'admin',
+        action: 'invite_revoked',
+        details: { token_id: t.id, email: t.email },
+      });
+    }
+    toast.success(`Revoked access for ${t.email}`);
+    load();
+  };
+
+  const revokeAllTokens = async () => {
+    if (!project) return;
+    const active = tokens.filter((t) => !t.revoked_at && (!t.expires_at || new Date(t.expires_at) >= new Date()));
+    if (active.length === 0) { toast.info('No active invites to revoke.'); return; }
+    if (!confirm(`Revoke ${active.length} active invite(s)? All clients will lose access immediately.`)) return;
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from('project_access_tokens')
+      .update({ revoked_at: now })
+      .in('id', active.map((t) => t.id));
+    if (error) { toast.error(error.message); return; }
+    await supabase.from('project_audit_log').insert({
+      project_id: project.id,
+      actor_type: 'admin',
+      actor_label: 'admin',
+      action: 'all_invites_revoked',
+      details: { count: active.length, emails: active.map((t) => t.email) },
+    });
+    toast.success(`Revoked ${active.length} invite(s)`);
+    load();
   };
 
   const resendInvite = async (t: Token) => {
@@ -246,7 +331,14 @@ const AdminClientProjectDetail = () => {
 
       {/* Active invites */}
       <Card className="p-4">
-        <h2 className="font-display font-semibold text-foreground mb-3">Active invites</h2>
+        <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+          <h2 className="font-display font-semibold text-foreground">Active invites</h2>
+          {tokens.some((t) => !t.revoked_at && (!t.expires_at || new Date(t.expires_at) >= new Date())) && (
+            <Button size="sm" variant="destructive" onClick={revokeAllTokens}>
+              <ShieldOff className="w-3.5 h-3.5 mr-1.5" /> Revoke all access
+            </Button>
+          )}
+        </div>
         {tokens.length === 0 ? (
           <p className="text-sm text-muted-foreground">No invites yet.</p>
         ) : (
@@ -293,13 +385,84 @@ const AdminClientProjectDetail = () => {
                     </select>
                   )}
                   {!t.revoked_at && (
-                    <Button size="sm" variant="ghost" onClick={() => revokeToken(t.id)}>
+                    <Button size="sm" variant="ghost" onClick={() => revokeToken(t)} title={`Revoke ${t.email}`}>
                       <Trash2 className="w-3.5 h-3.5 text-destructive" />
                     </Button>
                   )}
                 </div>
               );
             })}
+          </div>
+        )}
+      </Card>
+
+      {/* Access audit */}
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-primary" />
+            <h2 className="font-display font-semibold text-foreground">Access audit</h2>
+            <Badge variant="outline" className="text-[10px]">{audit.length}</Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <select
+              value={auditFilter}
+              onChange={(e) => setAuditFilter(e.target.value)}
+              className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+            >
+              {AUDIT_FILTERS.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </select>
+            <Button size="sm" variant="ghost" onClick={() => id && loadAudit(id)} disabled={auditLoading}>
+              <RefreshCw className={`w-3.5 h-3.5 ${auditLoading ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
+        </div>
+        {auditLoading && audit.length === 0 ? (
+          <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+        ) : audit.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No portal activity recorded yet.</p>
+        ) : (
+          <div className="max-h-[420px] overflow-y-auto divide-y divide-border">
+            {audit
+              .filter((a) => auditFilter === 'all' || a.action === auditFilter)
+              .map((a) => {
+                const when = new Date(a.created_at);
+                const actor = a.actor_type === 'client'
+                  ? (a.actor_label || a.details?.email || 'Client')
+                  : (a.actor_label || 'Admin');
+                return (
+                  <div key={a.id} className="py-2.5 flex items-start gap-3 text-sm">
+                    <Badge variant={auditBadge(a.action)} className="text-[10px] shrink-0 mt-0.5">
+                      {auditLabel(a.action)}
+                    </Badge>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-foreground">{actor}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{a.actor_type}</span>
+                        {a.ip_address && (
+                          <code className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">{a.ip_address}</code>
+                        )}
+                      </div>
+                      {a.details && Object.keys(a.details).length > 0 && (
+                        <p className="text-[11px] text-muted-foreground mt-0.5 truncate" title={JSON.stringify(a.details)}>
+                          {Object.entries(a.details)
+                            .filter(([k]) => !['emails'].includes(k))
+                            .map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`)
+                            .join(' · ')}
+                        </p>
+                      )}
+                      {a.user_agent && (
+                        <p className="text-[10px] text-muted-foreground/70 mt-0.5 truncate" title={a.user_agent}>{a.user_agent}</p>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap">
+                      {when.toLocaleString()}
+                    </span>
+                  </div>
+                );
+              })}
           </div>
         )}
       </Card>
