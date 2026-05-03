@@ -54,7 +54,7 @@ const answerSignals = {
     ),
   // Already covered content readiness in special request or any answer
   contentMentioned: (text: string) =>
-    /(have (the )?(copy|photos|brand|assets|logo|content)|máme (texty|fotky|brand|loga|obsah)|haben (texte|fotos|marke|logos|inhalte)|need (copy|photos|content)|potřebujeme (texty|fotky)|brauchen (texte|fotos))/i.test(
+    /(have\b[^.]*\b(copy|photos?|brand|assets|logo|content|images?)|máme\s+(?:už\s+)?(texty|fotky|fotografie|brand|loga|obsah)|haben\s+(?:bereits\s+|schon\s+)?(texte|fotos|marke|logos|inhalte|bilder)|need (copy|photos?|content|images?)|potřebujeme (texty|fotky|obsah)|brauchen (texte|fotos|inhalte))/i.test(
       text,
     ),
   // Already conveyed tone in special request or any answer
