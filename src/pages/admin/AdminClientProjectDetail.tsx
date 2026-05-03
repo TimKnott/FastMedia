@@ -106,16 +106,36 @@ const AdminClientProjectDetail = () => {
     if (!project) return;
     try {
       const { data, error } = await supabase.functions.invoke('portal-issue-invite', {
-        body: { project_id: project.id, email: project.client_email, expires_in_days: 60 },
+        body: { project_id: project.id, email: project.client_email, expires_in_days: expiryDays },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       navigator.clipboard.writeText(data.portal_url).catch(() => {});
-      toast.success('Invite issued — link copied');
+      toast.success(`Invite issued (expires in ${expiryDays} days) — link copied`);
       load();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Failed');
     }
+  };
+
+  const extendExpiry = async (t: Token, days: number) => {
+    const newExpiry = new Date(Date.now() + days * 86400_000).toISOString();
+    const { error } = await supabase
+      .from('project_access_tokens')
+      .update({ expires_at: newExpiry })
+      .eq('id', t.id);
+    if (error) { toast.error(error.message); return; }
+    if (project) {
+      await supabase.from('project_audit_log').insert({
+        project_id: project.id,
+        actor_type: 'admin',
+        actor_label: 'admin',
+        action: 'invite_extended',
+        details: { token_id: t.id, email: t.email, new_expires_at: newExpiry, days },
+      });
+    }
+    toast.success(`Extended ${t.email} by ${days} days`);
+    load();
   };
 
   const revokeToken = async (tokenId: string) => {
