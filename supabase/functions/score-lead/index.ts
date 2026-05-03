@@ -294,18 +294,54 @@ serve(async (req) => {
           unit_price: 0,
         }));
 
+        // Inline draft agreement so the portal "View draft agreement" CTA shows
+        // immediately. Admin can edit it freely from the back-office afterwards.
+        const draftAgreement = `PRIVATE & CONFIDENTIAL
+
+To: ${body.name.trim()}
+From: FastMedia.Pro
+Date: ${new Date().toLocaleDateString("en-GB")}
+
+Dear ${body.name.trim()},
+
+Thank you for choosing FastMedia.Pro for your ${body.trade} project. Below is the draft Service Contract for your review.
+
+DOCUMENT 1: MASTER WEBSITE DEVELOPMENT & SERVICE CONTRACT
+
+Between: FastMedia.Pro (the "Service Provider")
+And: ${body.name.trim()} (the "Client")
+
+1.0 PROJECT SCOPE
+Delivery of a bespoke ${body.trade} website covering the features captured in your intake brief.
+
+2.0 FINANCIAL TERMS
+- Development Fee: ${(Number(body.quoteOneTime) || 0).toLocaleString("en-GB")} CZK (one-time), payable as a 25% deposit to start the project, balance on launch.
+- Hosting & Maintenance: ${(Number(body.quoteMonthly) || 0).toLocaleString("en-GB")} CZK per month (annual billing available).
+- All figures exclude VAT.
+
+3.0 INTAKE BRIEF
+${intakeSummary || body.specialRequest || "Captured during the conversational intake."}
+
+4.0 NEXT STEPS
+A senior FastMedia.Pro consultant will personally review this draft within one working day, refine the figures and scope, and then re-issue the final agreement for your signature ahead of the deposit invoice.
+
+This is a working draft — no payment is due until you have approved the final version.
+
+— FastMedia.Pro`;
+
         const { data: project, error: projErr } = await supabaseAdmin
           .from("client_projects")
           .insert({
             name: `${body.name.trim()} — ${body.trade}`,
             client_name: body.name.trim(),
             client_email: body.email.trim().toLowerCase(),
-            staging_url: "https://fastmedia.pro",
+            staging_url: "https://fastmedia.pro?lang=en",
             status: "in_review",
             currency: "CZK",
             dev_fee: Number(body.quoteOneTime) || 0,
             hosting_fee_yearly: (Number(body.quoteMonthly) || 0) * 12,
             fee_line_items: feeLineItems,
+            agreement_template: draftAgreement,
             agreement_terms: {
               source: "auto_intake",
               lead_id: lead.id,
@@ -322,34 +358,69 @@ serve(async (req) => {
           console.error("Auto-create project error:", projErr.message);
         } else if (project) {
           autoProjectId = project.id;
+
+          // Issue a portal access token so the client gets a working private link.
+          const tokenBytes = new Uint8Array(32);
+          crypto.getRandomValues(tokenBytes);
+          const portalToken = Array.from(tokenBytes)
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
+          const tokenExpiresAt = new Date(Date.now() + 30 * 86400_000).toISOString();
+
+          const { error: tokenErr } = await supabaseAdmin
+            .from("project_access_tokens")
+            .insert({
+              project_id: project.id,
+              token: portalToken,
+              email: body.email.trim().toLowerCase(),
+              expires_at: tokenExpiresAt,
+            });
+          if (tokenErr) console.error("Token insert error:", tokenErr.message);
+
+          const safeSlug = (project.slug || "").replace(/[^a-z0-9-]/gi, "").toLowerCase();
+          const clientPortalUrl = safeSlug
+            ? `https://fastmedia.pro/portal/${safeSlug}/${portalToken}`
+            : `https://fastmedia.pro/portal/${portalToken}`;
+          // CORRECT admin route — App.tsx mounts AdminClientProjectDetail at /admin/client-projects/:id
+          const adminProjectUrl = `https://fastmedia.pro/admin/client-projects/${project.id}`;
+
           await supabaseAdmin.from("project_audit_log").insert({
             project_id: project.id,
             actor_type: "system",
             actor_label: "score-lead auto-promotion",
             action: "auto_draft_created",
-            details: { lead_id: lead.id, classification, score },
+            details: { lead_id: lead.id, classification, score, portal_url: clientPortalUrl },
           });
           await supabaseAdmin.from("lead_activities").insert({
             lead_id: lead.id,
             activity_type: "promoted",
             description: `Auto-promoted to draft project (${classification}). Project ${project.id}`,
-            metadata: { project_id: project.id, project_slug: project.slug },
+            metadata: { project_id: project.id, project_slug: project.slug, portal_url: clientPortalUrl },
           });
 
-          const adminPortalUrl = `https://fastmedia.pro/admin/clients/${project.id}`;
-          // Notify admin the draft is ready for review
+          // Admin: notify the draft is ready for internal review (correct URL)
           await sendEmail("client-stage-update", adminEmail, `stage-admin-draft-${project.id}`, {
             audience: "admin",
             stage: "draft_created",
             projectName: project.name,
             clientEmail: body.email.trim().toLowerCase(),
-            portalUrl: adminPortalUrl,
+            portalUrl: adminProjectUrl,
+          });
+
+          // Client: branded portal link with the draft agreement ready to view
+          await sendEmail("client-stage-update", body.email.trim().toLowerCase(), `stage-client-draft-${project.id}`, {
+            audience: "client",
+            stage: "draft_created",
+            recipientName: body.name.trim().split(" ")[0],
+            projectName: project.name,
+            portalUrl: clientPortalUrl,
           });
         }
       } catch (autoErr) {
         console.error("Auto-promotion error (non-blocking):", autoErr instanceof Error ? autoErr.message : "Unknown");
       }
     }
+
 
 
     return new Response(

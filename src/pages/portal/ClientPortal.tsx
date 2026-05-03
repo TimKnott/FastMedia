@@ -104,6 +104,32 @@ const ClientPortal = () => {
     }
   }, [data]);
 
+  // Lock the portal (and the embedded marketing site) to British English regardless
+  // of any preference the visitor's browser may have stored from a previous visit.
+  useEffect(() => {
+    try {
+      localStorage.setItem('fastmedia-language', 'en');
+      document.documentElement.setAttribute('lang', 'en-GB');
+    } catch {
+      /* ignore storage errors */
+    }
+  }, []);
+
+  // Always append ?lang=en to the iframe URL so the marketing site picks up
+  // English even on its first paint.
+  const iframeSrc = useMemo(() => {
+    const raw = data?.project?.staging_url || '';
+    if (!raw) return '';
+    try {
+      const u = new URL(raw);
+      u.searchParams.set('lang', 'en');
+      return u.toString();
+    } catch {
+      return raw + (raw.includes('?') ? '&' : '?') + 'lang=en';
+    }
+  }, [data?.project?.staging_url]);
+
+
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (overlayMode !== 'pin') return;
     const rect = overlayRef.current?.getBoundingClientRect();
@@ -216,9 +242,9 @@ const ClientPortal = () => {
           {project.agreement_template && (
             <Dialog open={showAgreement} onOpenChange={setShowAgreement}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant={project.agreement_acknowledged_at ? 'outline' : 'default'}>
                   <FileText className="w-4 h-4 mr-1.5" />
-                  Agreement
+                  {project.agreement_acknowledged_at ? 'Agreement' : 'View draft agreement'}
                   {project.agreement_acknowledged_at && (
                     <Check className="w-3.5 h-3.5 ml-1 text-emerald-500" />
                   )}
@@ -313,7 +339,7 @@ const ClientPortal = () => {
 
       <main className="flex-1 relative bg-muted/30">
         <iframe
-          src={project.staging_url}
+          src={iframeSrc}
           title={project.name}
           className="absolute inset-0 w-full h-full border-0 bg-background"
           sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
