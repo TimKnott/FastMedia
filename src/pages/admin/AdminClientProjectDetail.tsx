@@ -331,7 +331,14 @@ const AdminClientProjectDetail = () => {
 
       {/* Active invites */}
       <Card className="p-4">
-        <h2 className="font-display font-semibold text-foreground mb-3">Active invites</h2>
+        <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+          <h2 className="font-display font-semibold text-foreground">Active invites</h2>
+          {tokens.some((t) => !t.revoked_at && (!t.expires_at || new Date(t.expires_at) >= new Date())) && (
+            <Button size="sm" variant="destructive" onClick={revokeAllTokens}>
+              <ShieldOff className="w-3.5 h-3.5 mr-1.5" /> Revoke all access
+            </Button>
+          )}
+        </div>
         {tokens.length === 0 ? (
           <p className="text-sm text-muted-foreground">No invites yet.</p>
         ) : (
