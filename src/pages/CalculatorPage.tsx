@@ -304,6 +304,51 @@ const CalculatorPage = () => {
     }
   };
 
+  // Conversational intake
+  const fetchNextIntent = useCallback(async (history: IntentTurn[]) => {
+    setIntentLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('intake-conversation', {
+        body: {
+          language: lang,
+          trade: selectedTrade,
+          selectedFeatures,
+          specialRequest: specialRequest.trim() || undefined,
+          quoteOneTime: grandTotalOneTime,
+          quoteMonthly: totalMonthly,
+          history,
+        },
+      });
+      if (error) throw error;
+      if (data?.done) {
+        setIntentBrief({ summary: data.summary, intent: data.intent });
+        setIntentCurrent(null);
+      } else if (data?.question) {
+        setIntentCurrent({ key: data.key, question: data.question });
+        setIntentAnswer('');
+      }
+    } catch (e) {
+      console.error(e);
+      // Soft-fail: let the user proceed even if AI is down
+      setIntentCurrent(null);
+      setIntentBrief({ summary: '', intent: {} });
+    } finally {
+      setIntentLoading(false);
+    }
+  }, [lang, selectedTrade, selectedFeatures, specialRequest, grandTotalOneTime, totalMonthly]);
+
+  const submitIntentAnswer = useCallback(() => {
+    if (!intentCurrent || !intentAnswer.trim() || intentLoading) return;
+    const next: IntentTurn[] = [
+      ...intentHistory,
+      { key: intentCurrent.key, question: intentCurrent.question, answer: intentAnswer.trim() },
+    ];
+    setIntentHistory(next);
+    setIntentCurrent(null);
+    setIntentAnswer('');
+    fetchNextIntent(next);
+  }, [intentCurrent, intentAnswer, intentLoading, intentHistory, fetchNextIntent]);
+
   // Submit lead
   const submitLead = async () => {
     if (!contactName.trim() || !contactEmail.trim() || !gdprConsent) return;
@@ -328,6 +373,9 @@ const CalculatorPage = () => {
           laborHours: totalLaborHours,
           language: lang,
           gdprConsent: true,
+          intent: intentBrief?.intent ?? null,
+          intentSummary: intentBrief?.summary ?? null,
+          intentTranscript: intentHistory.length ? intentHistory : null,
         },
       });
       if (error) throw error;
