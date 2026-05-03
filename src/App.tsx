@@ -190,7 +190,8 @@ const App = () => (
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
-            {/* Private client review portal — token in URL, no public links */}
+            {/* Private client review portal — branded slug masks the token. Both shapes work. */}
+            <Route path="/portal/:slug/:token" element={<ClientPortal />} />
             <Route path="/portal/:token" element={<ClientPortal />} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
