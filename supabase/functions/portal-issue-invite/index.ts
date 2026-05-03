@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
     // Verify project exists
     const { data: project, error: projErr } = await admin
       .from('client_projects')
-      .select('id, name, client_name')
+      .select('id, name, client_name, slug')
       .eq('id', project_id)
       .single()
     if (projErr || !project) {
@@ -78,7 +78,12 @@ Deno.serve(async (req) => {
     })
     if (insertErr) throw insertErr
 
-    const portalUrl = `${SITE_URL}/portal/${token}`
+    // Branded portal URL — slug masks the random token so the link reads as the
+    // business name rather than a generic preview address.
+    const slug = (project.slug || '').replace(/[^a-z0-9-]/gi, '').toLowerCase()
+    const portalUrl = slug
+      ? `${SITE_URL}/portal/${slug}/${token}`
+      : `${SITE_URL}/portal/${token}`
 
     // Audit
     await admin.from('project_audit_log').insert({
