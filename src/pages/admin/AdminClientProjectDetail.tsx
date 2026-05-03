@@ -609,6 +609,42 @@ const AdminClientProjectDetail = () => {
             ✓ Acknowledged by client {new Date(project.agreement_acknowledged_at).toLocaleString()} · IP {project.agreement_ack_ip}
           </p>
         )}
+
+        {/* Stage actions — branded client emails per stage */}
+        <div className="mt-3 pt-3 border-t border-border space-y-2">
+          <h3 className="text-xs font-semibold text-foreground uppercase tracking-wide">Agreement stages</h3>
+          <p className="text-[11px] text-muted-foreground">
+            Each action sends a branded email to the client (and a copy to admin) with a link to their private project area.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-2 text-xs">
+              <Badge variant={project.draft_emailed_at ? 'default' : 'outline'}>
+                {project.draft_emailed_at ? `✓ Draft sent ${new Date(project.draft_emailed_at).toLocaleDateString()}` : 'Draft not sent'}
+              </Badge>
+              <span className="text-muted-foreground">(auto on first save)</span>
+            </div>
+            <Button
+              size="sm"
+              variant={project.agreement_signed_off_at ? 'outline' : 'default'}
+              onClick={markSignedOff}
+              disabled={!project.agreement_template || !project.client_email}
+            >
+              {project.agreement_signed_off_at
+                ? `✓ Signed off ${new Date(project.agreement_signed_off_at).toLocaleDateString()} — resend`
+                : 'Mark signed-off & email client'}
+            </Button>
+            <Button
+              size="sm"
+              variant={project.deposit_paid_at ? 'outline' : 'default'}
+              onClick={markDepositPaid}
+              disabled={!project.client_email}
+            >
+              {project.deposit_paid_at
+                ? `✓ Deposit paid ${new Date(project.deposit_paid_at).toLocaleDateString()} — resend`
+                : 'Mark deposit paid & email client'}
+            </Button>
+          </div>
+        </div>
       </Card>
 
       {/* Active invites */}
