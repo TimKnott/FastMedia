@@ -433,7 +433,14 @@ const CalculatorPage = () => {
   const goNext = () => {
     setDirection(1);
     const idx = allSteps.indexOf(step);
-    if (idx < allSteps.length - 1) setStep(allSteps[idx + 1]);
+    if (idx < allSteps.length - 1) {
+      const next = allSteps[idx + 1];
+      setStep(next);
+      // Kick off the conversational intake when entering the intent step.
+      if (next === 'intent' && !intentCurrent && !intentBrief && !intentLoading) {
+        fetchNextIntent(intentHistory);
+      }
+    }
   };
 
   const goBack = () => {
