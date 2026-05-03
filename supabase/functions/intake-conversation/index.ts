@@ -367,9 +367,25 @@ serve(async (req) => {
       );
     }
 
-    const phrased = await aiRephrase(slot.seed, language, history, context);
+    // AI-driven slot selection on top of the rules-based default.
+    const candidates = candidateSlots(history, { specialRequest: body.specialRequest });
+    let chosen = slot;
+    if (history.length >= 2 && candidates.length > 1) {
+      const pick = await aiPickSlot(slot.key, candidates, history, context, language);
+      if (pick.done && history.length >= 3) {
+        const brief = await aiSummarise(language, context, history);
+        return new Response(
+          JSON.stringify({ done: true, ...brief, transcript: history }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      const match = candidates.find((c) => c.key === pick.key);
+      if (match) chosen = match;
+    }
+
+    const phrased = await aiRephrase(chosen.seed, language, history, context);
     return new Response(
-      JSON.stringify({ done: false, key: slot.key, question: phrased }),
+      JSON.stringify({ done: false, key: chosen.key, question: phrased, transcript: history }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
