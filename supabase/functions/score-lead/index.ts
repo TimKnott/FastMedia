@@ -168,6 +168,18 @@ serve(async (req) => {
       }
     }
 
+    // Merge conversational intake brief into ai_analysis
+    if (body.intent || body.intentSummary || body.intentTranscript) {
+      aiAnalysis = {
+        ...(aiAnalysis || {}),
+        intake: {
+          summary: body.intentSummary || null,
+          intent: body.intent || null,
+          transcript: body.intentTranscript || null,
+        },
+      };
+    }
+
     // Insert lead
     const leadIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
     const userAgent = req.headers.get("user-agent")?.substring(0, 500);
