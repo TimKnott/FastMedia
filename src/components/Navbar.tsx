@@ -1,15 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2, Download, MessageCircle, Contact } from 'lucide-react';
+import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.jpeg';
 
 const Navbar = () => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthed(!!session);
+    });
+    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+    return () => { sub.subscription.unsubscribe(); };
+  }, []);
 
   const navLinks: { href: string; label: string; isRoute?: boolean; mobileOnly?: boolean }[] = [
     { href: '#demos', label: t('nav.demos') },
