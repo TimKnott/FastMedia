@@ -50,6 +50,17 @@ function classifyScore(score: number): string {
   return "cold";
 }
 
+// Bucket the project's total first-year cost (one-time + 12 months) into a
+// queryable budget band so admins can filter/report by bracket.
+function classifyBudget(oneTime: number, monthly: number): string {
+  const firstYear = (Number(oneTime) || 0) + (Number(monthly) || 0) * 12;
+  if (firstYear < 25_000) return "under_25k";
+  if (firstYear < 50_000) return "25k_50k";
+  if (firstYear < 100_000) return "50k_100k";
+  if (firstYear < 250_000) return "100k_250k";
+  return "over_250k";
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
