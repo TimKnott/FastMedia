@@ -123,6 +123,19 @@ const Navbar = () => {
             className="bg-card border-t border-border"
           >
             <div className="container mx-auto px-4 py-4 space-y-3">
+              {isAuthed && (
+                <Link
+                  to="/admin/client-projects"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-between gap-3 p-3 rounded-lg bg-primary text-primary-foreground font-semibold shadow-glow"
+                >
+                  <span className="flex items-center gap-2">
+                    <LayoutDashboard className="w-4 h-4" />
+                    Open Website Builder
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wide opacity-80">Signed in</span>
+                </Link>
+              )}
               {navLinks.map((link) =>
                 link.isRoute ? (
                   <Link
