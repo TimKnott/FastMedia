@@ -258,7 +258,7 @@ const AdminClientProjectDetail = () => {
 
   const resendInvite = async (t: Token) => {
     if (!project) return;
-    const url = `${window.location.origin}/portal/${t.token}`;
+    const url = portalUrlForToken(t.token);
     try {
       const { error } = await supabase.functions.invoke('send-transactional-email', {
         body: {
@@ -368,7 +368,7 @@ const AdminClientProjectDetail = () => {
         ) : (
           <div className="space-y-2">
             {tokens.map((t) => {
-              const url = `${window.location.origin}/portal/${t.token}`;
+              const url = portalUrlForToken(t.token);
               const expired = t.expires_at && new Date(t.expires_at) < new Date();
               const daysLeft = t.expires_at && !expired
                 ? Math.max(0, Math.ceil((new Date(t.expires_at).getTime() - Date.now()) / 86400_000))
