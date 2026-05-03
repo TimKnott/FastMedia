@@ -8,11 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail, ShieldOff, RefreshCw, Activity, Eye } from 'lucide-react';
+import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail, ShieldOff, RefreshCw, Activity, Eye, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { ClientBrandingEditor } from '@/components/admin/ClientBrandingEditor';
 import { ClientProjectFeesEditor } from '@/components/admin/ClientProjectFeesEditor';
 import { DEFAULT_AGREEMENT_TEMPLATE, renderAgreement } from '@/lib/agreementTemplate';
+import { downloadAgreementPdf } from '@/lib/agreementPdf';
 
 interface Note {
   id: string;
@@ -401,6 +402,35 @@ const AdminClientProjectDetail = () => {
                 Load master template
               </Button>
             )}
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!project.agreement_template}
+              onClick={() => {
+                downloadAgreementPdf({
+                  template: project.agreement_template || '',
+                  context: {
+                    client_name: project.client_name || '',
+                    project_name: project.name || '',
+                    service_provider_name: 'Tim Knott, FastMedia.Pro',
+                    service_provider_address: '200 Na Skala, Telce, Peruc 44001',
+                    date: new Date().toLocaleDateString('en-GB'),
+                    currency: project.currency || 'CZK',
+                    dev_fee: Number(project.dev_fee || 0),
+                    hosting_fee_yearly: Number(project.hosting_fee_yearly || 0),
+                    ai_token_ratio: Number(project.ai_token_ratio || 3),
+                    ai_cost_per_unit: Number(project.ai_cost_per_unit || 0.35),
+                    ai_units_per_user: Number(project.ai_units_per_user || 1),
+                    deposit_pct: Number(project.deposit_pct || 25),
+                    late_penalty_pct_per_day: Number(project.late_penalty_pct_per_day || 0.05),
+                    fee_line_items: project.fee_line_items || [],
+                  },
+                });
+                toast.success('Agreement PDF downloaded');
+              }}
+            >
+              <Download className="w-3.5 h-3.5 mr-1" /> Download PDF
+            </Button>
             <Dialog>
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline" disabled={!project.agreement_template}>
