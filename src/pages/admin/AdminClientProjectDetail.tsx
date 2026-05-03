@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ArrowLeft, Send, ExternalLink, Loader2, Copy, Save, Trash2, Mail, ShieldOff, RefreshCw, Activity, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { ClientBrandingEditor } from '@/components/admin/ClientBrandingEditor';
-import { ClientProjectFeesEditor, type ProjectFees } from '@/components/admin/ClientProjectFeesEditor';
+import { ClientProjectFeesEditor } from '@/components/admin/ClientProjectFeesEditor';
 import { DEFAULT_AGREEMENT_TEMPLATE, renderAgreement } from '@/lib/agreementTemplate';
 
 interface Note {
