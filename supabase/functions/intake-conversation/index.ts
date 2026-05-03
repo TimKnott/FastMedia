@@ -163,15 +163,19 @@ async function aiRephrase(seed: string, language: string, history: Turn[], conte
 
 async function aiSummarise(language: string, context: string, history: Turn[]) {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  const get = (k: string) => history.find((h) => h.key === k)?.answer ?? null;
   const fallback = {
     summary: history.map((h) => `${h.question} — ${h.answer}`).join("\n"),
     intent: {
-      timeline: history.find((h) => h.key === "timeline")?.answer ?? null,
-      decision_maker: history.find((h) => h.key === "decision_maker")?.answer ?? null,
-      budget_fit: history.find((h) => h.key === "budget_fit")?.answer ?? null,
-      success_metric: history.find((h) => h.key === "success_metric")?.answer ?? null,
-      content_readiness: history.find((h) => h.key === "content_readiness")?.answer ?? null,
-      tone: history.find((h) => h.key === "tone")?.answer ?? null,
+      timeline: get("timeline"),
+      urgency_reason: get("urgency_reason"),
+      decision_maker: get("decision_maker"),
+      decision_maker_who: get("decision_maker_who"),
+      budget_fit: get("budget_fit"),
+      budget_adjust: get("budget_adjust"),
+      success_metric: get("success_metric"),
+      content_readiness: get("content_readiness"),
+      tone: get("tone"),
       urgency: "medium" as const,
       readiness: "medium" as const,
     },
@@ -208,8 +212,11 @@ async function aiSummarise(language: string, context: string, history: Turn[]) {
                     type: "object",
                     properties: {
                       timeline: { type: "string" },
+                      urgency_reason: { type: "string" },
                       decision_maker: { type: "string" },
+                      decision_maker_who: { type: "string" },
                       budget_fit: { type: "string" },
+                      budget_adjust: { type: "string" },
                       success_metric: { type: "string" },
                       content_readiness: { type: "string" },
                       tone: { type: "string" },
