@@ -24,7 +24,7 @@ project_id = "aivnnjsrupmubcjsgulb"
   [functions.mailgun-inbound]
     verify_jwt = false
   [functions.generate-blog-post]
-    verify_jwt = false
+    verify_jwt = true
   [functions.generate-demo]
     verify_jwt = true
   [functions.portal-access]
