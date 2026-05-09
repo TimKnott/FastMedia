@@ -88,14 +88,17 @@ function createFixture(): Fixture {
   const email = `portal-e2e+${stamp}-${randomUUID().slice(0, 8)}@fastmedia.pro`;
   const token = randomBytes(32).toString('hex');
   const name = `Portal E2E ${stamp}`;
-  const terms = 'Draft terms for automated portal token validation test.';
+  const terms = JSON.stringify({
+    summary: 'Draft terms for automated portal token validation test.',
+    sections: [{ title: 'Scope', body: 'Automated test scope.' }],
+  });
 
   const projectId = sql(
     `insert into public.client_projects
        (name, client_name, status, agreement_template, agreement_terms, currency, dev_fee, hosting_fee_yearly)
      values
        ('${name}', 'Portal Test Client', 'draft', 'default',
-        '${terms}', 'CZK', 50000, 12000)
+        '${terms.replace(/'/g, "''")}'::jsonb, 'CZK', 50000, 12000)
      returning id`,
   );
   assert(projectId, 'failed to insert client_projects');
