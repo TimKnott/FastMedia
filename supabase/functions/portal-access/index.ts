@@ -210,6 +210,7 @@ Deno.serve(async (req) => {
           .eq('action', 'draft_email_resent')
           .gte('created_at', fiveMinAgo)
         if ((count || 0) > 0) {
+          console.log('[portal-access:resend_draft] rate_limited', { projectId, recentCount: count })
           return new Response(
             JSON.stringify({ error: 'rate_limited', message: 'Please wait a few minutes before resending again.' }),
             { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
@@ -223,6 +224,7 @@ Deno.serve(async (req) => {
           .single()
 
         if (!project) {
+          console.error('[portal-access:resend_draft] project_not_found', { projectId })
           return new Response(JSON.stringify({ error: 'project_not_found' }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
         }
 
@@ -232,7 +234,15 @@ Deno.serve(async (req) => {
           : `https://fastmedia.pro/portal/${token}`
 
         const idempotencyKey = `resend-draft-${projectId}-${Date.now()}`
-        const { error: emailErr } = await admin.functions.invoke('send-transactional-email', {
+        console.log('[portal-access:resend_draft] dispatching', {
+          projectId,
+          recipient: tokenRow.email,
+          templateName: 'client-stage-update',
+          idempotencyKey,
+        })
+
+        const dispatchStart = Date.now()
+        const { data: emailData, error: emailErr } = await admin.functions.invoke('send-transactional-email', {
           body: {
             templateName: 'client-stage-update',
             recipientEmail: tokenRow.email,
@@ -246,14 +256,65 @@ Deno.serve(async (req) => {
             },
           },
         })
+        const dispatchMs = Date.now() - dispatchStart
 
-        if (emailErr) {
-          console.error('resend_draft email error:', emailErr.message)
-          return new Response(JSON.stringify({ error: 'email_failed' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+        // Verify the message actually landed in email_send_log so we can tell
+        // the difference between "dispatcher returned ok but never enqueued"
+        // and "dispatcher errored".
+        const { data: logRows, error: logErr } = await admin
+          .from('email_send_log')
+          .select('id, status, error_message, message_id, created_at')
+          .eq('idempotency_key', idempotencyKey)
+          .order('created_at', { ascending: false })
+          .limit(5)
+
+        const debug = {
+          idempotencyKey,
+          dispatchMs,
+          invokeError: emailErr
+            ? {
+                name: (emailErr as any)?.name ?? null,
+                message: (emailErr as any)?.message ?? String(emailErr),
+                status: (emailErr as any)?.status ?? (emailErr as any)?.context?.status ?? null,
+                context: (emailErr as any)?.context ?? null,
+              }
+            : null,
+          invokeData: emailData ?? null,
+          logRows: logRows ?? [],
+          logQueryError: logErr ? logErr.message : null,
         }
 
-        await audit(projectId, 'draft_email_resent', ip, ua, { recipient: tokenRow.email })
-        return new Response(JSON.stringify({ ok: true, sent_to: tokenRow.email }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+        if (emailErr) {
+          console.error('[portal-access:resend_draft] email_failed', debug)
+          await audit(projectId, 'draft_email_failed', ip, ua, { recipient: tokenRow.email, debug })
+          return new Response(
+            JSON.stringify({ error: 'email_failed', debug }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+          )
+        }
+
+        if (!logRows || logRows.length === 0) {
+          // Dispatcher returned ok but no row in email_send_log — surface this.
+          console.error('[portal-access:resend_draft] no_send_log_row', debug)
+          await audit(projectId, 'draft_email_unverified', ip, ua, { recipient: tokenRow.email, debug })
+          return new Response(
+            JSON.stringify({
+              ok: true,
+              sent_to: tokenRow.email,
+              warning: 'no_send_log_row',
+              message: 'Dispatcher accepted the request but no row was found in email_send_log. The email may not have been queued.',
+              debug,
+            }),
+            { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+          )
+        }
+
+        console.log('[portal-access:resend_draft] queued', debug)
+        await audit(projectId, 'draft_email_resent', ip, ua, { recipient: tokenRow.email, debug })
+        return new Response(
+          JSON.stringify({ ok: true, sent_to: tokenRow.email, debug }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        )
       }
 
       case 'rotate_token': {
