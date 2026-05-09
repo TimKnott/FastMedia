@@ -26,6 +26,7 @@ const Inquiry = lazy(() => import("./pages/Inquiry"));
 const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
 const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const Showcase = lazy(() => import("./pages/Showcase"));
 
 // Admin pages (lazy)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
@@ -56,6 +57,7 @@ const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
 const AdminExport = lazy(() => import("./pages/admin/AdminExport"));
 const AdminClientProjects = lazy(() => import("./pages/admin/AdminClientProjects"));
 const AdminClientProjectDetail = lazy(() => import("./pages/admin/AdminClientProjectDetail"));
+const AdminShowcase = lazy(() => import("./pages/admin/AdminShowcase"));
 const ClientPortal = lazy(() => import("./pages/portal/ClientPortal"));
 const PortalErrorBoundary = lazy(() => import("./pages/portal/PortalErrorBoundary"));
 const ProtectedRoute = lazy(() => import("./components/admin/ProtectedRoute"));
@@ -192,6 +194,7 @@ const App = () => (
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
+            <Route path="/showcase/:slug" element={<Showcase />} />
             {/* Private client review portal — branded slug masks the token. Both shapes work. */}
             <Route path="/portal/:slug/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
             <Route path="/portal/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
@@ -224,6 +227,7 @@ const App = () => (
               <Route path="export" element={<AdminExport />} />
               <Route path="client-projects" element={<AdminClientProjects />} />
               <Route path="client-projects/:id" element={<AdminClientProjectDetail />} />
+              <Route path="showcase" element={<AdminShowcase />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
