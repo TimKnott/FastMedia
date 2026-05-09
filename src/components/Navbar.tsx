@@ -255,6 +255,7 @@ const Navbar = () => {
                   Manage billing
                 </button>
               )}
+              {navLinks.map((link) =>
                 link.isRoute ? (
                   <Link
                     key={link.href}
