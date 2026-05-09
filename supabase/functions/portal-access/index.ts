@@ -256,6 +256,90 @@ Deno.serve(async (req) => {
         return new Response(JSON.stringify({ ok: true, sent_to: tokenRow.email }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
 
+      case 'rotate_token': {
+        // Rate-limit: only one rotation per 5 minutes per project
+        const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
+        const { count } = await admin
+          .from('project_audit_log')
+          .select('id', { count: 'exact', head: true })
+          .eq('project_id', projectId)
+          .eq('action', 'token_rotated')
+          .gte('created_at', fiveMinAgo)
+        if ((count || 0) > 0) {
+          return new Response(
+            JSON.stringify({ error: 'rate_limited', message: 'Please wait a few minutes before rotating again.' }),
+            { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+          )
+        }
+
+        const { data: project } = await admin
+          .from('client_projects')
+          .select('id, name, slug, client_name')
+          .eq('id', projectId)
+          .single()
+
+        if (!project) {
+          return new Response(JSON.stringify({ error: 'project_not_found' }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+        }
+
+        // Generate new 32-byte hex token (matches score-lead format)
+        const bytes = new Uint8Array(32)
+        crypto.getRandomValues(bytes)
+        const newToken = Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60_000).toISOString()
+
+        const { error: insErr } = await admin.from('project_access_tokens').insert({
+          project_id: projectId,
+          email: tokenRow.email,
+          token: newToken,
+          expires_at: expiresAt,
+        })
+        if (insErr) {
+          console.error('rotate_token insert error:', insErr.message)
+          return new Response(JSON.stringify({ error: 'rotate_failed' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+        }
+
+        // Revoke the old token
+        await admin
+          .from('project_access_tokens')
+          .update({ revoked_at: new Date().toISOString() })
+          .eq('id', tokenRow.id)
+
+        const safeSlug = (project.slug || '').replace(/[^a-z0-9-]/gi, '').toLowerCase()
+        const newPortalUrl = safeSlug
+          ? `https://fastmedia.pro/portal/${safeSlug}/${newToken}`
+          : `https://fastmedia.pro/portal/${newToken}`
+
+        // Email the new link
+        const idempotencyKey = `rotate-token-${projectId}-${Date.now()}`
+        const { error: emailErr } = await admin.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'client-stage-update',
+            recipientEmail: tokenRow.email,
+            idempotencyKey,
+            templateData: {
+              audience: 'client',
+              stage: 'draft_created',
+              recipientName: (project.client_name || '').split(' ')[0] || null,
+              projectName: project.name,
+              portalUrl: newPortalUrl,
+            },
+          },
+        })
+        if (emailErr) console.error('rotate_token email error:', emailErr.message)
+
+        await audit(projectId, 'token_rotated', ip, ua, {
+          old_token_id: tokenRow.id,
+          recipient: tokenRow.email,
+          email_sent: !emailErr,
+        })
+
+        return new Response(
+          JSON.stringify({ ok: true, portal_url: newPortalUrl, email_sent: !emailErr }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        )
+      }
+
       default:
         return new Response(JSON.stringify({ error: 'unknown action' }), {
           status: 400,

@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Loader2, MessageSquarePlus, FileText, Check, Trash2, ExternalLink, Mail } from 'lucide-react';
+import { Loader2, MessageSquarePlus, FileText, Check, Trash2, ExternalLink, Mail, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PortalNote {
@@ -219,6 +219,35 @@ const ClientPortal = () => {
     }
   };
 
+  const [rotateLoading, setRotateLoading] = useState(false);
+  const rotateAccessToken = async () => {
+    const ok = window.confirm(
+      'This will invalidate your current portal link and email you a fresh one. Any older copies of the link will stop working. Continue?'
+    );
+    if (!ok) return;
+    setRotateLoading(true);
+    try {
+      const res = await callApi('rotate_token');
+      toast.success(
+        res.email_sent
+          ? 'New portal link emailed to you. Redirecting…'
+          : 'New link generated, but email failed. Redirecting…'
+      );
+      // Replace current URL so back button can't reach the now-revoked token
+      setTimeout(() => {
+        window.location.replace(res.portal_url);
+      }, 1200);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Could not rotate token';
+      if (msg.includes('rate_limited')) {
+        toast.error('Please wait a few minutes before rotating again.');
+      } else {
+        toast.error(msg);
+      }
+      setRotateLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -307,6 +336,16 @@ const ClientPortal = () => {
                     >
                       <Mail className="w-4 h-4 mr-1.5" />
                       {resendLoading ? 'Sending…' : 'Resend draft email'}
+                    </Button>
+                    <Button
+                      onClick={rotateAccessToken}
+                      disabled={rotateLoading}
+                      size="sm"
+                      variant="outline"
+                      title="Revoke this link and email a new one"
+                    >
+                      <RefreshCw className={`w-4 h-4 mr-1.5 ${rotateLoading ? 'animate-spin' : ''}`} />
+                      {rotateLoading ? 'Rotating…' : 'Rotate access link'}
                     </Button>
                     <Button
                       onClick={acknowledgeAgreement}
