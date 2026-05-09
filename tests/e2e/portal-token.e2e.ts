@@ -151,8 +151,8 @@ await it('valid token returns project + draft agreement data', async () => {
     eq(proj.status, 'draft', 'project.status');
     eq(proj.agreement_template, 'default', 'agreement_template');
     assert(
-      typeof proj.agreement_terms === 'string' && proj.agreement_terms.length > 0,
-      'agreement_terms populated',
+      proj.agreement_terms && typeof proj.agreement_terms === 'object',
+      'agreement_terms populated (jsonb object)',
     );
     eq(proj.agreement_acknowledged_at, null, 'not yet acknowledged');
     assert(Array.isArray((r.json as any).notes), 'notes array');
