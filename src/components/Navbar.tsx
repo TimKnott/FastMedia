@@ -238,7 +238,23 @@ const Navbar = () => {
                   <span className="text-[10px] uppercase tracking-wide opacity-80">Signed in</span>
                 </Link>
               )}
-              {navLinks.map((link) =>
+              {isAuthed && (
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    void openBillingPortal();
+                  }}
+                  disabled={billingLoading}
+                  className="w-full flex items-center gap-2 p-3 rounded-lg border border-border text-foreground font-medium hover:bg-muted/50 transition-colors disabled:opacity-60"
+                >
+                  {billingLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <CreditCard className="w-4 h-4" />
+                  )}
+                  Manage billing
+                </button>
+              )}
                 link.isRoute ? (
                   <Link
                     key={link.href}
