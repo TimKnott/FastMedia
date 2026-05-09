@@ -91,11 +91,31 @@ const ClientPortal = () => {
       setLoading(false);
       return;
     }
+    let cancelled = false;
+    // Watchdog: if the load takes longer than 20s, surface a recovery UI
+    // instead of leaving the user staring at a spinner.
+    const watchdog = window.setTimeout(() => {
+      if (cancelled) return;
+      setError('The portal is taking longer than expected to load. Please check your connection and try again.');
+      setLoading(false);
+    }, 20000);
     (async () => {
       setLoading(true);
-      await refresh();
-      setLoading(false);
+      try {
+        await refresh();
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'Could not load the portal.');
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+        window.clearTimeout(watchdog);
+      }
     })();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(watchdog);
+    };
   }, [token]);
 
   useEffect(() => {
@@ -257,15 +277,30 @@ const ClientPortal = () => {
   }
 
   if (error || !data) {
+    const isAccess = !error || /invalid|expired|denied|forbidden|missing/i.test(error);
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-6">
-        <Card className="max-w-md w-full p-8 text-center">
-          <h1 className="text-2xl font-display font-bold text-foreground mb-2">
-            Access denied
+        <Card className="max-w-md w-full p-8 text-center space-y-4">
+          <h1 className="text-2xl font-display font-bold text-foreground">
+            {isAccess ? 'Access denied' : 'Portal unavailable'}
           </h1>
           <p className="text-muted-foreground text-sm">
             {error || 'This invitation is invalid or has expired. Please contact your project manager.'}
           </p>
+          <div className="flex items-center justify-center gap-2 flex-wrap pt-2">
+            {!isAccess && (
+              <Button onClick={() => window.location.reload()} size="sm">
+                <RefreshCw className="w-4 h-4 mr-1.5" />
+                Try again
+              </Button>
+            )}
+            <Button asChild size="sm" variant="outline">
+              <a href="mailto:support@fastmedia.pro?subject=Portal%20access%20issue">
+                <Mail className="w-4 h-4 mr-1.5" />
+                Contact support
+              </a>
+            </Button>
+          </div>
         </Card>
       </div>
     );
