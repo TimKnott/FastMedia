@@ -58,11 +58,16 @@ function eq<T>(actual: T, expected: T, msg: string) {
 }
 
 function sql(query: string): string {
-  return execSync('psql -At -v ON_ERROR_STOP=1', {
+  const out = execSync('psql -At -q -v ON_ERROR_STOP=1', {
     encoding: 'utf8',
     input: query,
     stdio: ['pipe', 'pipe', 'pipe'],
-  }).trim();
+  });
+  // Strip any trailing command tags (e.g. "INSERT 0 1") and blank lines.
+  return out
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l && !/^(INSERT|UPDATE|DELETE|SELECT)\s+\d/.test(l))[0] ?? '';
 }
 
 async function callPortal(body: Record<string, unknown>): Promise<{ status: number; json: Json }> {
