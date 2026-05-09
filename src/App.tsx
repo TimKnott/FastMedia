@@ -192,8 +192,8 @@ const App = () => (
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             {/* Private client review portal — branded slug masks the token. Both shapes work. */}
-            <Route path="/portal/:slug/:token" element={<ClientPortal />} />
-            <Route path="/portal/:token" element={<ClientPortal />} />
+            <Route path="/portal/:slug/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
+            <Route path="/portal/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/reset-password" element={<AdminResetPassword />} />
