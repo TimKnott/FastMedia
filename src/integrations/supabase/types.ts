@@ -1346,6 +1346,42 @@ export type Database = {
           },
         ]
       }
+      showcase_projects: {
+        Row: {
+          access_token: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          lovable_url: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          lovable_url: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          lovable_url?: string
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           content_key: string

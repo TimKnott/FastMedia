@@ -1,49 +1,72 @@
-# Fix auto-draft email flow + portal language
 
-Three real bugs are hitting your client:
+## Goal
 
-1. **404 "Oops, page not found"** — the admin notification email links to `/admin/clients/:id`, but the actual route is `/admin/client-projects/:id`. The client never had any link sent at all.
-2. **No draft agreement shown** — `client_projects.agreement_template` is left empty when auto-created, so the "Agreement" button never appears in the portal.
-3. **Czech language** — the portal page is English, but it embeds `https://fastmedia.pro` in an iframe. The marketing site reads `localStorage 'fastmedia-language'` from the visitor's browser, so a Czech visitor sees Czech inside the iframe. The portal shell itself never forces a language.
+A private, token-protected showcase served from `fastmedia.pro`. Each project has its own URL like `fastmedia.pro/showcase/<slug>?k=<token>` that renders the Lovable project inside a full-screen iframe — the address bar always shows your domain and the project slug, never `lovable.dev`. A back-office page lets you add, edit, remove, and rotate tokens without touching code.
 
-## Fixes
+## Why the previous attempt 404'd
 
-### 1. `supabase/functions/score-lead/index.ts` (auto-promotion block)
+The earlier build dropped a `public/showcase.html` file. In a Vite SPA, requests under your domain are handled by React Router (SPA fallback to `index.html`), so visiting `/showcase` or `/showcase/<slug>` never reached the static HTML and React had no matching route → NotFound. The fix is to make showcase a real React route, not a static HTML file.
 
-For hot / high_priority leads:
+## Important compatibility note (please confirm)
 
-- Use the correct admin URL: `https://fastmedia.pro/admin/client-projects/<id>`.
-- Populate `agreement_template` with `DEFAULT_AGREEMENT_TEMPLATE` (inlined as a constant in the edge function — it's a static string, no React import needed) so the portal "Agreement" button shows immediately.
-- Issue a portal access token by inserting directly into `project_access_tokens` (32-byte hex, 30-day expiry, email = client email).
-- Build the branded portal URL: `https://fastmedia.pro/portal/<slug>/<token>`.
-- Send the **client** a `client-stage-update` email (audience `client`, stage `draft_created`) with that portal URL — this is the email that actually opens the draft.
-- Send the **admin** the existing `client-stage-update` admin email but pointed at `/admin/client-projects/<id>` (the working route).
-- Keep `intake-received` and `lead-notification` as already wired.
+Browsers only allow embedding a site in an iframe when that site permits it (no `X-Frame-Options: DENY/SAMEORIGIN` and no restrictive `frame-ancestors` CSP).
 
-### 2. `src/pages/portal/ClientPortal.tsx`
+- Lovable **editor** URLs (`https://lovable.dev/projects/<id>`) require login and block iframing — these will show a blank/refused frame.
+- Lovable **published** URLs (`*.lovable.app` or your own custom domain attached to that project) generally can be embedded.
 
-Force British English on the portal regardless of the visitor's stored preference:
+For the showcase to actually display the project, each entry should point at the project's **published URL**, not the editor URL. The admin form will accept any URL but I'll add a warning when an editor-style URL is detected.
 
-- On mount, write `'en'` to `localStorage` under key `fastmedia-language` before the iframe loads, and set `<html lang="en-GB">` via a `useEffect`.
-- Add `?lang=en` to the iframe `src` so the marketing site picks it up server-side too.
-- Show the agreement dialog automatically the first time the client lands (already wired via `useEffect` on `agreement_template`), and label the button "View draft agreement" instead of just "Agreement" when not yet acknowledged so it's obvious.
+## What gets built
 
-### 3. Marketing site language honour
+### 1. Database (new table `showcase_projects`)
 
-In `src/contexts/LanguageContext.tsx` (or wherever `fastmedia-language` is read), honour `?lang=en` query param on first load and persist it. This guarantees the iframe is English even if the visitor previously had Czech.
+Fields: `name`, `slug` (unique, used in URL), `lovable_url` (the embedded URL), `access_token` (random, required to view), `is_active`, plus standard timestamps and `created_by`. RLS:
+- Editors/admins: full manage.
+- Anonymous: no direct table access.
+- Public viewing happens through a small edge function that checks `slug + token` server-side and returns `{ name, lovable_url }` only when valid — the token is never exposed in table reads.
 
-## Files touched
+### 2. Public routes (React Router)
 
-- `supabase/functions/score-lead/index.ts` — fix URL, add agreement_template + portal token + client email
-- `src/pages/portal/ClientPortal.tsx` — force English, clearer CTA
-- `src/contexts/LanguageContext.tsx` — respect `?lang=` query param
+- `/showcase/:slug` — reads `?k=<token>` from the query string, calls the edge function to validate, then renders a full-viewport iframe of the returned `lovable_url`. Sets `<title>` to the project name. Shows a clean "Link invalid or expired" screen on failure. No nav, no footer, no breadcrumbs — just the iframe (matches your existing `showcase.html` styling).
+- The URL stays `fastmedia.pro/showcase/<slug>?k=…` the whole time; the iframe's `src` is not visible in the address bar.
 
-## Out of scope
+Optional: also accept `/s/:slug/:token` if you'd rather have the token in the path than the query — say the word and I'll use that shape instead.
 
-No DB migration needed — all fields already exist. No new email template needed — `client-stage-update` already covers `draft_created` for both audiences.
+### 3. Edge function `showcase-access`
 
-## How you'll verify
+Single POST endpoint, public (no JWT). Body `{ slug, token }`. Looks up the row, compares token in constant time, returns `{ name, url }` or 404. Logs failed attempts to `project_audit_log` for visibility.
 
-1. Submit a fresh intake that scores ≥ 50.
-2. Admin inbox: link opens `/admin/client-projects/<id>` (no 404), draft already populated.
-3. Client inbox: separate email with the branded `/portal/<slug>/<token>` link → opens portal in English, "View draft agreement" dialog auto-opens.   Make sure that British English is the only language for the entire website including reports etc.  all other languages must be removed
+### 4. Admin page `/admin/showcase`
+
+Behind the existing `ProtectedRoute minRole="editor"`. Lets you:
+- List all showcase entries with name, slug, target URL, active toggle, created date.
+- Add / edit / delete entries.
+- Auto-generate slug from name (editable).
+- Auto-generate a strong random token on create; **Rotate token** button to invalidate the old link and produce a new one.
+- **Copy link** button that copies the full `https://fastmedia.pro/showcase/<slug>?k=<token>` URL.
+- Inline warning if the `lovable_url` looks like an editor URL (`lovable.dev/projects/...`) suggesting the published URL instead.
+
+A "Showcase" item is added to `AdminSidebar`.
+
+### 5. SEO / privacy
+
+- `noindex, nofollow` meta on `/showcase/*` pages.
+- `public/robots.txt` updated to disallow `/showcase/`.
+- Pages render minimally (no analytics on the iframe page) for fast load.
+
+## Files
+
+- New: `supabase/functions/showcase-access/index.ts`
+- New: `src/pages/Showcase.tsx` (public iframe page)
+- New: `src/pages/admin/AdminShowcase.tsx`
+- Edit: `src/App.tsx` (add `/showcase/:slug` and `/admin/showcase` routes, lazy)
+- Edit: `src/components/admin/AdminSidebar.tsx` (menu entry)
+- Edit: `public/robots.txt`
+- Delete: `public/showcase.html` (replaced by the React route)
+- Migration: create `showcase_projects` table + RLS
+
+## Out of scope / will not do unless asked
+
+- Password-protect-on-form flow (you asked for link-based access; tokens in the link satisfy that).
+- Server-rendered HTML at the edge (Lovable hosting is SPA; the React route gives the same UX with proper SPA fallback so links work on refresh).
+- Proxying Lovable's HTML through your domain to hide the iframe `src` from devtools — not feasible without breaking the project's auth/cookies; the address bar will already only show your domain, which is what you asked for.
