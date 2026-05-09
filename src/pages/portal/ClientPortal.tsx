@@ -91,11 +91,31 @@ const ClientPortal = () => {
       setLoading(false);
       return;
     }
+    let cancelled = false;
+    // Watchdog: if the load takes longer than 20s, surface a recovery UI
+    // instead of leaving the user staring at a spinner.
+    const watchdog = window.setTimeout(() => {
+      if (cancelled) return;
+      setError('The portal is taking longer than expected to load. Please check your connection and try again.');
+      setLoading(false);
+    }, 20000);
     (async () => {
       setLoading(true);
-      await refresh();
-      setLoading(false);
+      try {
+        await refresh();
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'Could not load the portal.');
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+        window.clearTimeout(watchdog);
+      }
     })();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(watchdog);
+    };
   }, [token]);
 
   useEffect(() => {
