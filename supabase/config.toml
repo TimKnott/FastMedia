@@ -31,3 +31,5 @@ project_id = "aivnnjsrupmubcjsgulb"
     verify_jwt = false
   [functions.portal-issue-invite]
     verify_jwt = true
+  [functions.payments-customer-portal]
+    verify_jwt = false
