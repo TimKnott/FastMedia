@@ -169,10 +169,8 @@ await it('valid token returns project + draft agreement data', async () => {
 });
 
 await it('revoked token is rejected (no email side-effects)', async () => {
-  const f = createFixture();
+  const f = createFixture({ revoked: true });
   try {
-    sql(`update public.project_access_tokens
-         set revoked_at = now() where id = '${f.tokenId}'`);
     const r = await callPortal({ action: 'load', token: f.token });
     eq(r.status, 401, 'status');
     eq(r.json.error, 'invalid_or_expired', 'error');
@@ -182,10 +180,8 @@ await it('revoked token is rejected (no email side-effects)', async () => {
 });
 
 await it('expired token is rejected', async () => {
-  const f = createFixture();
+  const f = createFixture({ expired: true });
   try {
-    sql(`update public.project_access_tokens
-         set expires_at = now() - interval '1 minute' where id = '${f.tokenId}'`);
     const r = await callPortal({ action: 'load', token: f.token });
     eq(r.status, 401, 'status');
     eq(r.json.error, 'invalid_or_expired', 'error');
