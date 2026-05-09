@@ -95,9 +95,9 @@ function createFixture(): Fixture {
 
   const projectId = sql(
     `insert into public.client_projects
-       (name, client_name, status, agreement_template, agreement_terms, currency, dev_fee, hosting_fee_yearly)
+       (name, client_name, client_email, status, agreement_template, agreement_terms, currency, dev_fee, hosting_fee_yearly)
      values
-       ('${name}', 'Portal Test Client', 'draft', 'default',
+       ('${name}', 'Portal Test Client', '${email}', 'draft', 'default',
         '${terms.replace(/'/g, "''")}'::jsonb, 'CZK', 50000, 12000)
      returning id`,
   );
