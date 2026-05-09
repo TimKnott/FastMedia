@@ -246,22 +246,94 @@ serve(async (req) => {
       metadata: { features_count: featureCount, quote_total: totalBudget },
     });
 
-    // Helper: invoke transactional email (fire-and-forget)
-    const sendEmail = async (templateName: string, recipientEmail: string, idempotencyKey: string, templateData: Record<string, any>) => {
+    // Helper: invoke transactional email and verify it lands in email_send_log
+    // BEFORE this edge function returns. We:
+    //   1. Use a real fetch with an explicit timeout.
+    //   2. Always consume the response body (Deno will otherwise abort the
+    //      request when the isolate shuts down — the #1 cause of "the email
+    //      function was never called").
+    //   3. Log the dispatcher's HTTP status + body so non-2xx responses show
+    //      up in score-lead logs instead of being silently swallowed.
+    //   4. Poll email_send_log briefly for the idempotency key so we don't
+    //      return until the queue insert has actually happened.
+    const SEND_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+
+    const sendEmail = async (
+      templateName: string,
+      recipientEmail: string,
+      idempotencyKey: string,
+      templateData: Record<string, any>,
+    ): Promise<{ ok: boolean; status?: number; error?: string; queued?: boolean }> => {
+      const ctrl = new AbortController();
+      const timeout = setTimeout(() => ctrl.abort(), 15_000);
       try {
-        const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
-        await fetch(notifyUrl, {
+        const res = await fetch(SEND_URL, {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+            Authorization: `Bearer ${SERVICE_ROLE}`,
+            apikey: ANON || SERVICE_ROLE,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ templateName, recipientEmail, idempotencyKey, templateData }),
+          signal: ctrl.signal,
         });
+        // ALWAYS read the body so the request is not torn down when the
+        // isolate shuts down. Without this, Deno may abort the inflight
+        // request the moment the outer function returns.
+        const text = await res.text().catch(() => "");
+
+        if (!res.ok) {
+          console.error(
+            `[score-lead] send-transactional-email http ${res.status} for ${templateName} (${idempotencyKey}): ${text.slice(0, 500)}`,
+          );
+        } else {
+          console.log(
+            `[score-lead] send-transactional-email ok for ${templateName} (${idempotencyKey})`,
+          );
+        }
+
+        // Verify the queue insert actually happened. We poll briefly because
+        // send-transactional-email may insert the email_send_log row right
+        // before responding.
+        let queued = false;
+        for (let attempt = 0; attempt < 5; attempt++) {
+          const { data: logRows, error: logErr } = await supabaseAdmin
+            .from("email_send_log")
+            .select("id, status")
+            .eq("idempotency_key", idempotencyKey)
+            .limit(1);
+          if (logErr) {
+            console.error(`[score-lead] email_send_log query error (${idempotencyKey}):`, logErr.message);
+            break;
+          }
+          if (logRows && logRows.length > 0) {
+            queued = true;
+            console.log(
+              `[score-lead] email_send_log row confirmed for ${idempotencyKey} (status=${logRows[0].status})`,
+            );
+            break;
+          }
+          await new Promise((r) => setTimeout(r, 200));
+        }
+
+        if (!queued && res.ok) {
+          console.error(
+            `[score-lead] dispatcher returned ${res.status} but no email_send_log row found for ${idempotencyKey}`,
+          );
+        }
+
+        return { ok: res.ok, status: res.status, queued, error: res.ok ? undefined : text.slice(0, 500) };
       } catch (notifyErr) {
-        console.error(`Email error (${templateName}, non-blocking):`, notifyErr instanceof Error ? notifyErr.message : "Unknown");
+        const message = notifyErr instanceof Error ? notifyErr.message : String(notifyErr);
+        console.error(`[score-lead] send-transactional-email fetch failed (${templateName}, ${idempotencyKey}): ${message}`);
+        return { ok: false, error: message };
+      } finally {
+        clearTimeout(timeout);
       }
     };
+
 
     const adminEmail = Deno.env.get("NOTIFICATION_EMAIL") || "support@fastmedia.pro";
     const intakeSummary = body.intentSummary || aiAnalysis?.summary || null;
