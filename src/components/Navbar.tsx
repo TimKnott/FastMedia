@@ -2,24 +2,77 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard } from 'lucide-react';
+import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard, CreditCard, UserCircle2, Loader2, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import logo from '@/assets/logo.jpeg';
+
+const PAYMENTS_ENV: 'sandbox' | 'live' =
+  (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined)?.startsWith('pk_test_')
+    ? 'sandbox'
+    : 'live';
 
 const Navbar = () => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [billingLoading, setBillingLoading] = useState(false);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       setIsAuthed(!!session);
+      setUserEmail(session?.user?.email ?? null);
     });
-    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+    supabase.auth.getSession().then(({ data }) => {
+      setIsAuthed(!!data.session);
+      setUserEmail(data.session?.user?.email ?? null);
+    });
     return () => { sub.subscription.unsubscribe(); };
   }, []);
+
+  const openBillingPortal = async () => {
+    if (!userEmail) {
+      toast.error('Sign in first to manage billing.');
+      return;
+    }
+    setBillingLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('payments-customer-portal', {
+        body: {
+          email: userEmail,
+          return_url: `${window.location.origin}/account`,
+          environment: PAYMENTS_ENV,
+        },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string; error?: string })?.url;
+      if (!url) throw new Error((data as { error?: string })?.error ?? 'No portal URL returned.');
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Could not open the billing portal.';
+      console.error('[Navbar billing]', e);
+      toast.error(msg);
+    } finally {
+      setBillingLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setIsOpen(false);
+  };
+
 
   const navLinks: { href: string; label: string; isRoute?: boolean; mobileOnly?: boolean }[] = [
     { href: '#demos', label: t('nav.demos') },
