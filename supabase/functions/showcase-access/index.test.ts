@@ -17,19 +17,34 @@ async function callFn(body: unknown) {
 }
 
 Deno.test("RLS: anon cannot SELECT showcase_projects", async () => {
-  const anon = createClient(SUPABASE_URL, ANON_KEY);
-  const { data, error } = await anon.from("showcase_projects").select("id").limit(1);
-  // RLS denies anon: either error, or empty array (filtered out)
-  assert(error !== null || (Array.isArray(data) && data.length === 0),
-    "Anon must not be able to read showcase_projects rows");
+  const res = await fetch(`${REST_URL}?select=id&limit=1`, {
+    headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
+  });
+  const body = await res.json();
+  // Restrictive RLS denies anon entirely → empty array OR error. Either way no rows leak.
+  if (Array.isArray(body)) {
+    assertEquals(body.length, 0, "Anon must not read any showcase_projects rows");
+  } else {
+    assert(body.code || body.message, "Expected RLS error for anon select");
+  }
 });
 
 Deno.test("RLS: anon cannot INSERT into showcase_projects", async () => {
-  const anon = createClient(SUPABASE_URL, ANON_KEY);
-  const { error } = await anon.from("showcase_projects").insert({
-    name: "hack", slug: "hack-" + Date.now(), lovable_url: "https://x", access_token: "x",
+  const res = await fetch(REST_URL, {
+    method: "POST",
+    headers: {
+      apikey: ANON_KEY,
+      Authorization: `Bearer ${ANON_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      name: "hack", slug: "hack-" + Date.now(), lovable_url: "https://x", access_token: "x",
+    }),
   });
-  assert(error !== null, "Anon insert must be blocked by RLS");
+  await res.text();
+  assert(res.status === 401 || res.status === 403,
+    `Anon insert must be blocked by RLS, got ${res.status}`);
 });
 
 Deno.test("Edge fn: rejects missing fields with 400", async () => {
