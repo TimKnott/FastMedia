@@ -218,6 +218,7 @@ const App = () => (
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
+              <Route path="lead-emails" element={<AdminLeadEmails />} />
               <Route path="hr" element={<AdminHR />} />
               <Route path="integrations" element={<AdminIntegrations />} />
               <Route path="export" element={<AdminExport />} />
