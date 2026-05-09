@@ -27,6 +27,8 @@ const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
 const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Showcase = lazy(() => import("./pages/Showcase"));
+const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
+const Account = lazy(() => import("./pages/Account"));
 
 // Admin pages (lazy)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
