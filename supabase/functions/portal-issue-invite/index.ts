@@ -94,29 +94,77 @@ Deno.serve(async (req) => {
       details: { email, expires_at: expiresAt },
     })
 
-    // Send email via existing transactional pipeline (best-effort; do not fail
-    // the invite if the email queue is not yet wired). Skipped when suppress_email
-    // is true (e.g. when called by stage-email helpers that send their own copy).
+    // Send email via existing transactional pipeline. Failures are surfaced in
+    // the response (`email_status` / `email_error`) so the admin UI can display
+    // why a portal invite did not reach the dispatcher queue. The invite token
+    // itself is still returned so it can be copied/sent manually as a fallback.
+    let emailStatus: 'queued' | 'skipped' | 'error' = 'skipped'
+    let emailError: string | null = null
+    let emailResponse: unknown = null
+
     if (!suppress_email) {
-      try {
-        await admin.functions.invoke('send-transactional-email', {
-          body: {
-            templateName: 'portal-invite',
-            recipientEmail: email,
-            idempotencyKey: `portal-invite-${token}`,
-            templateData: {
-              recipientName: project.client_name,
-              projectName: project.name,
-              portalUrl,
-            },
-          },
-        })
-      } catch (emailErr) {
-        console.warn('Email send skipped:', emailErr)
+      const payload = {
+        templateName: 'portal-invite',
+        recipientEmail: email,
+        idempotencyKey: `portal-invite-${token}`,
+        templateData: {
+          recipientName: project.client_name,
+          projectName: project.name,
+          portalUrl,
+        },
       }
+      console.log('[portal-issue-invite] dispatching email', {
+        project_id,
+        recipient: email,
+        idempotencyKey: payload.idempotencyKey,
+      })
+      try {
+        const { data: emailData, error: emailErr } = await admin.functions.invoke(
+          'send-transactional-email',
+          { body: payload },
+        )
+        emailResponse = emailData ?? null
+        if (emailErr) {
+          emailStatus = 'error'
+          // FunctionsHttpError carries the response on .context — surface its body.
+          let detail = emailErr.message || String(emailErr)
+          const ctx = (emailErr as any).context
+          if (ctx && typeof ctx.text === 'function') {
+            try { detail += ` | body=${await ctx.text()}` } catch { /* ignore */ }
+          }
+          emailError = detail
+          console.error('[portal-issue-invite] send-transactional-email failed', {
+            recipient: email,
+            error: detail,
+            data: emailData,
+          })
+        } else {
+          emailStatus = 'queued'
+          console.log('[portal-issue-invite] send-transactional-email queued', {
+            recipient: email,
+            data: emailData,
+          })
+        }
+      } catch (emailErr) {
+        emailStatus = 'error'
+        emailError = emailErr instanceof Error ? emailErr.message : String(emailErr)
+        console.error('[portal-issue-invite] send-transactional-email threw', {
+          recipient: email,
+          error: emailError,
+        })
+      }
+    } else {
+      console.log('[portal-issue-invite] email suppressed by caller', { recipient: email })
     }
 
-    return new Response(JSON.stringify({ ok: true, token, portal_url: portalUrl }), {
+    return new Response(JSON.stringify({
+      ok: true,
+      token,
+      portal_url: portalUrl,
+      email_status: emailStatus,
+      email_error: emailError,
+      email_response: emailResponse,
+    }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
