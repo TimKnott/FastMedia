@@ -58,9 +58,10 @@ function eq<T>(actual: T, expected: T, msg: string) {
 }
 
 function sql(query: string): string {
-  return execSync(`psql -At -c ${JSON.stringify(query)}`, {
+  return execSync('psql -At -v ON_ERROR_STOP=1', {
     encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
+    input: query,
+    stdio: ['pipe', 'pipe', 'pipe'],
   }).trim();
 }
 
