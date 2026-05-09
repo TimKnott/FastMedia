@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Loader2, MessageSquarePlus, FileText, Check, Trash2, ExternalLink, Mail } from 'lucide-react';
+import { Loader2, MessageSquarePlus, FileText, Check, Trash2, ExternalLink, Mail, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PortalNote {
