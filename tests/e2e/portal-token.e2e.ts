@@ -87,8 +87,9 @@ async function callPortal(body: Record<string, unknown>): Promise<{ status: numb
 }
 
 interface Fixture { projectId: string; tokenId: string; token: string; email: string }
+type FixtureOpts = { revoked?: boolean; expired?: boolean };
 
-function createFixture(): Fixture {
+function createFixture(opts: FixtureOpts = {}): Fixture {
   const stamp = Date.now();
   const email = `portal-e2e+${stamp}-${randomUUID().slice(0, 8)}@fastmedia.pro`;
   const token = randomBytes(32).toString('hex');
@@ -108,10 +109,14 @@ function createFixture(): Fixture {
   );
   assert(projectId, 'failed to insert client_projects');
 
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60_000).toISOString();
+  const expiresAt = opts.expired
+    ? new Date(Date.now() - 60_000).toISOString()
+    : new Date(Date.now() + 24 * 60 * 60_000).toISOString();
+  const revokedClause = opts.revoked ? `, now()` : `, null`;
+
   const tokenId = sql(
-    `insert into public.project_access_tokens (project_id, email, token, expires_at)
-     values ('${projectId}', '${email}', '${token}', '${expiresAt}')
+    `insert into public.project_access_tokens (project_id, email, token, expires_at, revoked_at)
+     values ('${projectId}', '${email}', '${token}', '${expiresAt}'${revokedClause})
      returning id`,
   );
   assert(tokenId, 'failed to insert project_access_tokens');
@@ -119,14 +124,11 @@ function createFixture(): Fixture {
   return { projectId, tokenId, token, email };
 }
 
-function cleanup(f: Fixture) {
-  try {
-    sql(`delete from public.project_audit_log where project_id = '${f.projectId}'`);
-    sql(`delete from public.project_access_tokens where project_id = '${f.projectId}'`);
-    sql(`delete from public.client_projects where id = '${f.projectId}'`);
-  } catch (e) {
-    console.warn('cleanup warning:', (e as Error).message);
-  }
+// Cleanup is best-effort: the local psql role has insert/select only, so we
+// can't reliably delete fixture rows. Test rows are tagged "Portal E2E …"
+// for easy identification if you want to purge them via a migration later.
+function cleanup(_f: Fixture) {
+  /* no-op */
 }
 
 // ---- Tests ----------------------------------------------------------------
