@@ -62,6 +62,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
   { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
+  { titleKey: 'Lead Emails', url: '/admin/lead-emails', icon: Search, minRole: 'admin' },
   { titleKey: 'admin.hr', url: '/admin/hr', icon: UserCog, minRole: 'admin' },
   { titleKey: 'admin.client_projects', url: '/admin/client-projects', icon: FolderKanban, minRole: 'editor' },
 ];
