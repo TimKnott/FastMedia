@@ -373,7 +373,15 @@ Deno.serve(async (req) => {
 
         // Email the new link
         const idempotencyKey = `rotate-token-${projectId}-${Date.now()}`
-        const { error: emailErr } = await admin.functions.invoke('send-transactional-email', {
+        console.log('[portal-access:rotate_token] dispatching', {
+          projectId,
+          recipient: tokenRow.email,
+          templateName: 'client-stage-update',
+          idempotencyKey,
+        })
+
+        const dispatchStart = Date.now()
+        const { data: emailData, error: emailErr } = await admin.functions.invoke('send-transactional-email', {
           body: {
             templateName: 'client-stage-update',
             recipientEmail: tokenRow.email,
@@ -387,16 +395,55 @@ Deno.serve(async (req) => {
             },
           },
         })
-        if (emailErr) console.error('rotate_token email error:', emailErr.message)
+        const dispatchMs = Date.now() - dispatchStart
+
+        const { data: logRows, error: logErr } = await admin
+          .from('email_send_log')
+          .select('id, status, error_message, message_id, created_at')
+          .eq('idempotency_key', idempotencyKey)
+          .order('created_at', { ascending: false })
+          .limit(5)
+
+        const debug = {
+          idempotencyKey,
+          dispatchMs,
+          invokeError: emailErr
+            ? {
+                name: (emailErr as any)?.name ?? null,
+                message: (emailErr as any)?.message ?? String(emailErr),
+                status: (emailErr as any)?.status ?? (emailErr as any)?.context?.status ?? null,
+                context: (emailErr as any)?.context ?? null,
+              }
+            : null,
+          invokeData: emailData ?? null,
+          logRows: logRows ?? [],
+          logQueryError: logErr ? logErr.message : null,
+        }
+
+        const queued = !emailErr && (logRows?.length ?? 0) > 0
+        if (emailErr) {
+          console.error('[portal-access:rotate_token] email_failed', debug)
+        } else if (!queued) {
+          console.error('[portal-access:rotate_token] no_send_log_row', debug)
+        } else {
+          console.log('[portal-access:rotate_token] queued', debug)
+        }
 
         await audit(projectId, 'token_rotated', ip, ua, {
           old_token_id: tokenRow.id,
           recipient: tokenRow.email,
-          email_sent: !emailErr,
+          email_sent: queued,
+          debug,
         })
 
         return new Response(
-          JSON.stringify({ ok: true, portal_url: newPortalUrl, email_sent: !emailErr }),
+          JSON.stringify({
+            ok: true,
+            portal_url: newPortalUrl,
+            email_sent: queued,
+            email_warning: !emailErr && !queued ? 'no_send_log_row' : null,
+            debug,
+          }),
           { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
         )
       }
