@@ -1,10 +1,10 @@
 import "https://deno.land/std@0.224.0/dotenv/load.ts";
 import { assertEquals, assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
 const FN_URL = `${SUPABASE_URL}/functions/v1/showcase-access`;
+const REST_URL = `${SUPABASE_URL}/rest/v1/showcase_projects`;
 
 async function callFn(body: unknown) {
   const res = await fetch(FN_URL, {
