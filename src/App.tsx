@@ -227,7 +227,7 @@ const App = () => (
               <Route path="export" element={<AdminExport />} />
               <Route path="client-projects" element={<AdminClientProjects />} />
               <Route path="client-projects/:id" element={<AdminClientProjectDetail />} />
-              <Route path="showcase" element={<AdminShowcase />} />
+              <Route path="showcase" element={<ProtectedRoute minRole="admin"><AdminShowcase /></ProtectedRoute>} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
