@@ -338,6 +338,16 @@ const ClientPortal = () => {
                       {resendLoading ? 'Sending…' : 'Resend draft email'}
                     </Button>
                     <Button
+                      onClick={rotateAccessToken}
+                      disabled={rotateLoading}
+                      size="sm"
+                      variant="outline"
+                      title="Revoke this link and email a new one"
+                    >
+                      <RefreshCw className={`w-4 h-4 mr-1.5 ${rotateLoading ? 'animate-spin' : ''}`} />
+                      {rotateLoading ? 'Rotating…' : 'Rotate access link'}
+                    </Button>
+                    <Button
                       onClick={acknowledgeAgreement}
                       disabled={ackLoading || !!project.agreement_acknowledged_at}
                       size="sm"
