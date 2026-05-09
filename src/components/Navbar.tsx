@@ -145,6 +145,55 @@ const Navbar = () => {
               </Link>
             )}
 
+            {/* Account / billing dropdown — signed-in users only */}
+            {isAuthed && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-9 px-2 sm:px-3 shrink-0"
+                    title="Account"
+                    aria-label="Account menu"
+                  >
+                    <UserCircle2 className="w-4 h-4 sm:mr-1.5" />
+                    <span className="hidden sm:inline">Account</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-60">
+                  <DropdownMenuLabel className="truncate">
+                    {userEmail ?? 'Signed in'}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      void openBillingPortal();
+                    }}
+                    disabled={billingLoading}
+                  >
+                    {billingLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <CreditCard className="w-4 h-4" />
+                    )}
+                    Manage billing
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/account">
+                      <UserCircle2 className="w-4 h-4" />
+                      Account page
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={(e) => { e.preventDefault(); void signOut(); }}>
+                    <LogOut className="w-4 h-4" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
             <LanguageSwitcher />
 
             {/* CTA Button - hidden on mobile, visible sm+ */}
