@@ -56,6 +56,7 @@ const AdminExport = lazy(() => import("./pages/admin/AdminExport"));
 const AdminClientProjects = lazy(() => import("./pages/admin/AdminClientProjects"));
 const AdminClientProjectDetail = lazy(() => import("./pages/admin/AdminClientProjectDetail"));
 const ClientPortal = lazy(() => import("./pages/portal/ClientPortal"));
+const PortalErrorBoundary = lazy(() => import("./pages/portal/PortalErrorBoundary"));
 const ProtectedRoute = lazy(() => import("./components/admin/ProtectedRoute"));
 
 // Demo pages (lazy)
