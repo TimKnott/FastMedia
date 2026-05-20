@@ -165,7 +165,7 @@ const AdminTtsTest = () => {
                     <a href={result.audio_url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3.5 h-3.5" /></a>
                   </Button>
                 </div>
-                <BlogAudioPlayer audioUrl={result.audio_url} title={slug} />
+                <BlogAudioPlayer audioUrl={result.audio_url} title={slug} cached={result.cached} freshlyGenerated={!result.cached} />
                 <audio controls src={result.audio_url} className="w-full" />
               </>
             )}

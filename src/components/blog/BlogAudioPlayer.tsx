@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { Play, Pause, Volume2, Loader2 } from 'lucide-react';
+import { Play, Pause, Volume2, Loader2, Sparkles, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   audioUrl: string;
   readMinutes?: number;
   title?: string;
+  /** When true, indicates this MP3 was just generated (vs served from cache). Triggers autoplay. */
+  freshlyGenerated?: boolean;
+  /** Optional override: explicitly indicate cache hit (suppresses autoplay even if freshlyGenerated). */
+  cached?: boolean;
 }
 
-const BlogAudioPlayer = ({ audioUrl, readMinutes, title }: Props) => {
+const BlogAudioPlayer = ({ audioUrl, readMinutes, title, freshlyGenerated, cached }: Props) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,6 +52,23 @@ const BlogAudioPlayer = ({ audioUrl, readMinutes, title }: Props) => {
     const a = audioRef.current; if (!a) return;
     if (playing) a.pause(); else { setLoading(true); a.play().finally(() => setLoading(false)); }
   };
+  // Auto-play once the freshly generated MP3 becomes playable.
+  useEffect(() => {
+    if (!freshlyGenerated || cached) return;
+    const a = audioRef.current; if (!a) return;
+    let cancelled = false;
+    const tryPlay = () => {
+      if (cancelled) return;
+      setLoading(true);
+      a.play()
+        .catch(() => { /* Autoplay blocked — user must click */ })
+        .finally(() => setLoading(false));
+    };
+    if (a.readyState >= 3) tryPlay();
+    else a.addEventListener('canplay', tryPlay, { once: true });
+    return () => { cancelled = true; a.removeEventListener('canplay', tryPlay); };
+  }, [freshlyGenerated, cached, audioUrl]);
+
 
   const fmt = (s: number) => {
     if (!Number.isFinite(s)) return '0:00';
@@ -73,6 +95,16 @@ const BlogAudioPlayer = ({ audioUrl, readMinutes, title }: Props) => {
             <Volume2 className="w-3.5 h-3.5" />
             <span className="font-medium text-foreground">Listen to this article</span>
             {readMinutes ? <span>· {readMinutes} min read</span> : null}
+            {cached && (
+              <Badge variant="outline" className="h-5 gap-1 text-[10px] px-1.5">
+                <Database className="w-3 h-3" /> Cached
+              </Badge>
+            )}
+            {freshlyGenerated && !cached && (
+              <Badge variant="secondary" className="h-5 gap-1 text-[10px] px-1.5 bg-accent/15 text-accent border-accent/30">
+                <Sparkles className="w-3 h-3" /> Generated
+              </Badge>
+            )}
             <span className="ml-auto tabular-nums">{fmt(progress)} / {fmt(duration)}</span>
           </div>
           <div
