@@ -13,6 +13,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
+import BlogAudioCTA from '@/components/blog/BlogAudioCTA';
 
 type Language = 'cs' | 'en' | 'de';
 
@@ -308,6 +309,26 @@ const BlogArticle = () => {
 
               {/* Excerpt lead */}
               <p className="text-lg leading-relaxed text-muted-foreground mb-6">{post.excerpt[language]}</p>
+
+              {/* ElevenLabs narration */}
+              <BlogAudioCTA
+                slug={post.slug}
+                text={[
+                  post.title[language] + '.',
+                  post.excerpt[language],
+                  ...post.sections.map((s) => {
+                    if (s.type === 'heading') return (s as any).text[language] + '.';
+                    if (s.type === 'paragraph') return (s as any).text[language];
+                    if (s.type === 'list') return (s as any).items.map((i: any) => i[language]).join('. ') + '.';
+                    if (s.type === 'quote') return (s as any).text[language];
+                    if (s.type === 'callout') return (s as any).text[language];
+                    return '';
+                  }),
+                ].filter(Boolean).join(' ')}
+                readMinutes={post.readTime}
+                title={post.title[language]}
+              />
+
               <Separator className="my-6" />
 
               {/* Rich article body */}

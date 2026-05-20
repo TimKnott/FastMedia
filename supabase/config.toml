@@ -33,3 +33,5 @@ project_id = "aivnnjsrupmubcjsgulb"
     verify_jwt = true
   [functions.payments-customer-portal]
     verify_jwt = false
+  [functions.blog-tts]
+    verify_jwt = false
