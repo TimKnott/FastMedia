@@ -1821,6 +1821,53 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_schema_audits: {
+        Row: {
+          audited_at: string
+          errors: Json | null
+          id: string
+          is_blog: boolean | null
+          page_type: string | null
+          property_id: string
+          recommendation: string | null
+          schemas_found: Json | null
+          url: string
+          warnings: Json | null
+        }
+        Insert: {
+          audited_at?: string
+          errors?: Json | null
+          id?: string
+          is_blog?: boolean | null
+          page_type?: string | null
+          property_id: string
+          recommendation?: string | null
+          schemas_found?: Json | null
+          url: string
+          warnings?: Json | null
+        }
+        Update: {
+          audited_at?: string
+          errors?: Json | null
+          id?: string
+          is_blog?: boolean | null
+          page_type?: string | null
+          property_id?: string
+          recommendation?: string | null
+          schemas_found?: Json | null
+          url?: string
+          warnings?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_schema_audits_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "seo_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seo_sitemaps: {
         Row: {
           checked_at: string
