@@ -91,19 +91,69 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_generation_log: {
+        Row: {
+          completed_at: string | null
+          error: string | null
+          id: string
+          keyword: string | null
+          model: string | null
+          notes: string | null
+          post_id: string | null
+          status: string
+          topic: string | null
+          triggered_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          error?: string | null
+          id?: string
+          keyword?: string | null
+          model?: string | null
+          notes?: string | null
+          post_id?: string | null
+          status?: string
+          topic?: string | null
+          triggered_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          error?: string | null
+          id?: string
+          keyword?: string | null
+          model?: string | null
+          notes?: string | null
+          post_id?: string | null
+          status?: string
+          topic?: string | null
+          triggered_at?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           ai_generated: boolean
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
+          audio_generated_at: string | null
+          audio_url: string | null
           author: string
+          auto_generated: boolean
           category: string
           content: Json
           created_at: string
           created_by: string | null
           excerpt: Json
+          faq_schema: Json | null
+          generation_metadata: Json | null
           hero_image_url: string | null
+          howto_schema: Json | null
           id: string
           published_at: string | null
           read_time_minutes: number
+          rejection_reason: string | null
+          seo_keywords: Json
           slug: string
           status: string
           tags: Json
@@ -112,16 +162,27 @@ export type Database = {
         }
         Insert: {
           ai_generated?: boolean
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          audio_generated_at?: string | null
+          audio_url?: string | null
           author?: string
+          auto_generated?: boolean
           category?: string
           content?: Json
           created_at?: string
           created_by?: string | null
           excerpt?: Json
+          faq_schema?: Json | null
+          generation_metadata?: Json | null
           hero_image_url?: string | null
+          howto_schema?: Json | null
           id?: string
           published_at?: string | null
           read_time_minutes?: number
+          rejection_reason?: string | null
+          seo_keywords?: Json
           slug: string
           status?: string
           tags?: Json
@@ -130,16 +191,27 @@ export type Database = {
         }
         Update: {
           ai_generated?: boolean
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          audio_generated_at?: string | null
+          audio_url?: string | null
           author?: string
+          auto_generated?: boolean
           category?: string
           content?: Json
           created_at?: string
           created_by?: string | null
           excerpt?: Json
+          faq_schema?: Json | null
+          generation_metadata?: Json | null
           hero_image_url?: string | null
+          howto_schema?: Json | null
           id?: string
           published_at?: string | null
           read_time_minutes?: number
+          rejection_reason?: string | null
+          seo_keywords?: Json
           slug?: string
           status?: string
           tags?: Json
