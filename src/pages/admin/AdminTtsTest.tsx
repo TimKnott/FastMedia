@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import BlogAudioPlayer from '@/components/blog/BlogAudioPlayer';
 import { blogPosts as staticPosts } from '@/data/blogPosts';
+import { friendlyTtsError, isElevenLabsUpgradeError, ELEVENLABS_UPGRADE_MESSAGE } from '@/lib/ttsErrors';
 
 type TestResult = {
   ok: boolean;
@@ -80,9 +81,17 @@ const AdminTtsTest = () => {
       }
     } catch (e) {
       const durationMs = Math.round(performance.now() - t0);
-      const msg = e instanceof Error ? e.message : String(e);
+      // Try to extract underlying error body from FunctionsHttpError
+      let extracted: string | undefined;
+      const ctx = (e as { context?: Response })?.context;
+      if (ctx && typeof ctx.text === 'function') {
+        try { extracted = await ctx.clone().text(); } catch { /* noop */ }
+      }
+      const upgrade = isElevenLabsUpgradeError(e) || isElevenLabsUpgradeError(extracted);
+      const msg = upgrade ? ELEVENLABS_UPGRADE_MESSAGE : friendlyTtsError(extracted ?? e);
       setResult({ ok: false, error: msg, durationMs });
-      toast.error(msg);
+      if (upgrade) toast.warning(ELEVENLABS_UPGRADE_MESSAGE);
+      else toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -160,7 +169,22 @@ const AdminTtsTest = () => {
                 <audio controls src={result.audio_url} className="w-full" />
               </>
             )}
-            {!result.ok && (
+            {!result.ok && result.error === ELEVENLABS_UPGRADE_MESSAGE && (
+              <div className="rounded-lg border border-accent/30 bg-accent/5 p-4 space-y-2">
+                <p className="font-medium text-sm text-foreground flex items-center gap-2">
+                  <Volume2 className="w-4 h-4 text-accent" /> Upgrade ElevenLabs to enable playback
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  ElevenLabs returned <code className="px-1 rounded bg-muted">401 detected_unusual_activity</code> — the free tier has been blocked on this account. Upgrade your plan to resume narration generation.
+                </p>
+                <Button asChild size="sm" variant="outline">
+                  <a href="https://elevenlabs.io/pricing" target="_blank" rel="noopener noreferrer">
+                    Open ElevenLabs pricing <ExternalLink className="w-3 h-3 ml-1.5" />
+                  </a>
+                </Button>
+              </div>
+            )}
+            {!result.ok && result.error !== ELEVENLABS_UPGRADE_MESSAGE && (
               <p className="text-sm text-destructive whitespace-pre-wrap">{result.error}</p>
             )}
           </CardContent>

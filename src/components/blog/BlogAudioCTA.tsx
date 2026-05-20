@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Headphones, Loader2, AlertCircle } from 'lucide-react';
+import { Headphones, Loader2, AlertCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import BlogAudioPlayer from './BlogAudioPlayer';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { isElevenLabsUpgradeError } from '@/lib/ttsErrors';
 
 interface Props {
   /** DB-managed post id (preferred — uses cached audio_url) */
@@ -26,15 +27,26 @@ const labels = {
   retry: { cs: 'Zkusit znovu', en: 'Try again', de: 'Erneut versuchen' },
 };
 
+const upgradeLabels = {
+  title: { cs: 'Namluvení článku je dočasně nedostupné', en: 'Audio playback temporarily unavailable', de: 'Audio-Wiedergabe vorübergehend nicht verfügbar' },
+  body: {
+    cs: 'Pro spuštění hlasového namluvení článku je potřeba upgradovat účet ElevenLabs.',
+    en: 'Upgrade your ElevenLabs plan to enable narration playback for this article.',
+    de: 'Bitte aktualisieren Sie Ihren ElevenLabs-Plan, um die Vertonung zu aktivieren.',
+  },
+};
+
 const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title }: Props) => {
   const { language } = useLanguage();
   const [audioUrl, setAudioUrl] = useState<string | null>(initialAudioUrl ?? null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [upgradeNeeded, setUpgradeNeeded] = useState(false);
 
   const generate = async () => {
     setLoading(true);
     setError(null);
+    setUpgradeNeeded(false);
     try {
       const payload = postId ? { post_id: postId } : { slug, text };
       const { data, error: fnErr } = await supabase.functions.invoke('blog-tts', { body: payload });
@@ -42,7 +54,12 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
       if (!data?.ok || !data?.audio_url) throw new Error(data?.error || 'No audio URL');
       setAudioUrl(data.audio_url);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed');
+      const ctxErr = (e as { context?: { error?: string } })?.context?.error;
+      if (isElevenLabsUpgradeError(e) || isElevenLabsUpgradeError(ctxErr)) {
+        setUpgradeNeeded(true);
+      } else {
+        setError(e instanceof Error ? e.message : 'Failed');
+      }
     } finally {
       setLoading(false);
     }
@@ -50,6 +67,18 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
 
   if (audioUrl) {
     return <BlogAudioPlayer audioUrl={audioUrl} readMinutes={readMinutes} title={title} />;
+  }
+
+  if (upgradeNeeded) {
+    return (
+      <div className="my-6 rounded-xl border border-accent/30 bg-accent/5 p-4 shadow-card flex items-start gap-3">
+        <Sparkles className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-sm text-foreground">{upgradeLabels.title[language]}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{upgradeLabels.body[language]}</p>
+        </div>
+      </div>
+    );
   }
 
   return (

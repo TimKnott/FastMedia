@@ -68,7 +68,17 @@ const AdminBlog = () => {
     setActioning(postId);
     try {
       const { data, error } = await supabase.functions.invoke('blog-tts', { body: { post_id: postId } });
-      if (error) throw error;
+      if (error) {
+        const ctx = (error as { context?: Response })?.context;
+        let body: string | undefined;
+        if (ctx && typeof ctx.text === 'function') { try { body = await ctx.clone().text(); } catch { /* noop */ } }
+        const { isElevenLabsUpgradeError, ELEVENLABS_UPGRADE_MESSAGE } = await import('@/lib/ttsErrors');
+        if (isElevenLabsUpgradeError(error) || isElevenLabsUpgradeError(body)) {
+          toast.warning(ELEVENLABS_UPGRADE_MESSAGE);
+          return;
+        }
+        throw error;
+      }
       if (!data?.ok) throw new Error(data?.error || 'Audio failed');
       toast.success('Audio regenerated');
       reload();
