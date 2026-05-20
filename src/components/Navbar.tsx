@@ -237,7 +237,7 @@ const Navbar = () => {
             <LanguageSwitcher />
 
             {/* CTA Button - hidden on mobile, visible sm+ */}
-            <a href="#contact" className="hidden sm:block">
+            <a href="#contact" onClick={(e) => handleHashClick(e, '#contact')} className="hidden sm:block">
               <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity">
                 {t('nav.book')}
               </Button>
