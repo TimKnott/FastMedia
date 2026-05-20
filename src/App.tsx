@@ -223,6 +223,7 @@ const App = () => (
               <Route path="sitemap" element={<AdminSitemap />} />
               <Route path="content-history" element={<AdminContentHistory />} />
               <Route path="seo" element={<AdminSEO />} />
+              <Route path="seo-insights" element={<AdminSEOInsights />} />
               <Route path="vbout" element={<AdminVbout />} />
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
               <Route path="accounting" element={<AdminAccounting />} />
