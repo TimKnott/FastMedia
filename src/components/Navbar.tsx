@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard, CreditCard, UserCircle2, Loader2, LogOut } from 'lucide-react';
@@ -24,10 +24,60 @@ const PAYMENTS_ENV: 'sandbox' | 'live' =
 
 const Navbar = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
+
+  // Smooth-scroll to hash target on mount and whenever the hash changes
+  // (handles in-app navigations like "/" -> "/#services").
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    const tryScroll = (attempt = 0) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (attempt < 10) {
+        // Section may still be mounting (lazy routes / images). Retry briefly.
+        setTimeout(() => tryScroll(attempt + 1), 100);
+      }
+    };
+    tryScroll();
+  }, [location.pathname, location.hash]);
+
+  const handleHashClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (!href.startsWith('#')) return;
+    e.preventDefault();
+    const id = href.slice(1);
+    if (location.pathname !== '/') {
+      setIsOpen(false);
+      navigate(`/${href}`);
+      return;
+    }
+    const scrollNow = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.history.replaceState(null, '', href);
+      }
+    };
+    // Close the menu first, then scroll after the layout settles so the
+    // collapsing menu does not interrupt the smooth scroll.
+    if (isOpen) {
+      setIsOpen(false);
+      requestAnimationFrame(() => requestAnimationFrame(scrollNow));
+    } else {
+      scrollNow();
+    }
+  };
+
+
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -197,7 +247,7 @@ const Navbar = () => {
             <LanguageSwitcher />
 
             {/* CTA Button - hidden on mobile, visible sm+ */}
-            <a href="#contact" className="hidden sm:block">
+            <a href="#contact" onClick={(e) => handleHashClick(e, '#contact')} className="hidden sm:block">
               <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity">
                 {t('nav.book')}
               </Button>
@@ -270,13 +320,14 @@ const Navbar = () => {
                   <a
                     key={link.href}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => handleHashClick(e, link.href)}
                     className="block py-2 text-foreground font-medium hover:text-accent transition-colors"
                   >
                     {link.label}
                   </a>
                 )
               )}
+
 
               {/* Quick actions row */}
               <div className="flex items-center gap-3 pt-2 border-t border-border">
@@ -313,7 +364,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              <a href="#contact" onClick={() => setIsOpen(false)}>
+              <a href="#contact" onClick={(e) => handleHashClick(e, '#contact')}>
                 <Button className="w-full gradient-accent text-accent-foreground font-semibold">
                   {t('nav.book')}
                 </Button>
