@@ -49,6 +49,7 @@ const AdminMedia = lazy(() => import("./pages/admin/AdminMedia"));
 const AdminSitemap = lazy(() => import("./pages/admin/AdminSitemap"));
 const AdminContentHistory = lazy(() => import("./pages/admin/AdminContentHistory"));
 const AdminSEO = lazy(() => import("./pages/admin/AdminSEO"));
+const AdminSEOInsights = lazy(() => import("./pages/admin/AdminSEOInsights"));
 const AdminVbout = lazy(() => import("./pages/admin/AdminVbout"));
 const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
