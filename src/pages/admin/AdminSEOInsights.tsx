@@ -360,6 +360,129 @@ const AdminSEOInsights = () => {
             )}
           </TabsContent>
 
+          <TabsContent value="content" className="space-y-4">
+            <div className="flex gap-2 flex-wrap">
+              <Button size="sm" variant="outline" onClick={() => runJob.mutate('freshness' as any)} disabled={runJob.isPending}>
+                <RefreshCw className="w-4 h-4 mr-1" />Refresh freshness
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => runJob.mutate('schema' as any)} disabled={runJob.isPending}>
+                <Shield className="w-4 h-4 mr-1" />Validate schema
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => downloadCsv(freshness, 'content-freshness.csv')}>
+                <Download className="w-4 h-4 mr-1" />Export CSV
+              </Button>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Blog & vlog content freshness</CardTitle>
+                <CardDescription>Posts older than 90 days or with declining traffic are flagged for refresh.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader><TableRow>
+                    <TableHead>URL</TableHead>
+                    <TableHead className="text-right">Age (days)</TableHead>
+                    <TableHead className="text-right">Clicks 28d</TableHead>
+                    <TableHead className="text-right">Impressions</TableHead>
+                    <TableHead>Trend</TableHead>
+                    <TableHead>Recommendation</TableHead>
+                  </TableRow></TableHeader>
+                  <TableBody>
+                    {freshness.length === 0 && <TableRow><TableCell colSpan={6} className="text-muted-foreground text-center">No freshness data yet — run "Refresh freshness".</TableCell></TableRow>}
+                    {freshness.slice(0, 50).map((r) => {
+                      const stale = (r.days_since_update ?? 0) > 90;
+                      return (
+                        <TableRow key={r.id}>
+                          <TableCell className="truncate max-w-xs text-sm"><a href={r.url} target="_blank" rel="noreferrer" className="hover:underline">{r.url.replace(/^https?:\/\/[^/]+/, '')}</a></TableCell>
+                          <TableCell className="text-right">{stale ? <Badge variant="destructive">{r.days_since_update}</Badge> : (r.days_since_update ?? '—')}</TableCell>
+                          <TableCell className="text-right">{r.clicks_28d ?? 0}</TableCell>
+                          <TableCell className="text-right">{r.impressions_28d ?? 0}</TableCell>
+                          <TableCell><Badge variant={r.trend === 'declining' ? 'destructive' : r.trend === 'rising' ? 'default' : 'outline'}>{r.trend ?? '—'}</Badge></TableCell>
+                          <TableCell className="text-sm text-muted-foreground">{r.recommendation ?? '—'}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Structured data (FAQ / HowTo / Article)</CardTitle>
+                <CardDescription>Schema markup discovered per page. Errors block rich results in Google.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader><TableRow>
+                    <TableHead>URL</TableHead><TableHead>Schemas found</TableHead><TableHead>Errors</TableHead><TableHead>Warnings</TableHead><TableHead>Suggested fix</TableHead>
+                  </TableRow></TableHeader>
+                  <TableBody>
+                    {schemaAudits.length === 0 && <TableRow><TableCell colSpan={5} className="text-muted-foreground text-center">No audits yet — run "Validate schema".</TableCell></TableRow>}
+                    {schemaAudits.slice(0, 50).map((r) => (
+                      <TableRow key={r.id}>
+                        <TableCell className="truncate max-w-xs text-sm">{r.url.replace(/^https?:\/\/[^/]+/, '')}</TableCell>
+                        <TableCell className="text-sm">{Array.isArray(r.schemas_found) && r.schemas_found.length ? r.schemas_found.map((s: string) => <Badge key={s} variant="outline" className="mr-1">{s}</Badge>) : <span className="text-muted-foreground">none</span>}</TableCell>
+                        <TableCell>{Array.isArray(r.errors) && r.errors.length > 0 ? <Badge variant="destructive">{r.errors.length}</Badge> : <CheckCircle2 className="w-4 h-4 text-green-500" />}</TableCell>
+                        <TableCell>{Array.isArray(r.warnings) && r.warnings.length > 0 ? <Badge variant="outline">{r.warnings.length}</Badge> : '—'}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{r.recommendation}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="opportunities" className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Featured snippet opportunities</CardTitle>
+                  <CardDescription>Question-style queries with impressions — strong candidates for FAQ blog posts.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader><TableRow><TableHead>Query</TableHead><TableHead className="text-right">Impr.</TableHead><TableHead className="text-right">Pos.</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      {voiceQueries.length === 0 && <TableRow><TableCell colSpan={3} className="text-muted-foreground text-center text-sm">Run a GSC sync to populate.</TableCell></TableRow>}
+                      {voiceQueries.slice(0, 20).map((q) => (
+                        <TableRow key={q.id}>
+                          <TableCell className="text-sm">{q.query}</TableCell>
+                          <TableCell className="text-right">{q.impressions}</TableCell>
+                          <TableCell className="text-right">{q.position?.toFixed(1)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Competitor keyword gaps</CardTitle>
+                  <CardDescription>Keywords competitors rank for but you don't — prime blog/vlog topics.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader><TableRow><TableHead>Keyword</TableHead><TableHead className="text-right">Volume</TableHead><TableHead className="text-right">Competitor</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      {keywordGaps.length === 0 && <TableRow><TableCell colSpan={3} className="text-muted-foreground text-center text-sm">Run Semrush sync to populate.</TableCell></TableRow>}
+                      {keywordGaps.slice(0, 20).map((g) => (
+                        <TableRow key={g.id}>
+                          <TableCell className="text-sm">{g.keyword}</TableCell>
+                          <TableCell className="text-right">{g.volume ?? '—'}</TableCell>
+                          <TableCell className="text-right text-xs text-muted-foreground">{g.competitor_domain ?? '—'} #{g.competitor_position ?? '—'}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
           <TabsContent value="issues" className="space-y-2">
             {issues.length === 0 ? (
               <Card><CardContent className="py-8 text-center text-muted-foreground flex flex-col items-center gap-2"><CheckCircle2 className="w-8 h-8 text-green-500" />No open issues.</CardContent></Card>
