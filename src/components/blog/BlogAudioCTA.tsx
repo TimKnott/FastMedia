@@ -42,6 +42,9 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [upgradeNeeded, setUpgradeNeeded] = useState(false);
+  // Cached when the URL was supplied by parent (already persisted) OR the function says cached.
+  const [cached, setCached] = useState<boolean>(!!initialAudioUrl);
+  const [freshlyGenerated, setFreshlyGenerated] = useState(false);
 
   const generate = async () => {
     setLoading(true);
@@ -52,6 +55,8 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
       const { data, error: fnErr } = await supabase.functions.invoke('blog-tts', { body: payload });
       if (fnErr) throw fnErr;
       if (!data?.ok || !data?.audio_url) throw new Error(data?.error || 'No audio URL');
+      setCached(!!data.cached);
+      setFreshlyGenerated(!data.cached);
       setAudioUrl(data.audio_url);
     } catch (e) {
       const ctxErr = (e as { context?: { error?: string } })?.context?.error;
@@ -66,7 +71,15 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
   };
 
   if (audioUrl) {
-    return <BlogAudioPlayer audioUrl={audioUrl} readMinutes={readMinutes} title={title} />;
+    return (
+      <BlogAudioPlayer
+        audioUrl={audioUrl}
+        readMinutes={readMinutes}
+        title={title}
+        cached={cached}
+        freshlyGenerated={freshlyGenerated}
+      />
+    );
   }
 
   if (upgradeNeeded) {
