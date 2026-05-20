@@ -1,5 +1,8 @@
 // Generates ElevenLabs voiceover for a blog post and uploads MP3 to blog-audio bucket.
-// Cost-optimised: uses eleven_turbo_v2_5 (cheapest tier) and truncates narration to ~4500 chars.
+// Supports two modes:
+//   1) { post_id }        — pulls content from blog_posts table (DB-managed posts)
+//   2) { slug, text }     — uses provided narration text, keyed by slug (static posts)
+// Returns cached audio if already generated. Cost-optimised: eleven_turbo_v2_5, ≤4500 chars.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const corsHeaders = {
@@ -7,11 +10,10 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// "Sarah" — natural narration voice
-const VOICE_ID = 'EXAVITQu4vr4xnSDxMaL';
+const VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Sarah
 const MAX_CHARS = 4500;
 
-function buildNarration(post: { title?: Record<string, string>; excerpt?: Record<string, string>; content?: Record<string, { sections: Array<{ type: string; text?: string; items?: string[] }> }> }) {
+function buildNarrationFromPost(post: { title?: Record<string, string>; excerpt?: Record<string, string>; content?: Record<string, { sections: Array<{ type: string; text?: string; items?: string[] }> }> }) {
   const lang = 'en';
   const title = post.title?.[lang] ?? '';
   const excerpt = post.excerpt?.[lang] ?? '';
@@ -22,8 +24,11 @@ function buildNarration(post: { title?: Record<string, string>; excerpt?: Record
     else if (s.type === 'paragraph' && s.text) body.push(s.text);
     else if (s.type === 'list' && Array.isArray(s.items)) body.push(s.items.join('. ') + '.');
   }
-  let text = [title + '.', excerpt, ...body].filter(Boolean).join(' ');
-  if (text.length > MAX_CHARS) text = text.slice(0, MAX_CHARS).replace(/\s+\S*$/, '') + '…';
+  return clip([title + '.', excerpt, ...body].filter(Boolean).join(' '));
+}
+
+function clip(text: string) {
+  if (text.length > MAX_CHARS) return text.slice(0, MAX_CHARS).replace(/\s+\S*$/, '') + '…';
   return text;
 }
 
@@ -34,15 +39,45 @@ Deno.serve(async (req) => {
     const ELEVENLABS_API_KEY = Deno.env.get('ELEVENLABS_API_KEY');
     if (!ELEVENLABS_API_KEY) throw new Error('ELEVENLABS_API_KEY not configured');
 
-    const { post_id } = await req.json().catch(() => ({}));
-    if (!post_id) throw new Error('post_id required');
+    const body = await req.json().catch(() => ({}));
+    const { post_id, slug, text } = body as { post_id?: string; slug?: string; text?: string };
 
     const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
-    const { data: post, error: pErr } = await admin.from('blog_posts').select('id, slug, title, excerpt, content').eq('id', post_id).single();
-    if (pErr || !post) throw new Error(pErr?.message || 'Post not found');
 
-    const narration = buildNarration(post as any);
+    let narration = '';
+    let storagePath = '';
+    let dbPostId: string | null = null;
+
+    if (post_id) {
+      const { data: post, error: pErr } = await admin.from('blog_posts').select('id, slug, title, excerpt, content, audio_url').eq('id', post_id).single();
+      if (pErr || !post) throw new Error(pErr?.message || 'Post not found');
+      if (post.audio_url) {
+        return new Response(JSON.stringify({ ok: true, audio_url: post.audio_url, cached: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      narration = buildNarrationFromPost(post as any);
+      storagePath = `posts/${post_id}.mp3`;
+      dbPostId = post.id;
+    } else if (slug && text) {
+      narration = clip(text);
+      storagePath = `static/${slug.replace(/[^a-z0-9-]/gi, '-')}.mp3`;
+    } else {
+      throw new Error('Provide either post_id or { slug, text }');
+    }
+
     if (!narration.trim()) throw new Error('Empty narration');
+
+    // Check cache in storage for static slug mode
+    if (!post_id) {
+      const { data: existing } = await admin.storage.from('blog-audio').list(storagePath.split('/')[0], { search: storagePath.split('/')[1] });
+      if (existing && existing.find((f) => f.name === storagePath.split('/')[1])) {
+        const { data: pub } = admin.storage.from('blog-audio').getPublicUrl(storagePath);
+        return new Response(JSON.stringify({ ok: true, audio_url: pub.publicUrl, cached: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
 
     const ttsRes = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream?output_format=mp3_22050_32`,
@@ -62,20 +97,20 @@ Deno.serve(async (req) => {
     }
     const mp3 = new Uint8Array(await ttsRes.arrayBuffer());
 
-    const path = `posts/${post_id}.mp3`;
-    const { error: upErr } = await admin.storage.from('blog-audio').upload(path, mp3, {
+    const { error: upErr } = await admin.storage.from('blog-audio').upload(storagePath, mp3, {
       contentType: 'audio/mpeg', upsert: true, cacheControl: '604800',
     });
     if (upErr) throw upErr;
-    const { data: pub } = admin.storage.from('blog-audio').getPublicUrl(path);
-    const audioUrl = pub.publicUrl + `?v=${Date.now()}`;
+    const { data: pub } = admin.storage.from('blog-audio').getPublicUrl(storagePath);
+    const audioUrl = pub.publicUrl;
 
-    const { error: updErr } = await admin.from('blog_posts').update({
-      audio_url: audioUrl, audio_generated_at: new Date().toISOString(),
-    }).eq('id', post_id);
-    if (updErr) throw updErr;
+    if (dbPostId) {
+      await admin.from('blog_posts').update({
+        audio_url: audioUrl, audio_generated_at: new Date().toISOString(),
+      }).eq('id', dbPostId);
+    }
 
-    return new Response(JSON.stringify({ ok: true, audio_url: audioUrl, chars: narration.length }), {
+    return new Response(JSON.stringify({ ok: true, audio_url: audioUrl, chars: narration.length, cached: false }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (e) {
