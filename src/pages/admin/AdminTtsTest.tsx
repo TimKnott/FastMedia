@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import BlogAudioPlayer from '@/components/blog/BlogAudioPlayer';
 import { blogPosts as staticPosts } from '@/data/blogPosts';
+import { friendlyTtsError, isElevenLabsUpgradeError, ELEVENLABS_UPGRADE_MESSAGE } from '@/lib/ttsErrors';
 
 type TestResult = {
   ok: boolean;
