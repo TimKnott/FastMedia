@@ -38,9 +38,10 @@ Deno.serve(async (req) => {
       freshness: 'seo-content-freshness',
       voice: 'seo-voice-search',
       ga4: 'seo-ga4-sync',
+      schema: 'seo-schema-validator',
       digest: 'seo-alerts',
       'critical-alert': 'seo-alerts',
-      all: ['seo-sync-gsc', 'seo-sync-semrush', 'seo-pagespeed', 'seo-broken-links', 'seo-content-freshness', 'seo-voice-search', 'seo-ga4-sync', 'seo-audit-eat'],
+      all: ['seo-sync-gsc', 'seo-sync-semrush', 'seo-pagespeed', 'seo-broken-links', 'seo-content-freshness', 'seo-voice-search', 'seo-ga4-sync', 'seo-schema-validator', 'seo-audit-eat'],
     };
     const target = jobMap[job] ?? 'seo-sync-gsc';
     const fns = Array.isArray(target) ? target : [target];
