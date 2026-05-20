@@ -169,7 +169,22 @@ const AdminTtsTest = () => {
                 <audio controls src={result.audio_url} className="w-full" />
               </>
             )}
-            {!result.ok && (
+            {!result.ok && result.error === ELEVENLABS_UPGRADE_MESSAGE && (
+              <div className="rounded-lg border border-accent/30 bg-accent/5 p-4 space-y-2">
+                <p className="font-medium text-sm text-foreground flex items-center gap-2">
+                  <Volume2 className="w-4 h-4 text-accent" /> Upgrade ElevenLabs to enable playback
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  ElevenLabs returned <code className="px-1 rounded bg-muted">401 detected_unusual_activity</code> — the free tier has been blocked on this account. Upgrade your plan to resume narration generation.
+                </p>
+                <Button asChild size="sm" variant="outline">
+                  <a href="https://elevenlabs.io/pricing" target="_blank" rel="noopener noreferrer">
+                    Open ElevenLabs pricing <ExternalLink className="w-3 h-3 ml-1.5" />
+                  </a>
+                </Button>
+              </div>
+            )}
+            {!result.ok && result.error !== ELEVENLABS_UPGRADE_MESSAGE && (
               <p className="text-sm text-destructive whitespace-pre-wrap">{result.error}</p>
             )}
           </CardContent>
