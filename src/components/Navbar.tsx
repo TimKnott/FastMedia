@@ -54,19 +54,29 @@ const Navbar = () => {
   ) => {
     if (!href.startsWith('#')) return;
     e.preventDefault();
-    setIsOpen(false);
     const id = href.slice(1);
     if (location.pathname !== '/') {
+      setIsOpen(false);
       navigate(`/${href}`);
       return;
     }
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Update the URL hash without triggering a default jump.
-      window.history.replaceState(null, '', href);
+    const scrollNow = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.history.replaceState(null, '', href);
+      }
+    };
+    // Close the menu first, then scroll after the layout settles so the
+    // collapsing menu does not interrupt the smooth scroll.
+    if (isOpen) {
+      setIsOpen(false);
+      requestAnimationFrame(() => requestAnimationFrame(scrollNow));
+    } else {
+      scrollNow();
     }
   };
+
 
 
   useEffect(() => {
