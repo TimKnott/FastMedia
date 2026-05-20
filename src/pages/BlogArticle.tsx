@@ -13,6 +13,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
+import BlogAudioCTA from '@/components/blog/BlogAudioCTA';
 
 type Language = 'cs' | 'en' | 'de';
 
