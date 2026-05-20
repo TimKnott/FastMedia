@@ -75,6 +75,46 @@ const AdminSEOInsights = () => {
     },
   });
 
+  const { data: freshness = [] } = useQuery({
+    queryKey: ['seo-freshness', activeId],
+    enabled: !!activeId,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('seo_content_freshness').select('*').eq('property_id', activeId).order('days_since_update', { ascending: false }).limit(100);
+      if (error) throw error; return data as any[];
+    },
+  });
+
+  const { data: schemaAudits = [] } = useQuery({
+    queryKey: ['seo-schema', activeId],
+    enabled: !!activeId,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('seo_schema_audits').select('*').eq('property_id', activeId).order('audited_at', { ascending: false }).limit(200);
+      if (error) throw error; return data as any[];
+    },
+  });
+
+  const { data: voiceQueries = [] } = useQuery({
+    queryKey: ['seo-voice', activeId],
+    enabled: !!activeId,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('seo_voice_queries').select('*').eq('property_id', activeId).order('impressions', { ascending: false }).limit(50);
+      if (error) throw error; return data as any[];
+    },
+  });
+
+  const { data: keywordGaps = [] } = useQuery({
+    queryKey: ['seo-gaps', activeId],
+    enabled: !!activeId,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('seo_keyword_gaps').select('*').eq('property_id', activeId).order('volume', { ascending: false }).limit(50);
+      if (error) throw error; return data as any[];
+    },
+  });
+      const { data, error } = await supabase.from('seo_issues').select('*').eq('property_id', activeId).eq('status', 'open').order('severity').order('created_at', { ascending: false });
+      if (error) throw error; return data as Issue[];
+    },
+  });
+
   const { data: latestAudit } = useQuery({
     queryKey: ['seo-eat', activeId],
     enabled: !!activeId,
