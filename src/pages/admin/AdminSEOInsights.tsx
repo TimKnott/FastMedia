@@ -80,7 +80,7 @@ const AdminSEOInsights = () => {
     enabled: !!activeId,
     queryFn: async () => {
       const { data, error } = await supabase.from('eat_audits').select('*').eq('property_id', activeId).order('run_at', { ascending: false }).limit(1).maybeSingle();
-      if (error) throw error; return data as EatAudit | null;
+      if (error) throw error; return data as unknown as EatAudit | null;
     },
   });
 
