@@ -354,7 +354,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              <a href="#contact" onClick={() => setIsOpen(false)}>
+              <a href="#contact" onClick={(e) => handleHashClick(e, '#contact')}>
                 <Button className="w-full gradient-accent text-accent-foreground font-semibold">
                   {t('nav.book')}
                 </Button>
