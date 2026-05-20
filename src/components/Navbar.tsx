@@ -24,10 +24,50 @@ const PAYMENTS_ENV: 'sandbox' | 'live' =
 
 const Navbar = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
+
+  // Smooth-scroll to hash target on mount and whenever the hash changes
+  // (handles in-app navigations like "/" -> "/#services").
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    const tryScroll = (attempt = 0) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (attempt < 10) {
+        // Section may still be mounting (lazy routes / images). Retry briefly.
+        setTimeout(() => tryScroll(attempt + 1), 100);
+      }
+    };
+    tryScroll();
+  }, [location.pathname, location.hash]);
+
+  const handleHashClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (!href.startsWith('#')) return;
+    e.preventDefault();
+    setIsOpen(false);
+    const id = href.slice(1);
+    if (location.pathname !== '/') {
+      navigate(`/${href}`);
+      return;
+    }
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Update the URL hash without triggering a default jump.
+      window.history.replaceState(null, '', href);
+    }
+  };
+
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
