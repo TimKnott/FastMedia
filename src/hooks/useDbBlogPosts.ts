@@ -72,3 +72,29 @@ export const useDbBlogPosts = (
 
   return { posts, loading, error, reload };
 };
+
+export const useDbBlogPost = (slug: string | undefined) => {
+  const [post, setPost] = useState<DbBlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) { setLoading(false); return; }
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .maybeSingle();
+      if (!cancelled) {
+        setPost((data ?? null) as unknown as DbBlogPost | null);
+        setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [slug]);
+
+  return { post, loading };
+};
