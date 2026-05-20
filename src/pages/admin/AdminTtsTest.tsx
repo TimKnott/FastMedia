@@ -29,12 +29,11 @@ const AdminTtsTest = () => {
   const buildTextFromStatic = (s: string): string | null => {
     const p = staticPosts.find(x => x.slug === s);
     if (!p) return null;
-    const sections = p.content?.en?.sections ?? [];
     const parts: string[] = [p.title?.en ?? '', p.excerpt?.en ?? ''];
-    for (const sec of sections) {
-      if (sec.type === 'heading' && sec.text) parts.push(sec.text + '.');
-      else if (sec.type === 'paragraph' && sec.text) parts.push(sec.text);
-      else if (sec.type === 'list' && Array.isArray(sec.items)) parts.push(sec.items.join('. ') + '.');
+    for (const sec of p.sections ?? []) {
+      if (sec.type === 'heading') parts.push((sec.text?.en ?? '') + '.');
+      else if (sec.type === 'paragraph') parts.push(sec.text?.en ?? '');
+      else if (sec.type === 'list') parts.push(sec.items.map(i => i.en).join('. ') + '.');
     }
     return parts.filter(Boolean).join(' ');
   };
