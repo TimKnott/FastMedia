@@ -95,6 +95,16 @@ const BlogAudioPlayer = ({ audioUrl, readMinutes, title, freshlyGenerated, cache
             <Volume2 className="w-3.5 h-3.5" />
             <span className="font-medium text-foreground">Listen to this article</span>
             {readMinutes ? <span>· {readMinutes} min read</span> : null}
+            {cached && (
+              <Badge variant="outline" className="h-5 gap-1 text-[10px] px-1.5">
+                <Database className="w-3 h-3" /> Cached
+              </Badge>
+            )}
+            {freshlyGenerated && !cached && (
+              <Badge variant="secondary" className="h-5 gap-1 text-[10px] px-1.5 bg-accent/15 text-accent border-accent/30">
+                <Sparkles className="w-3 h-3" /> Generated
+              </Badge>
+            )}
             <span className="ml-auto tabular-nums">{fmt(progress)} / {fmt(duration)}</span>
           </div>
           <div
