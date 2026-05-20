@@ -81,9 +81,17 @@ const AdminTtsTest = () => {
       }
     } catch (e) {
       const durationMs = Math.round(performance.now() - t0);
-      const msg = e instanceof Error ? e.message : String(e);
+      // Try to extract underlying error body from FunctionsHttpError
+      let extracted: string | undefined;
+      const ctx = (e as { context?: Response })?.context;
+      if (ctx && typeof ctx.text === 'function') {
+        try { extracted = await ctx.clone().text(); } catch { /* noop */ }
+      }
+      const upgrade = isElevenLabsUpgradeError(e) || isElevenLabsUpgradeError(extracted);
+      const msg = upgrade ? ELEVENLABS_UPGRADE_MESSAGE : friendlyTtsError(extracted ?? e);
       setResult({ ok: false, error: msg, durationMs });
-      toast.error(msg);
+      if (upgrade) toast.warning(ELEVENLABS_UPGRADE_MESSAGE);
+      else toast.error(msg);
     } finally {
       setLoading(false);
     }
