@@ -378,6 +378,47 @@ export type Database = {
         }
         Relationships: []
       }
+      eat_audits: {
+        Row: {
+          authority_score: number | null
+          expertise_score: number | null
+          id: string
+          overall_score: number
+          property_id: string
+          run_at: string
+          signals: Json
+          trust_score: number | null
+        }
+        Insert: {
+          authority_score?: number | null
+          expertise_score?: number | null
+          id?: string
+          overall_score?: number
+          property_id: string
+          run_at?: string
+          signals?: Json
+          trust_score?: number | null
+        }
+        Update: {
+          authority_score?: number | null
+          expertise_score?: number | null
+          id?: string
+          overall_score?: number
+          property_id?: string
+          run_at?: string
+          signals?: Json
+          trust_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eat_audits_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "seo_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -1298,6 +1339,227 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      seo_index_status: {
+        Row: {
+          checked_at: string
+          coverage_state: string | null
+          id: string
+          indexed: boolean | null
+          last_crawl_time: string | null
+          page_fetch_state: string | null
+          property_id: string
+          raw: Json | null
+          robots_txt_state: string | null
+          url: string
+        }
+        Insert: {
+          checked_at?: string
+          coverage_state?: string | null
+          id?: string
+          indexed?: boolean | null
+          last_crawl_time?: string | null
+          page_fetch_state?: string | null
+          property_id: string
+          raw?: Json | null
+          robots_txt_state?: string | null
+          url: string
+        }
+        Update: {
+          checked_at?: string
+          coverage_state?: string | null
+          id?: string
+          indexed?: boolean | null
+          last_crawl_time?: string | null
+          page_fetch_state?: string | null
+          property_id?: string
+          raw?: Json | null
+          robots_txt_state?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_index_status_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "seo_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_issues: {
+        Row: {
+          category: string
+          created_at: string
+          detail: string | null
+          id: string
+          metadata: Json | null
+          property_id: string
+          resolved_at: string | null
+          severity: string
+          snoozed_until: string | null
+          status: string
+          suggested_fix: string | null
+          title: string
+          url: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id: string
+          resolved_at?: string | null
+          severity: string
+          snoozed_until?: string | null
+          status?: string
+          suggested_fix?: string | null
+          title: string
+          url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id?: string
+          resolved_at?: string | null
+          severity?: string
+          snoozed_until?: string | null
+          status?: string
+          suggested_fix?: string | null
+          title?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_issues_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "seo_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_properties: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          display_name: string
+          id: string
+          is_active: boolean
+          last_eat_audit_at: string | null
+          last_synced_at: string | null
+          site_url: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          id?: string
+          is_active?: boolean
+          last_eat_audit_at?: string | null
+          last_synced_at?: string | null
+          site_url: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          id?: string
+          is_active?: boolean
+          last_eat_audit_at?: string | null
+          last_synced_at?: string | null
+          site_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_sitemaps: {
+        Row: {
+          checked_at: string
+          contents: Json | null
+          errors: number | null
+          id: string
+          is_pending: boolean | null
+          last_downloaded: string | null
+          last_submitted: string | null
+          property_id: string
+          sitemap_url: string
+          warnings: number | null
+        }
+        Insert: {
+          checked_at?: string
+          contents?: Json | null
+          errors?: number | null
+          id?: string
+          is_pending?: boolean | null
+          last_downloaded?: string | null
+          last_submitted?: string | null
+          property_id: string
+          sitemap_url: string
+          warnings?: number | null
+        }
+        Update: {
+          checked_at?: string
+          contents?: Json | null
+          errors?: number | null
+          id?: string
+          is_pending?: boolean | null
+          last_downloaded?: string | null
+          last_submitted?: string | null
+          property_id?: string
+          sitemap_url?: string
+          warnings?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_sitemaps_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "seo_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_snapshots: {
+        Row: {
+          created_at: string
+          dimension: string
+          id: string
+          metrics: Json
+          property_id: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          dimension: string
+          id?: string
+          metrics?: Json
+          property_id: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          dimension?: string
+          id?: string
+          metrics?: Json
+          property_id?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_snapshots_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "seo_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shifts: {
         Row: {

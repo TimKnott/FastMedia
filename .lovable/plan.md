@@ -1,72 +1,92 @@
 
-## Goal
+# SEO + E-A-T Monitoring Dashboard
 
-A private, token-protected showcase served from `fastmedia.pro`. Each project has its own URL like `fastmedia.pro/showcase/<slug>?k=<token>` that renders the Lovable project inside a full-screen iframe — the address bar always shows your domain and the project slug, never `lovable.dev`. A back-office page lets you add, edit, remove, and rotate tokens without touching code.
+A back-office tool at **`/admin/seo`** that runs weekly automated scans against Google Search Console + Semrush + your own site, stores historical snapshots, and surfaces prioritised fixes.
 
-## Why the previous attempt 404'd
+## Feasibility & Recommended Frequency
 
-The earlier build dropped a `public/showcase.html` file. In a Vite SPA, requests under your domain are handled by React Router (SPA fallback to `index.html`), so visiting `/showcase` or `/showcase/<slug>` never reached the static HTML and React had no matching route → NotFound. The fix is to make showcase a real React route, not a static HTML file.
+- **Fully feasible.** GSC connector is already linked (`GOOGLE_SEARCH_CONSOLE_API_KEY`), Semrush connector is available for backlink/authority data, and Lovable Cloud (Supabase) handles scheduling via `pg_cron` + edge functions.
+- **Recommended cadence:** **weekly for performance/coverage** (GSC data has ~2-3 day lag, so more frequent adds little signal), **daily for crawl-error & security alerts** (so you find regressions fast), **monthly for E-A-T audit** (changes slowly). Configurable per-job.
 
-## Important compatibility note (please confirm)
+## Scope (Phase 1 — what this plan covers)
 
-Browsers only allow embedding a site in an iframe when that site permits it (no `X-Frame-Options: DENY/SAMEORIGIN` and no restrictive `frame-ancestors` CSP).
+### 1. Search Console weekly sync
+Edge function `seo-sync-gsc` pulls per property:
+- Top keywords (query, clicks, impressions, CTR, avg position)
+- Clicks/impressions time series (28-day trailing)
+- Top pages, device split, country split
+- Index coverage summary via `urlInspection` for a configurable URL list
+- Sitemap list + last-read status + error counts
+- Stored in `seo_snapshots` (one row per week per property per dimension)
 
-- Lovable **editor** URLs (`https://lovable.dev/projects/<id>`) require login and block iframing — these will show a blank/refused frame.
-- Lovable **published** URLs (`*.lovable.app` or your own custom domain attached to that project) generally can be embedded.
+### 2. E-A-T weekly audit
+Edge function `seo-audit-eat` runs per property:
+- **Site signals** — fetches homepage + key URLs, checks: HTTPS, JSON-LD presence (Organization, Person, Article author), contact page reachable, privacy/terms links, sameAs profiles, secure headers
+- **Authoritativeness** — calls Semrush `backlink_analysis` for authority score, referring domains, follow/nofollow ratio, top anchors
+- **Expertise** — scans blog posts for author byline + credentials field (uses existing blog schema)
+- Each check produces a 0-100 sub-score; overall E-A-T health score stored in `eat_audits`
 
-For the showcase to actually display the project, each entry should point at the project's **published URL**, not the editor URL. The admin form will accept any URL but I'll add a warning when an editor-style URL is detected.
+### 3. Issue queue & alerts
+- `seo_issues` table — every problem detected (crawl error, missing schema, weak backlink profile, broken sitemap, indexing drop >20%, traffic drop >25% WoW) becomes a row with severity (critical/warning/info), category, suggested fix, status (open/snoozed/resolved)
+- Critical issues trigger email to `support@fastmedia.pro` via existing email queue
+- Dashboard groups by severity, lets you mark resolved or snooze
 
-## What gets built
+### 4. Dashboard UI (`/admin/seo`)
+- **Overview tab** — health-score gauges (Search visibility, Index health, E-A-T), 28-day clicks/impressions sparkline, top 5 critical issues
+- **Performance tab** — keywords table (sortable, searchable), top pages, device + country breakdown, WoW deltas
+- **Coverage tab** — sitemap status, indexed-vs-submitted, per-URL inspection results, "Request indexing" button (calls GSC URL Inspection API)
+- **E-A-T tab** — checklist with pass/fail per signal, backlink summary, author coverage on blog
+- **Issues tab** — filterable issue queue with bulk actions
+- **Properties tab** — list connected GSC properties, manual "Run sync now" button per property
+- Export: CSV per table, PDF for the Overview tab (jsPDF, matches existing accounting export style)
+- Mobile-responsive, semantic tokens, admin-only via existing `has_role('admin')`
 
-### 1. Database (new table `showcase_projects`)
+### 5. Scheduling
+- `pg_cron` + `pg_net` extensions enabled
+- Three jobs:
+  - `seo-sync-gsc` — weekly Monday 06:00 UTC
+  - `seo-crawl-check` — daily 06:00 UTC (lightweight: only inspection errors + traffic-delta alerts)
+  - `seo-audit-eat` — monthly 1st 06:00 UTC
+- "Run now" button in admin triggers the same edge function on demand
 
-Fields: `name`, `slug` (unique, used in URL), `lovable_url` (the embedded URL), `access_token` (random, required to view), `is_active`, plus standard timestamps and `created_by`. RLS:
-- Editors/admins: full manage.
-- Anonymous: no direct table access.
-- Public viewing happens through a small edge function that checks `slug + token` server-side and returns `{ name, lovable_url }` only when valid — the token is never exposed in table reads.
+## Out of scope for Phase 1 (can add later)
+- Google Analytics 4 integration (requires new connector + per-property auth)
+- Per-end-user OAuth (your workspace connector is sufficient for an admin dashboard)
+- Multi-tenant: the dashboard manages **your** GSC properties; not a SaaS for clients
 
-### 2. Public routes (React Router)
+## Technical notes
 
-- `/showcase/:slug` — reads `?k=<token>` from the query string, calls the edge function to validate, then renders a full-viewport iframe of the returned `lovable_url`. Sets `<title>` to the project name. Shows a clean "Link invalid or expired" screen on failure. No nav, no footer, no breadcrumbs — just the iframe (matches your existing `showcase.html` styling).
-- The URL stays `fastmedia.pro/showcase/<slug>?k=…` the whole time; the iframe's `src` is not visible in the address bar.
+**Tables (new):**
+- `seo_properties` (gsc site URL, display name, active)
+- `seo_snapshots` (property_id, week_start, dimension: 'keyword'|'page'|'device'|'country', metrics jsonb)
+- `seo_index_status` (property_id, url, last_crawl, coverage_state, indexed bool, checked_at)
+- `seo_sitemaps` (property_id, sitemap_url, last_submitted, last_downloaded, errors, warnings)
+- `eat_audits` (property_id, run_at, overall_score, signals jsonb)
+- `seo_issues` (property_id, severity, category, title, detail, suggested_fix, status, created_at, resolved_at)
 
-Optional: also accept `/s/:slug/:token` if you'd rather have the token in the path than the query — say the word and I'll use that shape instead.
+All RESTRICTIVE RLS, admin-only read, service_role only write — matches your existing security memory pattern.
 
-### 3. Edge function `showcase-access`
+**Edge functions (new):**
+- `seo-sync-gsc` — orchestrates GSC fetches via gateway
+- `seo-audit-eat` — runs E-A-T checks (uses Semrush gateway + fetches site HTML)
+- `seo-request-indexing` — wraps `urlNotifications:publish` for manual reindex
+- `seo-run-now` — admin-invoked, dispatches any of the above
 
-Single POST endpoint, public (no JWT). Body `{ slug, token }`. Looks up the row, compares token in constant time, returns `{ name, url }` or 404. Logs failed attempts to `project_audit_log` for visibility.
+**Frontend:**
+- New routes under `src/pages/admin/seo/` (Overview, Performance, Coverage, EAT, Issues, Properties)
+- Adds entry to AdminSidebar
+- Uses Recharts (already in project) for time series
+- React Query for data fetching
 
-### 4. Admin page `/admin/showcase`
+## Implementation phases (so we don't blow credits in one shot)
+1. **Foundation** — migrations + `seo_properties` CRUD + property picker UI
+2. **GSC sync** — edge function + Performance + Coverage tabs
+3. **Scheduling + Issues** — pg_cron + issue detection + Issues tab + email alerts
+4. **E-A-T audit** — edge function + EAT tab + Semrush integration
+5. **Exports + polish** — CSV/PDF, mobile pass, copy review
 
-Behind the existing `ProtectedRoute minRole="editor"`. Lets you:
-- List all showcase entries with name, slug, target URL, active toggle, created date.
-- Add / edit / delete entries.
-- Auto-generate slug from name (editable).
-- Auto-generate a strong random token on create; **Rotate token** button to invalidate the old link and produce a new one.
-- **Copy link** button that copies the full `https://fastmedia.pro/showcase/<slug>?k=<token>` URL.
-- Inline warning if the `lovable_url` looks like an editor URL (`lovable.dev/projects/...`) suggesting the published URL instead.
+Each phase ends with verification (build green, manual smoke-test of new tab) before moving on.
 
-A "Showcase" item is added to `AdminSidebar`.
+---
 
-### 5. SEO / privacy
-
-- `noindex, nofollow` meta on `/showcase/*` pages.
-- `public/robots.txt` updated to disallow `/showcase/`.
-- Pages render minimally (no analytics on the iframe page) for fast load.
-
-## Files
-
-- New: `supabase/functions/showcase-access/index.ts`
-- New: `src/pages/Showcase.tsx` (public iframe page)
-- New: `src/pages/admin/AdminShowcase.tsx`
-- Edit: `src/App.tsx` (add `/showcase/:slug` and `/admin/showcase` routes, lazy)
-- Edit: `src/components/admin/AdminSidebar.tsx` (menu entry)
-- Edit: `public/robots.txt`
-- Delete: `public/showcase.html` (replaced by the React route)
-- Migration: create `showcase_projects` table + RLS
-
-## Out of scope / will not do unless asked
-
-- Password-protect-on-form flow (you asked for link-based access; tokens in the link satisfy that).
-- Server-rendered HTML at the edge (Lovable hosting is SPA; the React route gives the same UX with proper SPA fallback so links work on refresh).
-- Proxying Lovable's HTML through your domain to hide the iframe `src` from devtools — not feasible without breaking the project's auth/cookies; the address bar will already only show your domain, which is what you asked for.
+**Approve this plan and I'll start with Phase 1 (foundation + migrations).** If you'd rather build it all in one go, say so — I'll just warn it'll be a long single iteration.
