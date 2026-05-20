@@ -207,6 +207,8 @@ const AdminSEOInsights = () => {
             <TabsTrigger value="performance">Performance</TabsTrigger>
             <TabsTrigger value="coverage">Coverage</TabsTrigger>
             <TabsTrigger value="eat">E-A-T</TabsTrigger>
+            <TabsTrigger value="content">Content</TabsTrigger>
+            <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
             <TabsTrigger value="issues">Issues {issues.length > 0 && <Badge variant="destructive" className="ml-2">{issues.length}</Badge>}</TabsTrigger>
             <TabsTrigger value="properties">Properties</TabsTrigger>
           </TabsList>
