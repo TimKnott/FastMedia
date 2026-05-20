@@ -310,13 +310,14 @@ const Navbar = () => {
                   <a
                     key={link.href}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => handleHashClick(e, link.href)}
                     className="block py-2 text-foreground font-medium hover:text-accent transition-colors"
                   >
                     {link.label}
                   </a>
                 )
               )}
+
 
               {/* Quick actions row */}
               <div className="flex items-center gap-3 pt-2 border-t border-border">
