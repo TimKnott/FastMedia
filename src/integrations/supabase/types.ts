@@ -1340,6 +1340,231 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_alerts_log: {
+        Row: {
+          alert_type: string
+          body: string | null
+          id: string
+          metadata: Json | null
+          property_id: string | null
+          recipient: string | null
+          sent_at: string
+          severity: string
+          status: string
+          subject: string
+        }
+        Insert: {
+          alert_type: string
+          body?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id?: string | null
+          recipient?: string | null
+          sent_at?: string
+          severity?: string
+          status?: string
+          subject: string
+        }
+        Update: {
+          alert_type?: string
+          body?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id?: string | null
+          recipient?: string | null
+          sent_at?: string
+          severity?: string
+          status?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      seo_backlinks: {
+        Row: {
+          authority_score: number | null
+          follow_ratio: number | null
+          id: string
+          lost_links: number | null
+          new_links: number | null
+          property_id: string
+          referring_domains: number | null
+          snapshot_at: string
+          spam_score: number | null
+          top_anchors: Json | null
+          top_referring: Json | null
+          total_backlinks: number | null
+        }
+        Insert: {
+          authority_score?: number | null
+          follow_ratio?: number | null
+          id?: string
+          lost_links?: number | null
+          new_links?: number | null
+          property_id: string
+          referring_domains?: number | null
+          snapshot_at?: string
+          spam_score?: number | null
+          top_anchors?: Json | null
+          top_referring?: Json | null
+          total_backlinks?: number | null
+        }
+        Update: {
+          authority_score?: number | null
+          follow_ratio?: number | null
+          id?: string
+          lost_links?: number | null
+          new_links?: number | null
+          property_id?: string
+          referring_domains?: number | null
+          snapshot_at?: string
+          spam_score?: number | null
+          top_anchors?: Json | null
+          top_referring?: Json | null
+          total_backlinks?: number | null
+        }
+        Relationships: []
+      }
+      seo_broken_links: {
+        Row: {
+          error: string | null
+          first_seen: string
+          id: string
+          last_seen: string
+          property_id: string
+          resolved_at: string | null
+          source_url: string
+          status_code: number | null
+          target_url: string
+        }
+        Insert: {
+          error?: string | null
+          first_seen?: string
+          id?: string
+          last_seen?: string
+          property_id: string
+          resolved_at?: string | null
+          source_url: string
+          status_code?: number | null
+          target_url: string
+        }
+        Update: {
+          error?: string | null
+          first_seen?: string
+          id?: string
+          last_seen?: string
+          property_id?: string
+          resolved_at?: string | null
+          source_url?: string
+          status_code?: number | null
+          target_url?: string
+        }
+        Relationships: []
+      }
+      seo_competitors: {
+        Row: {
+          competitor_domain: string
+          created_at: string
+          id: string
+          is_active: boolean
+          last_synced_at: string | null
+          metrics: Json | null
+          property_id: string
+          source: string | null
+        }
+        Insert: {
+          competitor_domain: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_synced_at?: string | null
+          metrics?: Json | null
+          property_id: string
+          source?: string | null
+        }
+        Update: {
+          competitor_domain?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_synced_at?: string | null
+          metrics?: Json | null
+          property_id?: string
+          source?: string | null
+        }
+        Relationships: []
+      }
+      seo_content_freshness: {
+        Row: {
+          checked_at: string
+          clicks_28d: number | null
+          days_since_update: number | null
+          id: string
+          impressions_28d: number | null
+          last_modified: string | null
+          property_id: string
+          recommendation: string | null
+          trend: string | null
+          url: string
+          word_count: number | null
+        }
+        Insert: {
+          checked_at?: string
+          clicks_28d?: number | null
+          days_since_update?: number | null
+          id?: string
+          impressions_28d?: number | null
+          last_modified?: string | null
+          property_id: string
+          recommendation?: string | null
+          trend?: string | null
+          url: string
+          word_count?: number | null
+        }
+        Update: {
+          checked_at?: string
+          clicks_28d?: number | null
+          days_since_update?: number | null
+          id?: string
+          impressions_28d?: number | null
+          last_modified?: string | null
+          property_id?: string
+          recommendation?: string | null
+          trend?: string | null
+          url?: string
+          word_count?: number | null
+        }
+        Relationships: []
+      }
+      seo_ga4_snapshots: {
+        Row: {
+          created_at: string
+          high_exit_pages: Json | null
+          id: string
+          metrics: Json
+          property_id: string
+          top_pages: Json | null
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          high_exit_pages?: Json | null
+          id?: string
+          metrics?: Json
+          property_id: string
+          top_pages?: Json | null
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          high_exit_pages?: Json | null
+          id?: string
+          metrics?: Json
+          property_id?: string
+          top_pages?: Json | null
+          week_start?: string
+        }
+        Relationships: []
+      }
       seo_index_status: {
         Row: {
           checked_at: string
@@ -1443,37 +1668,154 @@ export type Database = {
           },
         ]
       }
+      seo_keyword_gaps: {
+        Row: {
+          competitor_domain: string | null
+          competitor_position: number | null
+          cpc: number | null
+          discovered_at: string
+          id: string
+          kdi: number | null
+          keyword: string
+          our_position: number | null
+          property_id: string
+          volume: number | null
+        }
+        Insert: {
+          competitor_domain?: string | null
+          competitor_position?: number | null
+          cpc?: number | null
+          discovered_at?: string
+          id?: string
+          kdi?: number | null
+          keyword: string
+          our_position?: number | null
+          property_id: string
+          volume?: number | null
+        }
+        Update: {
+          competitor_domain?: string | null
+          competitor_position?: number | null
+          cpc?: number | null
+          discovered_at?: string
+          id?: string
+          kdi?: number | null
+          keyword?: string
+          our_position?: number | null
+          property_id?: string
+          volume?: number | null
+        }
+        Relationships: []
+      }
+      seo_pagespeed: {
+        Row: {
+          accessibility: number | null
+          audited_at: string
+          best_practices: number | null
+          cls: number | null
+          fcp_ms: number | null
+          id: string
+          inp_ms: number | null
+          lcp_ms: number | null
+          performance: number | null
+          property_id: string
+          raw: Json | null
+          seo: number | null
+          strategy: string
+          ttfb_ms: number | null
+          url: string
+        }
+        Insert: {
+          accessibility?: number | null
+          audited_at?: string
+          best_practices?: number | null
+          cls?: number | null
+          fcp_ms?: number | null
+          id?: string
+          inp_ms?: number | null
+          lcp_ms?: number | null
+          performance?: number | null
+          property_id: string
+          raw?: Json | null
+          seo?: number | null
+          strategy?: string
+          ttfb_ms?: number | null
+          url: string
+        }
+        Update: {
+          accessibility?: number | null
+          audited_at?: string
+          best_practices?: number | null
+          cls?: number | null
+          fcp_ms?: number | null
+          id?: string
+          inp_ms?: number | null
+          lcp_ms?: number | null
+          performance?: number | null
+          property_id?: string
+          raw?: Json | null
+          seo?: number | null
+          strategy?: string
+          ttfb_ms?: number | null
+          url?: string
+        }
+        Relationships: []
+      }
       seo_properties: {
         Row: {
+          alert_email: string | null
           created_at: string
           created_by: string | null
           display_name: string
+          ga4_property_id: string | null
           id: string
           is_active: boolean
+          last_backlinks_at: string | null
+          last_brokenlinks_at: string | null
           last_eat_audit_at: string | null
+          last_freshness_at: string | null
+          last_ga4_at: string | null
+          last_pagespeed_at: string | null
           last_synced_at: string | null
+          pagespeed_urls: Json
           site_url: string
           updated_at: string
         }
         Insert: {
+          alert_email?: string | null
           created_at?: string
           created_by?: string | null
           display_name: string
+          ga4_property_id?: string | null
           id?: string
           is_active?: boolean
+          last_backlinks_at?: string | null
+          last_brokenlinks_at?: string | null
           last_eat_audit_at?: string | null
+          last_freshness_at?: string | null
+          last_ga4_at?: string | null
+          last_pagespeed_at?: string | null
           last_synced_at?: string | null
+          pagespeed_urls?: Json
           site_url: string
           updated_at?: string
         }
         Update: {
+          alert_email?: string | null
           created_at?: string
           created_by?: string | null
           display_name?: string
+          ga4_property_id?: string | null
           id?: string
           is_active?: boolean
+          last_backlinks_at?: string | null
+          last_brokenlinks_at?: string | null
           last_eat_audit_at?: string | null
+          last_freshness_at?: string | null
+          last_ga4_at?: string | null
+          last_pagespeed_at?: string | null
           last_synced_at?: string | null
+          pagespeed_urls?: Json
           site_url?: string
           updated_at?: string
         }
@@ -1560,6 +1902,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      seo_voice_queries: {
+        Row: {
+          clicks: number | null
+          detected_at: string
+          id: string
+          impressions: number | null
+          is_question: boolean | null
+          page: string | null
+          position: number | null
+          property_id: string
+          query: string
+        }
+        Insert: {
+          clicks?: number | null
+          detected_at?: string
+          id?: string
+          impressions?: number | null
+          is_question?: boolean | null
+          page?: string | null
+          position?: number | null
+          property_id: string
+          query: string
+        }
+        Update: {
+          clicks?: number | null
+          detected_at?: string
+          id?: string
+          impressions?: number | null
+          is_question?: boolean | null
+          page?: string | null
+          position?: number | null
+          property_id?: string
+          query?: string
+        }
+        Relationships: []
       }
       shifts: {
         Row: {
