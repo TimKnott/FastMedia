@@ -29,10 +29,29 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { job = 'sync', propertyId } = body;
-    const fnName = job === 'eat' ? 'seo-audit-eat' : 'seo-sync-gsc';
-    const { data, error } = await admin.functions.invoke(fnName, { body: { propertyId } });
-    if (error) throw error;
-    return new Response(JSON.stringify({ ok: true, job, result: data }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    const jobMap: Record<string, string | string[]> = {
+      sync: 'seo-sync-gsc',
+      eat: 'seo-audit-eat',
+      semrush: 'seo-sync-semrush',
+      pagespeed: 'seo-pagespeed',
+      'broken-links': 'seo-broken-links',
+      freshness: 'seo-content-freshness',
+      voice: 'seo-voice-search',
+      ga4: 'seo-ga4-sync',
+      digest: 'seo-alerts',
+      'critical-alert': 'seo-alerts',
+      all: ['seo-sync-gsc', 'seo-sync-semrush', 'seo-pagespeed', 'seo-broken-links', 'seo-content-freshness', 'seo-voice-search', 'seo-ga4-sync', 'seo-audit-eat'],
+    };
+    const target = jobMap[job] ?? 'seo-sync-gsc';
+    const fns = Array.isArray(target) ? target : [target];
+    const results: any[] = [];
+    for (const fnName of fns) {
+      const invokeBody: any = { propertyId };
+      if (fnName === 'seo-alerts') invokeBody.mode = job === 'critical-alert' ? 'critical-now' : 'digest';
+      const { data, error } = await admin.functions.invoke(fnName, { body: invokeBody });
+      results.push({ fn: fnName, ok: !error, data, error: error?.message });
+    }
+    return new Response(JSON.stringify({ ok: true, job, results }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
