@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, Play, ArrowRight } from 'lucide-react';
+import { Clock, Play, ArrowRight, Headphones } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { BlogPost } from '@/data/blogPosts';
@@ -82,6 +82,10 @@ const BlogCard = ({ post, layout = 'grid' }: BlogCardProps) => {
           )}
           <Badge variant="secondary" className="absolute top-3 left-3 text-xs backdrop-blur-sm">
             {categoryLabels[post.category][language]}
+          </Badge>
+          <Badge className="absolute top-3 right-3 text-xs gap-1 bg-background/90 text-foreground backdrop-blur-sm border border-border">
+            <Headphones className="w-3 h-3" />
+            {language === 'cs' ? `Poslechni · ${post.readTime} min` : language === 'de' ? `Anhören · ${post.readTime} min` : `Listen · ${post.readTime} min`}
           </Badge>
         </div>
         <div className="p-5 flex flex-col flex-1">
