@@ -75,6 +75,7 @@ const contentItems: MenuItem[] = [
   { titleKey: 'admin.blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
   { titleKey: 'admin.media', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
   { titleKey: 'admin.seo', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
+  { titleKey: 'SEO Insights', url: '/admin/seo-insights', icon: TrendingUp, minRole: 'admin' },
   { titleKey: 'admin.sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
   { titleKey: 'admin.versions', url: '/admin/content-history', icon: History, minRole: 'admin' },
 ];
