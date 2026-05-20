@@ -110,10 +110,6 @@ const AdminSEOInsights = () => {
       if (error) throw error; return data as any[];
     },
   });
-      const { data, error } = await supabase.from('seo_issues').select('*').eq('property_id', activeId).eq('status', 'open').order('severity').order('created_at', { ascending: false });
-      if (error) throw error; return data as Issue[];
-    },
-  });
 
   const { data: latestAudit } = useQuery({
     queryKey: ['seo-eat', activeId],
