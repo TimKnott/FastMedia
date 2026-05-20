@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Headphones, Loader2, AlertCircle } from 'lucide-react';
+import { Headphones, Loader2, AlertCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import BlogAudioPlayer from './BlogAudioPlayer';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { isElevenLabsUpgradeError } from '@/lib/ttsErrors';
 
 interface Props {
   /** DB-managed post id (preferred — uses cached audio_url) */
