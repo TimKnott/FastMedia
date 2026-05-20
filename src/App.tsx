@@ -45,6 +45,7 @@ const AdminRoles = lazy(() => import("./pages/admin/AdminRoles"));
 const AdminLandingPage = lazy(() => import("./pages/admin/AdminLandingPage"));
 const AdminDemos = lazy(() => import("./pages/admin/AdminDemos"));
 const AdminBlog = lazy(() => import("./pages/admin/AdminBlog"));
+const AdminTtsTest = lazy(() => import("./pages/admin/AdminTtsTest"));
 const AdminMedia = lazy(() => import("./pages/admin/AdminMedia"));
 const AdminSitemap = lazy(() => import("./pages/admin/AdminSitemap"));
 const AdminContentHistory = lazy(() => import("./pages/admin/AdminContentHistory"));
@@ -219,6 +220,7 @@ const App = () => (
               <Route path="landing-page" element={<AdminLandingPage />} />
               <Route path="demos" element={<AdminDemos />} />
               <Route path="blog-manage" element={<AdminBlog />} />
+              <Route path="tts-test" element={<ProtectedRoute minRole="admin"><AdminTtsTest /></ProtectedRoute>} />
               <Route path="media" element={<AdminMedia />} />
               <Route path="sitemap" element={<AdminSitemap />} />
               <Route path="content-history" element={<AdminContentHistory />} />

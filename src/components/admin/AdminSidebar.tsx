@@ -25,6 +25,7 @@ import {
   Download,
   FolderKanban,
   Eye,
+  Volume2,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -73,6 +74,7 @@ const contentItems: MenuItem[] = [
   { titleKey: 'admin.homepage', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
   { titleKey: 'admin.demo_pages', url: '/admin/demos', icon: Palette, minRole: 'editor' },
   { titleKey: 'admin.blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
+  { titleKey: 'TTS Test Lab', url: '/admin/tts-test', icon: Volume2, minRole: 'admin' },
   { titleKey: 'admin.media', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
   { titleKey: 'admin.seo', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
   { titleKey: 'SEO Insights', url: '/admin/seo-insights', icon: TrendingUp, minRole: 'admin' },
