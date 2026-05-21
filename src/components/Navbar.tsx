@@ -31,19 +31,28 @@ const Navbar = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
 
+  // Compute current sticky navbar height so scroll targets aren't hidden underneath.
+  const getNavOffset = () => {
+    const nav = document.querySelector('nav.fixed') as HTMLElement | null;
+    return (nav?.offsetHeight ?? 72) + 8;
+  };
+
+  const scrollToId = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return false;
+    const y = el.getBoundingClientRect().top + window.scrollY - getNavOffset();
+    window.scrollTo({ top: y, behavior: 'smooth' });
+    return true;
+  };
+
   // Smooth-scroll to hash target on mount and whenever the hash changes
   // (handles in-app navigations like "/" -> "/#services").
   useEffect(() => {
     if (!location.hash) return;
     const id = location.hash.slice(1);
     const tryScroll = (attempt = 0) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (attempt < 10) {
-        // Section may still be mounting (lazy routes / images). Retry briefly.
-        setTimeout(() => tryScroll(attempt + 1), 100);
-      }
+      if (scrollToId(id)) return;
+      if (attempt < 10) setTimeout(() => tryScroll(attempt + 1), 100);
     };
     tryScroll();
   }, [location.pathname, location.hash]);
@@ -61,9 +70,7 @@ const Navbar = () => {
       return;
     }
     const scrollNow = () => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (scrollToId(id)) {
         window.history.replaceState(null, '', href);
       }
     };
@@ -71,7 +78,8 @@ const Navbar = () => {
     // collapsing menu does not interrupt the smooth scroll.
     if (isOpen) {
       setIsOpen(false);
-      requestAnimationFrame(() => requestAnimationFrame(scrollNow));
+      // Wait for the collapse animation (~250ms) so the layout settles before scrolling.
+      setTimeout(scrollNow, 280);
     } else {
       scrollNow();
     }
