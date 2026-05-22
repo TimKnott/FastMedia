@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -26,22 +26,36 @@ const Navbar = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
+  const navBarRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
 
-  // Compute current sticky navbar height so scroll targets aren't hidden underneath.
+  // Compute only the fixed top bar height, never the expanded burger panel height.
   const getNavOffset = () => {
-    const nav = document.querySelector('nav.fixed') as HTMLElement | null;
-    return (nav?.offsetHeight ?? 72) + 8;
+    const bar = navBarRef.current;
+    return Math.ceil(bar?.getBoundingClientRect().height ?? 72) + 12;
   };
 
-  const scrollToId = (id: string) => {
+  const scrollToId = (rawId: string, behavior: ScrollBehavior = 'smooth') => {
+    const id = decodeURIComponent(rawId.replace(/^#/, '').trim());
     const el = document.getElementById(id);
     if (!el) return false;
     const y = el.getBoundingClientRect().top + window.scrollY - getNavOffset();
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    window.scrollTo({ top: Math.max(0, y), behavior });
+    return true;
+  };
+
+  const scrollToIdWithCorrection = (id: string) => {
+    if (!scrollToId(id)) return false;
+
+    // Images, dynamic content and menu animations can shift layout after the first scroll.
+    // Re-align a few times so the selected section lands exactly under the fixed navbar.
+    [350, 800, 1200].forEach((delay) => {
+      window.setTimeout(() => scrollToId(id, 'auto'), delay);
+    });
+
     return true;
   };
 
@@ -51,7 +65,7 @@ const Navbar = () => {
     if (!location.hash) return;
     const id = location.hash.slice(1);
     const tryScroll = (attempt = 0) => {
-      if (scrollToId(id)) return;
+      if (scrollToIdWithCorrection(id)) return;
       if (attempt < 10) setTimeout(() => tryScroll(attempt + 1), 100);
     };
     tryScroll();
@@ -70,19 +84,12 @@ const Navbar = () => {
       return;
     }
     const scrollNow = () => {
-      if (scrollToId(id)) {
+      if (scrollToIdWithCorrection(id)) {
         window.history.replaceState(null, '', href);
       }
     };
-    // Close the menu first, then scroll after the layout settles so the
-    // collapsing menu does not interrupt the smooth scroll.
-    if (isOpen) {
-      setIsOpen(false);
-      // Wait for the collapse animation (~250ms) so the layout settles before scrolling.
-      setTimeout(scrollNow, 280);
-    } else {
-      scrollNow();
-    }
+    scrollNow();
+    setIsOpen(false);
   };
 
 
@@ -155,7 +162,7 @@ const Navbar = () => {
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
     >
       <div className="container mx-auto px-3 sm:px-6 lg:px-10">
-        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
+        <div ref={navBarRef} className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
             <img src={logo} alt="FastMedia.Pro" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow" />
