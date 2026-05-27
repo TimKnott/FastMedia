@@ -463,9 +463,12 @@ serve(async (req) => {
       if (match) chosen = match;
     }
 
-    const phrased = await aiRephrase(chosen.seed, language, history, context);
+    const [phrased, suggestions] = await Promise.all([
+      aiRephrase(chosen.seed, language, history, context),
+      aiSuggestions(chosen.key, language, history, context),
+    ]);
     return new Response(
-      JSON.stringify({ done: false, key: chosen.key, question: phrased, transcript: history }),
+      JSON.stringify({ done: false, key: chosen.key, question: phrased, suggestions, transcript: history }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
