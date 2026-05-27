@@ -19,6 +19,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
@@ -26,15 +27,42 @@ const AdminLogin = () => {
   const { toast } = useToast();
   const { t } = useLanguage();
 
+  // Self-healing role check: auto-grants super_admin to allowlisted emails
+  const verifyAndRoute = async (userId: string): Promise<boolean> => {
+    await supabase.rpc('ensure_admin_role');
+
+    const { data: roleData } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+
+    const roles = (roleData ?? []).map((r) => r.role);
+    const highest =
+      roles.includes('super_admin') ? 'super_admin' :
+      roles.includes('admin') ? 'admin' :
+      roles.includes('moderator') ? 'moderator' :
+      roles.includes('editor') ? 'editor' : null;
+
+    if (!highest || !hasMinimumRole(highest as any, 'editor')) {
+      await supabase.auth.signOut();
+      toast({
+        title: 'Access denied',
+        description: 'You do not have administrator privileges.',
+        variant: 'destructive',
+      });
+      return false;
+    }
+    navigate('/admin', { replace: true });
+    return true;
+  };
+
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resetEmail.trim()) return;
     setResetLoading(true);
-
     await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-
     setResetLoading(false);
     setResetOpen(false);
     setResetEmail('');
@@ -47,17 +75,32 @@ const AdminLogin = () => {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
-        const { data } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-        if (data && hasMinimumRole(data.role, 'editor')) {
-          navigate('/admin', { replace: true });
-        }
+        await verifyAndRoute(session.user.id);
       }
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri: `${window.location.origin}/admin/login`,
+      });
+      if (result.error) {
+        toast({ title: 'Google sign-in failed', description: result.error.message ?? 'Please try again.', variant: 'destructive' });
+        setGoogleLoading(false);
+        return;
+      }
+      if (result.redirected) return;
+      const { data } = await supabase.auth.getUser();
+      if (data.user) await verifyAndRoute(data.user.id);
+    } catch (err: any) {
+      toast({ title: 'Google sign-in failed', description: err?.message ?? 'Please try again.', variant: 'destructive' });
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,30 +122,14 @@ const AdminLogin = () => {
     }
 
     if (data.user) {
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', data.user.id)
-        .maybeSingle();
-
-      if (!roleData || !hasMinimumRole(roleData.role, 'editor')) {
-        await supabase.auth.signOut();
-        setLoading(false);
-        toast({
-          title: 'Access denied',
-          description: 'You do not have administrator privileges.',
-          variant: 'destructive',
-        });
-        return;
+      const ok = await verifyAndRoute(data.user.id);
+      setLoading(false);
+      if (ok) {
+        toast({ title: 'Login successful', description: 'Welcome to the admin area.' });
       }
+      return;
     }
-
     setLoading(false);
-    toast({
-      title: 'Login successful',
-      description: 'Welcome to the admin area.',
-    });
-    navigate('/admin', { replace: true });
   };
 
   return (
