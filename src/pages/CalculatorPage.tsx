@@ -389,10 +389,12 @@ const CalculatorPage = () => {
         setIntentAnswer('');
       }
     } catch (e) {
-      console.error(e);
-      // Soft-fail: let the user proceed even if AI is down
-      setIntentCurrent(null);
-      setIntentBrief({ summary: '', intent: {} });
+      console.error('intake-conversation failed', e);
+      toast({
+        title: lang === 'cs' ? 'Načítání další otázky selhalo' : lang === 'de' ? 'Nächste Frage konnte nicht geladen werden' : 'Could not load the next question',
+        description: lang === 'cs' ? 'Zkuste to prosím znovu.' : lang === 'de' ? 'Bitte erneut versuchen.' : 'Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIntentLoading(false);
     }
