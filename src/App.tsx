@@ -66,6 +66,8 @@ const AdminExport = lazy(() => import("./pages/admin/AdminExport"));
 const AdminClientProjects = lazy(() => import("./pages/admin/AdminClientProjects"));
 const AdminClientProjectDetail = lazy(() => import("./pages/admin/AdminClientProjectDetail"));
 const AdminShowcase = lazy(() => import("./pages/admin/AdminShowcase"));
+const AdminLegal = lazy(() => import("./pages/admin/AdminLegal"));
+const LegalDocument = lazy(() => import("./pages/LegalDocument"));
 const ClientPortal = lazy(() => import("./pages/portal/ClientPortal"));
 const PortalErrorBoundary = lazy(() => import("./pages/portal/PortalErrorBoundary"));
 const ProtectedRoute = lazy(() => import("./components/admin/ProtectedRoute"));
