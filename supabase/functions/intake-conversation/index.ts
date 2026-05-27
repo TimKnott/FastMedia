@@ -161,6 +161,86 @@ async function aiRephrase(seed: string, language: string, history: Turn[], conte
   }
 }
 
+// Default per-slot suggestion chips (used when AI is unavailable or as a base).
+const DEFAULT_SUGGESTIONS: Record<string, string[]> = {
+  timeline: ["Within 2 weeks", "Within 1 month", "1–2 months", "Flexible"],
+  urgency_reason: ["Marketing campaign launch", "Seasonal demand", "Replacing an old site", "No hard deadline"],
+  decision_maker: ["Yes, just me", "Me + business partner", "Me + spouse / family", "Team / committee"],
+  decision_maker_who: ["Business partner", "Spouse / family", "Whole team", "Investor / board"],
+  budget_fit: ["Yes, looks fine", "A bit high — let's trim", "Need a payment plan", "Happy to add more"],
+  budget_adjust: ["Keep core only", "Drop animations", "Phase optional features later", "Keep everything"],
+  content_readiness: ["I have everything ready", "I have some assets", "Please produce it all", "Not sure yet"],
+  success_metric: ["More qualified leads", "Higher Google ranking", "Stronger brand image", "Online bookings"],
+  tone: ["Premium & refined", "Friendly & warm", "Bold & modern", "Trustworthy & technical"],
+  extra: ["Nothing else", "Need multilingual", "Need integrations", "I'll share more by email"],
+};
+
+async function aiSuggestions(
+  slotKey: string,
+  language: string,
+  history: Turn[],
+  context: string,
+): Promise<string[]> {
+  const base = DEFAULT_SUGGESTIONS[slotKey] || [];
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return base;
+  try {
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-lite",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You generate 4 short, clickable quick-reply chips for an intake question on a website-agency quote form. Each chip = a likely answer the user could tap instead of typing. Tailor them to the trade, prior answers, and the slot. Each chip ≤ 7 words, written in the user's language, distinct from each other, no numbering, no quotes.",
+          },
+          {
+            role: "user",
+            content: `Language: ${language}\nContext: ${context}\nSlot: ${slotKey}\nPrior turns: ${JSON.stringify(
+              history.slice(-4).map((h) => ({ k: h.key, q: h.question, a: h.answer })),
+            )}\nFallback ideas (English): ${JSON.stringify(base)}`,
+          },
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "suggestions",
+              description: "Quick-reply chips for the user.",
+              parameters: {
+                type: "object",
+                properties: {
+                  chips: {
+                    type: "array",
+                    items: { type: "string" },
+                    minItems: 3,
+                    maxItems: 5,
+                  },
+                },
+                required: ["chips"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ],
+        tool_choice: { type: "function", function: { name: "suggestions" } },
+      }),
+    });
+    if (!resp.ok) return base;
+    const data = await resp.json();
+    const args = data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    if (!args) return base;
+    const parsed = JSON.parse(args);
+    const chips = (parsed?.chips || []).filter((c: unknown) => typeof c === "string" && (c as string).trim().length > 0).slice(0, 5);
+    return chips.length >= 3 ? chips : base;
+  } catch {
+    return base;
+  }
+}
+
+
 // AI-driven slot selection: given the candidate slots that are still unanswered,
 // let the model pick which one to ask next based on what would most de-risk the
 // proposal. Falls back to the rules-based default if anything goes wrong.
@@ -383,9 +463,12 @@ serve(async (req) => {
       if (match) chosen = match;
     }
 
-    const phrased = await aiRephrase(chosen.seed, language, history, context);
+    const [phrased, suggestions] = await Promise.all([
+      aiRephrase(chosen.seed, language, history, context),
+      aiSuggestions(chosen.key, language, history, context),
+    ]);
     return new Response(
-      JSON.stringify({ done: false, key: chosen.key, question: phrased, transcript: history }),
+      JSON.stringify({ done: false, key: chosen.key, question: phrased, suggestions, transcript: history }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {

@@ -55,7 +55,8 @@ const CalculatorPage = () => {
 
   // Conversational intake state
   const [intentHistory, setIntentHistory] = useState<IntentTurn[]>([]);
-  const [intentCurrent, setIntentCurrent] = useState<{ key: string; question: string } | null>(null);
+  const [intentCurrent, setIntentCurrent] = useState<{ key: string; question: string; suggestions?: string[] } | null>(null);
+  const [intentListening, setIntentListening] = useState(false);
   const [intentAnswer, setIntentAnswer] = useState('');
   const [intentLoading, setIntentLoading] = useState(false);
   const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
@@ -384,7 +385,7 @@ const CalculatorPage = () => {
         setIntentBrief({ summary: data.summary, intent: data.intent });
         setIntentCurrent(null);
       } else if (data?.question) {
-        setIntentCurrent({ key: data.key, question: data.question });
+        setIntentCurrent({ key: data.key, question: data.question, suggestions: Array.isArray(data.suggestions) ? data.suggestions : [] });
         setIntentAnswer('');
       }
     } catch (e) {
@@ -397,17 +398,63 @@ const CalculatorPage = () => {
     }
   }, [lang, selectedTrade, selectedFeatures, specialRequest, grandTotalOneTime, totalMonthly]);
 
-  const submitIntentAnswer = useCallback(() => {
-    if (!intentCurrent || !intentAnswer.trim() || intentLoading) return;
+  const submitIntentAnswer = useCallback((override?: string) => {
+    if (!intentCurrent || intentLoading) return;
+    const text = (override ?? intentAnswer).trim();
+    if (!text) return;
     const next: IntentTurn[] = [
       ...intentHistory,
-      { key: intentCurrent.key, question: intentCurrent.question, answer: intentAnswer.trim() },
+      { key: intentCurrent.key, question: intentCurrent.question, answer: text },
     ];
     setIntentHistory(next);
     setIntentCurrent(null);
     setIntentAnswer('');
     fetchNextIntent(next);
   }, [intentCurrent, intentAnswer, intentLoading, intentHistory, fetchNextIntent]);
+
+  const skipIntent = useCallback(() => {
+    if (!intentCurrent || intentLoading) return;
+    const next: IntentTurn[] = [
+      ...intentHistory,
+      { key: intentCurrent.key, question: intentCurrent.question, answer: 'Skipped' },
+    ];
+    setIntentHistory(next);
+    setIntentCurrent(null);
+    setIntentAnswer('');
+    fetchNextIntent(next);
+  }, [intentCurrent, intentLoading, intentHistory, fetchNextIntent]);
+
+  const startIntentVoice = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const w = window as unknown as { SpeechRecognition?: any; webkitSpeechRecognition?: any };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR) {
+      toast({ title: 'Voice input not supported', description: 'Please use Chrome, Edge or Safari.', variant: 'destructive' });
+      return;
+    }
+    const rec = new SR();
+    rec.lang = language === 'cs' ? 'cs-CZ' : language === 'de' ? 'de-DE' : 'en-GB';
+    rec.interimResults = true;
+    rec.continuous = false;
+    let finalText = '';
+    rec.onresult = (e: any) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += t;
+        else interim += t;
+      }
+      setIntentAnswer((prev) => (finalText || interim ? (finalText || interim) : prev));
+    };
+    rec.onerror = () => setIntentListening(false);
+    rec.onend = () => setIntentListening(false);
+    try {
+      rec.start();
+      setIntentListening(true);
+    } catch {
+      setIntentListening(false);
+    }
+  }, [language]);
 
   // Submit lead
   const submitLead = async () => {
@@ -975,8 +1022,11 @@ const CalculatorPage = () => {
                               />
                             </PopoverContent>
                           </Popover>
-                          <div className="flex justify-end mt-3">
-                            <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
+                          <div className="flex justify-end mt-3 gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => skipIntent()} disabled={intentLoading}>
+                              {lang === 'cs' ? 'Přeskočit' : lang === 'de' ? 'Überspringen' : 'Skip'}
+                            </Button>
+                            <Button onClick={() => submitIntentAnswer()} disabled={!intentAnswer.trim() || intentLoading} size="sm">
                               <Send className="w-3.5 h-3.5 mr-2" />
                               {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
                             </Button>
@@ -984,21 +1034,56 @@ const CalculatorPage = () => {
                         </div>
                       ) : (
                         <>
-                          <textarea
-                            value={intentAnswer}
-                            onChange={e => setIntentAnswer(e.target.value)}
-                            onKeyDown={e => {
-                              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                                e.preventDefault();
-                                submitIntentAnswer();
-                              }
-                            }}
-                            rows={3}
-                            placeholder={lang === 'cs' ? 'Vaše odpověď…' : lang === 'de' ? 'Ihre Antwort…' : 'Your answer…'}
-                            className="w-full rounded-lg border border-border bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                          />
-                          <div className="flex justify-end mt-3">
-                            <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
+                          {/* Quick-reply suggestion chips */}
+                          {intentCurrent.suggestions && intentCurrent.suggestions.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {intentCurrent.suggestions.map((chip, i) => (
+                                <button
+                                  key={`${chip}-${i}`}
+                                  type="button"
+                                  onClick={() => submitIntentAnswer(chip)}
+                                  disabled={intentLoading}
+                                  className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary/30 bg-background hover:bg-primary/10 hover:border-primary/60 transition-colors text-foreground disabled:opacity-50"
+                                >
+                                  {chip}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          <div className="relative">
+                            <textarea
+                              value={intentAnswer}
+                              onChange={e => setIntentAnswer(e.target.value)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                                  e.preventDefault();
+                                  submitIntentAnswer();
+                                }
+                              }}
+                              rows={3}
+                              placeholder={lang === 'cs' ? 'Vaše odpověď, vyberte výše nebo přeskočte…' : lang === 'de' ? 'Ihre Antwort, oben auswählen oder überspringen…' : 'Type, tap a suggestion above, use the mic, or skip…'}
+                              className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                            />
+                            <button
+                              type="button"
+                              onClick={startIntentVoice}
+                              disabled={intentListening}
+                              title={lang === 'cs' ? 'Mluvit' : lang === 'de' ? 'Sprechen' : 'Speak'}
+                              className={cn(
+                                'absolute right-2 top-2 p-2 rounded-md transition-colors',
+                                intentListening
+                                  ? 'bg-destructive/15 text-destructive animate-pulse'
+                                  : 'bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary'
+                              )}
+                            >
+                              {intentListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                            </button>
+                          </div>
+                          <div className="flex justify-end mt-3 gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => skipIntent()} disabled={intentLoading}>
+                              {lang === 'cs' ? 'Přeskočit otázku' : lang === 'de' ? 'Frage überspringen' : 'Skip question'}
+                            </Button>
+                            <Button onClick={() => submitIntentAnswer()} disabled={!intentAnswer.trim() || intentLoading} size="sm">
                               <Send className="w-3.5 h-3.5 mr-2" />
                               {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
                             </Button>
