@@ -1022,8 +1022,11 @@ const CalculatorPage = () => {
                               />
                             </PopoverContent>
                           </Popover>
-                          <div className="flex justify-end mt-3">
-                            <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
+                          <div className="flex justify-end mt-3 gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => skipIntent()} disabled={intentLoading}>
+                              {lang === 'cs' ? 'Přeskočit' : lang === 'de' ? 'Überspringen' : 'Skip'}
+                            </Button>
+                            <Button onClick={() => submitIntentAnswer()} disabled={!intentAnswer.trim() || intentLoading} size="sm">
                               <Send className="w-3.5 h-3.5 mr-2" />
                               {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
                             </Button>
@@ -1031,21 +1034,56 @@ const CalculatorPage = () => {
                         </div>
                       ) : (
                         <>
-                          <textarea
-                            value={intentAnswer}
-                            onChange={e => setIntentAnswer(e.target.value)}
-                            onKeyDown={e => {
-                              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                                e.preventDefault();
-                                submitIntentAnswer();
-                              }
-                            }}
-                            rows={3}
-                            placeholder={lang === 'cs' ? 'Vaše odpověď…' : lang === 'de' ? 'Ihre Antwort…' : 'Your answer…'}
-                            className="w-full rounded-lg border border-border bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                          />
-                          <div className="flex justify-end mt-3">
-                            <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
+                          {/* Quick-reply suggestion chips */}
+                          {intentCurrent.suggestions && intentCurrent.suggestions.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {intentCurrent.suggestions.map((chip, i) => (
+                                <button
+                                  key={`${chip}-${i}`}
+                                  type="button"
+                                  onClick={() => submitIntentAnswer(chip)}
+                                  disabled={intentLoading}
+                                  className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary/30 bg-background hover:bg-primary/10 hover:border-primary/60 transition-colors text-foreground disabled:opacity-50"
+                                >
+                                  {chip}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          <div className="relative">
+                            <textarea
+                              value={intentAnswer}
+                              onChange={e => setIntentAnswer(e.target.value)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                                  e.preventDefault();
+                                  submitIntentAnswer();
+                                }
+                              }}
+                              rows={3}
+                              placeholder={lang === 'cs' ? 'Vaše odpověď, vyberte výše nebo přeskočte…' : lang === 'de' ? 'Ihre Antwort, oben auswählen oder überspringen…' : 'Type, tap a suggestion above, use the mic, or skip…'}
+                              className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                            />
+                            <button
+                              type="button"
+                              onClick={startIntentVoice}
+                              disabled={intentListening}
+                              title={lang === 'cs' ? 'Mluvit' : lang === 'de' ? 'Sprechen' : 'Speak'}
+                              className={cn(
+                                'absolute right-2 top-2 p-2 rounded-md transition-colors',
+                                intentListening
+                                  ? 'bg-destructive/15 text-destructive animate-pulse'
+                                  : 'bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary'
+                              )}
+                            >
+                              {intentListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                            </button>
+                          </div>
+                          <div className="flex justify-end mt-3 gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => skipIntent()} disabled={intentLoading}>
+                              {lang === 'cs' ? 'Přeskočit otázku' : lang === 'de' ? 'Frage überspringen' : 'Skip question'}
+                            </Button>
+                            <Button onClick={() => submitIntentAnswer()} disabled={!intentAnswer.trim() || intentLoading} size="sm">
                               <Send className="w-3.5 h-3.5 mr-2" />
                               {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
                             </Button>
