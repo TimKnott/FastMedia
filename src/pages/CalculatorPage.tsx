@@ -385,7 +385,7 @@ const CalculatorPage = () => {
         setIntentBrief({ summary: data.summary, intent: data.intent });
         setIntentCurrent(null);
       } else if (data?.question) {
-        setIntentCurrent({ key: data.key, question: data.question });
+        setIntentCurrent({ key: data.key, question: data.question, suggestions: Array.isArray(data.suggestions) ? data.suggestions : [] });
         setIntentAnswer('');
       }
     } catch (e) {
