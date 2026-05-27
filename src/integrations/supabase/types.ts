@@ -440,6 +440,7 @@ export type Database = {
       coupons: {
         Row: {
           applies_to: string
+          campaign_name: string | null
           code: string
           created_at: string
           created_by: string | null
@@ -458,6 +459,7 @@ export type Database = {
         }
         Insert: {
           applies_to?: string
+          campaign_name?: string | null
           code: string
           created_at?: string
           created_by?: string | null
@@ -476,6 +478,7 @@ export type Database = {
         }
         Update: {
           applies_to?: string
+          campaign_name?: string | null
           code?: string
           created_at?: string
           created_by?: string | null
