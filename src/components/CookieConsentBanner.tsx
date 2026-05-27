@@ -75,7 +75,7 @@ const CookieConsentBanner = () => {
             <div>
               <p className="text-foreground text-sm leading-relaxed">
                 {texts.message[lang]}{' '}
-                <a href="/privacy" className="text-accent hover:underline font-medium">
+                <a href="/legal/privacy-policy" className="text-accent hover:underline font-medium">
                   {texts.privacy[lang]}
                 </a>
               </p>
