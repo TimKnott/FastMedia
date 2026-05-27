@@ -432,6 +432,7 @@ const CalculatorPage = () => {
           intent: intentBrief?.intent ?? null,
           intentSummary: intentBrief?.summary ?? null,
           intentTranscript: intentHistory.length ? intentHistory : null,
+          coupon: appliedCoupon ? { code: appliedCoupon.code, oneTimeDiscount, monthlyDiscount } : null,
         },
       });
       if (error) throw error;
