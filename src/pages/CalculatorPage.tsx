@@ -228,6 +228,48 @@ const CalculatorPage = () => {
 
   const grandTotalOneTime = totalOneTime + laborCost;
 
+  // Apply coupon discounts
+  const oneTimeDiscount = appliedCoupon?.oneTimeDiscount ?? 0;
+  const monthlyDiscount = appliedCoupon?.monthlyDiscount ?? 0;
+  const discountedOneTime = Math.max(0, grandTotalOneTime - oneTimeDiscount);
+  const discountedMonthly = Math.max(0, totalMonthly - monthlyDiscount);
+
+  const applyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setCouponLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-coupon', {
+        body: { code: couponInput.trim(), oneTimeAmount: grandTotalOneTime, monthlyAmount: totalMonthly },
+      });
+      if (error) throw error;
+      if (!data?.valid) {
+        const reason = data?.error || 'invalid';
+        const msg: Record<string, string> = {
+          not_found: lang === 'cs' ? 'Kupón nenalezen' : lang === 'de' ? 'Gutschein nicht gefunden' : 'Coupon not found',
+          inactive: lang === 'cs' ? 'Kupón je neaktivní' : lang === 'de' ? 'Gutschein inaktiv' : 'Coupon is inactive',
+          expired: lang === 'cs' ? 'Kupón vypršel' : lang === 'de' ? 'Gutschein abgelaufen' : 'Coupon expired',
+          not_yet_valid: lang === 'cs' ? 'Kupón zatím neplatí' : lang === 'de' ? 'Noch nicht gültig' : 'Not yet valid',
+          max_uses_reached: lang === 'cs' ? 'Kupón byl vyčerpán' : lang === 'de' ? 'Limit erreicht' : 'Coupon limit reached',
+          min_amount_not_met: lang === 'cs' ? 'Minimální částka nesplněna' : lang === 'de' ? 'Mindestbetrag nicht erreicht' : 'Minimum amount not met',
+        };
+        toast({ title: msg[reason] || (lang === 'cs' ? 'Neplatný kupón' : 'Invalid coupon'), variant: 'destructive' });
+        return;
+      }
+      setAppliedCoupon({ ...data.coupon, oneTimeDiscount: data.oneTimeDiscount, monthlyDiscount: data.monthlyDiscount });
+      toast({ title: lang === 'cs' ? 'Kupón uplatněn!' : lang === 'de' ? 'Gutschein angewendet!' : 'Coupon applied!' });
+    } catch (e) {
+      console.error(e);
+      toast({ title: lang === 'cs' ? 'Chyba validace' : 'Validation error', variant: 'destructive' });
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+  };
+
   // Feature management
   const toggleFeature = (id: string) => {
     setSelectedFeatures(prev => {
