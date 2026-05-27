@@ -66,6 +66,8 @@ const AdminExport = lazy(() => import("./pages/admin/AdminExport"));
 const AdminClientProjects = lazy(() => import("./pages/admin/AdminClientProjects"));
 const AdminClientProjectDetail = lazy(() => import("./pages/admin/AdminClientProjectDetail"));
 const AdminShowcase = lazy(() => import("./pages/admin/AdminShowcase"));
+const AdminLegal = lazy(() => import("./pages/admin/AdminLegal"));
+const LegalDocument = lazy(() => import("./pages/LegalDocument"));
 const ClientPortal = lazy(() => import("./pages/portal/ClientPortal"));
 const PortalErrorBoundary = lazy(() => import("./pages/portal/PortalErrorBoundary"));
 const ProtectedRoute = lazy(() => import("./components/admin/ProtectedRoute"));
@@ -202,6 +204,7 @@ const App = () => (
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/package/:slug" element={<PackageDetail />} />
+            <Route path="/legal/:slug" element={<LegalDocument />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/showcase/:slug" element={<Showcase />} />
@@ -245,6 +248,7 @@ const App = () => (
               <Route path="client-projects" element={<AdminClientProjects />} />
               <Route path="client-projects/:id" element={<AdminClientProjectDetail />} />
               <Route path="showcase" element={<ProtectedRoute minRole="admin"><AdminShowcase /></ProtectedRoute>} />
+              <Route path="legal" element={<ProtectedRoute minRole="admin"><AdminLegal /></ProtectedRoute>} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -100,14 +100,49 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <a href="#" className="text-sm text-background/60 hover:text-accent transition-colors">
+                <Link to="/legal/privacy-policy" className="text-sm text-background/60 hover:text-accent transition-colors">
                   {t('footer.privacy')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-background/60 hover:text-accent transition-colors">
+                <Link to="/legal/terms-of-service" className="text-sm text-background/60 hover:text-accent transition-colors">
                   {t('footer.terms')}
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/cookie-policy" className="text-sm text-background/60 hover:text-accent transition-colors">
+                  Cookie Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/gdpr" className="text-sm text-background/60 hover:text-accent transition-colors">
+                  GDPR
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/privacy-policy?region=us" className="text-sm text-background/60 hover:text-accent transition-colors">
+                  US Privacy Notice
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/dpa" className="text-sm text-background/60 hover:text-accent transition-colors">
+                  Data Processing Agreement
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/acceptable-use" className="text-sm text-background/60 hover:text-accent transition-colors">
+                  Acceptable Use
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/refund-policy" className="text-sm text-background/60 hover:text-accent transition-colors">
+                  Refunds &amp; Cancellation
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/imprint" className="text-sm text-background/60 hover:text-accent transition-colors">
+                  Imprint
+                </Link>
               </li>
             </ul>
           </div>

@@ -1140,6 +1140,51 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_documents: {
+        Row: {
+          content: string
+          created_at: string
+          effective_date: string
+          id: string
+          published: boolean
+          region: string
+          slug: string
+          summary: string | null
+          title: string
+          updated_at: string
+          updated_by: string | null
+          version: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          effective_date?: string
+          id?: string
+          published?: boolean
+          region?: string
+          slug: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          effective_date?: string
+          id?: string
+          published?: boolean
+          region?: string
+          slug?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string

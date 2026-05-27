@@ -28,6 +28,7 @@ import {
   Volume2,
   Activity,
   TicketPercent,
+  Scale,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -84,6 +85,7 @@ const contentItems: MenuItem[] = [
   { titleKey: 'SEO Insights', url: '/admin/seo-insights', icon: TrendingUp, minRole: 'admin' },
   { titleKey: 'admin.sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
   { titleKey: 'admin.versions', url: '/admin/content-history', icon: History, minRole: 'admin' },
+  { titleKey: 'Legal Documents', url: '/admin/legal', icon: Scale, minRole: 'admin' },
 ];
 
 const adminItems: MenuItem[] = [
