@@ -14,7 +14,52 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const MAILGUN_SIGNING_KEY = Deno.env.get('MAILGUN_WEBHOOK_SIGNING_KEY') || ''
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')!
+const NOTIFICATION_EMAIL = Deno.env.get('NOTIFICATION_EMAIL') || ''
+const VBOUT_API_KEY = Deno.env.get('VBOUT_API_KEY') || ''
 const SITE_NAME = 'FastMedia.Pro'
+
+async function forwardToAdmin(supabase: any, payload: {
+  fromAddress: string; fromName?: string; toAddress: string;
+  subject: string; bodyPlain: string; aiReply?: string; status: string; messageId: string;
+}) {
+  if (!NOTIFICATION_EMAIL) return
+  try {
+    await supabase.functions.invoke('send-transactional-email', {
+      body: {
+        templateName: 'inbound-forward',
+        recipientEmail: NOTIFICATION_EMAIL,
+        idempotencyKey: `inbound-fwd-${payload.messageId}`,
+        templateData: payload,
+      },
+    })
+  } catch (err) {
+    console.error('forwardToAdmin failed:', err instanceof Error ? err.message : err)
+  }
+}
+
+async function syncToVbout(opts: { email: string; name?: string; subject?: string }) {
+  if (!VBOUT_API_KEY) return
+  try {
+    const body = new URLSearchParams({
+      key: VBOUT_API_KEY,
+      email: opts.email,
+      firstname: opts.name || '',
+      status: 'active',
+      ipaddress: '0.0.0.0',
+      source: `inbound:${(opts.subject || 'support').slice(0, 60)}`,
+    })
+    const res = await fetch('https://api.vbout.com/1/emailmarketing/addcontact.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+    })
+    if (!res.ok) {
+      console.warn('Vbout sync non-OK:', res.status, (await res.text()).slice(0, 200))
+    }
+  } catch (err) {
+    console.error('syncToVbout failed:', err instanceof Error ? err.message : err)
+  }
+}
 
 async function verifyMailgunSignature(timestamp: string, token: string, signature: string) {
   if (!MAILGUN_SIGNING_KEY) return false
