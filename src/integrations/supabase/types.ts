@@ -153,6 +153,7 @@ export type Database = {
           published_at: string | null
           read_time_minutes: number
           rejection_reason: string | null
+          scheduled_publish_at: string | null
           seo_keywords: Json
           slug: string
           status: string
@@ -182,6 +183,7 @@ export type Database = {
           published_at?: string | null
           read_time_minutes?: number
           rejection_reason?: string | null
+          scheduled_publish_at?: string | null
           seo_keywords?: Json
           slug: string
           status?: string
@@ -211,6 +213,7 @@ export type Database = {
           published_at?: string | null
           read_time_minutes?: number
           rejection_reason?: string | null
+          scheduled_publish_at?: string | null
           seo_keywords?: Json
           slug?: string
           status?: string
@@ -2427,6 +2430,7 @@ export type Database = {
         }
         Returns: number
       }
+      publish_scheduled_blog_posts: { Args: never; Returns: number }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
