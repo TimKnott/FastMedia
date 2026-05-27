@@ -969,6 +969,17 @@ const CalculatorPage = () => {
                     </div>
                   )}
 
+                  {!intentLoading && !intentCurrent && !intentBrief && intentHistory.length > 0 && (
+                    <div className="flex items-center justify-between gap-3 p-4 rounded-xl border border-destructive/30 bg-destructive/5">
+                      <p className="text-sm text-foreground">
+                        {lang === 'cs' ? 'Načítání další otázky se nezdařilo.' : lang === 'de' ? 'Nächste Frage konnte nicht geladen werden.' : 'Could not load the next question.'}
+                      </p>
+                      <Button size="sm" onClick={() => fetchNextIntent(intentHistory)}>
+                        {lang === 'cs' ? 'Zkusit znovu' : lang === 'de' ? 'Erneut versuchen' : 'Try again'}
+                      </Button>
+                    </div>
+                  )}
+
                   {intentCurrent && (
                     <motion.div
                       key={intentCurrent.key}
