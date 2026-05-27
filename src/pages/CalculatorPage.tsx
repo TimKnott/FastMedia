@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X } from 'lucide-react';
+import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -54,6 +55,19 @@ const CalculatorPage = () => {
   const [intentAnswer, setIntentAnswer] = useState('');
   const [intentLoading, setIntentLoading] = useState(false);
   const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
+
+  // Coupon state
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    description: string | null;
+    discount_type: 'percentage' | 'fixed';
+    discount_value: number;
+    applies_to: 'one_time' | 'monthly' | 'both';
+    oneTimeDiscount: number;
+    monthlyDiscount: number;
+  } | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const lang = language as 'cs' | 'en' | 'de';
 
