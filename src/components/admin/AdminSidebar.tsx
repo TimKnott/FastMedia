@@ -26,6 +26,7 @@ import {
   FolderKanban,
   Eye,
   Volume2,
+  Activity,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
