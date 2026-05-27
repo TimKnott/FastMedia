@@ -931,25 +931,80 @@ const CalculatorPage = () => {
                         <MessageSquare className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
                         {intentCurrent.question}
                       </p>
-                      <textarea
-                        value={intentAnswer}
-                        onChange={e => setIntentAnswer(e.target.value)}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                            e.preventDefault();
-                            submitIntentAnswer();
-                          }
-                        }}
-                        rows={3}
-                        placeholder={lang === 'cs' ? 'Vaše odpověď…' : lang === 'de' ? 'Ihre Antwort…' : 'Your answer…'}
-                        className="w-full rounded-lg border border-border bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                      />
-                      <div className="flex justify-end mt-3">
-                        <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
-                          <Send className="w-3.5 h-3.5 mr-2" />
-                          {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
-                        </Button>
-                      </div>
+
+                      {intentCurrent.key === 'timeline' ? (
+                        <div className="space-y-3">
+                          <p className="text-xs text-muted-foreground">
+                            {lang === 'cs'
+                              ? 'Doporučujeme cca jeden měsíc — vyberte preferované datum.'
+                              : lang === 'de'
+                              ? 'Wir empfehlen etwa einen Monat — wählen Sie Ihr Wunschdatum.'
+                              : 'We recommend around one month — select your preferred date.'}
+                          </p>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal h-12",
+                                  !intentAnswer && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {intentAnswer ? format(new Date(intentAnswer), "PPP") : (lang === 'cs' ? 'Vyberte datum' : lang === 'de' ? 'Datum auswählen' : 'Pick a date')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={intentAnswer ? new Date(intentAnswer) : undefined}
+                                onSelect={(date) => {
+                                  if (date) {
+                                    // Store ISO date string but also format for display
+                                    setIntentAnswer(date.toISOString());
+                                  }
+                                }}
+                                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                                initialFocus
+                                defaultMonth={(() => {
+                                  const d = new Date();
+                                  d.setMonth(d.getMonth() + 1);
+                                  return d;
+                                })()}
+                                className={cn("p-3 pointer-events-auto")}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <div className="flex justify-end mt-3">
+                            <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
+                              <Send className="w-3.5 h-3.5 mr-2" />
+                              {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <textarea
+                            value={intentAnswer}
+                            onChange={e => setIntentAnswer(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                                e.preventDefault();
+                                submitIntentAnswer();
+                              }
+                            }}
+                            rows={3}
+                            placeholder={lang === 'cs' ? 'Vaše odpověď…' : lang === 'de' ? 'Ihre Antwort…' : 'Your answer…'}
+                            className="w-full rounded-lg border border-border bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                          />
+                          <div className="flex justify-end mt-3">
+                            <Button onClick={submitIntentAnswer} disabled={!intentAnswer.trim() || intentLoading} size="sm">
+                              <Send className="w-3.5 h-3.5 mr-2" />
+                              {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
+                            </Button>
+                          </div>
+                        </>
+                      )}
                     </motion.div>
                   )}
 
