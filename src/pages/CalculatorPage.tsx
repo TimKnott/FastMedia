@@ -55,7 +55,8 @@ const CalculatorPage = () => {
 
   // Conversational intake state
   const [intentHistory, setIntentHistory] = useState<IntentTurn[]>([]);
-  const [intentCurrent, setIntentCurrent] = useState<{ key: string; question: string } | null>(null);
+  const [intentCurrent, setIntentCurrent] = useState<{ key: string; question: string; suggestions?: string[] } | null>(null);
+  const [intentListening, setIntentListening] = useState(false);
   const [intentAnswer, setIntentAnswer] = useState('');
   const [intentLoading, setIntentLoading] = useState(false);
   const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
