@@ -390,6 +390,110 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_redemptions: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          currency: string
+          discount_amount: number
+          email: string | null
+          final_amount: number
+          id: string
+          lead_id: string | null
+          metadata: Json | null
+          original_amount: number
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          currency?: string
+          discount_amount?: number
+          email?: string | null
+          final_amount?: number
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          original_amount?: number
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          currency?: string
+          discount_amount?: number
+          email?: string | null
+          final_amount?: number
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          original_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          applies_to: string
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          min_amount: number
+          updated_at: string
+          used_count: number
+          valid_from: string
+          valid_until: string | null
+        }
+        Insert: {
+          applies_to?: string
+          code: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_amount?: number
+          updated_at?: string
+          used_count?: number
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Update: {
+          applies_to?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_amount?: number
+          updated_at?: string
+          used_count?: number
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       custom_demos: {
         Row: {
           calculator_prompts: Json
