@@ -179,8 +179,11 @@ const AdminEmbedCodes = () => {
           </Dialog>
         </div>
 
+        <VboutEmbedTester />
+
         {isLoading ? (
           <p className="text-muted-foreground">Loading…</p>
+
         ) : codes.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
