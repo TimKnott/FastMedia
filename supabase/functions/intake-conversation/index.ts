@@ -451,13 +451,6 @@ serve(async (req) => {
     let chosen = slot;
     if (history.length >= 2 && candidates.length > 1) {
       const pick = await aiPickSlot(slot.key, candidates, history, context, language);
-      if (pick.done && history.length >= 3) {
-        const brief = await aiSummarise(language, context, history);
-        return new Response(
-          JSON.stringify({ done: true, ...brief, transcript: history }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
-      }
       const match = candidates.find((c) => c.key === pick.key);
       if (match) chosen = match;
     }
