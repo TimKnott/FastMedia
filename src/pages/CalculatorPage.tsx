@@ -426,9 +426,8 @@ const CalculatorPage = () => {
 
   const startIntentVoice = useCallback(() => {
     if (typeof window === 'undefined') return;
-    const SR: typeof window.SpeechRecognition | undefined =
-      // @ts-expect-error vendor prefix
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const w = window as unknown as { SpeechRecognition?: any; webkitSpeechRecognition?: any };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!SR) {
       toast({ title: 'Voice input not supported', description: 'Please use Chrome, Edge or Safari.', variant: 'destructive' });
       return;
