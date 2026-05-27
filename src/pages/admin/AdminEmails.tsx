@@ -6,11 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { Mail, CheckCircle, XCircle, AlertTriangle, Clock, ChevronLeft, ChevronRight, BarChart3 } from 'lucide-react';
+import { Mail, CheckCircle, XCircle, AlertTriangle, Clock, ChevronLeft, ChevronRight, BarChart3, Inbox, Send } from 'lucide-react';
 import { format, subDays, subHours, startOfDay, startOfHour, eachDayOfInterval, eachHourOfInterval } from 'date-fns';
 import { useLanguage } from '@/contexts/LanguageContext';
+import AdminInbox from './AdminInbox';
+import SendTestEmail from '@/components/admin/SendTestEmail';
 
 type TimeRange = '24h' | '7d' | '30d';
 type ChartGranularity = 'daily' | 'hourly';
@@ -136,10 +139,23 @@ const AdminEmails = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">{t('emails.title')}</h1>
-        <p className="text-muted-foreground text-sm mt-1">{t('emails.subtitle')}</p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t('emails.title')}</h1>
+          <p className="text-muted-foreground text-sm mt-1">{t('emails.subtitle')}</p>
+        </div>
+        <SendTestEmail />
       </div>
+
+      <Tabs defaultValue="outbound" className="w-full">
+        <TabsList>
+          <TabsTrigger value="outbound" className="gap-2"><Send className="w-4 h-4" /> Outbound</TabsTrigger>
+          <TabsTrigger value="inbound" className="gap-2"><Inbox className="w-4 h-4" /> Inbox</TabsTrigger>
+        </TabsList>
+        <TabsContent value="inbound" className="mt-4">
+          <AdminInbox />
+        </TabsContent>
+        <TabsContent value="outbound" className="mt-4 space-y-6">
 
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex gap-1">
@@ -300,6 +316,8 @@ const AdminEmails = () => {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
