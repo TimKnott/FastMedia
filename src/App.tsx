@@ -24,6 +24,7 @@ const CalculatorPage = lazy(() => import("./pages/CalculatorPage"));
 const Install = lazy(() => import("./pages/Install"));
 const Inquiry = lazy(() => import("./pages/Inquiry"));
 const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
+const PackageDetail = lazy(() => import("./pages/PackageDetail"));
 const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Showcase = lazy(() => import("./pages/Showcase"));
@@ -198,6 +199,7 @@ const App = () => (
             <Route path="/install" element={<Install />} />
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
+            <Route path="/package/:slug" element={<PackageDetail />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/showcase/:slug" element={<Showcase />} />

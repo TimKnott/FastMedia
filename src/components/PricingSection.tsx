@@ -8,6 +8,7 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 interface PricingTier {
+  slug: string;
   nameKey: string;
   priceKey: string;
   hostingKey: string;
@@ -17,10 +18,10 @@ interface PricingTier {
 }
 
 const tiers: PricingTier[] = [
-  { nameKey: 'pricing.starter.name', priceKey: 'pricing.starter.price', hostingKey: 'pricing.starter.hosting', descKey: 'pricing.starter.desc', featuresKey: 'pricing.starter.features' },
-  { nameKey: 'pricing.basic.name', priceKey: 'pricing.basic.price', hostingKey: 'pricing.basic.hosting', descKey: 'pricing.basic.desc', featuresKey: 'pricing.basic.features' },
-  { nameKey: 'pricing.pro.name', priceKey: 'pricing.pro.price', hostingKey: 'pricing.pro.hosting', descKey: 'pricing.pro.desc', featuresKey: 'pricing.pro.features', popular: true },
-  { nameKey: 'pricing.enterprise.name', priceKey: 'pricing.enterprise.price', hostingKey: 'pricing.enterprise.hosting', descKey: 'pricing.enterprise.desc', featuresKey: 'pricing.enterprise.features' },
+  { slug: 'starter', nameKey: 'pricing.starter.name', priceKey: 'pricing.starter.price', hostingKey: 'pricing.starter.hosting', descKey: 'pricing.starter.desc', featuresKey: 'pricing.starter.features' },
+  { slug: 'basic', nameKey: 'pricing.basic.name', priceKey: 'pricing.basic.price', hostingKey: 'pricing.basic.hosting', descKey: 'pricing.basic.desc', featuresKey: 'pricing.basic.features' },
+  { slug: 'professional', nameKey: 'pricing.pro.name', priceKey: 'pricing.pro.price', hostingKey: 'pricing.pro.hosting', descKey: 'pricing.pro.desc', featuresKey: 'pricing.pro.features', popular: true },
+  { slug: 'enterprise', nameKey: 'pricing.enterprise.name', priceKey: 'pricing.enterprise.price', hostingKey: 'pricing.enterprise.hosting', descKey: 'pricing.enterprise.desc', featuresKey: 'pricing.enterprise.features' },
 ];
 
 const pricingLearnMore = {
@@ -43,8 +44,8 @@ const PricingSection = () => {
   const { getContent, invalidate } = useSiteContent();
   const lang = language as 'cs' | 'en' | 'de';
 
-  const scrollToBooking = () => {
-    document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
+  const viewPackage = (slug: string) => {
+    navigate(`/package/${slug}`);
   };
 
   return (
@@ -127,7 +128,7 @@ const PricingSection = () => {
                 </ul>
 
                 <Button
-                  onClick={scrollToBooking}
+                  onClick={() => viewPackage(tier.slug)}
                   variant={tier.popular ? 'secondary' : 'default'}
                   className="w-full font-semibold"
                 >
