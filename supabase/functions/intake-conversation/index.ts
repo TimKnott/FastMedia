@@ -250,7 +250,7 @@ async function aiPickSlot(
   history: Turn[],
   context: string,
   language: string,
-): Promise<{ key: string; reason?: string; done?: boolean }> {
+): Promise<{ key: string; reason?: string }> {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!LOVABLE_API_KEY || candidates.length <= 1) return { key: defaultKey };
   try {
@@ -264,7 +264,7 @@ async function aiPickSlot(
           {
             role: "system",
             content:
-              "You are a senior website-agency intake strategist. Pick the single next question that will most reduce risk in the proposal, given what we already know. Prefer required slots (timeline, decision_maker, budget_fit) before optional ones. If the user has clearly given enough to write a proposal, you MAY return done=true. Always pick from the allowed keys.",
+              "You are a senior website-agency intake strategist. Pick the single next question that will most reduce risk in the proposal. Prefer required slots (timeline, decision_maker, budget_fit) before optional ones. Always pick exactly one key from the allowed list — never stop early.",
           },
           {
             role: "user",
@@ -284,7 +284,6 @@ async function aiPickSlot(
                 properties: {
                   key: { type: "string", enum: allowed },
                   reason: { type: "string", description: "≤15 words on why this question is most useful next." },
-                  done: { type: "boolean", description: "True only if no further question is needed." },
                 },
                 required: ["key"],
                 additionalProperties: false,
