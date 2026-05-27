@@ -1151,16 +1151,59 @@ const CalculatorPage = () => {
                       </div>
                     )}
 
+                    {/* Coupon input */}
+                    <div className="mt-4 p-4 rounded-xl border border-dashed border-primary/30 bg-primary/5">
+                      {!appliedCoupon ? (
+                        <div className="flex gap-2 items-center">
+                          <TicketPercent className="w-4 h-4 text-primary shrink-0" />
+                          <Input
+                            value={couponInput}
+                            onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                            placeholder={lang === 'cs' ? 'Slevový kód' : lang === 'de' ? 'Gutscheincode' : 'Discount code'}
+                            className="h-9 font-mono text-sm"
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
+                          />
+                          <Button size="sm" onClick={applyCoupon} disabled={!couponInput.trim() || couponLoading}>
+                            {couponLoading ? '...' : (lang === 'cs' ? 'Použít' : lang === 'de' ? 'Anwenden' : 'Apply')}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                            <span className="font-mono text-sm font-bold">{appliedCoupon.code}</span>
+                            <span className="text-xs text-muted-foreground truncate">
+                              −{appliedCoupon.discount_type === 'percentage' ? `${appliedCoupon.discount_value}%` : `${formatPrice(appliedCoupon.discount_value)} Kč`}
+                            </span>
+                          </div>
+                          <Button size="icon" variant="ghost" onClick={removeCoupon} className="h-7 w-7">
+                            <X className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+
                     {/* Totals */}
-                    <div className="mt-6 p-5 rounded-xl gradient-primary text-primary-foreground">
+                    <div className="mt-4 p-5 rounded-xl gradient-primary text-primary-foreground">
+                      {appliedCoupon && oneTimeDiscount > 0 && (
+                        <div className="flex justify-between items-center mb-1 opacity-80 text-sm">
+                          <span>{l.totalOneTime}</span>
+                          <span className="line-through">{formatPrice(grandTotalOneTime)} Kč</span>
+                        </div>
+                      )}
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold">{l.totalOneTime}</span>
-                        <span className="text-2xl font-display font-bold">{formatPrice(grandTotalOneTime)} Kč</span>
+                        <span className="font-semibold">{appliedCoupon ? (lang === 'cs' ? 'K úhradě' : lang === 'de' ? 'Zu zahlen' : 'You pay') : l.totalOneTime}</span>
+                        <span className="text-2xl font-display font-bold">{formatPrice(discountedOneTime)} Kč</span>
                       </div>
                       <div className="flex justify-between items-center opacity-80">
                         <span className="text-sm">{l.totalMonthly}</span>
-                        <span className="text-lg font-bold">{formatPrice(totalMonthly)} Kč{l.perMonth}</span>
+                        <span className="text-lg font-bold">{formatPrice(discountedMonthly)} Kč{l.perMonth}</span>
                       </div>
+                      {appliedCoupon && (oneTimeDiscount > 0 || monthlyDiscount > 0) && (
+                        <div className="mt-2 pt-2 border-t border-primary-foreground/20 text-xs opacity-90">
+                          {lang === 'cs' ? 'Sleva' : lang === 'de' ? 'Rabatt' : 'Saved'}: {formatPrice(oneTimeDiscount)} Kč{monthlyDiscount > 0 ? ` + ${formatPrice(monthlyDiscount)} Kč${l.perMonth}` : ''}
+                        </div>
+                      )}
                     </div>
 
                     <p className="text-xs text-muted-foreground text-center mt-4">{l.canChange}</p>
