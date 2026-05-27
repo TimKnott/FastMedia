@@ -46,6 +46,7 @@ const AdminLandingPage = lazy(() => import("./pages/admin/AdminLandingPage"));
 const AdminDemos = lazy(() => import("./pages/admin/AdminDemos"));
 const AdminBlog = lazy(() => import("./pages/admin/AdminBlog"));
 const AdminTtsTest = lazy(() => import("./pages/admin/AdminTtsTest"));
+const AdminVboutDebug = lazy(() => import("./pages/admin/AdminVboutDebug"));
 const AdminMedia = lazy(() => import("./pages/admin/AdminMedia"));
 const AdminSitemap = lazy(() => import("./pages/admin/AdminSitemap"));
 const AdminContentHistory = lazy(() => import("./pages/admin/AdminContentHistory"));
