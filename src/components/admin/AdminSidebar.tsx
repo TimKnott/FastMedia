@@ -27,6 +27,7 @@ import {
   Eye,
   Volume2,
   Activity,
+  TicketPercent,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -65,6 +66,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
   { titleKey: 'Vbout Debug', url: '/admin/vbout-debug', icon: Activity, minRole: 'admin' },
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
+  { titleKey: 'Coupons', url: '/admin/coupons', icon: TicketPercent, minRole: 'admin' },
   { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
   { titleKey: 'Lead Emails', url: '/admin/lead-emails', icon: Search, minRole: 'admin' },
   { titleKey: 'admin.hr', url: '/admin/hr', icon: UserCog, minRole: 'admin' },

@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X } from 'lucide-react';
+import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -54,6 +55,19 @@ const CalculatorPage = () => {
   const [intentAnswer, setIntentAnswer] = useState('');
   const [intentLoading, setIntentLoading] = useState(false);
   const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
+
+  // Coupon state
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    description: string | null;
+    discount_type: 'percentage' | 'fixed';
+    discount_value: number;
+    applies_to: 'one_time' | 'monthly' | 'both';
+    oneTimeDiscount: number;
+    monthlyDiscount: number;
+  } | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const lang = language as 'cs' | 'en' | 'de';
 
@@ -213,6 +227,48 @@ const CalculatorPage = () => {
   }, BASE_HOSTING_PRICE);
 
   const grandTotalOneTime = totalOneTime + laborCost;
+
+  // Apply coupon discounts
+  const oneTimeDiscount = appliedCoupon?.oneTimeDiscount ?? 0;
+  const monthlyDiscount = appliedCoupon?.monthlyDiscount ?? 0;
+  const discountedOneTime = Math.max(0, grandTotalOneTime - oneTimeDiscount);
+  const discountedMonthly = Math.max(0, totalMonthly - monthlyDiscount);
+
+  const applyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setCouponLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-coupon', {
+        body: { code: couponInput.trim(), oneTimeAmount: grandTotalOneTime, monthlyAmount: totalMonthly },
+      });
+      if (error) throw error;
+      if (!data?.valid) {
+        const reason = data?.error || 'invalid';
+        const msg: Record<string, string> = {
+          not_found: lang === 'cs' ? 'Kupón nenalezen' : lang === 'de' ? 'Gutschein nicht gefunden' : 'Coupon not found',
+          inactive: lang === 'cs' ? 'Kupón je neaktivní' : lang === 'de' ? 'Gutschein inaktiv' : 'Coupon is inactive',
+          expired: lang === 'cs' ? 'Kupón vypršel' : lang === 'de' ? 'Gutschein abgelaufen' : 'Coupon expired',
+          not_yet_valid: lang === 'cs' ? 'Kupón zatím neplatí' : lang === 'de' ? 'Noch nicht gültig' : 'Not yet valid',
+          max_uses_reached: lang === 'cs' ? 'Kupón byl vyčerpán' : lang === 'de' ? 'Limit erreicht' : 'Coupon limit reached',
+          min_amount_not_met: lang === 'cs' ? 'Minimální částka nesplněna' : lang === 'de' ? 'Mindestbetrag nicht erreicht' : 'Minimum amount not met',
+        };
+        toast({ title: msg[reason] || (lang === 'cs' ? 'Neplatný kupón' : 'Invalid coupon'), variant: 'destructive' });
+        return;
+      }
+      setAppliedCoupon({ ...data.coupon, oneTimeDiscount: data.oneTimeDiscount, monthlyDiscount: data.monthlyDiscount });
+      toast({ title: lang === 'cs' ? 'Kupón uplatněn!' : lang === 'de' ? 'Gutschein angewendet!' : 'Coupon applied!' });
+    } catch (e) {
+      console.error(e);
+      toast({ title: lang === 'cs' ? 'Chyba validace' : 'Validation error', variant: 'destructive' });
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+  };
 
   // Feature management
   const toggleFeature = (id: string) => {
@@ -376,6 +432,7 @@ const CalculatorPage = () => {
           intent: intentBrief?.intent ?? null,
           intentSummary: intentBrief?.summary ?? null,
           intentTranscript: intentHistory.length ? intentHistory : null,
+          coupon: appliedCoupon ? { code: appliedCoupon.code, oneTimeDiscount, monthlyDiscount } : null,
         },
       });
       if (error) throw error;
@@ -391,42 +448,89 @@ const CalculatorPage = () => {
     }
   };
 
-  // Export
+  // Export quote as a polished PDF
   const exportQuote = () => {
     const tradeObj = trades.find(t => t.id === selectedTrade);
     const tradeName = tradeObj ? t(tradeObj.nameKey) : selectedTrade;
-    
-    let text = `${l.title} - FastMedia.Pro\n${'='.repeat(40)}\n\n`;
-    text += `${l.selectTrade}: ${tradeName}\n\n`;
-    text += `${l.baseWebsite}: ${formatPrice(BASE_WEBSITE_PRICE)} Kč\n\n`;
-    
-    if (selectedFeatures.length > 0) {
-      text += `${l.selectFeatures}:\n`;
-      selectedFeatures.forEach(sf => {
-        const feature = getFeatureById(sf.id);
-        if (feature) {
-          text += `  • ${feature[nameKey]} x${sf.quantity} — ${formatPrice(feature.oneTimePrice * sf.quantity)} Kč`;
-          if (feature.monthlyPrice > 0) text += ` (+${formatPrice(feature.monthlyPrice * sf.quantity)} Kč${l.perMonth})`;
-          text += '\n';
-        }
-      });
-    }
-    
-    text += `\n${l.laborCost}: ${formatPrice(laborCost)} Kč (${totalLaborHours} ${l.hours})\n`;
-    text += `\n${'─'.repeat(40)}\n`;
-    text += `${l.totalOneTime}: ${formatPrice(grandTotalOneTime)} Kč\n`;
-    text += `${l.totalMonthly}: ${formatPrice(totalMonthly)} Kč${l.perMonth}\n`;
-    text += `\n${l.canChange}\n`;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    let y = 50;
 
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `fastmedia-quote-${Date.now()}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast({ title: lang === 'cs' ? 'Nabídka exportována!' : 'Quote exported!' });
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('FastMedia.Pro', 40, y);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text(l.title, pageW - 40, y, { align: 'right' });
+    y += 14;
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+    doc.text(new Date().toLocaleDateString(), pageW - 40, y, { align: 'right' });
+    doc.setTextColor(0);
+
+    y += 28;
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${l.selectTrade}: `, 40, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(tradeName, 160, y);
+    if (contactName) { y += 14; doc.setFont('helvetica', 'bold'); doc.text('Prepared for: ', 40, y); doc.setFont('helvetica', 'normal'); doc.text(contactName, 160, y); }
+    if (contactEmail) { y += 14; doc.setFont('helvetica', 'bold'); doc.text('Email: ', 40, y); doc.setFont('helvetica', 'normal'); doc.text(contactEmail, 160, y); }
+
+    y += 26;
+    doc.setDrawColor(220);
+    doc.line(40, y, pageW - 40, y);
+    y += 18;
+
+    const row = (label: string, value: string, bold = false) => {
+      if (y > 760) { doc.addPage(); y = 50; }
+      doc.setFont('helvetica', bold ? 'bold' : 'normal');
+      doc.setFontSize(bold ? 11 : 10);
+      const lines = doc.splitTextToSize(label, pageW - 200);
+      doc.text(lines, 40, y);
+      doc.text(value, pageW - 40, y, { align: 'right' });
+      y += 14 * lines.length + 2;
+    };
+
+    row(l.baseWebsite, `${formatPrice(BASE_WEBSITE_PRICE)} Kč`);
+    selectedFeatures.forEach(sf => {
+      const f = getFeatureById(sf.id);
+      if (!f) return;
+      const qty = sf.quantity > 1 ? ` x${sf.quantity}` : '';
+      const monthly = f.monthlyPrice > 0 ? ` (+${formatPrice(f.monthlyPrice * sf.quantity)} Kč${l.perMonth})` : '';
+      row(`• ${f[nameKey]}${qty}${monthly}`, `${formatPrice(f.oneTimePrice * sf.quantity)} Kč`);
+    });
+    if (totalLaborHours > 0) row(`${l.laborCost} (${totalLaborHours} ${l.hours})`, `${formatPrice(laborCost)} Kč`);
+
+    y += 6;
+    doc.line(40, y, pageW - 40, y);
+    y += 16;
+    row(l.totalOneTime, `${formatPrice(grandTotalOneTime)} Kč`, true);
+    row(l.totalMonthly, `${formatPrice(totalMonthly)} Kč${l.perMonth}`, true);
+
+    if (appliedCoupon) {
+      y += 6;
+      doc.setTextColor(0, 140, 90);
+      row(`Coupon ${appliedCoupon.code} (-${appliedCoupon.discount_type === 'percentage' ? appliedCoupon.discount_value + '%' : formatPrice(appliedCoupon.discount_value) + ' ' + (appliedCoupon as any).currency || ''})`,
+        `- ${formatPrice(oneTimeDiscount)} Kč${monthlyDiscount ? ` / -${formatPrice(monthlyDiscount)} ${l.perMonth}` : ''}`);
+      doc.setTextColor(0);
+      y += 4;
+      doc.setDrawColor(180);
+      doc.line(40, y, pageW - 40, y); y += 16;
+      row(lang === 'cs' ? 'K úhradě jednorázově' : lang === 'de' ? 'Zu zahlen einmalig' : 'Total due (one-time)', `${formatPrice(discountedOneTime)} Kč`, true);
+      row(l.totalMonthly, `${formatPrice(discountedMonthly)} Kč${l.perMonth}`, true);
+    }
+
+    y += 26;
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+    const footerLines = doc.splitTextToSize(l.canChange + '  •  https://fastmedia.pro  •  support@fastmedia.pro', pageW - 80);
+    doc.text(footerLines, 40, y);
+
+    doc.save(`fastmedia-quote-${Date.now()}.pdf`);
+    toast({ title: lang === 'cs' ? 'PDF staženo!' : lang === 'de' ? 'PDF heruntergeladen!' : 'PDF downloaded!' });
   };
+
 
   const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'contact', 'summary'];
 
@@ -1047,16 +1151,59 @@ const CalculatorPage = () => {
                       </div>
                     )}
 
+                    {/* Coupon input */}
+                    <div className="mt-4 p-4 rounded-xl border border-dashed border-primary/30 bg-primary/5">
+                      {!appliedCoupon ? (
+                        <div className="flex gap-2 items-center">
+                          <TicketPercent className="w-4 h-4 text-primary shrink-0" />
+                          <Input
+                            value={couponInput}
+                            onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                            placeholder={lang === 'cs' ? 'Slevový kód' : lang === 'de' ? 'Gutscheincode' : 'Discount code'}
+                            className="h-9 font-mono text-sm"
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
+                          />
+                          <Button size="sm" onClick={applyCoupon} disabled={!couponInput.trim() || couponLoading}>
+                            {couponLoading ? '...' : (lang === 'cs' ? 'Použít' : lang === 'de' ? 'Anwenden' : 'Apply')}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                            <span className="font-mono text-sm font-bold">{appliedCoupon.code}</span>
+                            <span className="text-xs text-muted-foreground truncate">
+                              −{appliedCoupon.discount_type === 'percentage' ? `${appliedCoupon.discount_value}%` : `${formatPrice(appliedCoupon.discount_value)} Kč`}
+                            </span>
+                          </div>
+                          <Button size="icon" variant="ghost" onClick={removeCoupon} className="h-7 w-7">
+                            <X className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+
                     {/* Totals */}
-                    <div className="mt-6 p-5 rounded-xl gradient-primary text-primary-foreground">
+                    <div className="mt-4 p-5 rounded-xl gradient-primary text-primary-foreground">
+                      {appliedCoupon && oneTimeDiscount > 0 && (
+                        <div className="flex justify-between items-center mb-1 opacity-80 text-sm">
+                          <span>{l.totalOneTime}</span>
+                          <span className="line-through">{formatPrice(grandTotalOneTime)} Kč</span>
+                        </div>
+                      )}
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold">{l.totalOneTime}</span>
-                        <span className="text-2xl font-display font-bold">{formatPrice(grandTotalOneTime)} Kč</span>
+                        <span className="font-semibold">{appliedCoupon ? (lang === 'cs' ? 'K úhradě' : lang === 'de' ? 'Zu zahlen' : 'You pay') : l.totalOneTime}</span>
+                        <span className="text-2xl font-display font-bold">{formatPrice(discountedOneTime)} Kč</span>
                       </div>
                       <div className="flex justify-between items-center opacity-80">
                         <span className="text-sm">{l.totalMonthly}</span>
-                        <span className="text-lg font-bold">{formatPrice(totalMonthly)} Kč{l.perMonth}</span>
+                        <span className="text-lg font-bold">{formatPrice(discountedMonthly)} Kč{l.perMonth}</span>
                       </div>
+                      {appliedCoupon && (oneTimeDiscount > 0 || monthlyDiscount > 0) && (
+                        <div className="mt-2 pt-2 border-t border-primary-foreground/20 text-xs opacity-90">
+                          {lang === 'cs' ? 'Sleva' : lang === 'de' ? 'Rabatt' : 'Saved'}: {formatPrice(oneTimeDiscount)} Kč{monthlyDiscount > 0 ? ` + ${formatPrice(monthlyDiscount)} Kč${l.perMonth}` : ''}
+                        </div>
+                      )}
                     </div>
 
                     <p className="text-xs text-muted-foreground text-center mt-4">{l.canChange}</p>
