@@ -28,6 +28,7 @@ import {
   Volume2,
   Activity,
   TicketPercent,
+  Scale,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
