@@ -389,10 +389,12 @@ const CalculatorPage = () => {
         setIntentAnswer('');
       }
     } catch (e) {
-      console.error(e);
-      // Soft-fail: let the user proceed even if AI is down
-      setIntentCurrent(null);
-      setIntentBrief({ summary: '', intent: {} });
+      console.error('intake-conversation failed', e);
+      toast({
+        title: lang === 'cs' ? 'Načítání další otázky selhalo' : lang === 'de' ? 'Nächste Frage konnte nicht geladen werden' : 'Could not load the next question',
+        description: lang === 'cs' ? 'Zkuste to prosím znovu.' : lang === 'de' ? 'Bitte erneut versuchen.' : 'Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIntentLoading(false);
     }
@@ -964,6 +966,17 @@ const CalculatorPage = () => {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground p-4 rounded-xl bg-muted/40">
                       <span className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                       {lang === 'cs' ? 'Připravujeme další otázku…' : lang === 'de' ? 'Nächste Frage wird vorbereitet…' : 'Preparing the next question…'}
+                    </div>
+                  )}
+
+                  {!intentLoading && !intentCurrent && !intentBrief && intentHistory.length > 0 && (
+                    <div className="flex items-center justify-between gap-3 p-4 rounded-xl border border-destructive/30 bg-destructive/5">
+                      <p className="text-sm text-foreground">
+                        {lang === 'cs' ? 'Načítání další otázky se nezdařilo.' : lang === 'de' ? 'Nächste Frage konnte nicht geladen werden.' : 'Could not load the next question.'}
+                      </p>
+                      <Button size="sm" onClick={() => fetchNextIntent(intentHistory)}>
+                        {lang === 'cs' ? 'Zkusit znovu' : lang === 'de' ? 'Erneut versuchen' : 'Try again'}
+                      </Button>
                     </div>
                   )}
 
