@@ -1,37 +1,4 @@
 project_id = "aivnnjsrupmubcjsgulb"
 
-[functions]
-  [functions.auth-email-hook]
-    verify_jwt = false
-  [functions.calculator-ai]
-    verify_jwt = false
-  [functions.handle-email-suppression]
-    verify_jwt = false
-  [functions.handle-email-unsubscribe]
-    verify_jwt = false
-  [functions.preview-transactional-email]
-    verify_jwt = false
-  [functions.process-email-queue]
-    verify_jwt = true
-  [functions.score-lead]
-    verify_jwt = false
-  [functions.send-transactional-email]
-    verify_jwt = true
-  [functions.seo-ai]
-    verify_jwt = false
-  [functions.sitemap]
-    verify_jwt = false
-  [functions.mailgun-inbound]
-    verify_jwt = false
-  [functions.generate-blog-post]
-    verify_jwt = false
-  [functions.generate-demo]
-    verify_jwt = true
-  [functions.portal-access]
-    verify_jwt = false
-  [functions.portal-issue-invite]
-    verify_jwt = true
-  [functions.payments-customer-portal]
-    verify_jwt = false
-  [functions.blog-tts]
-    verify_jwt = false
+[functions.validate-coupon]
+verify_jwt = false
