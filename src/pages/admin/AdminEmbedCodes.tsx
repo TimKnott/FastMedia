@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Plus, Trash2, Code2, Pencil, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import PermissionGate from '@/components/admin/PermissionGate';
+import VboutEmbedTester from '@/components/admin/VboutEmbedTester';
 
 type EmbedCode = {
   id: string;
@@ -178,8 +179,11 @@ const AdminEmbedCodes = () => {
           </Dialog>
         </div>
 
+        <VboutEmbedTester />
+
         {isLoading ? (
           <p className="text-muted-foreground">Loading…</p>
+
         ) : codes.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
