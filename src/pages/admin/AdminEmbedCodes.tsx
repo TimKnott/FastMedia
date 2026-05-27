@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Plus, Trash2, Code2, Pencil, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import PermissionGate from '@/components/admin/PermissionGate';
+import VboutEmbedTester from '@/components/admin/VboutEmbedTester';
 
 type EmbedCode = {
   id: string;
