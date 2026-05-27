@@ -447,42 +447,89 @@ const CalculatorPage = () => {
     }
   };
 
-  // Export
+  // Export quote as a polished PDF
   const exportQuote = () => {
     const tradeObj = trades.find(t => t.id === selectedTrade);
     const tradeName = tradeObj ? t(tradeObj.nameKey) : selectedTrade;
-    
-    let text = `${l.title} - FastMedia.Pro\n${'='.repeat(40)}\n\n`;
-    text += `${l.selectTrade}: ${tradeName}\n\n`;
-    text += `${l.baseWebsite}: ${formatPrice(BASE_WEBSITE_PRICE)} Kč\n\n`;
-    
-    if (selectedFeatures.length > 0) {
-      text += `${l.selectFeatures}:\n`;
-      selectedFeatures.forEach(sf => {
-        const feature = getFeatureById(sf.id);
-        if (feature) {
-          text += `  • ${feature[nameKey]} x${sf.quantity} — ${formatPrice(feature.oneTimePrice * sf.quantity)} Kč`;
-          if (feature.monthlyPrice > 0) text += ` (+${formatPrice(feature.monthlyPrice * sf.quantity)} Kč${l.perMonth})`;
-          text += '\n';
-        }
-      });
-    }
-    
-    text += `\n${l.laborCost}: ${formatPrice(laborCost)} Kč (${totalLaborHours} ${l.hours})\n`;
-    text += `\n${'─'.repeat(40)}\n`;
-    text += `${l.totalOneTime}: ${formatPrice(grandTotalOneTime)} Kč\n`;
-    text += `${l.totalMonthly}: ${formatPrice(totalMonthly)} Kč${l.perMonth}\n`;
-    text += `\n${l.canChange}\n`;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    let y = 50;
 
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `fastmedia-quote-${Date.now()}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast({ title: lang === 'cs' ? 'Nabídka exportována!' : 'Quote exported!' });
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('FastMedia.Pro', 40, y);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text(l.title, pageW - 40, y, { align: 'right' });
+    y += 14;
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+    doc.text(new Date().toLocaleDateString(), pageW - 40, y, { align: 'right' });
+    doc.setTextColor(0);
+
+    y += 28;
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${l.selectTrade}: `, 40, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(tradeName, 160, y);
+    if (contactName) { y += 14; doc.setFont('helvetica', 'bold'); doc.text('Prepared for: ', 40, y); doc.setFont('helvetica', 'normal'); doc.text(contactName, 160, y); }
+    if (contactEmail) { y += 14; doc.setFont('helvetica', 'bold'); doc.text('Email: ', 40, y); doc.setFont('helvetica', 'normal'); doc.text(contactEmail, 160, y); }
+
+    y += 26;
+    doc.setDrawColor(220);
+    doc.line(40, y, pageW - 40, y);
+    y += 18;
+
+    const row = (label: string, value: string, bold = false) => {
+      if (y > 760) { doc.addPage(); y = 50; }
+      doc.setFont('helvetica', bold ? 'bold' : 'normal');
+      doc.setFontSize(bold ? 11 : 10);
+      const lines = doc.splitTextToSize(label, pageW - 200);
+      doc.text(lines, 40, y);
+      doc.text(value, pageW - 40, y, { align: 'right' });
+      y += 14 * lines.length + 2;
+    };
+
+    row(l.baseWebsite, `${formatPrice(BASE_WEBSITE_PRICE)} Kč`);
+    selectedFeatures.forEach(sf => {
+      const f = getFeatureById(sf.id);
+      if (!f) return;
+      const qty = sf.quantity > 1 ? ` x${sf.quantity}` : '';
+      const monthly = f.monthlyPrice > 0 ? ` (+${formatPrice(f.monthlyPrice * sf.quantity)} Kč${l.perMonth})` : '';
+      row(`• ${f[nameKey]}${qty}${monthly}`, `${formatPrice(f.oneTimePrice * sf.quantity)} Kč`);
+    });
+    if (totalLaborHours > 0) row(`${l.laborCost} (${totalLaborHours} ${l.hours})`, `${formatPrice(laborCost)} Kč`);
+
+    y += 6;
+    doc.line(40, y, pageW - 40, y);
+    y += 16;
+    row(l.totalOneTime, `${formatPrice(grandTotalOneTime)} Kč`, true);
+    row(l.totalMonthly, `${formatPrice(totalMonthly)} Kč${l.perMonth}`, true);
+
+    if (appliedCoupon) {
+      y += 6;
+      doc.setTextColor(0, 140, 90);
+      row(`Coupon ${appliedCoupon.code} (-${appliedCoupon.discount_type === 'percentage' ? appliedCoupon.discount_value + '%' : formatPrice(appliedCoupon.discount_value) + ' ' + (appliedCoupon as any).currency || ''})`,
+        `- ${formatPrice(oneTimeDiscount)} Kč${monthlyDiscount ? ` / -${formatPrice(monthlyDiscount)} ${l.perMonth}` : ''}`);
+      doc.setTextColor(0);
+      y += 4;
+      doc.setDrawColor(180);
+      doc.line(40, y, pageW - 40, y); y += 16;
+      row(lang === 'cs' ? 'K úhradě jednorázově' : lang === 'de' ? 'Zu zahlen einmalig' : 'Total due (one-time)', `${formatPrice(discountedOneTime)} Kč`, true);
+      row(l.totalMonthly, `${formatPrice(discountedMonthly)} Kč${l.perMonth}`, true);
+    }
+
+    y += 26;
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+    const footerLines = doc.splitTextToSize(l.canChange + '  •  https://fastmedia.pro  •  support@fastmedia.pro', pageW - 80);
+    doc.text(footerLines, 40, y);
+
+    doc.save(`fastmedia-quote-${Date.now()}.pdf`);
+    toast({ title: lang === 'cs' ? 'PDF staženo!' : lang === 'de' ? 'PDF heruntergeladen!' : 'PDF downloaded!' });
   };
+
 
   const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'contact', 'summary'];
 
