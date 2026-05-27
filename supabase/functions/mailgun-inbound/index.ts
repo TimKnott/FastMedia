@@ -304,6 +304,21 @@ Deno.serve(async (req) => {
       .update({ status: 'replied', ai_reply: aiReply, processed_at: new Date().toISOString() })
       .eq('id', recordId)
 
+    // Fire-and-forget admin forward + Vbout contact sync (best-effort, never blocks ack)
+    await Promise.allSettled([
+      forwardToAdmin(supabase, {
+        fromAddress: fromEmail,
+        fromName,
+        toAddress: toEmail || 'support@fastmedia.pro',
+        subject,
+        bodyPlain: cleanBody,
+        aiReply,
+        status: 'replied',
+        messageId,
+      }),
+      syncToVbout({ email: fromEmail, name: fromName, subject }),
+    ])
+
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
