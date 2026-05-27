@@ -26,6 +26,7 @@ import {
   FolderKanban,
   Eye,
   Volume2,
+  Activity,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -62,6 +63,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.bookings', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
   { titleKey: 'admin.newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
   { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
+  { titleKey: 'Vbout Debug', url: '/admin/vbout-debug', icon: Activity, minRole: 'admin' },
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
   { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
   { titleKey: 'Lead Emails', url: '/admin/lead-emails', icon: Search, minRole: 'admin' },
