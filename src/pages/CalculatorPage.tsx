@@ -398,17 +398,64 @@ const CalculatorPage = () => {
     }
   }, [lang, selectedTrade, selectedFeatures, specialRequest, grandTotalOneTime, totalMonthly]);
 
-  const submitIntentAnswer = useCallback(() => {
-    if (!intentCurrent || !intentAnswer.trim() || intentLoading) return;
+  const submitIntentAnswer = useCallback((override?: string) => {
+    if (!intentCurrent || intentLoading) return;
+    const text = (override ?? intentAnswer).trim();
+    if (!text) return;
     const next: IntentTurn[] = [
       ...intentHistory,
-      { key: intentCurrent.key, question: intentCurrent.question, answer: intentAnswer.trim() },
+      { key: intentCurrent.key, question: intentCurrent.question, answer: text },
     ];
     setIntentHistory(next);
     setIntentCurrent(null);
     setIntentAnswer('');
     fetchNextIntent(next);
   }, [intentCurrent, intentAnswer, intentLoading, intentHistory, fetchNextIntent]);
+
+  const skipIntent = useCallback(() => {
+    if (!intentCurrent || intentLoading) return;
+    const next: IntentTurn[] = [
+      ...intentHistory,
+      { key: intentCurrent.key, question: intentCurrent.question, answer: 'Skipped' },
+    ];
+    setIntentHistory(next);
+    setIntentCurrent(null);
+    setIntentAnswer('');
+    fetchNextIntent(next);
+  }, [intentCurrent, intentLoading, intentHistory, fetchNextIntent]);
+
+  const startIntentVoice = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const SR: typeof window.SpeechRecognition | undefined =
+      // @ts-expect-error vendor prefix
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      toast({ title: 'Voice input not supported', description: 'Please use Chrome, Edge or Safari.', variant: 'destructive' });
+      return;
+    }
+    const rec = new SR();
+    rec.lang = language === 'cs' ? 'cs-CZ' : language === 'de' ? 'de-DE' : 'en-GB';
+    rec.interimResults = true;
+    rec.continuous = false;
+    let finalText = '';
+    rec.onresult = (e: any) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += t;
+        else interim += t;
+      }
+      setIntentAnswer((prev) => (finalText || interim ? (finalText || interim) : prev));
+    };
+    rec.onerror = () => setIntentListening(false);
+    rec.onend = () => setIntentListening(false);
+    try {
+      rec.start();
+      setIntentListening(true);
+    } catch {
+      setIntentListening(false);
+    }
+  }, [language]);
 
   // Submit lead
   const submitLead = async () => {
