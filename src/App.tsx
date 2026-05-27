@@ -11,6 +11,7 @@ import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import AccessibilityToolbar from "./components/AccessibilityToolbar";
+import SuperAdminInboxBadge from "./components/SuperAdminInboxBadge";
 
 // Critical pages loaded eagerly
 import Index from "./pages/Index";
@@ -140,6 +141,7 @@ const App = () => (
           <EmbedCodeInjector />
           <CookieConsentBanner />
           <AccessibilityToolbar />
+          <SuperAdminInboxBadge />
           <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
