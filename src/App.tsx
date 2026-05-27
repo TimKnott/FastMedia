@@ -204,6 +204,7 @@ const App = () => (
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/package/:slug" element={<PackageDetail />} />
+            <Route path="/legal/:slug" element={<LegalDocument />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/showcase/:slug" element={<Showcase />} />
