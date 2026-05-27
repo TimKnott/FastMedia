@@ -47,6 +47,7 @@ const CookieConsentBanner = () => {
 
   const handleConsent = (accepted: boolean) => {
     localStorage.setItem(COOKIE_KEY, accepted ? 'accepted' : 'rejected');
+    window.dispatchEvent(new CustomEvent('fm-cookie-consent', { detail: { accepted } }));
     setVisible(false);
   };
 
