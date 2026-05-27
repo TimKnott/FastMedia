@@ -228,6 +228,7 @@ const App = () => (
               <Route path="seo" element={<AdminSEO />} />
               <Route path="seo-insights" element={<AdminSEOInsights />} />
               <Route path="vbout" element={<AdminVbout />} />
+              <Route path="vbout-debug" element={<ProtectedRoute minRole="admin"><AdminVboutDebug /></ProtectedRoute>} />
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
