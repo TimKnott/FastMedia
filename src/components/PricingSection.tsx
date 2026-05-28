@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Check, Calculator } from 'lucide-react';
+import { Check, Calculator, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import LearnMoreModal from '@/components/LearnMoreModal';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 
 interface PricingTier {
   slug: string;
@@ -17,10 +18,15 @@ interface PricingTier {
   popular?: boolean;
 }
 
-const tiers: PricingTier[] = [
-  { slug: 'starter', nameKey: 'pricing.starter.name', priceKey: 'pricing.starter.price', hostingKey: 'pricing.starter.hosting', descKey: 'pricing.starter.desc', featuresKey: 'pricing.starter.features' },
-  { slug: 'basic', nameKey: 'pricing.basic.name', priceKey: 'pricing.basic.price', hostingKey: 'pricing.basic.hosting', descKey: 'pricing.basic.desc', featuresKey: 'pricing.basic.features' },
-  { slug: 'professional', nameKey: 'pricing.pro.name', priceKey: 'pricing.pro.price', hostingKey: 'pricing.pro.hosting', descKey: 'pricing.pro.desc', featuresKey: 'pricing.pro.features', popular: true },
+interface PricingTierExt extends PricingTier {
+  priceId?: string;
+  hostingPriceId?: string;
+}
+
+const tiers: PricingTierExt[] = [
+  { slug: 'starter', nameKey: 'pricing.starter.name', priceKey: 'pricing.starter.price', hostingKey: 'pricing.starter.hosting', descKey: 'pricing.starter.desc', featuresKey: 'pricing.starter.features', priceId: 'pkg_starter', hostingPriceId: 'hosting_starter' },
+  { slug: 'basic', nameKey: 'pricing.basic.name', priceKey: 'pricing.basic.price', hostingKey: 'pricing.basic.hosting', descKey: 'pricing.basic.desc', featuresKey: 'pricing.basic.features', priceId: 'pkg_basic', hostingPriceId: 'hosting_basic' },
+  { slug: 'professional', nameKey: 'pricing.pro.name', priceKey: 'pricing.pro.price', hostingKey: 'pricing.pro.hosting', descKey: 'pricing.pro.desc', featuresKey: 'pricing.pro.features', popular: true, priceId: 'pkg_pro', hostingPriceId: 'hosting_pro' },
   { slug: 'enterprise', nameKey: 'pricing.enterprise.name', priceKey: 'pricing.enterprise.price', hostingKey: 'pricing.enterprise.hosting', descKey: 'pricing.enterprise.desc', featuresKey: 'pricing.enterprise.features' },
 ];
 
@@ -42,10 +48,21 @@ const PricingSection = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { getContent, invalidate } = useSiteContent();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
   const lang = language as 'cs' | 'en' | 'de';
 
-  const viewPackage = (slug: string) => {
-    navigate(`/package/${slug}`);
+  const viewPackage = (slug: string) => navigate(`/package/${slug}`);
+
+  const buyPackage = (tier: PricingTierExt) => {
+    if (!tier.priceId) {
+      navigate(`/package/${tier.slug}`);
+      return;
+    }
+    openCheckout({
+      priceId: tier.priceId,
+      source: 'package',
+      title: `${t(tier.nameKey)} \u2014 ${t(tier.priceKey)}`,
+    });
   };
 
   return (
@@ -127,13 +144,32 @@ const PricingSection = () => {
                   ))}
                 </ul>
 
-                <Button
-                  onClick={() => viewPackage(tier.slug)}
-                  variant={tier.popular ? 'secondary' : 'default'}
-                  className="w-full font-semibold"
-                >
-                  {t('pricing.cta')}
-                </Button>
+                <div className="space-y-2">
+                  {tier.priceId ? (
+                    <Button
+                      onClick={() => buyPackage(tier)}
+                      variant={tier.popular ? 'secondary' : 'default'}
+                      className="w-full font-semibold gap-2"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      {t('pricing.cta')}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => viewPackage(tier.slug)}
+                      variant={tier.popular ? 'secondary' : 'default'}
+                      className="w-full font-semibold"
+                    >
+                      {t('pricing.cta')}
+                    </Button>
+                  )}
+                  <button
+                    onClick={() => viewPackage(tier.slug)}
+                    className={`w-full text-xs underline ${tier.popular ? 'text-primary-foreground/80' : 'text-muted-foreground'} hover:text-accent`}
+                  >
+                    View details
+                  </button>
+                </div>
               </motion.div>
             );
           })}
@@ -160,6 +196,7 @@ const PricingSection = () => {
           </Button>
         </motion.div>
       </div>
+      {checkoutElement}
     </section>
   );
 };

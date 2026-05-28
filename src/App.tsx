@@ -12,6 +12,7 @@ import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import AccessibilityToolbar from "./components/AccessibilityToolbar";
 import SuperAdminInboxBadge from "./components/SuperAdminInboxBadge";
+import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner";
 
 // Critical pages loaded eagerly
 import Index from "./pages/Index";
@@ -138,6 +139,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <PaymentTestModeBanner />
           <AdminToolbar />
           <WhatsAppFloat />
           <EmbedCodeInjector />
