@@ -48,10 +48,21 @@ const PricingSection = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { getContent, invalidate } = useSiteContent();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
   const lang = language as 'cs' | 'en' | 'de';
 
-  const viewPackage = (slug: string) => {
-    navigate(`/package/${slug}`);
+  const viewPackage = (slug: string) => navigate(`/package/${slug}`);
+
+  const buyPackage = (tier: PricingTierExt) => {
+    if (!tier.priceId) {
+      navigate(`/package/${tier.slug}`);
+      return;
+    }
+    openCheckout({
+      priceId: tier.priceId,
+      source: 'package',
+      title: `${t(tier.nameKey)} \u2014 ${t(tier.priceKey)}`,
+    });
   };
 
   return (
