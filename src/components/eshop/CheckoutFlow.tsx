@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ArrowLeft, CreditCard, Truck, CheckCircle2, MapPin, Package, ShieldCheck } from 'lucide-react';
 import { eshopImages } from '@/data/eshopImages';
 import type { Product } from '@/data/eshopProducts';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 
 interface CartItem {
   product: Product;
