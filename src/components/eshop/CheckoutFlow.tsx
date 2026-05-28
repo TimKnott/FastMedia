@@ -377,6 +377,7 @@ const CheckoutFlow = ({ cart, cartTotal, onBack, onComplete }: CheckoutFlowProps
           )}
         </div>
       </div>
+      {checkoutElement}
     </motion.div>
   );
 };
