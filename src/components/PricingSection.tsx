@@ -144,13 +144,32 @@ const PricingSection = () => {
                   ))}
                 </ul>
 
-                <Button
-                  onClick={() => viewPackage(tier.slug)}
-                  variant={tier.popular ? 'secondary' : 'default'}
-                  className="w-full font-semibold"
-                >
-                  {t('pricing.cta')}
-                </Button>
+                <div className="space-y-2">
+                  {tier.priceId ? (
+                    <Button
+                      onClick={() => buyPackage(tier)}
+                      variant={tier.popular ? 'secondary' : 'default'}
+                      className="w-full font-semibold gap-2"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      {t('pricing.cta')}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => viewPackage(tier.slug)}
+                      variant={tier.popular ? 'secondary' : 'default'}
+                      className="w-full font-semibold"
+                    >
+                      {t('pricing.cta')}
+                    </Button>
+                  )}
+                  <button
+                    onClick={() => viewPackage(tier.slug)}
+                    className={`w-full text-xs underline ${tier.popular ? 'text-primary-foreground/80' : 'text-muted-foreground'} hover:text-accent`}
+                  >
+                    View details
+                  </button>
+                </div>
               </motion.div>
             );
           })}
