@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Check, Calculator } from 'lucide-react';
+import { Check, Calculator, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import LearnMoreModal from '@/components/LearnMoreModal';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 
 interface PricingTier {
   slug: string;
