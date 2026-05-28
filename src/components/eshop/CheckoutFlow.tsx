@@ -29,6 +29,7 @@ const t = (cs: string, en: string, de: string, lang: string) =>
 
 const CheckoutFlow = ({ cart, cartTotal, onBack, onComplete }: CheckoutFlowProps) => {
   const { language } = useLanguage();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
   const [step, setStep] = useState<Step>('shipping');
   const [shipping, setShipping] = useState({
     firstName: '', lastName: '', email: '', phone: '', street: '', city: '', zip: '', country: 'CZ',
@@ -53,6 +54,27 @@ const CheckoutFlow = ({ cart, cartTotal, onBack, onComplete }: CheckoutFlowProps
   const isShippingValid = shipping.firstName && shipping.lastName && shipping.email && shipping.street && shipping.city && shipping.zip;
 
   const handlePlaceOrder = () => {
+    if (paymentMethod === 'card') {
+      // Real Stripe embedded checkout (test mode)
+      const items = cart.map(i => ({
+        name: i.product.name[language] || i.product.name.en,
+        amount: i.product.price * 100, // CZK in minor unit
+        quantity: i.quantity,
+        productId: i.product.id,
+      }));
+      if (shippingCost > 0) {
+        items.push({ name: t('Doprava', 'Shipping', 'Versand', language), amount: shippingCost * 100, quantity: 1, productId: 'shipping' });
+      }
+      openCheckout({
+        cart: items,
+        source: 'eshop_demo',
+        customerEmail: shipping.email,
+        customerName: `${shipping.firstName} ${shipping.lastName}`.trim(),
+        title: t('Pokladna', 'Checkout', 'Kasse', language),
+      });
+      return;
+    }
+    // Other methods stay mocked
     setOrderPlaced(true);
     setStep('confirmation');
   };
