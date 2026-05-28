@@ -196,6 +196,7 @@ const PricingSection = () => {
           </Button>
         </motion.div>
       </div>
+      {checkoutElement}
     </section>
   );
 };
