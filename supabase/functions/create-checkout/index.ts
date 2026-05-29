@@ -98,6 +98,7 @@ Deno.serve(async (req) => {
         ...(priceIdForRecord && { priceId: priceIdForRecord }),
         ...(productIdForRecord && { productId: productIdForRecord }),
         ...(body.cart && { cart: JSON.stringify(body.cart).slice(0, 450) }),
+        ...(body.metadata || {}),
       },
       ...(isRecurring && body.userId && {
         subscription_data: { metadata: { userId: body.userId, source } },
