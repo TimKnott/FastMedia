@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CalendarIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CalendarIcon, CreditCard } from 'lucide-react';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import { format } from 'date-fns';
 import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,7 @@ type IntentTurn = { key: string; question: string; answer: string };
 
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
   const [step, setStep] = useState<Step>('trade');
   const [selectedTrade, setSelectedTrade] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
@@ -583,6 +585,77 @@ const CalculatorPage = () => {
     doc.save(`fastmedia-quote-${Date.now()}.pdf`);
     toast({ title: lang === 'cs' ? 'PDF staženo!' : lang === 'de' ? 'PDF heruntergeladen!' : 'PDF downloaded!' });
   };
+
+  const payNow = () => {
+    if (selectedFeatures.length === 0 && grandTotalOneTime <= BASE_WEBSITE_PRICE) return;
+    const nameKey = lang === 'cs' ? 'nameCs' : lang === 'de' ? 'nameDe' : 'nameEn';
+    const lineItems: { name: string; amount: number; quantity: number; productId?: string }[] = [
+      {
+        name: l.baseWebsite,
+        amount: BASE_WEBSITE_PRICE * 100,
+        quantity: 1,
+        productId: 'base_website',
+      },
+      ...selectedFeatures
+        .map(sf => {
+          const f = getFeatureById(sf.id);
+          if (!f) return null;
+          return {
+            name: f[nameKey],
+            amount: f.oneTimePrice * 100,
+            quantity: sf.quantity,
+            productId: f.id,
+          };
+        })
+        .filter((x): x is { name: string; amount: number; quantity: number; productId: string } => !!x),
+    ];
+    if (totalLaborHours > 0) {
+      lineItems.push({
+        name: `${l.laborCost} (${totalLaborHours} ${l.hours})`,
+        amount: laborCost * 100,
+        quantity: 1,
+        productId: 'labor',
+      });
+    }
+    const hostingAnnual = totalMonthly * 12;
+    lineItems.push({
+      name: lang === 'cs'
+        ? 'Hosting a údržba — 12 měsíců předem'
+        : lang === 'de'
+        ? 'Hosting & Wartung — 12 Monate im Voraus'
+        : 'Hosting & maintenance — 12 months prepaid',
+      amount: hostingAnnual * 100,
+      quantity: 1,
+      productId: 'hosting_annual',
+    });
+
+    const monthlyDiscountAnnual = monthlyDiscount * 12;
+    const totalDiscount = oneTimeDiscount + monthlyDiscountAnnual;
+    if (totalDiscount > 0) {
+      const discountMinor = totalDiscount * 100;
+      const totalMinor = lineItems.reduce((s, l) => s + l.amount * l.quantity, 0);
+      if (totalMinor > discountMinor) {
+        const ratio = (totalMinor - discountMinor) / totalMinor;
+        for (const li of lineItems) li.amount = Math.max(1, Math.round(li.amount * ratio));
+      }
+    }
+
+    openCheckout({
+      cart: lineItems,
+      source: 'calculator',
+      customerEmail: contactEmail || undefined,
+      customerName: contactName || undefined,
+      title: lang === 'cs' ? 'Dokončit objednávku' : lang === 'de' ? 'Bestellung abschließen' : 'Complete your order',
+      metadata: {
+        trade: selectedTrade || '',
+        coupon: appliedCoupon?.code || '',
+        leadId: leadResult?.leadId || '',
+        features: selectedFeatures.map(s => `${s.id}x${s.quantity}`).join(','),
+      },
+    });
+  };
+
+
 
 
   const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'contact', 'summary'];
@@ -1368,17 +1441,33 @@ const CalculatorPage = () => {
 
                   {/* Export actions */}
                   <div className="flex flex-wrap gap-3 mt-6">
+                    <Button onClick={payNow} className="gradient-primary text-primary-foreground font-semibold">
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      {lang === 'cs'
+                        ? `Zaplatit ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč`
+                        : lang === 'de'
+                        ? `Jetzt ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč bezahlen`
+                        : `Pay ${formatPrice(discountedOneTime + discountedMonthly * 12)} CZK now`}
+                    </Button>
                     <Button onClick={exportQuote} variant="outline">
                       <Download className="w-4 h-4 mr-2" />
                       {l.exportPdf}
                     </Button>
                     <Link to="/#contact">
-                      <Button className="gradient-accent text-accent-foreground">
+                      <Button variant="outline">
                         <Send className="w-4 h-4 mr-2" />
                         {l.sendQuote}
                       </Button>
                     </Link>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    {lang === 'cs'
+                      ? 'Cena zahrnuje 12 měsíců hostingu předem. Slevový kód můžete použít výše.'
+                      : lang === 'de'
+                      ? 'Preis enthält 12 Monate Hosting im Voraus. Gutscheincode oben anwendbar.'
+                      : 'Price includes 12 months of hosting prepaid. Apply a coupon above.'}
+                  </p>
+
                 </div>
               )}
             </motion.div>
@@ -1503,6 +1592,7 @@ const CalculatorPage = () => {
         </motion.div>
       </div>
       <Footer />
+      {checkoutElement}
     </div>
   );
 };
