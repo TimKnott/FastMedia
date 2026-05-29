@@ -36,6 +36,7 @@ type IntentTurn = { key: string; question: string; answer: string };
 
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
   const [step, setStep] = useState<Step>('trade');
   const [selectedTrade, setSelectedTrade] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
