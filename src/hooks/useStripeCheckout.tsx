@@ -6,7 +6,8 @@ interface CheckoutOptions {
   priceId?: string;
   quantity?: number;
   cart?: CartItem[];
-  source?: "package" | "hosting" | "eshop_demo";
+  source?: "package" | "hosting" | "eshop_demo" | "calculator";
+  metadata?: Record<string, string>;
   customerEmail?: string;
   customerName?: string;
   userId?: string;
