@@ -1441,17 +1441,33 @@ const CalculatorPage = () => {
 
                   {/* Export actions */}
                   <div className="flex flex-wrap gap-3 mt-6">
+                    <Button onClick={payNow} className="gradient-primary text-primary-foreground font-semibold">
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      {lang === 'cs'
+                        ? `Zaplatit ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč`
+                        : lang === 'de'
+                        ? `Jetzt ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč bezahlen`
+                        : `Pay ${formatPrice(discountedOneTime + discountedMonthly * 12)} CZK now`}
+                    </Button>
                     <Button onClick={exportQuote} variant="outline">
                       <Download className="w-4 h-4 mr-2" />
                       {l.exportPdf}
                     </Button>
                     <Link to="/#contact">
-                      <Button className="gradient-accent text-accent-foreground">
+                      <Button variant="outline">
                         <Send className="w-4 h-4 mr-2" />
                         {l.sendQuote}
                       </Button>
                     </Link>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    {lang === 'cs'
+                      ? 'Cena zahrnuje 12 měsíců hostingu předem. Slevový kód můžete použít výše.'
+                      : lang === 'de'
+                      ? 'Preis enthält 12 Monate Hosting im Voraus. Gutscheincode oben anwendbar.'
+                      : 'Price includes 12 months of hosting prepaid. Apply a coupon above.'}
+                  </p>
+
                 </div>
               )}
             </motion.div>
