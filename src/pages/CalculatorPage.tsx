@@ -586,6 +586,77 @@ const CalculatorPage = () => {
     toast({ title: lang === 'cs' ? 'PDF staženo!' : lang === 'de' ? 'PDF heruntergeladen!' : 'PDF downloaded!' });
   };
 
+  const payNow = () => {
+    if (selectedFeatures.length === 0 && grandTotalOneTime <= BASE_WEBSITE_PRICE) return;
+    const nameKey = lang === 'cs' ? 'nameCs' : lang === 'de' ? 'nameDe' : 'nameEn';
+    const lineItems: { name: string; amount: number; quantity: number; productId?: string }[] = [
+      {
+        name: l.baseWebsite,
+        amount: BASE_WEBSITE_PRICE * 100,
+        quantity: 1,
+        productId: 'base_website',
+      },
+      ...selectedFeatures
+        .map(sf => {
+          const f = getFeatureById(sf.id);
+          if (!f) return null;
+          return {
+            name: f[nameKey],
+            amount: f.oneTimePrice * 100,
+            quantity: sf.quantity,
+            productId: f.id,
+          };
+        })
+        .filter((x): x is { name: string; amount: number; quantity: number; productId: string } => !!x),
+    ];
+    if (totalLaborHours > 0) {
+      lineItems.push({
+        name: `${l.laborCost} (${totalLaborHours} ${l.hours})`,
+        amount: laborCost * 100,
+        quantity: 1,
+        productId: 'labor',
+      });
+    }
+    const hostingAnnual = totalMonthly * 12;
+    lineItems.push({
+      name: lang === 'cs'
+        ? 'Hosting a údržba — 12 měsíců předem'
+        : lang === 'de'
+        ? 'Hosting & Wartung — 12 Monate im Voraus'
+        : 'Hosting & maintenance — 12 months prepaid',
+      amount: hostingAnnual * 100,
+      quantity: 1,
+      productId: 'hosting_annual',
+    });
+
+    const monthlyDiscountAnnual = monthlyDiscount * 12;
+    const totalDiscount = oneTimeDiscount + monthlyDiscountAnnual;
+    if (totalDiscount > 0) {
+      const discountMinor = totalDiscount * 100;
+      const totalMinor = lineItems.reduce((s, l) => s + l.amount * l.quantity, 0);
+      if (totalMinor > discountMinor) {
+        const ratio = (totalMinor - discountMinor) / totalMinor;
+        for (const li of lineItems) li.amount = Math.max(1, Math.round(li.amount * ratio));
+      }
+    }
+
+    openCheckout({
+      cart: lineItems,
+      source: 'calculator',
+      customerEmail: contactEmail || undefined,
+      customerName: contactName || undefined,
+      title: lang === 'cs' ? 'Dokončit objednávku' : lang === 'de' ? 'Bestellung abschließen' : 'Complete your order',
+      metadata: {
+        trade: selectedTrade || '',
+        coupon: appliedCoupon?.code || '',
+        leadId: leadResult?.leadId || '',
+        features: selectedFeatures.map(s => `${s.id}x${s.quantity}`).join(','),
+      },
+    });
+  };
+
+
+
 
   const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'contact', 'summary'];
 
