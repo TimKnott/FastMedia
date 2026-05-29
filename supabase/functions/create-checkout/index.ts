@@ -15,7 +15,8 @@ interface Body {
   // Dynamic mode — eshop demo cart
   cart?: CartItem[];
   // Common
-  source?: "package" | "hosting" | "eshop_demo";
+  source?: "package" | "hosting" | "eshop_demo" | "calculator";
+  metadata?: Record<string, string>;
   customerEmail?: string;
   customerName?: string;
   userId?: string;
