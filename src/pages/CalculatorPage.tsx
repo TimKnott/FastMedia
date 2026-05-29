@@ -1592,6 +1592,7 @@ const CalculatorPage = () => {
         </motion.div>
       </div>
       <Footer />
+      {checkoutElement}
     </div>
   );
 };
