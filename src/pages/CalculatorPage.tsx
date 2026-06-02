@@ -631,6 +631,10 @@ const CalculatorPage = () => {
 
   const goNext = () => {
     setDirection(1);
+    if (step === 'intent') {
+      continueToCheckout();
+      return;
+    }
     const idx = allSteps.indexOf(step);
     if (idx < allSteps.length - 1) setStep(allSteps[idx + 1]);
   };
@@ -1202,6 +1206,32 @@ const CalculatorPage = () => {
                       </div>
                     )}
 
+                    <div className="mt-4 p-4 rounded-xl border border-accent/30 bg-accent/10">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <TicketPercent className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-semibold text-foreground">
+                              {lang === 'cs' ? 'Slevový kód je rezervovaný jen 3 hodiny' : lang === 'de' ? 'Ihr Rabattcode ist nur 3 Stunden reserviert' : 'Your discount code is reserved for only 3 hours'}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {lang === 'cs'
+                                ? 'Zadejte kupón níže a objednejte před vypršením času, abyste využili výraznou slevu.'
+                                : lang === 'de'
+                                ? 'Geben Sie den Gutschein unten ein und bestellen Sie vor Ablauf der Zeit, um den hohen Rabatt zu sichern.'
+                                : 'Enter the coupon below and order before the timer ends to secure the discount.'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="rounded-lg bg-background/80 border border-border px-3 py-2 text-center shrink-0">
+                          <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
+                            {lang === 'cs' ? 'Zbývá' : lang === 'de' ? 'Verbleibend' : 'Time left'}
+                          </span>
+                          <span className="font-display text-lg font-bold text-accent tabular-nums">{formatCountdown(couponSecondsLeft)}</span>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Coupon input */}
                     <div className="mt-4 p-4 rounded-xl border border-dashed border-primary/30 bg-primary/5">
                       {!appliedCoupon ? (
@@ -1243,16 +1273,26 @@ const CalculatorPage = () => {
                         </div>
                       )}
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold">{appliedCoupon ? (lang === 'cs' ? 'K úhradě' : lang === 'de' ? 'Zu zahlen' : 'You pay') : l.totalOneTime}</span>
-                        <span className="text-2xl font-display font-bold">{formatPrice(discountedOneTime)} Kč</span>
+                        <span className="font-semibold">{appliedCoupon ? (lang === 'cs' ? 'Jednorázově po slevě' : lang === 'de' ? 'Einmalig nach Rabatt' : 'One-time after discount') : l.totalOneTime}</span>
+                        <span className="text-xl font-display font-bold">{formatPrice(discountedOneTime)} Kč</span>
                       </div>
-                      <div className="flex justify-between items-center opacity-80">
-                        <span className="text-sm">{l.totalMonthly}</span>
-                        <span className="text-lg font-bold">{formatPrice(discountedMonthly)} Kč{l.perMonth}</span>
+                      {appliedCoupon && monthlyDiscount > 0 && (
+                        <div className="flex justify-between items-center mb-1 opacity-80 text-sm">
+                          <span>{lang === 'cs' ? 'Hosting 12 měsíců' : lang === 'de' ? 'Hosting 12 Monate' : '12 months hosting'}</span>
+                          <span className="line-through">{formatPrice(annualHosting)} Kč</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center opacity-90">
+                        <span className="text-sm">{lang === 'cs' ? 'Hosting 12 měsíců předem' : lang === 'de' ? 'Hosting 12 Monate im Voraus' : '12 months hosting prepaid'}</span>
+                        <span className="text-lg font-bold">{formatPrice(discountedAnnualHosting)} Kč</span>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-primary-foreground/20 flex justify-between items-center">
+                        <span className="font-semibold">{lang === 'cs' ? 'K úhradě dnes' : lang === 'de' ? 'Heute zu zahlen' : 'Total due today'}</span>
+                        <span className="text-2xl font-display font-bold">{formatPrice(checkoutTotalToday)} Kč</span>
                       </div>
                       {appliedCoupon && (oneTimeDiscount > 0 || monthlyDiscount > 0) && (
                         <div className="mt-2 pt-2 border-t border-primary-foreground/20 text-xs opacity-90">
-                          {lang === 'cs' ? 'Sleva' : lang === 'de' ? 'Rabatt' : 'Saved'}: {formatPrice(oneTimeDiscount)} Kč{monthlyDiscount > 0 ? ` + ${formatPrice(monthlyDiscount)} Kč${l.perMonth}` : ''}
+                          {lang === 'cs' ? 'Celková sleva dnes' : lang === 'de' ? 'Gesamtersparnis heute' : 'Total saved today'}: {formatPrice(totalAnnualDiscount)} Kč
                         </div>
                       )}
                     </div>
@@ -1265,10 +1305,10 @@ const CalculatorPage = () => {
                     <Button onClick={payNow} className="gradient-primary text-primary-foreground font-semibold">
                       <CreditCard className="w-4 h-4 mr-2" />
                       {lang === 'cs'
-                        ? `Zaplatit ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč`
+                        ? `Zaplatit ${formatPrice(checkoutTotalToday)} Kč`
                         : lang === 'de'
-                        ? `Jetzt ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč bezahlen`
-                        : `Pay ${formatPrice(discountedOneTime + discountedMonthly * 12)} CZK now`}
+                        ? `Jetzt ${formatPrice(checkoutTotalToday)} Kč bezahlen`
+                        : `Pay ${formatPrice(checkoutTotalToday)} CZK now`}
                     </Button>
                     <Button onClick={exportQuote} variant="outline">
                       <Download className="w-4 h-4 mr-2" />
@@ -1304,7 +1344,7 @@ const CalculatorPage = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               {l.back}
             </Button>
-            {step !== 'summary' && step !== 'contact' && (
+            {step !== 'summary' && (
               <Button
                 onClick={goNext}
                 disabled={step === 'trade' && !selectedTrade}
