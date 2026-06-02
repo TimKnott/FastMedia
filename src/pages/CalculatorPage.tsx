@@ -28,6 +28,17 @@ import { getTradePrompts } from '@/data/tradeIdeaPrompts';
 
 type SelectedFeature = { id: string; quantity: number };
 type Step = 'trade' | 'features' | 'special' | 'intent' | 'summary';
+type AiSuggestion = { id: string; reason?: string };
+type SpecialResponse = { suggestion?: string; alternativeFeatures?: string[] };
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+};
 
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
@@ -36,8 +47,8 @@ const CalculatorPage = () => {
   const [selectedTrade, setSelectedTrade] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
   const [specialRequest, setSpecialRequest] = useState('');
-  const [specialResponse, setSpecialResponse] = useState<any>(null);
-  const [aiSuggestions, setAiSuggestions] = useState<any[]>([]);
+  const [specialResponse, setSpecialResponse] = useState<SpecialResponse | null>(null);
+  const [aiSuggestions, setAiSuggestions] = useState<AiSuggestion[]>([]);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [direction, setDirection] = useState(1);
@@ -66,6 +77,7 @@ const CalculatorPage = () => {
     discount_type: 'percentage' | 'fixed';
     discount_value: number;
     applies_to: 'one_time' | 'monthly' | 'both';
+    currency?: string | null;
     oneTimeDiscount: number;
     monthlyDiscount: number;
   } | null>(null);
