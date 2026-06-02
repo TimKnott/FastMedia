@@ -1,18 +1,14 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CalendarIcon, CreditCard } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CreditCard } from 'lucide-react';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
-import { format } from 'date-fns';
 import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -31,8 +27,19 @@ import { trades } from '@/data/trades';
 import { getTradePrompts } from '@/data/tradeIdeaPrompts';
 
 type SelectedFeature = { id: string; quantity: number };
-type Step = 'trade' | 'features' | 'special' | 'intent' | 'contact' | 'summary';
-type IntentTurn = { key: string; question: string; answer: string };
+type Step = 'trade' | 'features' | 'special' | 'intent' | 'summary';
+type AiSuggestion = { id: string; reason?: string };
+type SpecialResponse = { suggestion?: string; alternativeFeatures?: string[] };
+type SpeechResultEvent = { results: { [index: number]: { [index: number]: { transcript: string } } } };
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: SpeechResultEvent) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+};
 
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
@@ -41,8 +48,8 @@ const CalculatorPage = () => {
   const [selectedTrade, setSelectedTrade] = useState('');
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
   const [specialRequest, setSpecialRequest] = useState('');
-  const [specialResponse, setSpecialResponse] = useState<any>(null);
-  const [aiSuggestions, setAiSuggestions] = useState<any[]>([]);
+  const [specialResponse, setSpecialResponse] = useState<SpecialResponse | null>(null);
+  const [aiSuggestions, setAiSuggestions] = useState<AiSuggestion[]>([]);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [direction, setDirection] = useState(1);
@@ -55,12 +62,12 @@ const CalculatorPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leadResult, setLeadResult] = useState<{ score: number; classification: string; leadId: string } | null>(null);
 
-  // Conversational intake state
-  const [intentHistory, setIntentHistory] = useState<IntentTurn[]>([]);
-  const [intentCurrent, setIntentCurrent] = useState<{ key: string; question: string; suggestions?: string[] } | null>(null);
-  const [intentListening, setIntentListening] = useState(false);
-  const [intentAnswer, setIntentAnswer] = useState('');
-  const [intentLoading, setIntentLoading] = useState(false);
+  // Static checkout detail form state
+  const [projectTimeline, setProjectTimeline] = useState('');
+  const [projectPriority, setProjectPriority] = useState('');
+  const [projectBudget, setProjectBudget] = useState('');
+  const [contentReady, setContentReady] = useState(false);
+  const [projectNotes, setProjectNotes] = useState('');
   const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
 
   // Coupon state
@@ -71,6 +78,7 @@ const CalculatorPage = () => {
     discount_type: 'percentage' | 'fixed';
     discount_value: number;
     applies_to: 'one_time' | 'monthly' | 'both';
+    currency?: string | null;
     oneTimeDiscount: number;
     monthlyDiscount: number;
   } | null>(null);
@@ -240,6 +248,61 @@ const CalculatorPage = () => {
   const monthlyDiscount = appliedCoupon?.monthlyDiscount ?? 0;
   const discountedOneTime = Math.max(0, grandTotalOneTime - oneTimeDiscount);
   const discountedMonthly = Math.max(0, totalMonthly - monthlyDiscount);
+  const annualHosting = totalMonthly * 12;
+  const discountedAnnualHosting = discountedMonthly * 12;
+  const checkoutTotalToday = discountedOneTime + discountedAnnualHosting;
+  const totalAnnualDiscount = oneTimeDiscount + monthlyDiscount * 12;
+
+  const [couponDeadline, setCouponDeadline] = useState<number | null>(null);
+  const [couponSecondsLeft, setCouponSecondsLeft] = useState(3 * 60 * 60);
+
+  useEffect(() => {
+    if (!couponDeadline) {
+      setCouponSecondsLeft(3 * 60 * 60);
+      return;
+    }
+    const tick = () => setCouponSecondsLeft(Math.max(0, Math.ceil((couponDeadline - Date.now()) / 1000)));
+    tick();
+    const timer = window.setInterval(tick, 1000);
+    return () => window.clearInterval(timer);
+  }, [couponDeadline]);
+
+  const startCouponWindow = () => {
+    if (couponDeadline) return;
+    const deadline = Date.now() + 3 * 60 * 60 * 1000;
+    setCouponDeadline(deadline);
+    setCouponSecondsLeft(3 * 60 * 60);
+  };
+
+  const formatCountdown = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const sec = seconds % 60;
+    return `${h}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
+  };
+
+  const buildStaticIntentBrief = () => {
+    const intent = {
+      timeline: projectTimeline || null,
+      priority: projectPriority || null,
+      budget: projectBudget || null,
+      contentReady,
+      notes: projectNotes.trim() || null,
+    };
+    const details = [
+      projectTimeline && `${lang === 'cs' ? 'Preferovaný termín' : lang === 'de' ? 'Wunschtermin' : 'Preferred timeline'}: ${projectTimeline}`,
+      projectPriority && `${lang === 'cs' ? 'Priorita' : lang === 'de' ? 'Priorität' : 'Priority'}: ${projectPriority}`,
+      projectBudget && `${lang === 'cs' ? 'Rozpočet' : lang === 'de' ? 'Budget' : 'Budget'}: ${projectBudget}`,
+      contentReady && (lang === 'cs' ? 'Obsah je připravený' : lang === 'de' ? 'Inhalte sind bereit' : 'Content is ready'),
+      projectNotes.trim() && `${lang === 'cs' ? 'Poznámky' : lang === 'de' ? 'Notizen' : 'Notes'}: ${projectNotes.trim()}`,
+    ].filter(Boolean);
+    return {
+      intent,
+      summary: details.length
+        ? details.join('\n')
+        : (lang === 'cs' ? 'Volitelné otázky přeskočeny.' : lang === 'de' ? 'Optionale Fragen übersprungen.' : 'Optional checkout questions skipped.'),
+    };
+  };
 
   const applyCoupon = async () => {
     if (!couponInput.trim()) return;
@@ -309,12 +372,17 @@ const CalculatorPage = () => {
       setIsListening(false);
       return;
     }
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const speechWindow = window as Window & {
+      SpeechRecognition?: new () => SpeechRecognitionLike;
+      webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+    };
+    const SpeechRecognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
     const recognition = new SpeechRecognition();
     recognition.lang = lang === 'cs' ? 'cs-CZ' : lang === 'de' ? 'de-DE' : 'en-US';
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechResultEvent) => {
       const transcript = event.results[0][0].transcript;
       setSpecialRequest(prev => prev ? prev + ' ' + transcript : transcript);
       setIsListening(false);
@@ -367,98 +435,13 @@ const CalculatorPage = () => {
     }
   };
 
-  // Conversational intake
-  const fetchNextIntent = useCallback(async (history: IntentTurn[]) => {
-    setIntentLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('intake-conversation', {
-        body: {
-          language: lang,
-          trade: selectedTrade,
-          selectedFeatures,
-          specialRequest: specialRequest.trim() || undefined,
-          quoteOneTime: grandTotalOneTime,
-          quoteMonthly: totalMonthly,
-          history,
-        },
-      });
-      if (error) throw error;
-      if (data?.done) {
-        setIntentBrief({ summary: data.summary, intent: data.intent });
-        setIntentCurrent(null);
-      } else if (data?.question) {
-        setIntentCurrent({ key: data.key, question: data.question, suggestions: Array.isArray(data.suggestions) ? data.suggestions : [] });
-        setIntentAnswer('');
-      }
-    } catch (e) {
-      console.error('intake-conversation failed', e);
-      toast({
-        title: lang === 'cs' ? 'Načítání další otázky selhalo' : lang === 'de' ? 'Nächste Frage konnte nicht geladen werden' : 'Could not load the next question',
-        description: lang === 'cs' ? 'Zkuste to prosím znovu.' : lang === 'de' ? 'Bitte erneut versuchen.' : 'Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIntentLoading(false);
-    }
-  }, [lang, selectedTrade, selectedFeatures, specialRequest, grandTotalOneTime, totalMonthly]);
-
-  const submitIntentAnswer = useCallback((override?: string) => {
-    if (!intentCurrent || intentLoading) return;
-    const text = (override ?? intentAnswer).trim();
-    if (!text) return;
-    const next: IntentTurn[] = [
-      ...intentHistory,
-      { key: intentCurrent.key, question: intentCurrent.question, answer: text },
-    ];
-    setIntentHistory(next);
-    setIntentCurrent(null);
-    setIntentAnswer('');
-    fetchNextIntent(next);
-  }, [intentCurrent, intentAnswer, intentLoading, intentHistory, fetchNextIntent]);
-
-  const skipIntent = useCallback(() => {
-    if (!intentCurrent || intentLoading) return;
-    const next: IntentTurn[] = [
-      ...intentHistory,
-      { key: intentCurrent.key, question: intentCurrent.question, answer: 'Skipped' },
-    ];
-    setIntentHistory(next);
-    setIntentCurrent(null);
-    setIntentAnswer('');
-    fetchNextIntent(next);
-  }, [intentCurrent, intentLoading, intentHistory, fetchNextIntent]);
-
-  const startIntentVoice = useCallback(() => {
-    if (typeof window === 'undefined') return;
-    const w = window as unknown as { SpeechRecognition?: any; webkitSpeechRecognition?: any };
-    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
-    if (!SR) {
-      toast({ title: 'Voice input not supported', description: 'Please use Chrome, Edge or Safari.', variant: 'destructive' });
-      return;
-    }
-    const rec = new SR();
-    rec.lang = language === 'cs' ? 'cs-CZ' : language === 'de' ? 'de-DE' : 'en-GB';
-    rec.interimResults = true;
-    rec.continuous = false;
-    let finalText = '';
-    rec.onresult = (e: any) => {
-      let interim = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const t = e.results[i][0].transcript;
-        if (e.results[i].isFinal) finalText += t;
-        else interim += t;
-      }
-      setIntentAnswer((prev) => (finalText || interim ? (finalText || interim) : prev));
-    };
-    rec.onerror = () => setIntentListening(false);
-    rec.onend = () => setIntentListening(false);
-    try {
-      rec.start();
-      setIntentListening(true);
-    } catch {
-      setIntentListening(false);
-    }
-  }, [language]);
+  // Static checkout detail form
+  const continueToCheckout = () => {
+    setIntentBrief(buildStaticIntentBrief());
+    startCouponWindow();
+    setDirection(1);
+    setStep('summary');
+  };
 
   // Submit lead
   const submitLead = async () => {
@@ -471,6 +454,7 @@ const CalculatorPage = () => {
 
     setIsSubmitting(true);
     try {
+      const staticBrief = buildStaticIntentBrief();
       const { data, error } = await supabase.functions.invoke('score-lead', {
         body: {
           name: contactName.trim(),
@@ -484,14 +468,16 @@ const CalculatorPage = () => {
           laborHours: totalLaborHours,
           language: lang,
           gdprConsent: true,
-          intent: intentBrief?.intent ?? null,
-          intentSummary: intentBrief?.summary ?? null,
-          intentTranscript: intentHistory.length ? intentHistory : null,
+          intent: staticBrief.intent,
+          intentSummary: staticBrief.summary,
+          intentTranscript: null,
           coupon: appliedCoupon ? { code: appliedCoupon.code, oneTimeDiscount, monthlyDiscount } : null,
         },
       });
       if (error) throw error;
+      setIntentBrief(staticBrief);
       setLeadResult({ score: data.score, classification: data.classification, leadId: data.leadId });
+      startCouponWindow();
       setDirection(1);
       setStep('summary');
       toast({ title: l.leadSuccess });
@@ -566,7 +552,7 @@ const CalculatorPage = () => {
     if (appliedCoupon) {
       y += 6;
       doc.setTextColor(0, 140, 90);
-      row(`Coupon ${appliedCoupon.code} (-${appliedCoupon.discount_type === 'percentage' ? appliedCoupon.discount_value + '%' : formatPrice(appliedCoupon.discount_value) + ' ' + (appliedCoupon as any).currency || ''})`,
+      row(`Coupon ${appliedCoupon.code} (-${appliedCoupon.discount_type === 'percentage' ? appliedCoupon.discount_value + '%' : `${formatPrice(appliedCoupon.discount_value)} ${appliedCoupon.currency || 'Kč'}`})`,
         `- ${formatPrice(oneTimeDiscount)} Kč${monthlyDiscount ? ` / -${formatPrice(monthlyDiscount)} ${l.perMonth}` : ''}`);
       doc.setTextColor(0);
       y += 4;
@@ -629,8 +615,7 @@ const CalculatorPage = () => {
       productId: 'hosting_annual',
     });
 
-    const monthlyDiscountAnnual = monthlyDiscount * 12;
-    const totalDiscount = oneTimeDiscount + monthlyDiscountAnnual;
+    const totalDiscount = totalAnnualDiscount;
     if (totalDiscount > 0) {
       const discountMinor = totalDiscount * 100;
       const totalMinor = lineItems.reduce((s, l) => s + l.amount * l.quantity, 0);
@@ -651,6 +636,8 @@ const CalculatorPage = () => {
         coupon: appliedCoupon?.code || '',
         leadId: leadResult?.leadId || '',
         features: selectedFeatures.map(s => `${s.id}x${s.quantity}`).join(','),
+        checkoutTotalToday: String(checkoutTotalToday),
+        intent: intentBrief ? JSON.stringify(intentBrief.intent).slice(0, 450) : '',
       },
     });
   };
@@ -658,19 +645,16 @@ const CalculatorPage = () => {
 
 
 
-  const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'contact', 'summary'];
+  const allSteps: Step[] = ['trade', 'features', 'special', 'intent', 'summary'];
 
   const goNext = () => {
     setDirection(1);
-    const idx = allSteps.indexOf(step);
-    if (idx < allSteps.length - 1) {
-      const next = allSteps[idx + 1];
-      setStep(next);
-      // Kick off the conversational intake when entering the intent step.
-      if (next === 'intent' && !intentCurrent && !intentBrief && !intentLoading) {
-        fetchNextIntent(intentHistory);
-      }
+    if (step === 'intent') {
+      continueToCheckout();
+      return;
     }
+    const idx = allSteps.indexOf(step);
+    if (idx < allSteps.length - 1) setStep(allSteps[idx + 1]);
   };
 
   const goBack = () => {
@@ -793,7 +777,7 @@ const CalculatorPage = () => {
                         <Sparkles className="w-4 h-4" />
                         {l.suggestedFor}
                       </p>
-                      {aiSuggestions.map((s: any) => {
+                      {aiSuggestions.map((s) => {
                         const feature = getFeatureById(s.id);
                         if (!feature || isSelected(s.id)) return null;
                         return (
@@ -1002,298 +986,157 @@ const CalculatorPage = () => {
                 </div>
               )}
 
-              {/* Step 4: Conversational intake */}
+              {/* Step 4: Static checkout details */}
               {step === 'intent' && (
                 <div>
-                  <h2 className="font-display text-2xl font-bold text-foreground mb-2">
-                    {lang === 'cs' ? 'Pár otázek navíc' : lang === 'de' ? 'Ein paar zusätzliche Fragen' : 'A few quick questions'}
-                  </h2>
-                  <p className="text-muted-foreground text-sm mb-6">
-                    {lang === 'cs'
-                      ? 'Pomůže nám to připravit přesnější nabídku. Otázky se přizpůsobují vašim odpovědím.'
-                      : lang === 'de'
-                      ? 'So können wir ein passgenaues Angebot erstellen. Die Fragen passen sich Ihren Antworten an.'
-                      : 'It helps us tailor the proposal. Questions adapt to your previous answers.'}
-                  </p>
-
-                  {/* Transcript */}
-                  <div className="space-y-3 mb-4">
-                    {intentHistory.map((turn, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="rounded-xl border border-border bg-card p-4"
-                      >
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                          <Sparkles className="w-3 h-3 inline mr-1 text-primary" />
-                          {turn.question}
-                        </p>
-                        <p className="text-sm text-foreground">{turn.answer}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Current question */}
-                  {intentLoading && !intentCurrent && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground p-4 rounded-xl bg-muted/40">
-                      <span className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-                      {lang === 'cs' ? 'Připravujeme další otázku…' : lang === 'de' ? 'Nächste Frage wird vorbereitet…' : 'Preparing the next question…'}
-                    </div>
-                  )}
-
-                  {!intentLoading && !intentCurrent && !intentBrief && intentHistory.length > 0 && (
-                    <div className="flex items-center justify-between gap-3 p-4 rounded-xl border border-destructive/30 bg-destructive/5">
-                      <p className="text-sm text-foreground">
-                        {lang === 'cs' ? 'Načítání další otázky se nezdařilo.' : lang === 'de' ? 'Nächste Frage konnte nicht geladen werden.' : 'Could not load the next question.'}
-                      </p>
-                      <Button size="sm" onClick={() => fetchNextIntent(intentHistory)}>
-                        {lang === 'cs' ? 'Zkusit znovu' : lang === 'de' ? 'Erneut versuchen' : 'Try again'}
-                      </Button>
-                    </div>
-                  )}
-
-                  {intentCurrent && (
-                    <motion.div
-                      key={intentCurrent.key}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="rounded-xl border-2 border-primary/30 bg-primary/5 p-4"
-                    >
-                      <p className="font-semibold text-foreground mb-3 flex items-start gap-2">
-                        <MessageSquare className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
-                        {intentCurrent.question}
-                      </p>
-
-                      {intentCurrent.key === 'timeline' ? (
-                        <div className="space-y-3">
-                          <p className="text-xs text-muted-foreground">
-                            {lang === 'cs'
-                              ? 'Doporučujeme cca jeden měsíc — vyberte preferované datum.'
-                              : lang === 'de'
-                              ? 'Wir empfehlen etwa einen Monat — wählen Sie Ihr Wunschdatum.'
-                              : 'We recommend around one month — select your preferred date.'}
-                          </p>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full justify-start text-left font-normal h-12",
-                                  !intentAnswer && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {intentAnswer ? format(new Date(intentAnswer), "PPP") : (lang === 'cs' ? 'Vyberte datum' : lang === 'de' ? 'Datum auswählen' : 'Pick a date')}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={intentAnswer ? new Date(intentAnswer) : undefined}
-                                onSelect={(date) => {
-                                  if (date) {
-                                    // Store ISO date string but also format for display
-                                    setIntentAnswer(date.toISOString());
-                                  }
-                                }}
-                                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                                initialFocus
-                                defaultMonth={(() => {
-                                  const d = new Date();
-                                  d.setMonth(d.getMonth() + 1);
-                                  return d;
-                                })()}
-                                className={cn("p-3 pointer-events-auto")}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <div className="flex justify-end mt-3 gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => skipIntent()} disabled={intentLoading}>
-                              {lang === 'cs' ? 'Přeskočit' : lang === 'de' ? 'Überspringen' : 'Skip'}
-                            </Button>
-                            <Button onClick={() => submitIntentAnswer()} disabled={!intentAnswer.trim() || intentLoading} size="sm">
-                              <Send className="w-3.5 h-3.5 mr-2" />
-                              {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          {/* Quick-reply suggestion chips */}
-                          {intentCurrent.suggestions && intentCurrent.suggestions.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              {intentCurrent.suggestions.map((chip, i) => (
-                                <button
-                                  key={`${chip}-${i}`}
-                                  type="button"
-                                  onClick={() => submitIntentAnswer(chip)}
-                                  disabled={intentLoading}
-                                  className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary/30 bg-background hover:bg-primary/10 hover:border-primary/60 transition-colors text-foreground disabled:opacity-50"
-                                >
-                                  {chip}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                          <div className="relative">
-                            <textarea
-                              value={intentAnswer}
-                              onChange={e => setIntentAnswer(e.target.value)}
-                              onKeyDown={e => {
-                                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                                  e.preventDefault();
-                                  submitIntentAnswer();
-                                }
-                              }}
-                              rows={3}
-                              placeholder={lang === 'cs' ? 'Vaše odpověď, vyberte výše nebo přeskočte…' : lang === 'de' ? 'Ihre Antwort, oben auswählen oder überspringen…' : 'Type, tap a suggestion above, use the mic, or skip…'}
-                              className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                            />
-                            <button
-                              type="button"
-                              onClick={startIntentVoice}
-                              disabled={intentListening}
-                              title={lang === 'cs' ? 'Mluvit' : lang === 'de' ? 'Sprechen' : 'Speak'}
-                              className={cn(
-                                'absolute right-2 top-2 p-2 rounded-md transition-colors',
-                                intentListening
-                                  ? 'bg-destructive/15 text-destructive animate-pulse'
-                                  : 'bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary'
-                              )}
-                            >
-                              {intentListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                            </button>
-                          </div>
-                          <div className="flex justify-end mt-3 gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => skipIntent()} disabled={intentLoading}>
-                              {lang === 'cs' ? 'Přeskočit otázku' : lang === 'de' ? 'Frage überspringen' : 'Skip question'}
-                            </Button>
-                            <Button onClick={() => submitIntentAnswer()} disabled={!intentAnswer.trim() || intentLoading} size="sm">
-                              <Send className="w-3.5 h-3.5 mr-2" />
-                              {lang === 'cs' ? 'Odpovědět' : lang === 'de' ? 'Antworten' : 'Send answer'}
-                            </Button>
-                          </div>
-                        </>
-                      )}
-                    </motion.div>
-                  )}
-
-                  {/* Done */}
-                  {intentBrief && !intentCurrent && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="rounded-xl border border-accent/30 bg-accent/5 p-4"
-                    >
-                      <p className="text-sm font-semibold text-accent flex items-center gap-2 mb-2">
-                        <CheckCircle2 className="w-4 h-4" />
-                        {lang === 'cs' ? 'Hotovo, díky!' : lang === 'de' ? 'Fertig, danke!' : 'All set, thanks!'}
-                      </p>
-                      {intentBrief.summary && (
-                        <p className="text-sm text-foreground whitespace-pre-wrap">{intentBrief.summary}</p>
-                      )}
-                      <p className="text-xs text-muted-foreground mt-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+                    <div>
+                      <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                        {lang === 'cs' ? 'Volitelné detaily před objednávkou' : lang === 'de' ? 'Optionale Details vor der Bestellung' : 'Optional details before checkout'}
+                      </h2>
+                      <p className="text-muted-foreground text-sm">
                         {lang === 'cs'
-                          ? 'Pokračujte zadáním kontaktních údajů.'
+                          ? 'Toto je pevný formulář bez AI opakování. Můžete jej přeskočit a rovnou zaplatit.'
                           : lang === 'de'
-                          ? 'Bitte geben Sie nun Ihre Kontaktdaten ein.'
-                          : 'Continue to share your contact details.'}
+                          ? 'Dies ist ein statisches Formular ohne KI-Schleife. Sie können direkt zur Zahlung springen.'
+                          : 'This is a static form with no AI question loop. You can skip it and go straight to checkout.'}
                       </p>
-                    </motion.div>
-                  )}
-                </div>
-              )}
-
-              {/* Step 5: Contact Details & Lead Capture */}
-              {step === 'contact' && (
-                <div>
-                  <h2 className="font-display text-2xl font-bold text-foreground mb-2">{l.contactTitle}</h2>
-                  <p className="text-muted-foreground text-sm mb-2">{l.contactSubtitle}</p>
-                  <div className="flex items-center gap-2 mb-8 px-3 py-2 rounded-lg bg-accent/10 border border-accent/20">
-                    <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0" />
-                    <span className="text-xs font-medium text-accent">{l.resultInstant}</span>
+                    </div>
+                    <Button variant="outline" onClick={continueToCheckout} className="shrink-0">
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      {lang === 'cs' ? 'Přeskočit a zaplatit' : lang === 'de' ? 'Überspringen und bezahlen' : 'Skip to checkout'}
+                    </Button>
                   </div>
 
-                  <div className="max-w-md space-y-5">
-                    <div className="space-y-2">
-                      <Label htmlFor="lead-name" className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-muted-foreground" />
-                        {lang === 'cs' ? 'Jméno' : lang === 'de' ? 'Name' : 'Name'} *
-                      </Label>
-                      <Input
-                        id="lead-name"
-                        value={contactName}
-                        onChange={e => setContactName(e.target.value)}
-                        placeholder={l.namePlaceholder}
-                        className="h-12"
-                        maxLength={100}
-                        required
-                      />
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div className="space-y-4 p-5 rounded-xl bg-card border border-border shadow-card">
+                      <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-primary" />
+                        {lang === 'cs' ? 'Projektové detaily' : lang === 'de' ? 'Projektdetails' : 'Project details'}
+                      </h3>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="project-timeline">{lang === 'cs' ? 'Preferovaný start' : lang === 'de' ? 'Gewünschter Start' : 'Preferred start'}</Label>
+                        <Input id="project-timeline" type="date" value={projectTimeline} onChange={e => setProjectTimeline(e.target.value)} className="h-11" />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="project-priority">{lang === 'cs' ? 'Hlavní priorita' : lang === 'de' ? 'Hauptpriorität' : 'Main priority'}</Label>
+                        <select
+                          id="project-priority"
+                          value={projectPriority}
+                          onChange={e => setProjectPriority(e.target.value)}
+                          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
+                          <option value="">{lang === 'cs' ? 'Vyberte prioritu' : lang === 'de' ? 'Priorität wählen' : 'Select a priority'}</option>
+                          <option value="More enquiries">{lang === 'cs' ? 'Více poptávek' : lang === 'de' ? 'Mehr Anfragen' : 'More enquiries'}</option>
+                          <option value="Online bookings">{lang === 'cs' ? 'Online rezervace' : lang === 'de' ? 'Online-Buchungen' : 'Online bookings'}</option>
+                          <option value="Sell services online">{lang === 'cs' ? 'Prodej služeb online' : lang === 'de' ? 'Services online verkaufen' : 'Sell services online'}</option>
+                          <option value="Brand credibility">{lang === 'cs' ? 'Důvěryhodnost značky' : lang === 'de' ? 'Markenvertrauen' : 'Brand credibility'}</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="project-budget">{lang === 'cs' ? 'Rozpočtový rámec' : lang === 'de' ? 'Budgetrahmen' : 'Budget range'}</Label>
+                        <select
+                          id="project-budget"
+                          value={projectBudget}
+                          onChange={e => setProjectBudget(e.target.value)}
+                          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
+                          <option value="">{lang === 'cs' ? 'Volitelné' : lang === 'de' ? 'Optional' : 'Optional'}</option>
+                          <option value="Starter">Starter</option>
+                          <option value="Growth">Growth</option>
+                          <option value="Premium">Premium</option>
+                          <option value="Enterprise">Enterprise</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/30 p-3">
+                        <Checkbox id="content-ready" checked={contentReady} onCheckedChange={(checked) => setContentReady(checked === true)} />
+                        <Label htmlFor="content-ready" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
+                          {lang === 'cs' ? 'Mám připravené texty, fotky nebo logo.' : lang === 'de' ? 'Texte, Fotos oder Logo sind bereit.' : 'I already have copy, photos, or a logo ready.'}
+                        </Label>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="project-notes">{lang === 'cs' ? 'Poznámky' : lang === 'de' ? 'Notizen' : 'Notes'}</Label>
+                        <textarea
+                          id="project-notes"
+                          value={projectNotes}
+                          onChange={e => setProjectNotes(e.target.value.slice(0, 1000))}
+                          rows={4}
+                          placeholder={lang === 'cs' ? 'Cokoliv důležitého k objednávce…' : lang === 'de' ? 'Alles Wichtige zur Bestellung…' : 'Anything important for the order…'}
+                          className="w-full rounded-lg border border-border bg-background p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        />
+                      </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="lead-email" className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-muted-foreground" />
-                        E-Mail *
-                      </Label>
-                      <Input
-                        id="lead-email"
-                        type="email"
-                        value={contactEmail}
-                        onChange={e => setContactEmail(e.target.value)}
-                        placeholder={l.emailPlaceholder}
-                        className="h-12"
-                        maxLength={255}
-                        required
-                      />
-                    </div>
+                    <div className="space-y-4 p-5 rounded-xl bg-card border border-border shadow-card">
+                      <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
+                        <User className="w-4 h-4 text-primary" />
+                        {lang === 'cs' ? 'Uložit nabídku' : lang === 'de' ? 'Angebot speichern' : 'Save the quote'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {lang === 'cs'
+                          ? 'Volitelné. Pokud nechcete nabídku uložit, použijte tlačítko přeskočit.'
+                          : lang === 'de'
+                          ? 'Optional. Wenn Sie das Angebot nicht speichern möchten, überspringen Sie diesen Schritt.'
+                          : 'Optional. If you do not want to save the quote, use the skip button.'}
+                      </p>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="lead-phone" className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                        {lang === 'cs' ? 'Telefon' : lang === 'de' ? 'Telefon' : 'Phone'}
-                      </Label>
-                      <Input
-                        id="lead-phone"
-                        type="tel"
-                        value={contactPhone}
-                        onChange={e => setContactPhone(e.target.value)}
-                        placeholder={l.phonePlaceholder}
-                        className="h-12"
-                        maxLength={30}
-                      />
-                    </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lead-name" className="flex items-center gap-2">
+                          <User className="w-4 h-4 text-muted-foreground" />
+                          {lang === 'cs' ? 'Jméno' : lang === 'de' ? 'Name' : 'Name'} *
+                        </Label>
+                        <Input id="lead-name" value={contactName} onChange={e => setContactName(e.target.value)} placeholder={l.namePlaceholder} className="h-12" maxLength={100} />
+                      </div>
 
-                    <div className="flex items-start gap-3 pt-2">
-                      <Checkbox
-                        id="gdpr-consent"
-                        checked={gdprConsent}
-                        onCheckedChange={(checked) => setGdprConsent(checked === true)}
-                      />
-                      <Label htmlFor="gdpr-consent" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
-                        <Shield className="w-3.5 h-3.5 inline mr-1 text-primary" />
-                        {l.gdprLabel}
-                      </Label>
-                    </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lead-email" className="flex items-center gap-2">
+                          <Mail className="w-4 h-4 text-muted-foreground" />
+                          E-Mail *
+                        </Label>
+                        <Input id="lead-email" type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder={l.emailPlaceholder} className="h-12" maxLength={255} />
+                      </div>
 
-                    <Button
-                      onClick={submitLead}
-                      disabled={!isContactValid || isSubmitting}
-                      className="w-full h-12 gradient-primary text-primary-foreground text-base"
-                    >
-                      {isSubmitting ? (
-                        <span className="flex items-center gap-2">
-                          <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                          {l.submittingLead}
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-2">
-                          <Send className="w-4 h-4" />
-                          {l.submitLead}
-                        </span>
-                      )}
-                    </Button>
+                      <div className="space-y-2">
+                        <Label htmlFor="lead-phone" className="flex items-center gap-2">
+                          <Phone className="w-4 h-4 text-muted-foreground" />
+                          {lang === 'cs' ? 'Telefon' : lang === 'de' ? 'Telefon' : 'Phone'}
+                        </Label>
+                        <Input id="lead-phone" type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} placeholder={l.phonePlaceholder} className="h-12" maxLength={30} />
+                      </div>
+
+                      <div className="flex items-start gap-3 pt-2">
+                        <Checkbox id="gdpr-consent" checked={gdprConsent} onCheckedChange={(checked) => setGdprConsent(checked === true)} />
+                        <Label htmlFor="gdpr-consent" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
+                          <Shield className="w-3.5 h-3.5 inline mr-1 text-primary" />
+                          {l.gdprLabel}
+                        </Label>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <Button variant="outline" onClick={continueToCheckout} className="h-12">
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          {lang === 'cs' ? 'Pokračovat bez uložení' : lang === 'de' ? 'Ohne Speichern weiter' : 'Continue without saving'}
+                        </Button>
+                        <Button onClick={submitLead} disabled={!isContactValid || isSubmitting} className="h-12 gradient-primary text-primary-foreground">
+                          {isSubmitting ? (
+                            <span className="flex items-center gap-2">
+                              <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                              {l.submittingLead}
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2">
+                              <Send className="w-4 h-4" />
+                              {lang === 'cs' ? 'Uložit a zaplatit' : lang === 'de' ? 'Speichern und bezahlen' : 'Save and checkout'}
+                            </span>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1381,6 +1224,32 @@ const CalculatorPage = () => {
                       </div>
                     )}
 
+                    <div className="mt-4 p-4 rounded-xl border border-accent/30 bg-accent/10">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <TicketPercent className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-semibold text-foreground">
+                              {lang === 'cs' ? 'Slevový kód je rezervovaný jen 3 hodiny' : lang === 'de' ? 'Ihr Rabattcode ist nur 3 Stunden reserviert' : 'Your discount code is reserved for only 3 hours'}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {lang === 'cs'
+                                ? 'Zadejte kupón níže a objednejte před vypršením času, abyste využili výraznou slevu.'
+                                : lang === 'de'
+                                ? 'Geben Sie den Gutschein unten ein und bestellen Sie vor Ablauf der Zeit, um den hohen Rabatt zu sichern.'
+                                : 'Enter the coupon below and order before the timer ends to secure the discount.'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="rounded-lg bg-background/80 border border-border px-3 py-2 text-center shrink-0">
+                          <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
+                            {lang === 'cs' ? 'Zbývá' : lang === 'de' ? 'Verbleibend' : 'Time left'}
+                          </span>
+                          <span className="font-display text-lg font-bold text-accent tabular-nums">{formatCountdown(couponSecondsLeft)}</span>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Coupon input */}
                     <div className="mt-4 p-4 rounded-xl border border-dashed border-primary/30 bg-primary/5">
                       {!appliedCoupon ? (
@@ -1422,16 +1291,26 @@ const CalculatorPage = () => {
                         </div>
                       )}
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold">{appliedCoupon ? (lang === 'cs' ? 'K úhradě' : lang === 'de' ? 'Zu zahlen' : 'You pay') : l.totalOneTime}</span>
-                        <span className="text-2xl font-display font-bold">{formatPrice(discountedOneTime)} Kč</span>
+                        <span className="font-semibold">{appliedCoupon ? (lang === 'cs' ? 'Jednorázově po slevě' : lang === 'de' ? 'Einmalig nach Rabatt' : 'One-time after discount') : l.totalOneTime}</span>
+                        <span className="text-xl font-display font-bold">{formatPrice(discountedOneTime)} Kč</span>
                       </div>
-                      <div className="flex justify-between items-center opacity-80">
-                        <span className="text-sm">{l.totalMonthly}</span>
-                        <span className="text-lg font-bold">{formatPrice(discountedMonthly)} Kč{l.perMonth}</span>
+                      {appliedCoupon && monthlyDiscount > 0 && (
+                        <div className="flex justify-between items-center mb-1 opacity-80 text-sm">
+                          <span>{lang === 'cs' ? 'Hosting 12 měsíců' : lang === 'de' ? 'Hosting 12 Monate' : '12 months hosting'}</span>
+                          <span className="line-through">{formatPrice(annualHosting)} Kč</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center opacity-90">
+                        <span className="text-sm">{lang === 'cs' ? 'Hosting 12 měsíců předem' : lang === 'de' ? 'Hosting 12 Monate im Voraus' : '12 months hosting prepaid'}</span>
+                        <span className="text-lg font-bold">{formatPrice(discountedAnnualHosting)} Kč</span>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-primary-foreground/20 flex justify-between items-center">
+                        <span className="font-semibold">{lang === 'cs' ? 'K úhradě dnes' : lang === 'de' ? 'Heute zu zahlen' : 'Total due today'}</span>
+                        <span className="text-2xl font-display font-bold">{formatPrice(checkoutTotalToday)} Kč</span>
                       </div>
                       {appliedCoupon && (oneTimeDiscount > 0 || monthlyDiscount > 0) && (
                         <div className="mt-2 pt-2 border-t border-primary-foreground/20 text-xs opacity-90">
-                          {lang === 'cs' ? 'Sleva' : lang === 'de' ? 'Rabatt' : 'Saved'}: {formatPrice(oneTimeDiscount)} Kč{monthlyDiscount > 0 ? ` + ${formatPrice(monthlyDiscount)} Kč${l.perMonth}` : ''}
+                          {lang === 'cs' ? 'Celková sleva dnes' : lang === 'de' ? 'Gesamtersparnis heute' : 'Total saved today'}: {formatPrice(totalAnnualDiscount)} Kč
                         </div>
                       )}
                     </div>
@@ -1444,10 +1323,10 @@ const CalculatorPage = () => {
                     <Button onClick={payNow} className="gradient-primary text-primary-foreground font-semibold">
                       <CreditCard className="w-4 h-4 mr-2" />
                       {lang === 'cs'
-                        ? `Zaplatit ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč`
+                        ? `Zaplatit ${formatPrice(checkoutTotalToday)} Kč`
                         : lang === 'de'
-                        ? `Jetzt ${formatPrice(discountedOneTime + discountedMonthly * 12)} Kč bezahlen`
-                        : `Pay ${formatPrice(discountedOneTime + discountedMonthly * 12)} CZK now`}
+                        ? `Jetzt ${formatPrice(checkoutTotalToday)} Kč bezahlen`
+                        : `Pay ${formatPrice(checkoutTotalToday)} CZK now`}
                     </Button>
                     <Button onClick={exportQuote} variant="outline">
                       <Download className="w-4 h-4 mr-2" />
@@ -1483,10 +1362,10 @@ const CalculatorPage = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               {l.back}
             </Button>
-            {step !== 'summary' && step !== 'contact' && (
+            {step !== 'summary' && (
               <Button
                 onClick={goNext}
-                disabled={(step === 'trade' && !selectedTrade) || (step === 'intent' && !intentBrief)}
+                disabled={step === 'trade' && !selectedTrade}
               >
                 {l.next}
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -1507,10 +1386,16 @@ const CalculatorPage = () => {
                   setContactPhone('');
                   setGdprConsent(false);
                   setLeadResult(null);
-                  setIntentHistory([]);
-                  setIntentCurrent(null);
-                  setIntentAnswer('');
+                  setProjectTimeline('');
+                  setProjectPriority('');
+                  setProjectBudget('');
+                  setContentReady(false);
+                  setProjectNotes('');
                   setIntentBrief(null);
+                  setAppliedCoupon(null);
+                  setCouponInput('');
+                  setCouponDeadline(null);
+                  setCouponSecondsLeft(3 * 60 * 60);
                 }}
               >
                 {l.startOver}
