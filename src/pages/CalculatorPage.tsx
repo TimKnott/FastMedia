@@ -286,8 +286,7 @@ const CalculatorPage = () => {
     return {
       intent,
       summary: details.length
-        ? details.join('
-')
+        ? details.join('\n')
         : (lang === 'cs' ? 'Volitelné otázky přeskočeny.' : lang === 'de' ? 'Optionale Fragen übersprungen.' : 'Optional checkout questions skipped.'),
     };
   };
@@ -598,7 +597,6 @@ const CalculatorPage = () => {
       productId: 'hosting_annual',
     });
 
-    const monthlyDiscountAnnual = monthlyDiscount * 12;
     const totalDiscount = totalAnnualDiscount;
     if (totalDiscount > 0) {
       const discountMinor = totalDiscount * 100;
