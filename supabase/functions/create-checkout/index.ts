@@ -153,6 +153,7 @@ async function buildCalculatorCart(metadata: Record<string, string> = {}) {
     cart,
     metadata: {
       verifiedTotalCzk: String(oneTimeWithLabor + hostingAnnual - totalAnnualDiscount),
+      checkoutTotalToday: String(oneTimeWithLabor + hostingAnnual - totalAnnualDiscount),
       annualHostingCzk: String(hostingAnnual),
       monthlyHostingCzk: String(monthly),
       coupon: coupon.code,
