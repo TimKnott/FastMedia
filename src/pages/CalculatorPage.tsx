@@ -30,11 +30,12 @@ type SelectedFeature = { id: string; quantity: number };
 type Step = 'trade' | 'features' | 'special' | 'intent' | 'summary';
 type AiSuggestion = { id: string; reason?: string };
 type SpecialResponse = { suggestion?: string; alternativeFeatures?: string[] };
+type SpeechResultEvent = { results: { [index: number]: { [index: number]: { transcript: string } } } };
 type SpeechRecognitionLike = {
   lang: string;
   continuous: boolean;
   interimResults: boolean;
-  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onresult: ((event: SpeechResultEvent) => void) | null;
   onerror: (() => void) | null;
   onend: (() => void) | null;
   start: () => void;
@@ -381,7 +382,7 @@ const CalculatorPage = () => {
     recognition.lang = lang === 'cs' ? 'cs-CZ' : lang === 'de' ? 'de-DE' : 'en-US';
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: SpeechResultEvent) => {
       const transcript = event.results[0][0].transcript;
       setSpecialRequest(prev => prev ? prev + ' ' + transcript : transcript);
       setIsListening(false);
