@@ -371,12 +371,17 @@ const CalculatorPage = () => {
       setIsListening(false);
       return;
     }
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const speechWindow = window as Window & {
+      SpeechRecognition?: new () => SpeechRecognitionLike;
+      webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+    };
+    const SpeechRecognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
     const recognition = new SpeechRecognition();
     recognition.lang = lang === 'cs' ? 'cs-CZ' : lang === 'de' ? 'de-DE' : 'en-US';
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setSpecialRequest(prev => prev ? prev + ' ' + transcript : transcript);
       setIsListening(false);
@@ -546,7 +551,7 @@ const CalculatorPage = () => {
     if (appliedCoupon) {
       y += 6;
       doc.setTextColor(0, 140, 90);
-      row(`Coupon ${appliedCoupon.code} (-${appliedCoupon.discount_type === 'percentage' ? appliedCoupon.discount_value + '%' : formatPrice(appliedCoupon.discount_value) + ' ' + (appliedCoupon as any).currency || ''})`,
+      row(`Coupon ${appliedCoupon.code} (-${appliedCoupon.discount_type === 'percentage' ? appliedCoupon.discount_value + '%' : `${formatPrice(appliedCoupon.discount_value)} ${appliedCoupon.currency || 'Kč'}`})`,
         `- ${formatPrice(oneTimeDiscount)} Kč${monthlyDiscount ? ` / -${formatPrice(monthlyDiscount)} ${l.perMonth}` : ''}`);
       doc.setTextColor(0);
       y += 4;
@@ -771,7 +776,7 @@ const CalculatorPage = () => {
                         <Sparkles className="w-4 h-4" />
                         {l.suggestedFor}
                       </p>
-                      {aiSuggestions.map((s: any) => {
+                      {aiSuggestions.map((s) => {
                         const feature = getFeatureById(s.id);
                         if (!feature || isSelected(s.id)) return null;
                         return (
