@@ -171,6 +171,14 @@ Deno.serve(async (req) => {
     const env: StripeEnv = body.environment === "live" ? "live" : "sandbox";
     const returnUrl = body.returnUrl || `${req.headers.get("origin") || ""}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
     const source = body.source || (body.priceId ? "package" : "eshop_demo");
+    let requestCart = body.cart;
+    let verifiedMetadata: Record<string, string> = {};
+
+    if (source === "calculator") {
+      const verified = await buildCalculatorCart(body.metadata || {});
+      requestCart = verified.cart;
+      verifiedMetadata = verified.metadata;
+    }
 
     const stripe = createStripeClient(env);
 
@@ -205,9 +213,9 @@ Deno.serve(async (req) => {
       priceIdForRecord = body.priceId;
       productIdForRecord = productId;
       lineItems = [{ price: stripePrice.id, quantity: body.quantity || 1 }];
-    } else if (body.cart && body.cart.length) {
-      // Dynamic price_data for the demo eshop
-      lineItems = body.cart.map((item) => ({
+    } else if (requestCart && requestCart.length) {
+      // Dynamic price_data for calculator-built packages.
+      lineItems = requestCart.map((item) => ({
         price_data: {
           currency: "czk",
           product_data: { name: item.name },
@@ -215,7 +223,7 @@ Deno.serve(async (req) => {
         },
         quantity: item.quantity,
       }));
-      productDescription = `Eshop order (${body.cart.length} items)`;
+      productDescription = source === "calculator" ? `Website package (${requestCart.length} items)` : `Eshop order (${requestCart.length} items)`;
       useManaged = false;
     } else {
       throw new Error("Either priceId or cart must be provided");
@@ -233,8 +241,9 @@ Deno.serve(async (req) => {
         ...(body.userId && { userId: body.userId }),
         ...(priceIdForRecord && { priceId: priceIdForRecord }),
         ...(productIdForRecord && { productId: productIdForRecord }),
-        ...(body.cart && { cart: JSON.stringify(body.cart).slice(0, 450) }),
+        ...(requestCart && { cart: JSON.stringify(requestCart).slice(0, 450) }),
         ...(body.metadata || {}),
+        ...verifiedMetadata,
       },
       ...(isRecurring && body.userId && {
         subscription_data: { metadata: { userId: body.userId, source } },
