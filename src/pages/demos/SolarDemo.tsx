@@ -4,7 +4,7 @@ const SolarDemo = () => {
   return (
     <DemoLayout
       tradeId="solar"
-      tradeName="Solar Energy CZ"
+      tradeName="Solar Energy UK"
       tradeIcon="☀️"
       heroTitle={{
         cs: 'Solární energie pro váš domov',

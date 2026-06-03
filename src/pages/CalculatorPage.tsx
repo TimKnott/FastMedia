@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CreditCard } from 'lucide-react';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import jsPDF from 'jspdf';
@@ -44,8 +44,13 @@ type SpeechRecognitionLike = {
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
   const { openCheckout, checkoutElement } = useStripeCheckout();
-  const [step, setStep] = useState<Step>('trade');
-  const [selectedTrade, setSelectedTrade] = useState('');
+  const [searchParams] = useSearchParams();
+  const initialTrade = (() => {
+    const q = searchParams.get('trade');
+    return q && trades.some(tr => tr.id === q) ? q : '';
+  })();
+  const [step, setStep] = useState<Step>(initialTrade ? 'features' : 'trade');
+  const [selectedTrade, setSelectedTrade] = useState(initialTrade);
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
   const [specialRequest, setSpecialRequest] = useState('');
   const [specialResponse, setSpecialResponse] = useState<SpecialResponse | null>(null);

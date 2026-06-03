@@ -4,7 +4,7 @@ const WeddingPlannerDemo = () => {
   return (
     <DemoLayout
       tradeId="weddingplanner"
-      tradeName="Svatební Koordinátorka"
+      tradeName="London Wedding Planners"
       tradeIcon="💍"
       heroTitle={{
         cs: 'Dokonalá svatba bez starostí',

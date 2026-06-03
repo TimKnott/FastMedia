@@ -4,7 +4,7 @@ const CateringDemo = () => {
   return (
     <DemoLayout
       tradeId="catering"
-      tradeName="Catering Dobroty"
+      tradeName="London Catering Co."
       tradeIcon="🍽️"
       heroTitle={{
         cs: 'Catering a jídlo na každou akci',

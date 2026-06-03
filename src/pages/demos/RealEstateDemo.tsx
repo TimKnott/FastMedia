@@ -4,7 +4,7 @@ const RealEstateDemo = () => {
   return (
     <DemoLayout
       tradeId="realestate"
-      tradeName="Reality Centrum"
+      tradeName="London Property Centre"
       tradeIcon="🏢"
       heroTitle={{
         cs: 'Najdeme vám vysněný domov',

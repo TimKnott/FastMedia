@@ -4,7 +4,7 @@ const LocksmithDemo = () => {
   return (
     <DemoLayout
       tradeId="locksmith"
-      tradeName="Zámečnictví 24h"
+      tradeName="24h London Locksmiths"
       tradeIcon="🔐"
       heroTitle={{
         cs: 'Zámečnické služby nonstop',

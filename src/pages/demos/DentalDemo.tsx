@@ -4,7 +4,7 @@ const DentalDemo = () => {
   return (
     <DemoLayout
       tradeId="dental"
-      tradeName="Zubní Klinika"
+      tradeName="London Dental Clinic"
       tradeIcon="🦷"
       heroTitle={{
         cs: 'Váš úsměv v těch nejlepších rukou',

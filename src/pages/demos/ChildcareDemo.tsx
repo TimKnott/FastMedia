@@ -4,7 +4,7 @@ const ChildcareDemo = () => {
   return (
     <DemoLayout
       tradeId="childcare"
-      tradeName="Dětská Skupina"
+      tradeName="London Childcare"
       tradeIcon="👶"
       heroTitle={{
         cs: 'Péče o děti s láskou',

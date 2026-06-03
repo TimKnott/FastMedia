@@ -4,7 +4,7 @@ const NutritionistDemo = () => {
   return (
     <DemoLayout
       tradeId="nutritionist"
-      tradeName="Výživová Poradkyně"
+      tradeName="London Nutrition Coach"
       tradeIcon="🥗"
       heroTitle={{
         cs: 'Zdravá výživa na míru',

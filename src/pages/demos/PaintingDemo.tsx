@@ -4,7 +4,7 @@ const PaintingDemo = () => {
   return (
     <DemoLayout
       tradeId="painting"
-      tradeName="Malíři & Natěrači"
+      tradeName="London Painters & Decorators"
       tradeIcon="🎨"
       heroTitle={{
         cs: 'Profesionální malířské práce',

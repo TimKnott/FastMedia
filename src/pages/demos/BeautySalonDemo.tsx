@@ -4,7 +4,7 @@ const BeautySalonDemo = () => {
   return (
     <DemoLayout
       tradeId="beautysalon"
-      tradeName="Salon Krása"
+      tradeName="London Beauty Salon"
       tradeIcon="💅"
       heroTitle={{
         cs: 'Váš salon krásy v centru Prahy',

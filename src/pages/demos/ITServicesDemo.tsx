@@ -4,7 +4,7 @@ const ITServicesDemo = () => {
   return (
     <DemoLayout
       tradeId="itservices"
-      tradeName="TechFix IT"
+      tradeName="TechFix IT London"
       tradeIcon="💻"
       heroTitle={{
         cs: 'IT podpora a servis pro firmy i domácnosti',

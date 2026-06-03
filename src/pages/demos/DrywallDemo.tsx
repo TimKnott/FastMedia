@@ -4,7 +4,7 @@ const DrywallDemo = () => {
   return (
     <DemoLayout
       tradeId="drywall"
-      tradeName="SDK Montáže"
+      tradeName="London Drywall & Plastering"
       tradeIcon="🧱"
       heroTitle={{
         cs: 'Sádrokartonové konstrukce',

@@ -4,7 +4,7 @@ const AutoRepairDemo = () => {
   return (
     <DemoLayout
       tradeId="autorepair"
-      tradeName="AutoServis Novák"
+      tradeName="London Auto Service"
       tradeIcon="🔩"
       heroTitle={{
         cs: 'Váš spolehlivý autoservis v Praze',

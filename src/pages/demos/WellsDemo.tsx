@@ -4,7 +4,7 @@ const WellsDemo = () => {
   return (
     <DemoLayout
       tradeId="wells"
-      tradeName="Studny & Vrty"
+      tradeName="UK Borehole & Wells"
       tradeIcon="💧"
       heroTitle={{
         cs: 'Hloubení studní a vrtů',

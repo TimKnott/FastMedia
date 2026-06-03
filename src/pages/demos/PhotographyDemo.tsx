@@ -4,7 +4,7 @@ const PhotographyDemo = () => {
   return (
     <DemoLayout
       tradeId="photography"
-      tradeName="Studio Lucie"
+      tradeName="London Photography Studio"
       tradeIcon="📷"
       heroTitle={{
         cs: 'Profesionální fotografka pro každou příležitost',

@@ -4,7 +4,7 @@ const DrivingSchoolDemo = () => {
   return (
     <DemoLayout
       tradeId="drivingschool"
-      tradeName="Autoškola"
+      tradeName="London Driving School"
       tradeIcon="🚗"
       heroTitle={{
         cs: 'Řidičský průkaz snadno a rychle',

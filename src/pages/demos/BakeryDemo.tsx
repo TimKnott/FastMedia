@@ -4,7 +4,7 @@ const BakeryDemo = () => {
   return (
     <DemoLayout
       tradeId="bakery"
-      tradeName="Cukrárna & Pekárna"
+      tradeName="London Bakery & Patisserie"
       tradeIcon="🧁"
       heroTitle={{
         cs: 'Sladké chvilky na objednávku',

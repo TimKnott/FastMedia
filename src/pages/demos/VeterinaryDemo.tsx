@@ -4,7 +4,7 @@ const VeterinaryDemo = () => {
   return (
     <DemoLayout
       tradeId="veterinary"
-      tradeName="Veterinární Klinika"
+      tradeName="London Veterinary Clinic"
       tradeIcon="🐾"
       heroTitle={{
         cs: 'Péče o vaše mazlíčky',

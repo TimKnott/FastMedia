@@ -4,7 +4,7 @@ const PetGroomingDemo = () => {
   return (
     <DemoLayout
       tradeId="petgrooming"
-      tradeName="Psí Salon"
+      tradeName="London Pet Grooming"
       tradeIcon="🐾"
       heroTitle={{
         cs: 'Péče o vašeho mazlíčka',

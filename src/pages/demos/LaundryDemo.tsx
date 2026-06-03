@@ -4,7 +4,7 @@ const LaundryDemo = () => {
   return (
     <DemoLayout
       tradeId="laundry"
-      tradeName="Prádelna & Čistírna"
+      tradeName="London Laundry & Dry Cleaning"
       tradeIcon="👔"
       heroTitle={{
         cs: 'Čistota pro váš šatník',

@@ -4,7 +4,7 @@ const HeatpumpsDemo = () => {
   return (
     <DemoLayout
       tradeId="heatpumps"
-      tradeName="Tepelná Čerpadla Plus"
+      tradeName="Heat Pump Specialists UK"
       tradeIcon="♨️"
       heroTitle={{
         cs: 'Tepelná čerpadla pro váš dům',

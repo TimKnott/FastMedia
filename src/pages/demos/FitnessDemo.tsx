@@ -4,7 +4,7 @@ const FitnessDemo = () => {
   return (
     <DemoLayout
       tradeId="fitness"
-      tradeName="FitZone Studio"
+      tradeName="FitZone London"
       tradeIcon="💪"
       heroTitle={{
         cs: 'Vaše cesta k lepší kondici začíná zde',

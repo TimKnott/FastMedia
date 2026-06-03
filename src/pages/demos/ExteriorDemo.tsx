@@ -4,7 +4,7 @@ const ExteriorDemo = () => {
   return (
     <DemoLayout
       tradeId="exterior"
-      tradeName="Fasády & Exteriéry"
+      tradeName="London Exteriors & Facades"
       tradeIcon="🏡"
       heroTitle={{
         cs: 'Fasády a venkovní úpravy',
