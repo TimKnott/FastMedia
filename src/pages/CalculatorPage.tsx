@@ -1353,7 +1353,7 @@ const CalculatorPage = () => {
           </AnimatePresence>
 
           {/* Navigation */}
-          <div className="flex justify-between mt-8">
+          <div className="flex flex-wrap justify-between gap-3 mt-8">
             <Button
               variant="outline"
               onClick={goBack}
@@ -1362,15 +1362,31 @@ const CalculatorPage = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               {l.back}
             </Button>
-            {step !== 'summary' && (
-              <Button
-                onClick={goNext}
-                disabled={step === 'trade' && !selectedTrade}
-              >
-                {l.next}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
+            <div className="flex flex-wrap gap-3 ml-auto">
+              {step !== 'summary' && step !== 'trade' && (
+                <Button
+                  variant="outline"
+                  onClick={continueToCheckout}
+                  className="border-accent/40 text-accent hover:bg-accent/10"
+                >
+                  <TicketPercent className="w-4 h-4 mr-2" />
+                  {lang === 'cs'
+                    ? 'Přeskočit otázky → kupón a platba'
+                    : lang === 'de'
+                    ? 'Fragen überspringen → Gutschein & Zahlung'
+                    : 'Skip questions → coupon & checkout'}
+                </Button>
+              )}
+              {step !== 'summary' && (
+                <Button
+                  onClick={goNext}
+                  disabled={step === 'trade' && !selectedTrade}
+                >
+                  {l.next}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
+            </div>
             {step === 'summary' && (
               <Button
                 variant="outline"
