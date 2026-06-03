@@ -764,7 +764,20 @@ const CalculatorPage = () => {
               {/* Step 2: Feature Selection */}
               {step === 'features' && (
                 <div>
-                  <h2 className="font-display text-2xl font-bold text-foreground mb-6">{l.selectFeatures}</h2>
+                  <h2 className="font-display text-2xl font-bold text-foreground mb-3">{l.selectFeatures}</h2>
+                  <div className="mb-6 flex items-center justify-between gap-3 p-3 rounded-xl border border-accent/30 bg-accent/5">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      {lang === 'cs'
+                        ? 'Nechcete odpovídat na další otázky? Přeskočte rovnou na kupón a platbu.'
+                        : lang === 'de'
+                        ? 'Keine Lust auf weitere Fragen? Direkt zum Gutschein & zur Zahlung.'
+                        : "Don't want to answer more questions? Jump straight to the coupon & checkout."}
+                    </p>
+                    <Button size="sm" variant="outline" onClick={continueToCheckout} className="shrink-0 border-accent/40 text-accent hover:bg-accent/10">
+                      <TicketPercent className="w-4 h-4 mr-2" />
+                      {lang === 'cs' ? 'Přeskočit' : lang === 'de' ? 'Überspringen' : 'Skip'}
+                    </Button>
+                  </div>
                   
                   {/* AI suggestions */}
                   {aiSuggestions.length > 0 && (
@@ -1353,7 +1366,7 @@ const CalculatorPage = () => {
           </AnimatePresence>
 
           {/* Navigation */}
-          <div className="flex justify-between mt-8">
+          <div className="flex flex-wrap justify-between gap-3 mt-8">
             <Button
               variant="outline"
               onClick={goBack}
@@ -1362,15 +1375,31 @@ const CalculatorPage = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               {l.back}
             </Button>
-            {step !== 'summary' && (
-              <Button
-                onClick={goNext}
-                disabled={step === 'trade' && !selectedTrade}
-              >
-                {l.next}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
+            <div className="flex flex-wrap gap-3 ml-auto">
+              {step !== 'summary' && step !== 'trade' && (
+                <Button
+                  variant="outline"
+                  onClick={continueToCheckout}
+                  className="border-accent/40 text-accent hover:bg-accent/10"
+                >
+                  <TicketPercent className="w-4 h-4 mr-2" />
+                  {lang === 'cs'
+                    ? 'Přeskočit otázky → kupón a platba'
+                    : lang === 'de'
+                    ? 'Fragen überspringen → Gutschein & Zahlung'
+                    : 'Skip questions → coupon & checkout'}
+                </Button>
+              )}
+              {step !== 'summary' && (
+                <Button
+                  onClick={goNext}
+                  disabled={step === 'trade' && !selectedTrade}
+                >
+                  {l.next}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
+            </div>
             {step === 'summary' && (
               <Button
                 variant="outline"
