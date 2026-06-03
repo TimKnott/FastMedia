@@ -4,7 +4,7 @@ const InteriorDemo = () => {
   return (
     <DemoLayout
       tradeId="interior"
-      tradeName="Interiér Studio"
+      tradeName="London Interior Studio"
       tradeIcon="🛋️"
       heroTitle={{
         cs: 'Interiérový design na míru',

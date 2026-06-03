@@ -4,7 +4,7 @@ const TranslationDemo = () => {
   return (
     <DemoLayout
       tradeId="translation"
-      tradeName="Překladatelská Agentura"
+      tradeName="London Translation Agency"
       tradeIcon="🌍"
       heroTitle={{
         cs: 'Překlady bez hranic',

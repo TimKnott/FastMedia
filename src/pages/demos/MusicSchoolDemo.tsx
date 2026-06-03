@@ -4,7 +4,7 @@ const MusicSchoolDemo = () => {
   return (
     <DemoLayout
       tradeId="musicschool"
-      tradeName="Hudební Škola"
+      tradeName="London Music School"
       tradeIcon="🎵"
       heroTitle={{
         cs: 'Hudba pro každého',

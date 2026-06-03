@@ -4,7 +4,7 @@ const CleaningDemo = () => {
   return (
     <DemoLayout
       tradeId="cleaning"
-      tradeName="Úklid Premium"
+      tradeName="Premium Cleaning London"
       tradeIcon="✨"
       heroTitle={{
         cs: 'Profesionální úklidové služby',

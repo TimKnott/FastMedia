@@ -4,7 +4,7 @@ const HeatingDemo = () => {
   return (
     <DemoLayout
       tradeId="heating"
-      tradeName="Topení & Plyn"
+      tradeName="London Heating & Gas"
       tradeIcon="🔥"
       heroTitle={{
         cs: 'Topenářské a plynařské práce',

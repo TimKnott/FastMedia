@@ -4,7 +4,7 @@ const NailSalonDemo = () => {
   return (
     <DemoLayout
       tradeId="nailsalon"
-      tradeName="Nehtové Studio"
+      tradeName="London Nail Studio"
       tradeIcon="💅"
       heroTitle={{
         cs: 'Krásné nehty, šťastné ruce',

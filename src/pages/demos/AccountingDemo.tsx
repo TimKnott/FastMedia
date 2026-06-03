@@ -4,7 +4,7 @@ const AccountingDemo = () => {
   return (
     <DemoLayout
       tradeId="accounting"
-      tradeName="Účetní Kancelář"
+      tradeName="London Accountancy"
       tradeIcon="📊"
       heroTitle={{
         cs: 'Účetnictví bez starostí',

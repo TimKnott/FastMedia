@@ -4,7 +4,7 @@ const ElectricalDemo = () => {
   return (
     <DemoLayout
       tradeId="electrical"
-      tradeName="Elektrikář Expert"
+      tradeName="Sparks Electrical London"
       tradeIcon="⚡"
       heroTitle={{
         cs: 'Profesionální elektrikářské služby',

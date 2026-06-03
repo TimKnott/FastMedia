@@ -4,7 +4,7 @@ const CarpentryDemo = () => {
   return (
     <DemoLayout
       tradeId="carpentry"
-      tradeName="Truhlářství Dřevo"
+      tradeName="London Joinery & Carpentry"
       tradeIcon="🪵"
       heroTitle={{
         cs: 'Truhlářské práce na míru',

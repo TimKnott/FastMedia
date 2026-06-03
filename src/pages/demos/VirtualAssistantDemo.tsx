@@ -4,7 +4,7 @@ const VirtualAssistantDemo = () => {
   return (
     <DemoLayout
       tradeId="virtualassistant"
-      tradeName="Virtuální Asistentka"
+      tradeName="UK Virtual Assistant"
       tradeIcon="💻"
       heroTitle={{
         cs: 'Vaše virtuální pravá ruka',

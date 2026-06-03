@@ -4,7 +4,7 @@ const FloristDemo = () => {
   return (
     <DemoLayout
       tradeId="florist"
-      tradeName="Květinářství"
+      tradeName="London Florist"
       tradeIcon="🌸"
       heroTitle={{
         cs: 'Květiny pro každou příležitost',

@@ -4,7 +4,7 @@ const MovingDemo = () => {
   return (
     <DemoLayout
       tradeId="moving"
-      tradeName="StěhoPro Praha"
+      tradeName="London Movers"
       tradeIcon="🚚"
       heroTitle={{
         cs: 'Stěhování bez starostí',

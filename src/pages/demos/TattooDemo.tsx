@@ -4,7 +4,7 @@ const TattooDemo = () => {
   return (
     <DemoLayout
       tradeId="tattoo"
-      tradeName="Tattoo Studio"
+      tradeName="London Tattoo Studio"
       tradeIcon="🎨"
       heroTitle={{
         cs: 'Umění na vaší kůži',

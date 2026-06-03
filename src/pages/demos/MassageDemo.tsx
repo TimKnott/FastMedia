@@ -4,7 +4,7 @@ const MassageDemo = () => {
   return (
     <DemoLayout
       tradeId="massage"
-      tradeName="Masážní Studio"
+      tradeName="London Massage Studio"
       tradeIcon="💆‍♀️"
       heroTitle={{
         cs: 'Relaxace a úleva od bolesti',

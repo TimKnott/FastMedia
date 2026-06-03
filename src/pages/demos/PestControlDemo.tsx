@@ -4,7 +4,7 @@ const PestControlDemo = () => {
   return (
     <DemoLayout
       tradeId="pestcontrol"
-      tradeName="DezPro Praha"
+      tradeName="PestPro London"
       tradeIcon="🐛"
       heroTitle={{
         cs: 'Profesionální deratizace a dezinsekce',

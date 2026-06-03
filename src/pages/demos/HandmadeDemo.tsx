@@ -4,7 +4,7 @@ const HandmadeDemo = () => {
   return (
     <DemoLayout
       tradeId="handmade"
-      tradeName="Handmade & Řemesla"
+      tradeName="London Handmade Crafts"
       tradeIcon="🎨"
       heroTitle={{
         cs: 'Ruční výroba s příběhem',

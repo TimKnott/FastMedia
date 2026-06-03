@@ -4,7 +4,7 @@ const BuildingDemo = () => {
   return (
     <DemoLayout
       tradeId="building"
-      tradeName="Stavební Firma Praha"
+      tradeName="London Build Co."
       tradeIcon="🏗️"
       heroTitle={{
         cs: 'Stavíme vaše sny',

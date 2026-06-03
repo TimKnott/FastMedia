@@ -4,7 +4,7 @@ const GardeningDemo = () => {
   return (
     <DemoLayout
       tradeId="gardening"
-      tradeName="Zahradní Služby"
+      tradeName="London Garden Services"
       tradeIcon="🌿"
       heroTitle={{
         cs: 'Zahradnické a krajinářské služby',

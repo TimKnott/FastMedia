@@ -4,7 +4,7 @@ const RoofingDemo = () => {
   return (
     <DemoLayout
       tradeId="roofing"
-      tradeName="Pokrývač Střechy"
+      tradeName="London Roofing Experts"
       tradeIcon="🏠"
       heroTitle={{
         cs: 'Střechy na celý život',

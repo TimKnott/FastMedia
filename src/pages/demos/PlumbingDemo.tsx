@@ -4,7 +4,7 @@ const PlumbingDemo = () => {
   return (
     <DemoLayout
       tradeId="plumbing"
-      tradeName="Instalatér Praha"
+      tradeName="London Plumbing Co."
       tradeIcon="🔧"
       heroTitle={{
         cs: 'Spolehlivé instalatérské služby',

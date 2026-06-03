@@ -4,7 +4,7 @@ const SecurityDemo = () => {
   return (
     <DemoLayout
       tradeId="security"
-      tradeName="Bezpečnostní Služby"
+      tradeName="London Security Services"
       tradeIcon="🛡️"
       heroTitle={{
         cs: 'Vaše bezpečnost je naší prioritou',
