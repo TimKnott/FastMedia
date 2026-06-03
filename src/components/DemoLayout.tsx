@@ -539,6 +539,45 @@ const DemoLayout = ({
         </div>
       </section>
 
+      {/* Mid-page tasteful CTA — pre-selects this trade in the calculator */}
+      <section className="py-12 lg:py-16">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-card px-6 sm:px-10 py-8 sm:py-10 flex flex-col md:flex-row items-center gap-6"
+          >
+            <div className={`absolute -right-16 -top-16 w-64 h-64 rounded-full opacity-10 ${gradientClass}`} />
+            <div className={`shrink-0 w-14 h-14 ${gradientClass} rounded-2xl flex items-center justify-center text-3xl text-primary-foreground`}>
+              {tradeIcon}
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground">
+                {language === 'cs'
+                  ? `Líbí se vám tento web? Postavte si vlastní ${tradeName.toLowerCase()}.`
+                  : language === 'en'
+                  ? `Like this website? Build your own — tailored to ${tradeName}.`
+                  : `Gefällt Ihnen diese Seite? Bauen Sie Ihre eigene — zugeschnitten auf ${tradeName}.`}
+              </h3>
+              <p className="text-muted-foreground text-sm mt-1">
+                {language === 'cs'
+                  ? 'Kalkulačka už ví, že jste z tohoto oboru. Stačí přidat funkce, které potřebujete.'
+                  : language === 'en'
+                  ? "We'll pre-select your industry — just add the features you need and see the price live."
+                  : 'Wir wählen Ihre Branche vor — fügen Sie einfach die gewünschten Funktionen hinzu.'}
+              </p>
+            </div>
+            <Link to={`/calculator?trade=${tradeId}`} className="shrink-0">
+              <Button size="lg" className={`${gradientClass} text-primary-foreground font-semibold shadow-md`}>
+                {language === 'cs' ? 'Otevřít kalkulačku' : language === 'en' ? 'Open the calculator' : 'Kalkulator öffnen'}
+                <ChevronRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Booking Calendar */}
       <DemoBookingCalendar primaryColor={primaryColor} gradientClass={gradientClass} tradeName={tradeName} />
 
