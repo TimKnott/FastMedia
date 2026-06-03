@@ -44,8 +44,13 @@ type SpeechRecognitionLike = {
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
   const { openCheckout, checkoutElement } = useStripeCheckout();
-  const [step, setStep] = useState<Step>('trade');
-  const [selectedTrade, setSelectedTrade] = useState('');
+  const [searchParams] = useSearchParams();
+  const initialTrade = (() => {
+    const q = searchParams.get('trade');
+    return q && trades.some(tr => tr.id === q) ? q : '';
+  })();
+  const [step, setStep] = useState<Step>(initialTrade ? 'features' : 'trade');
+  const [selectedTrade, setSelectedTrade] = useState(initialTrade);
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
   const [specialRequest, setSpecialRequest] = useState('');
   const [specialResponse, setSpecialResponse] = useState<SpecialResponse | null>(null);
