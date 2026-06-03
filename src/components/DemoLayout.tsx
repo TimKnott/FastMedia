@@ -853,9 +853,13 @@ const DemoLayout = ({
                   +420 797 864 432
                 </Button>
               </a>
-              <Link to="/calculator">
+              <Link to={`/calculator?trade=${tradeId}`}>
                 <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-lg px-8">
-                  {t('demo.getquote')}
+                  {language === 'cs'
+                    ? `Spočítat svůj web`
+                    : language === 'en'
+                    ? `Build my ${tradeName} website`
+                    : `Meine Website kalkulieren`}
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
