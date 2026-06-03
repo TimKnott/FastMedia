@@ -764,7 +764,20 @@ const CalculatorPage = () => {
               {/* Step 2: Feature Selection */}
               {step === 'features' && (
                 <div>
-                  <h2 className="font-display text-2xl font-bold text-foreground mb-6">{l.selectFeatures}</h2>
+                  <h2 className="font-display text-2xl font-bold text-foreground mb-3">{l.selectFeatures}</h2>
+                  <div className="mb-6 flex items-center justify-between gap-3 p-3 rounded-xl border border-accent/30 bg-accent/5">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      {lang === 'cs'
+                        ? 'Nechcete odpovídat na další otázky? Přeskočte rovnou na kupón a platbu.'
+                        : lang === 'de'
+                        ? 'Keine Lust auf weitere Fragen? Direkt zum Gutschein & zur Zahlung.'
+                        : "Don't want to answer more questions? Jump straight to the coupon & checkout."}
+                    </p>
+                    <Button size="sm" variant="outline" onClick={continueToCheckout} className="shrink-0 border-accent/40 text-accent hover:bg-accent/10">
+                      <TicketPercent className="w-4 h-4 mr-2" />
+                      {lang === 'cs' ? 'Přeskočit' : lang === 'de' ? 'Überspringen' : 'Skip'}
+                    </Button>
+                  </div>
                   
                   {/* AI suggestions */}
                   {aiSuggestions.length > 0 && (
