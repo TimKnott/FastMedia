@@ -177,6 +177,36 @@ function buildHowToSchema(h?: ArticleJSON['howto']) {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
+  // Auth gate: only pg_cron / admins may trigger AI generation.
+  // Accept either the service role key or an explicit CRON_SECRET if configured.
+  const authHeader = req.headers.get('Authorization') ?? '';
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+  const cronSecret = Deno.env.get('CRON_SECRET') ?? '';
+  const allowed = token.length > 0 && (token === serviceRoleKey || (cronSecret && token === cronSecret));
+  if (!allowed) {
+    // Validate it is at least a signed Supabase JWT for an admin user before
+    // allowing manual triggers from the admin UI (e.g. seo-run-now).
+    const supabaseUser = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const { data: claims } = await supabaseUser.auth.getClaims(token);
+    const uid = claims?.claims?.sub;
+    let isAdmin = false;
+    if (uid) {
+      const adminClient = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+      const { data: roleOk } = await adminClient.rpc('has_role', { _user_id: uid, _role: 'editor' });
+      isAdmin = roleOk === true;
+    }
+    if (!isAdmin) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
   const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const { data: logRow } = await admin.from('blog_generation_log').insert({ status: 'running' }).select('id').single();
   const logId = (logRow as { id?: string } | null)?.id;
