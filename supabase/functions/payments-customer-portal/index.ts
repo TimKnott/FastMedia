@@ -1,7 +1,8 @@
-// Creates a Stripe Billing Portal session.
-// Body: { customer_id?: string, email?: string, return_url?: string, environment: 'sandbox'|'live' }
+// Creates a Stripe Billing Portal session for the AUTHENTICATED user only.
+// Body: { return_url?: string, environment: 'sandbox'|'live' }
 // Returns: { url: string }
 
+import { createClient } from "npm:@supabase/supabase-js@2";
 import { createStripeClient, type StripeEnv } from "../_shared/stripe.ts";
 
 const corsHeaders = {
@@ -24,56 +25,73 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Require an authenticated Supabase user.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const userClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const { data: userData, error: userErr } = await userClient.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const user = userData.user;
+
     const body = await req.json().catch(() => ({}));
-    const {
-      customer_id,
-      email,
-      return_url,
-      environment,
-    } = body as {
-      customer_id?: string;
-      email?: string;
+    const { return_url, environment } = body as {
       return_url?: string;
       environment?: StripeEnv;
     };
-
     const env: StripeEnv = environment === "live" ? "live" : "sandbox";
 
-    if (!customer_id && !email) {
-      return new Response(
-        JSON.stringify({ error: "customer_id or email is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
+    // Resolve the Stripe customer ID strictly from data owned by the authed user.
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
+    let resolvedCustomerId: string | undefined;
+    const { data: sub } = await admin
+      .from("subscriptions")
+      .select("stripe_customer_id")
+      .eq("user_id", user.id)
+      .eq("environment", env)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    resolvedCustomerId = (sub as { stripe_customer_id?: string } | null)?.stripe_customer_id ?? undefined;
 
     const stripe = createStripeClient(env);
 
-    let resolvedCustomerId = customer_id;
-    if (!resolvedCustomerId && email) {
-      const normalized = email.toLowerCase().trim();
-      const found = await stripe.customers.list({ email: normalized, limit: 1 });
-      if (found.data.length === 0) {
-        console.warn("[payments-customer-portal] no customer for email", normalized);
-        return new Response(
-          JSON.stringify({
-            error: "No customer found for this email. Please complete a purchase first.",
-          }),
-          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
-      }
-      resolvedCustomerId = found.data[0].id;
+    // Fallback: look up Stripe customer by the authenticated user's verified email only.
+    if (!resolvedCustomerId && user.email) {
+      const found = await stripe.customers.list({ email: user.email.toLowerCase().trim(), limit: 1 });
+      if (found.data.length > 0) resolvedCustomerId = found.data[0].id;
+    }
+
+    if (!resolvedCustomerId) {
+      return new Response(
+        JSON.stringify({ error: "No Stripe customer found for your account. Please complete a purchase first." }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const origin = req.headers.get("origin") ?? "https://fastmedia.pro";
     const portal = await stripe.billingPortal.sessions.create({
-      customer: resolvedCustomerId!,
+      customer: resolvedCustomerId,
       return_url: return_url || `${origin}/account`,
     });
 
-    console.log("[payments-customer-portal] created", {
-      env,
-      customer: resolvedCustomerId,
-    });
+    console.log("[payments-customer-portal] created", { env, user: user.id });
 
     return new Response(JSON.stringify({ url: portal.url }), {
       status: 200,
