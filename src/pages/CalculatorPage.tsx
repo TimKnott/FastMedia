@@ -258,12 +258,16 @@ const CalculatorPage = () => {
   const checkoutTotalToday = discountedOneTime + discountedAnnualHosting;
   const totalAnnualDiscount = oneTimeDiscount + monthlyDiscount * 12;
 
+  // Promo coupon window — kept under 3 hours to create urgency
+  const PROMO_CODE = 'PROMO-90';
+  const PROMO_WINDOW_SECONDS = 2 * 60 * 60 + 55 * 60; // 2h 55m
   const [couponDeadline, setCouponDeadline] = useState<number | null>(null);
-  const [couponSecondsLeft, setCouponSecondsLeft] = useState(3 * 60 * 60);
+  const [couponSecondsLeft, setCouponSecondsLeft] = useState(PROMO_WINDOW_SECONDS);
+  const [promoCopied, setPromoCopied] = useState(false);
 
   useEffect(() => {
     if (!couponDeadline) {
-      setCouponSecondsLeft(3 * 60 * 60);
+      setCouponSecondsLeft(PROMO_WINDOW_SECONDS);
       return;
     }
     const tick = () => setCouponSecondsLeft(Math.max(0, Math.ceil((couponDeadline - Date.now()) / 1000)));
@@ -274,9 +278,21 @@ const CalculatorPage = () => {
 
   const startCouponWindow = () => {
     if (couponDeadline) return;
-    const deadline = Date.now() + 3 * 60 * 60 * 1000;
+    const deadline = Date.now() + PROMO_WINDOW_SECONDS * 1000;
     setCouponDeadline(deadline);
-    setCouponSecondsLeft(3 * 60 * 60);
+    setCouponSecondsLeft(PROMO_WINDOW_SECONDS);
+  };
+
+  const copyPromoCode = async () => {
+    try {
+      await navigator.clipboard.writeText(PROMO_CODE);
+      setPromoCopied(true);
+      setCouponInput(PROMO_CODE);
+      setTimeout(() => setPromoCopied(false), 2000);
+      toast({ title: lang === 'cs' ? 'Kód zkopírován' : lang === 'de' ? 'Code kopiert' : 'Code copied' });
+    } catch {
+      toast({ title: lang === 'cs' ? 'Nelze zkopírovat' : lang === 'de' ? 'Kopieren fehlgeschlagen' : 'Copy failed', variant: 'destructive' });
+    }
   };
 
   const formatCountdown = (seconds: number) => {
