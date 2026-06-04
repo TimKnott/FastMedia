@@ -1256,10 +1256,58 @@ const CalculatorPage = () => {
                   
                   <div className="space-y-3">
                     {/* Base */}
-                    <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
-                      <span className="text-sm font-medium">🌐 {l.baseWebsite}</span>
-                      <span className="font-bold text-sm">{formatPrice(BASE_WEBSITE_PRICE)} Kč</span>
+                    <div className="rounded-lg bg-muted/50 border border-border/60 overflow-hidden">
+                      <div className="flex justify-between items-center p-3">
+                        <span className="text-sm font-medium">🌐 {l.baseWebsite}</span>
+                        <span className="font-bold text-sm">{formatPrice(BASE_WEBSITE_PRICE)} Kč</span>
+                      </div>
+                      <div className="px-3 pb-3 pt-0">
+                        <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2">
+                          {lang === 'cs' ? 'V ceně základního webu' : lang === 'de' ? 'Im Basispaket enthalten' : "What's included"}
+                        </p>
+                        <ul className="grid sm:grid-cols-2 gap-x-3 gap-y-1.5 text-xs text-foreground/90">
+                          {(lang === 'cs'
+                            ? [
+                                'Až 5 stránek (Úvod, O nás, Služby, Galerie, Kontakt)',
+                                'Responzivní design pro mobil i tablet',
+                                'SSL certifikát (HTTPS)',
+                                '12 měsíců hostingu předem',
+                                'Základní on-page SEO',
+                                'GDPR cookie lišta',
+                                'Kontaktní údaje a mapa',
+                                'Rychlé načítání a optimalizace',
+                              ]
+                            : lang === 'de'
+                            ? [
+                                'Bis zu 5 Seiten (Start, Über uns, Leistungen, Galerie, Kontakt)',
+                                'Responsives Design für Mobile & Tablet',
+                                'SSL-Zertifikat (HTTPS)',
+                                '12 Monate Hosting im Voraus',
+                                'Grundlegende On-Page-SEO',
+                                'DSGVO-Cookie-Banner',
+                                'Kontaktdaten & Karte',
+                                'Schnelle Ladezeit & Optimierung',
+                              ]
+                            : [
+                                'Up to 5 pages (Home, About, Services, Gallery, Contact)',
+                                'Fully responsive mobile & tablet design',
+                                'SSL certificate (HTTPS)',
+                                '12 months hosting prepaid',
+                                'Basic on-page SEO setup',
+                                'GDPR cookie banner',
+                                'Business contact details & map',
+                                'Performance optimisation',
+                              ]
+                          ).map((item) => (
+                            <li key={item} className="flex items-start gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-accent mt-0.5 shrink-0" />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
+
 
                     {/* Features */}
                     {selectedFeatures.map(sf => {
