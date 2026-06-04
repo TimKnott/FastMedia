@@ -1362,28 +1362,53 @@ const CalculatorPage = () => {
                       </div>
                     )}
 
-                    <div className="mt-4 p-4 rounded-xl border border-accent/30 bg-accent/10">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="mt-4 p-4 rounded-xl border-2 border-accent/40 bg-gradient-to-br from-accent/15 via-accent/5 to-transparent shadow-md">
+                      <div className="flex flex-col gap-3">
                         <div className="flex items-start gap-3">
                           <TicketPercent className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                          <div>
+                          <div className="flex-1">
                             <p className="font-semibold text-foreground">
-                              {lang === 'cs' ? 'Slevový kód je rezervovaný jen 3 hodiny' : lang === 'de' ? 'Ihr Rabattcode ist nur 3 Stunden reserviert' : 'Your discount code is reserved for only 3 hours'}
+                              {lang === 'cs' ? 'Sleva 90 % — platí jen 3 hodiny' : lang === 'de' ? '90 % Rabatt — nur 3 Stunden gültig' : '90% off — valid for only 3 hours'}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
                               {lang === 'cs'
-                                ? 'Zadejte kupón níže a objednejte před vypršením času, abyste využili výraznou slevu.'
+                                ? 'Zkopírujte kód níže a vložte ho do pole. Cena se okamžitě přepočítá.'
                                 : lang === 'de'
-                                ? 'Geben Sie den Gutschein unten ein und bestellen Sie vor Ablauf der Zeit, um den hohen Rabatt zu sichern.'
-                                : 'Enter the coupon below and order before the timer ends to secure the discount.'}
+                                ? 'Kopieren Sie den Code unten und fügen Sie ihn in das Feld ein. Der Preis wird sofort neu berechnet.'
+                                : 'Copy the code below and paste it into the field. Your total will update instantly.'}
                             </p>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-background/80 border border-border px-3 py-2 text-center shrink-0">
-                          <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
-                            {lang === 'cs' ? 'Zbývá' : lang === 'de' ? 'Verbleibend' : 'Time left'}
-                          </span>
-                          <span className="font-display text-lg font-bold text-accent tabular-nums">{formatCountdown(couponSecondsLeft)}</span>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={copyPromoCode}
+                            className="group flex-1 inline-flex items-center justify-between gap-3 rounded-lg border-2 border-dashed border-accent/60 bg-background px-4 py-3 font-mono text-base font-bold text-accent transition hover:bg-accent/10"
+                          >
+                            <span className="tracking-wider">{PROMO_CODE}</span>
+                            <span className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-muted-foreground group-hover:text-accent">
+                              {promoCopied
+                                ? (lang === 'cs' ? 'Zkopírováno' : lang === 'de' ? 'Kopiert' : 'Copied')
+                                : (lang === 'cs' ? 'Kopírovat' : lang === 'de' ? 'Kopieren' : 'Copy')}
+                              {promoCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                            </span>
+                          </button>
+                          <Button
+                            size="sm"
+                            onClick={() => { setCouponInput(PROMO_CODE); setTimeout(applyCoupon, 50); }}
+                            disabled={couponLoading || !!appliedCoupon}
+                            className="h-11 sm:h-auto"
+                          >
+                            {appliedCoupon
+                              ? (lang === 'cs' ? 'Uplatněno' : lang === 'de' ? 'Angewendet' : 'Applied')
+                              : (lang === 'cs' ? 'Použít kód' : lang === 'de' ? 'Code anwenden' : 'Use code')}
+                          </Button>
+                          <div className="rounded-lg bg-background/90 border border-border px-3 py-2 text-center shrink-0">
+                            <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
+                              {lang === 'cs' ? 'Zbývá' : lang === 'de' ? 'Verbleibend' : 'Time left'}
+                            </span>
+                            <span className="font-display text-base font-bold text-accent tabular-nums">{formatCountdown(couponSecondsLeft)}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
