@@ -1445,7 +1445,7 @@ const CalculatorPage = () => {
                   setAppliedCoupon(null);
                   setCouponInput('');
                   setCouponDeadline(null);
-                  setCouponSecondsLeft(3 * 60 * 60);
+                  setCouponSecondsLeft(PROMO_WINDOW_SECONDS);
                 }}
               >
                 {l.startOver}
