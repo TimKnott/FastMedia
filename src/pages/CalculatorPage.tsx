@@ -302,6 +302,14 @@ const CalculatorPage = () => {
     return `${h}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
   };
 
+  // Auto-start the urgency countdown the moment the user lands on the summary
+  useEffect(() => {
+    if (step === 'summary') startCouponWindow();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
+
+
   const buildStaticIntentBrief = () => {
     const intent = {
       timeline: projectTimeline || null,
