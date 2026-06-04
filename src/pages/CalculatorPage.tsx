@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CreditCard } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CreditCard, Copy, Check } from 'lucide-react';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
@@ -258,12 +258,16 @@ const CalculatorPage = () => {
   const checkoutTotalToday = discountedOneTime + discountedAnnualHosting;
   const totalAnnualDiscount = oneTimeDiscount + monthlyDiscount * 12;
 
+  // Promo coupon window — kept under 3 hours to create urgency
+  const PROMO_CODE = 'PROMO-90';
+  const PROMO_WINDOW_SECONDS = 2 * 60 * 60 + 55 * 60; // 2h 55m
   const [couponDeadline, setCouponDeadline] = useState<number | null>(null);
-  const [couponSecondsLeft, setCouponSecondsLeft] = useState(3 * 60 * 60);
+  const [couponSecondsLeft, setCouponSecondsLeft] = useState(PROMO_WINDOW_SECONDS);
+  const [promoCopied, setPromoCopied] = useState(false);
 
   useEffect(() => {
     if (!couponDeadline) {
-      setCouponSecondsLeft(3 * 60 * 60);
+      setCouponSecondsLeft(PROMO_WINDOW_SECONDS);
       return;
     }
     const tick = () => setCouponSecondsLeft(Math.max(0, Math.ceil((couponDeadline - Date.now()) / 1000)));
@@ -274,9 +278,21 @@ const CalculatorPage = () => {
 
   const startCouponWindow = () => {
     if (couponDeadline) return;
-    const deadline = Date.now() + 3 * 60 * 60 * 1000;
+    const deadline = Date.now() + PROMO_WINDOW_SECONDS * 1000;
     setCouponDeadline(deadline);
-    setCouponSecondsLeft(3 * 60 * 60);
+    setCouponSecondsLeft(PROMO_WINDOW_SECONDS);
+  };
+
+  const copyPromoCode = async () => {
+    try {
+      await navigator.clipboard.writeText(PROMO_CODE);
+      setPromoCopied(true);
+      setCouponInput(PROMO_CODE);
+      setTimeout(() => setPromoCopied(false), 2000);
+      toast({ title: lang === 'cs' ? 'Kód zkopírován' : lang === 'de' ? 'Code kopiert' : 'Code copied' });
+    } catch {
+      toast({ title: lang === 'cs' ? 'Nelze zkopírovat' : lang === 'de' ? 'Kopieren fehlgeschlagen' : 'Copy failed', variant: 'destructive' });
+    }
   };
 
   const formatCountdown = (seconds: number) => {
@@ -285,6 +301,14 @@ const CalculatorPage = () => {
     const sec = seconds % 60;
     return `${h}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
   };
+
+  // Auto-start the urgency countdown the moment the user lands on the summary
+  useEffect(() => {
+    if (step === 'summary') startCouponWindow();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
+
 
   const buildStaticIntentBrief = () => {
     const intent = {
@@ -1162,7 +1186,55 @@ const CalculatorPage = () => {
               {/* Step 5: Summary */}
               {step === 'summary' && (
                 <div>
-                  <h2 className="font-display text-2xl font-bold text-foreground mb-6">{l.summaryTitle}</h2>
+                  <h2 className="font-display text-2xl font-bold text-foreground mb-4">{l.summaryTitle}</h2>
+
+                  {/* Promo coupon — copy & countdown (top of summary) */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-6 rounded-2xl border-2 border-accent/40 bg-gradient-to-br from-accent/15 via-accent/5 to-transparent p-5 shadow-lg"
+                  >
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/20">
+                          <TicketPercent className="h-5 w-5 text-accent" />
+                        </div>
+                        <div>
+                          <p className="font-display text-base font-bold text-foreground">
+                            {lang === 'cs'
+                              ? 'Sleva 90 % — platí jen krátce'
+                              : lang === 'de'
+                              ? '90 % Rabatt — nur kurze Zeit'
+                              : '90% off — limited time offer'}
+                          </p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            {lang === 'cs'
+                              ? 'Zkopírujte kód a vložte ho do pole níže před vypršením času.'
+                              : lang === 'de'
+                              ? 'Kopieren Sie den Code und fügen Sie ihn unten ein, bevor die Zeit abläuft.'
+                              : 'Copy the code and paste it into the field below before time runs out.'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={copyPromoCode}
+                          className="group inline-flex items-center gap-2 rounded-lg border border-accent/50 bg-background px-3 py-2 font-mono text-sm font-bold text-accent transition hover:bg-accent/10"
+                        >
+                          {PROMO_CODE}
+                          {promoCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4 opacity-70 group-hover:opacity-100" />}
+                        </button>
+                        <div className="rounded-lg bg-background/90 border border-border px-3 py-2 text-center">
+                          <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
+                            {lang === 'cs' ? 'Zbývá' : lang === 'de' ? 'Verbleibend' : 'Ends in'}
+                          </span>
+                          <span className="font-display text-base font-bold text-accent tabular-nums">{formatCountdown(couponSecondsLeft)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+
 
                   {/* Lead score badge */}
                   {leadResult && (
@@ -1184,10 +1256,58 @@ const CalculatorPage = () => {
                   
                   <div className="space-y-3">
                     {/* Base */}
-                    <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
-                      <span className="text-sm font-medium">🌐 {l.baseWebsite}</span>
-                      <span className="font-bold text-sm">{formatPrice(BASE_WEBSITE_PRICE)} Kč</span>
+                    <div className="rounded-lg bg-muted/50 border border-border/60 overflow-hidden">
+                      <div className="flex justify-between items-center p-3">
+                        <span className="text-sm font-medium">🌐 {l.baseWebsite}</span>
+                        <span className="font-bold text-sm">{formatPrice(BASE_WEBSITE_PRICE)} Kč</span>
+                      </div>
+                      <div className="px-3 pb-3 pt-0">
+                        <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2">
+                          {lang === 'cs' ? 'V ceně základního webu' : lang === 'de' ? 'Im Basispaket enthalten' : "What's included"}
+                        </p>
+                        <ul className="grid sm:grid-cols-2 gap-x-3 gap-y-1.5 text-xs text-foreground/90">
+                          {(lang === 'cs'
+                            ? [
+                                'Až 5 stránek (Úvod, O nás, Služby, Galerie, Kontakt)',
+                                'Responzivní design pro mobil i tablet',
+                                'SSL certifikát (HTTPS)',
+                                '12 měsíců hostingu předem',
+                                'Základní on-page SEO',
+                                'GDPR cookie lišta',
+                                'Kontaktní údaje a mapa',
+                                'Rychlé načítání a optimalizace',
+                              ]
+                            : lang === 'de'
+                            ? [
+                                'Bis zu 5 Seiten (Start, Über uns, Leistungen, Galerie, Kontakt)',
+                                'Responsives Design für Mobile & Tablet',
+                                'SSL-Zertifikat (HTTPS)',
+                                '12 Monate Hosting im Voraus',
+                                'Grundlegende On-Page-SEO',
+                                'DSGVO-Cookie-Banner',
+                                'Kontaktdaten & Karte',
+                                'Schnelle Ladezeit & Optimierung',
+                              ]
+                            : [
+                                'Up to 5 pages (Home, About, Services, Gallery, Contact)',
+                                'Fully responsive mobile & tablet design',
+                                'SSL certificate (HTTPS)',
+                                '12 months hosting prepaid',
+                                'Basic on-page SEO setup',
+                                'GDPR cookie banner',
+                                'Business contact details & map',
+                                'Performance optimisation',
+                              ]
+                          ).map((item) => (
+                            <li key={item} className="flex items-start gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-accent mt-0.5 shrink-0" />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
+
 
                     {/* Features */}
                     {selectedFeatures.map(sf => {
@@ -1429,7 +1549,7 @@ const CalculatorPage = () => {
                   setAppliedCoupon(null);
                   setCouponInput('');
                   setCouponDeadline(null);
-                  setCouponSecondsLeft(3 * 60 * 60);
+                  setCouponSecondsLeft(PROMO_WINDOW_SECONDS);
                 }}
               >
                 {l.startOver}
