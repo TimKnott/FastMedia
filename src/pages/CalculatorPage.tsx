@@ -1186,7 +1186,55 @@ const CalculatorPage = () => {
               {/* Step 5: Summary */}
               {step === 'summary' && (
                 <div>
-                  <h2 className="font-display text-2xl font-bold text-foreground mb-6">{l.summaryTitle}</h2>
+                  <h2 className="font-display text-2xl font-bold text-foreground mb-4">{l.summaryTitle}</h2>
+
+                  {/* Promo coupon — copy & countdown (top of summary) */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-6 rounded-2xl border-2 border-accent/40 bg-gradient-to-br from-accent/15 via-accent/5 to-transparent p-5 shadow-lg"
+                  >
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/20">
+                          <TicketPercent className="h-5 w-5 text-accent" />
+                        </div>
+                        <div>
+                          <p className="font-display text-base font-bold text-foreground">
+                            {lang === 'cs'
+                              ? 'Sleva 90 % — platí jen krátce'
+                              : lang === 'de'
+                              ? '90 % Rabatt — nur kurze Zeit'
+                              : '90% off — limited time offer'}
+                          </p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            {lang === 'cs'
+                              ? 'Zkopírujte kód a vložte ho do pole níže před vypršením času.'
+                              : lang === 'de'
+                              ? 'Kopieren Sie den Code und fügen Sie ihn unten ein, bevor die Zeit abläuft.'
+                              : 'Copy the code and paste it into the field below before time runs out.'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={copyPromoCode}
+                          className="group inline-flex items-center gap-2 rounded-lg border border-accent/50 bg-background px-3 py-2 font-mono text-sm font-bold text-accent transition hover:bg-accent/10"
+                        >
+                          {PROMO_CODE}
+                          {promoCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4 opacity-70 group-hover:opacity-100" />}
+                        </button>
+                        <div className="rounded-lg bg-background/90 border border-border px-3 py-2 text-center">
+                          <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
+                            {lang === 'cs' ? 'Zbývá' : lang === 'de' ? 'Verbleibend' : 'Ends in'}
+                          </span>
+                          <span className="font-display text-base font-bold text-accent tabular-nums">{formatCountdown(couponSecondsLeft)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+
 
                   {/* Lead score badge */}
                   {leadResult && (
