@@ -93,12 +93,11 @@ const EmbedCodeInjector = () => {
 
       scripts.forEach(oldScript => {
         const newScript = document.createElement('script');
+        // Allow-list of safe script attributes. Event-handler attributes like
+        // onload/onerror are stripped to avoid executing DB-sourced strings.
+        const SAFE_ATTRS = new Set(['src', 'async', 'defer', 'type', 'id', 'crossorigin', 'integrity', 'nonce', 'referrerpolicy']);
         Array.from(oldScript.attributes).forEach(attr => {
-          if (attr.name === 'onload') {
-            newScript.onload = () => new Function(attr.value)();
-          } else if (attr.name === 'onerror') {
-            newScript.onerror = () => new Function(attr.value)();
-          } else {
+          if (SAFE_ATTRS.has(attr.name.toLowerCase())) {
             newScript.setAttribute(attr.name, attr.value);
           }
         });
