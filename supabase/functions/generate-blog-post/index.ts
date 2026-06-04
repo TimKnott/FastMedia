@@ -250,6 +250,32 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
+    // Auth gate: require service-role (cron) OR an authenticated admin/editor user.
+    const authHeader = req.headers.get('Authorization') ?? ''
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    const cronSecret = Deno.env.get('CRON_SECRET') ?? ''
+    let isServiceCaller = token.length > 0 && (token === serviceRoleKey || (cronSecret !== '' && token === cronSecret))
+    let isAdmin = false
+    if (!isServiceCaller) {
+      const userClient = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_ANON_KEY')!,
+        { global: { headers: { Authorization: authHeader } } },
+      )
+      const { data: claims } = await userClient.auth.getClaims(token)
+      const uid = claims?.claims?.sub
+      if (uid) {
+        const { data: roleOk } = await supabase.rpc('has_role', { _user_id: uid, _role: 'editor' })
+        isAdmin = roleOk === true
+      }
+    }
+    if (!isServiceCaller && !isAdmin) {
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
     let body: { topic?: string; autoPublish?: boolean } = {}
     try {
       body = await req.json()
@@ -257,7 +283,9 @@ Deno.serve(async (req) => {
       // empty body is ok (cron call)
     }
     const topic = pickTopic(body.topic)
-    const autoPublish = body.autoPublish === true
+    // Only admins may auto-publish. Cron always inserts as draft for review.
+    const autoPublish = body.autoPublish === true && isAdmin
+
 
     console.log('[generate-blog-post] topic:', topic)
 
