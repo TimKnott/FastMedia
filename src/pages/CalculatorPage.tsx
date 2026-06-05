@@ -859,7 +859,7 @@ const CalculatorPage = () => {
     for (let p = 1; p <= totalPages; p++) {
       doc.setPage(p);
       // Clear previous footer area in case placeholder was drawn
-      doc.setFillColor(255);
+      doc.setFillColor(255, 255, 255);
       doc.rect(0, pageH - 80, pageW, 80, 'F');
       drawFooter(p, totalPages);
     }
