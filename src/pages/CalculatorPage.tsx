@@ -864,8 +864,48 @@ const CalculatorPage = () => {
       drawFooter(p, totalPages);
     }
 
+    return { doc, quoteId };
+  };
+
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
+  const [pdfPreviewLoading, setPdfPreviewLoading] = useState(false);
+  const [lastBuiltQuoteId, setLastBuiltQuoteId] = useState<string>('');
+
+  const previewQuote = async () => {
+    setPdfPreviewLoading(true);
+    try {
+      const { doc, quoteId } = await buildQuotePdf();
+      const url = doc.output('bloburl') as unknown as string;
+      if (pdfPreviewUrl) URL.revokeObjectURL(pdfPreviewUrl);
+      setLastBuiltQuoteId(quoteId);
+      setPdfPreviewUrl(url);
+    } catch (e) {
+      console.error(e);
+      toast({ title: lang === 'cs' ? 'Náhled se nepodařilo vytvořit' : lang === 'de' ? 'Vorschau fehlgeschlagen' : 'Preview failed', variant: 'destructive' });
+    } finally {
+      setPdfPreviewLoading(false);
+    }
+  };
+
+  const exportQuote = async () => {
+    const { doc, quoteId } = await buildQuotePdf();
     doc.save(`fastmedia-quote-${quoteId}.pdf`);
     toast({ title: lang === 'cs' ? 'PDF staženo!' : lang === 'de' ? 'PDF heruntergeladen!' : 'PDF downloaded!' });
+  };
+
+  const downloadFromPreview = () => {
+    if (!pdfPreviewUrl) return;
+    const a = document.createElement('a');
+    a.href = pdfPreviewUrl;
+    a.download = `fastmedia-quote-${lastBuiltQuoteId || Date.now()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const closePreview = () => {
+    if (pdfPreviewUrl) URL.revokeObjectURL(pdfPreviewUrl);
+    setPdfPreviewUrl(null);
   };
 
 
