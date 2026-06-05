@@ -519,8 +519,8 @@ const CalculatorPage = () => {
     }
   };
 
-  // Export quote as a polished, branded PDF (template-driven)
-  const exportQuote = async () => {
+  // Build the polished, branded quote PDF (template-driven)
+  const buildQuotePdf = async (): Promise<{ doc: jsPDF; quoteId: string }> => {
     const tradeObj = trades.find(t => t.id === selectedTrade);
     const tradeName = tradeObj ? t(tradeObj.nameKey) : selectedTrade;
 
