@@ -1973,6 +1973,40 @@ const CalculatorPage = () => {
       </div>
       <Footer />
       {checkoutElement}
+      <Dialog open={!!pdfPreviewUrl} onOpenChange={(o) => { if (!o) closePreview(); }}>
+        <DialogContent className="max-w-5xl w-[95vw] h-[90vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-6 pt-5 pb-3 border-b border-border">
+            <DialogTitle>
+              {lang === 'cs' ? 'Náhled vaší nabídky' : lang === 'de' ? 'Vorschau Ihres Angebots' : 'Quote PDF preview'}
+            </DialogTitle>
+            <p className="text-xs text-muted-foreground mt-1">
+              {lang === 'cs'
+                ? 'Zkontrolujte šablonu, poté stáhněte finální PDF.'
+                : lang === 'de'
+                ? 'Überprüfen Sie die Vorlage und laden Sie dann das finale PDF herunter.'
+                : 'Review the template, then download the final PDF.'}
+            </p>
+          </DialogHeader>
+          <div className="flex-1 bg-muted overflow-hidden">
+            {pdfPreviewUrl && (
+              <iframe
+                src={pdfPreviewUrl}
+                title="Quote preview"
+                className="w-full h-full border-0"
+              />
+            )}
+          </div>
+          <DialogFooter className="px-6 py-4 border-t border-border">
+            <Button variant="outline" onClick={closePreview}>
+              {lang === 'cs' ? 'Zavřít' : lang === 'de' ? 'Schließen' : 'Close'}
+            </Button>
+            <Button onClick={downloadFromPreview} className="gradient-primary text-primary-foreground">
+              <Download className="w-4 h-4 mr-2" />
+              {lang === 'cs' ? 'Stáhnout PDF' : lang === 'de' ? 'PDF herunterladen' : 'Download PDF'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
