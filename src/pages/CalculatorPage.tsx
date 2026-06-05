@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Eye } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -519,8 +521,8 @@ const CalculatorPage = () => {
     }
   };
 
-  // Export quote as a polished, branded PDF (template-driven)
-  const exportQuote = async () => {
+  // Build the polished, branded quote PDF (template-driven)
+  const buildQuotePdf = async (): Promise<{ doc: jsPDF; quoteId: string }> => {
     const tradeObj = trades.find(t => t.id === selectedTrade);
     const tradeName = tradeObj ? t(tradeObj.nameKey) : selectedTrade;
 
@@ -864,8 +866,48 @@ const CalculatorPage = () => {
       drawFooter(p, totalPages);
     }
 
+    return { doc, quoteId };
+  };
+
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
+  const [pdfPreviewLoading, setPdfPreviewLoading] = useState(false);
+  const [lastBuiltQuoteId, setLastBuiltQuoteId] = useState<string>('');
+
+  const previewQuote = async () => {
+    setPdfPreviewLoading(true);
+    try {
+      const { doc, quoteId } = await buildQuotePdf();
+      const url = doc.output('bloburl') as unknown as string;
+      if (pdfPreviewUrl) URL.revokeObjectURL(pdfPreviewUrl);
+      setLastBuiltQuoteId(quoteId);
+      setPdfPreviewUrl(url);
+    } catch (e) {
+      console.error(e);
+      toast({ title: lang === 'cs' ? 'Náhled se nepodařilo vytvořit' : lang === 'de' ? 'Vorschau fehlgeschlagen' : 'Preview failed', variant: 'destructive' });
+    } finally {
+      setPdfPreviewLoading(false);
+    }
+  };
+
+  const exportQuote = async () => {
+    const { doc, quoteId } = await buildQuotePdf();
     doc.save(`fastmedia-quote-${quoteId}.pdf`);
     toast({ title: lang === 'cs' ? 'PDF staženo!' : lang === 'de' ? 'PDF heruntergeladen!' : 'PDF downloaded!' });
+  };
+
+  const downloadFromPreview = () => {
+    if (!pdfPreviewUrl) return;
+    const a = document.createElement('a');
+    a.href = pdfPreviewUrl;
+    a.download = `fastmedia-quote-${lastBuiltQuoteId || Date.now()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const closePreview = () => {
+    if (pdfPreviewUrl) URL.revokeObjectURL(pdfPreviewUrl);
+    setPdfPreviewUrl(null);
   };
 
 
@@ -1759,6 +1801,12 @@ const CalculatorPage = () => {
                         ? `Jetzt ${formatPrice(checkoutTotalToday)} Kč bezahlen`
                         : `Pay ${formatPrice(checkoutTotalToday)} CZK now`}
                     </Button>
+                    <Button onClick={previewQuote} variant="outline" disabled={pdfPreviewLoading}>
+                      <Eye className="w-4 h-4 mr-2" />
+                      {pdfPreviewLoading
+                        ? (lang === 'cs' ? 'Načítám…' : lang === 'de' ? 'Lädt…' : 'Loading…')
+                        : (lang === 'cs' ? 'Náhled PDF' : lang === 'de' ? 'PDF-Vorschau' : 'Preview PDF')}
+                    </Button>
                     <Button onClick={exportQuote} variant="outline">
                       <Download className="w-4 h-4 mr-2" />
                       {l.exportPdf}
@@ -1925,6 +1973,40 @@ const CalculatorPage = () => {
       </div>
       <Footer />
       {checkoutElement}
+      <Dialog open={!!pdfPreviewUrl} onOpenChange={(o) => { if (!o) closePreview(); }}>
+        <DialogContent className="max-w-5xl w-[95vw] h-[90vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-6 pt-5 pb-3 border-b border-border">
+            <DialogTitle>
+              {lang === 'cs' ? 'Náhled vaší nabídky' : lang === 'de' ? 'Vorschau Ihres Angebots' : 'Quote PDF preview'}
+            </DialogTitle>
+            <p className="text-xs text-muted-foreground mt-1">
+              {lang === 'cs'
+                ? 'Zkontrolujte šablonu, poté stáhněte finální PDF.'
+                : lang === 'de'
+                ? 'Überprüfen Sie die Vorlage und laden Sie dann das finale PDF herunter.'
+                : 'Review the template, then download the final PDF.'}
+            </p>
+          </DialogHeader>
+          <div className="flex-1 bg-muted overflow-hidden">
+            {pdfPreviewUrl && (
+              <iframe
+                src={pdfPreviewUrl}
+                title="Quote preview"
+                className="w-full h-full border-0"
+              />
+            )}
+          </div>
+          <DialogFooter className="px-6 py-4 border-t border-border">
+            <Button variant="outline" onClick={closePreview}>
+              {lang === 'cs' ? 'Zavřít' : lang === 'de' ? 'Schließen' : 'Close'}
+            </Button>
+            <Button onClick={downloadFromPreview} className="gradient-primary text-primary-foreground">
+              <Download className="w-4 h-4 mr-2" />
+              {lang === 'cs' ? 'Stáhnout PDF' : lang === 'de' ? 'PDF herunterladen' : 'Download PDF'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
