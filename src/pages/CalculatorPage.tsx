@@ -1801,6 +1801,12 @@ const CalculatorPage = () => {
                         ? `Jetzt ${formatPrice(checkoutTotalToday)} Kč bezahlen`
                         : `Pay ${formatPrice(checkoutTotalToday)} CZK now`}
                     </Button>
+                    <Button onClick={previewQuote} variant="outline" disabled={pdfPreviewLoading}>
+                      <Eye className="w-4 h-4 mr-2" />
+                      {pdfPreviewLoading
+                        ? (lang === 'cs' ? 'Načítám…' : lang === 'de' ? 'Lädt…' : 'Loading…')
+                        : (lang === 'cs' ? 'Náhled PDF' : lang === 'de' ? 'PDF-Vorschau' : 'Preview PDF')}
+                    </Button>
                     <Button onClick={exportQuote} variant="outline">
                       <Download className="w-4 h-4 mr-2" />
                       {l.exportPdf}
