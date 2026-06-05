@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Eye } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
