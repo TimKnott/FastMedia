@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CreditCard, Copy, Check } from 'lucide-react';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import jsPDF from 'jspdf';
+import logoUrl from '@/assets/logo.jpeg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
