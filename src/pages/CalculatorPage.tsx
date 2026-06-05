@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Mic, MicOff, Plus, Minus, Trash2, Sparkles, Download, Send, MessageSquare, Calculator as CalcIcon, ChevronRight, User, Mail, Phone, Shield, CheckCircle2, TrendingUp, TicketPercent, X, CreditCard, Copy, Check } from 'lucide-react';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import jsPDF from 'jspdf';
+import logoUrl from '@/assets/logo.jpeg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -518,88 +519,355 @@ const CalculatorPage = () => {
     }
   };
 
-  // Export quote as a polished PDF
-  const exportQuote = () => {
+  // Export quote as a polished, branded PDF (template-driven)
+  const exportQuote = async () => {
     const tradeObj = trades.find(t => t.id === selectedTrade);
     const tradeName = tradeObj ? t(tradeObj.nameKey) : selectedTrade;
+
+    // --- Brand palette ---
+    const NAVY: [number, number, number] = [11, 27, 59];
+    const NAVY_SOFT: [number, number, number] = [30, 50, 92];
+    const CORAL: [number, number, number] = [255, 107, 90];
+    const INK: [number, number, number] = [24, 31, 47];
+    const MUTED: [number, number, number] = [110, 120, 140];
+    const LINE: [number, number, number] = [225, 229, 238];
+    const ZEBRA: [number, number, number] = [246, 248, 252];
+    const SUCCESS: [number, number, number] = [16, 140, 90];
+
+    // Preload logo as data URL (cached after first use)
+    const logoDataUrl: string | null = await fetch(logoUrl)
+      .then(r => r.blob())
+      .then(b => new Promise<string>(res => {
+        const fr = new FileReader();
+        fr.onload = () => res(fr.result as string);
+        fr.readAsDataURL(b);
+      }))
+      .catch(() => null);
+
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     const pageW = doc.internal.pageSize.getWidth();
-    let y = 50;
+    const pageH = doc.internal.pageSize.getHeight();
+    const M = 44; // margin
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.text('FastMedia.Pro', 40, y);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text(l.title, pageW - 40, y, { align: 'right' });
-    y += 14;
-    doc.setFontSize(9);
-    doc.setTextColor(120);
-    doc.text(new Date().toLocaleDateString(), pageW - 40, y, { align: 'right' });
-    doc.setTextColor(0);
+    const quoteId = `Q-${Date.now().toString().slice(-8)}`;
+    const today = new Date().toLocaleDateString(lang === 'cs' ? 'cs-CZ' : lang === 'de' ? 'de-DE' : 'en-GB', {
+      day: '2-digit', month: 'long', year: 'numeric',
+    });
+    const validUntil = new Date(Date.now() + 14 * 86400000).toLocaleDateString(lang === 'cs' ? 'cs-CZ' : lang === 'de' ? 'de-DE' : 'en-GB');
 
-    y += 28;
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${l.selectTrade}: `, 40, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(tradeName, 160, y);
-    if (contactName) { y += 14; doc.setFont('helvetica', 'bold'); doc.text('Prepared for: ', 40, y); doc.setFont('helvetica', 'normal'); doc.text(contactName, 160, y); }
-    if (contactEmail) { y += 14; doc.setFont('helvetica', 'bold'); doc.text('Email: ', 40, y); doc.setFont('helvetica', 'normal'); doc.text(contactEmail, 160, y); }
+    // ---------- Template chrome (reusable per page) ----------
+    const drawHeader = () => {
+      // Top navy band
+      doc.setFillColor(...NAVY);
+      doc.rect(0, 0, pageW, 96, 'F');
+      // Coral accent stripe
+      doc.setFillColor(...CORAL);
+      doc.rect(0, 96, pageW, 4, 'F');
 
-    y += 26;
-    doc.setDrawColor(220);
-    doc.line(40, y, pageW - 40, y);
-    y += 18;
+      if (logoDataUrl) {
+        try { doc.addImage(logoDataUrl, 'JPEG', M, 24, 46, 46, undefined, 'FAST'); } catch {}
+      }
+      doc.setTextColor(255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('FastMedia.Pro', M + 58, 48);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(200, 210, 230);
+      doc.text('Bespoke websites for service businesses', M + 58, 64);
 
-    const row = (label: string, value: string, bold = false) => {
-      if (y > 760) { doc.addPage(); y = 50; }
-      doc.setFont('helvetica', bold ? 'bold' : 'normal');
-      doc.setFontSize(bold ? 11 : 10);
-      const lines = doc.splitTextToSize(label, pageW - 200);
-      doc.text(lines, 40, y);
-      doc.text(value, pageW - 40, y, { align: 'right' });
-      y += 14 * lines.length + 2;
+      // Right-side QUOTE wordmark
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.setTextColor(255);
+      doc.text('QUOTE', pageW - M, 44, { align: 'right' });
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(200, 210, 230);
+      doc.text(`No. ${quoteId}`, pageW - M, 60, { align: 'right' });
+      doc.text(`Issued: ${today}`, pageW - M, 73, { align: 'right' });
+
+      doc.setTextColor(...INK);
     };
 
-    row(l.baseWebsite, `${formatPrice(BASE_WEBSITE_PRICE)} Kč`);
+    const drawFooter = (pageNum: number, totalPages: number) => {
+      const fy = pageH - 70;
+      doc.setDrawColor(...LINE);
+      doc.setLineWidth(0.5);
+      doc.line(M, fy, pageW - M, fy);
+
+      // Contact line
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...MUTED);
+      doc.text('FastMedia.Pro  •  support@fastmedia.pro  •  +420 797 864 432  •  fastmedia.pro', M, fy + 14);
+
+      // Legal links (rich hyperlinks)
+      const links: { label: string; slug: string }[] = [
+        { label: 'Terms of Service', slug: 'terms-of-service' },
+        { label: 'Privacy Policy', slug: 'privacy-policy' },
+        { label: 'GDPR & Data Rights', slug: 'gdpr' },
+        { label: 'Cookie Policy', slug: 'cookie-policy' },
+        { label: 'Refund Policy', slug: 'refund-policy' },
+        { label: 'DPA', slug: 'dpa' },
+      ];
+      let lx = M;
+      const ly = fy + 30;
+      doc.setFontSize(8.5);
+      links.forEach((lnk, i) => {
+        const label = lnk.label;
+        doc.setTextColor(...NAVY_SOFT);
+        doc.textWithLink(label, lx, ly, { url: `https://fastmedia.pro/legal/${lnk.slug}` });
+        const w = doc.getTextWidth(label);
+        lx += w;
+        if (i < links.length - 1) {
+          doc.setTextColor(...MUTED);
+          doc.text('  ·  ', lx, ly);
+          lx += doc.getTextWidth('  ·  ');
+        }
+      });
+
+      doc.setTextColor(...MUTED);
+      doc.setFontSize(8);
+      doc.text(`Page ${pageNum} of ${totalPages}`, pageW - M, fy + 30, { align: 'right' });
+      doc.text(`Quote valid until ${validUntil}`, pageW - M, fy + 14, { align: 'right' });
+      doc.setTextColor(...INK);
+    };
+
+    // ---------- Page 1 content ----------
+    drawHeader();
+    let y = 130;
+
+    // Prepared-for / project card
+    doc.setFillColor(...ZEBRA);
+    doc.roundedRect(M, y, pageW - M * 2, 86, 6, 6, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(...MUTED);
+    doc.text('PREPARED FOR', M + 16, y + 20);
+    doc.text('PROJECT', pageW / 2 + 8, y + 20);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(...INK);
+    doc.text(contactName || '—', M + 16, y + 40);
+    doc.text(tradeName || '—', pageW / 2 + 8, y + 40);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...MUTED);
+    if (contactEmail) doc.text(contactEmail, M + 16, y + 56);
+    if (contactPhone) doc.text(contactPhone, M + 16, y + 70);
+    doc.text(`Estimated build: 4–6 weeks`, pageW / 2 + 8, y + 56);
+    doc.text(`Currency: CZK  •  All prices excl. VAT`, pageW / 2 + 8, y + 70);
+
+    y += 110;
+
+    // Section title
+    doc.setTextColor(...NAVY);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('Your Custom Website Quote', M, y);
+    doc.setDrawColor(...CORAL);
+    doc.setLineWidth(2);
+    doc.line(M, y + 5, M + 60, y + 5);
+    y += 24;
+
+    // Table header
+    const COL_ITEM = M + 12;
+    const COL_QTY = pageW - M - 220;
+    const COL_ONE = pageW - M - 120;
+    const COL_MO = pageW - M - 12;
+
+    const drawTableHeader = () => {
+      doc.setFillColor(...NAVY);
+      doc.rect(M, y, pageW - M * 2, 24, 'F');
+      doc.setTextColor(255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.text('ITEM', COL_ITEM, y + 16);
+      doc.text('QTY', COL_QTY, y + 16, { align: 'right' });
+      doc.text('ONE-TIME', COL_ONE, y + 16, { align: 'right' });
+      doc.text('MONTHLY', COL_MO, y + 16, { align: 'right' });
+      y += 24;
+      doc.setTextColor(...INK);
+    };
+    drawTableHeader();
+
+    let zebra = false;
+    const ensureSpace = (needed: number) => {
+      if (y + needed > pageH - 110) {
+        drawFooter(doc.getNumberOfPages(), 0); // placeholder; rewritten at end
+        doc.addPage();
+        drawHeader();
+        y = 130;
+        drawTableHeader();
+      }
+    };
+
+    const tableRow = (label: string, sub: string | null, qty: string, oneTime: string, monthly: string) => {
+      const labelLines = doc.splitTextToSize(label, COL_QTY - COL_ITEM - 12);
+      const subLines = sub ? doc.splitTextToSize(sub, COL_QTY - COL_ITEM - 12) : [];
+      const rowH = Math.max(26, 14 * labelLines.length + (sub ? 11 * subLines.length + 4 : 0) + 8);
+      ensureSpace(rowH);
+
+      if (zebra) {
+        doc.setFillColor(...ZEBRA);
+        doc.rect(M, y, pageW - M * 2, rowH, 'F');
+      }
+      zebra = !zebra;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(...INK);
+      doc.text(labelLines, COL_ITEM, y + 16);
+
+      if (sub) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...MUTED);
+        doc.text(subLines, COL_ITEM, y + 16 + 14 * labelLines.length);
+      }
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(...INK);
+      doc.text(qty, COL_QTY, y + 16, { align: 'right' });
+      doc.text(oneTime, COL_ONE, y + 16, { align: 'right' });
+      doc.setTextColor(...MUTED);
+      doc.text(monthly, COL_MO, y + 16, { align: 'right' });
+      doc.setTextColor(...INK);
+
+      y += rowH;
+      doc.setDrawColor(...LINE);
+      doc.setLineWidth(0.4);
+      doc.line(M, y, pageW - M * 2 + M, y);
+    };
+
+    // Base website row + inclusions
+    tableRow(
+      'Base Website',
+      'Up to 5 pages · Mobile responsive · SSL/HTTPS · Basic SEO · GDPR cookie banner · Google Maps · Contact details · 12 months hosting prepaid',
+      '1',
+      `${formatPrice(BASE_WEBSITE_PRICE)} Kč`,
+      `${formatPrice(BASE_HOSTING_PRICE)} Kč/mo`,
+    );
+
+    // Add-on rows
     selectedFeatures.forEach(sf => {
       const f = getFeatureById(sf.id);
       if (!f) return;
-      const qty = sf.quantity > 1 ? ` x${sf.quantity}` : '';
-      const monthly = f.monthlyPrice > 0 ? ` (+${formatPrice(f.monthlyPrice * sf.quantity)} Kč${l.perMonth})` : '';
-      row(`• ${f[nameKey]}${qty}${monthly}`, `${formatPrice(f.oneTimePrice * sf.quantity)} Kč`);
+      tableRow(
+        `${f.icon}  ${f[nameKey]}`,
+        f[descKey],
+        String(sf.quantity),
+        `${formatPrice(f.oneTimePrice * sf.quantity)} Kč`,
+        f.monthlyPrice > 0 ? `${formatPrice(f.monthlyPrice * sf.quantity)} Kč/mo` : '—',
+      );
     });
-    if (totalLaborHours > 0) row(`${l.laborCost} (${totalLaborHours} ${l.hours})`, `${formatPrice(laborCost)} Kč`);
 
-    y += 6;
-    doc.line(40, y, pageW - 40, y);
-    y += 16;
-    row(l.totalOneTime, `${formatPrice(grandTotalOneTime)} Kč`, true);
-    row(l.totalMonthly, `${formatPrice(totalMonthly)} Kč${l.perMonth}`, true);
-
-    if (appliedCoupon) {
-      y += 6;
-      doc.setTextColor(0, 140, 90);
-      row(`Coupon ${appliedCoupon.code} (-${appliedCoupon.discount_type === 'percentage' ? appliedCoupon.discount_value + '%' : `${formatPrice(appliedCoupon.discount_value)} ${appliedCoupon.currency || 'Kč'}`})`,
-        `- ${formatPrice(oneTimeDiscount)} Kč${monthlyDiscount ? ` / -${formatPrice(monthlyDiscount)} ${l.perMonth}` : ''}`);
-      doc.setTextColor(0);
-      y += 4;
-      doc.setDrawColor(180);
-      doc.line(40, y, pageW - 40, y); y += 16;
-      row(lang === 'cs' ? 'K úhradě jednorázově' : lang === 'de' ? 'Zu zahlen einmalig' : 'Total due (one-time)', `${formatPrice(discountedOneTime)} Kč`, true);
-      row(l.totalMonthly, `${formatPrice(discountedMonthly)} Kč${l.perMonth}`, true);
+    if (totalLaborHours > 0) {
+      tableRow(
+        `Custom development & integration`,
+        `Senior engineering time at ${LABOR_RATE} Kč/h`,
+        `${totalLaborHours} h`,
+        `${formatPrice(laborCost)} Kč`,
+        '—',
+      );
     }
 
-    y += 26;
-    doc.setFontSize(9);
-    doc.setTextColor(120);
-    const footerLines = doc.splitTextToSize(l.canChange + '  •  https://fastmedia.pro  •  support@fastmedia.pro', pageW - 80);
-    doc.text(footerLines, 40, y);
+    y += 16;
 
-    doc.save(`fastmedia-quote-${Date.now()}.pdf`);
+    // ---------- Totals card ----------
+    ensureSpace(160);
+    const cardX = pageW - M - 260;
+    const cardW = 260;
+    const cardH = appliedCoupon ? 150 : 96;
+
+    doc.setFillColor(...NAVY);
+    doc.roundedRect(cardX, y, cardW, cardH, 8, 8, 'F');
+    doc.setTextColor(255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    doc.text('Subtotal (one-time)', cardX + 16, y + 24);
+    doc.text(`${formatPrice(grandTotalOneTime)} Kč`, cardX + cardW - 16, y + 24, { align: 'right' });
+    doc.text('Recurring', cardX + 16, y + 42);
+    doc.text(`${formatPrice(totalMonthly)} Kč/mo`, cardX + cardW - 16, y + 42, { align: 'right' });
+
+    let cardY = y + 60;
+    if (appliedCoupon) {
+      doc.setTextColor(255, 180, 170);
+      doc.text(`Coupon ${appliedCoupon.code}`, cardX + 16, cardY);
+      const discLabel = `- ${formatPrice(oneTimeDiscount)} Kč`;
+      doc.text(discLabel, cardX + cardW - 16, cardY, { align: 'right' });
+      cardY += 18;
+      doc.setDrawColor(80, 100, 140);
+      doc.line(cardX + 16, cardY - 6, cardX + cardW - 16, cardY - 6);
+      doc.setTextColor(255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.text('Total due today', cardX + 16, cardY + 8);
+      doc.text(`${formatPrice(discountedOneTime)} Kč`, cardX + cardW - 16, cardY + 8, { align: 'right' });
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(255, 180, 170);
+      doc.text('Recurring after discount', cardX + 16, cardY + 26);
+      doc.text(`${formatPrice(discountedMonthly)} Kč/mo`, cardX + cardW - 16, cardY + 26, { align: 'right' });
+    } else {
+      doc.setDrawColor(80, 100, 140);
+      doc.line(cardX + 16, cardY - 4, cardX + cardW - 16, cardY - 4);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(...CORAL);
+      doc.text('Total due today', cardX + 16, cardY + 12);
+      doc.setTextColor(255);
+      doc.text(`${formatPrice(grandTotalOneTime)} Kč`, cardX + cardW - 16, cardY + 12, { align: 'right' });
+    }
+
+    // Notes column left of totals card
+    doc.setTextColor(...INK);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('What happens next', M, y + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...MUTED);
+    const next = doc.splitTextToSize(
+      '1. Accept this quote and pay the deposit.\n2. Discovery call within 48 hours.\n3. Design proofs in 5–7 business days.\n4. Build & QA, then launch.\n\nAll figures exclude VAT. Hosting is billed annually in advance.',
+      cardX - M - 24,
+    );
+    doc.text(next, M, y + 28);
+
+    y += cardH + 24;
+
+    // ---------- Signature / legal strip ----------
+    ensureSpace(60);
+    doc.setDrawColor(...LINE);
+    doc.line(M, y, pageW - M, y);
+    y += 16;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...MUTED);
+    const legalIntro = doc.splitTextToSize(
+      'By accepting this quote you agree to FastMedia.Pro\'s Terms of Service, Privacy Policy, GDPR processing terms, Cookie Policy, Refund Policy and Data Processing Agreement linked in the footer of every page. This proposal is valid for 14 days from the issue date.',
+      pageW - M * 2,
+    );
+    doc.text(legalIntro, M, y);
+
+    // ---------- Repaginate footers with real total ----------
+    const totalPages = doc.getNumberOfPages();
+    for (let p = 1; p <= totalPages; p++) {
+      doc.setPage(p);
+      // Clear previous footer area in case placeholder was drawn
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0, pageH - 80, pageW, 80, 'F');
+      drawFooter(p, totalPages);
+    }
+
+    doc.save(`fastmedia-quote-${quoteId}.pdf`);
     toast({ title: lang === 'cs' ? 'PDF staženo!' : lang === 'de' ? 'PDF heruntergeladen!' : 'PDF downloaded!' });
   };
+
 
   const payNow = () => {
     if (selectedFeatures.length === 0 && grandTotalOneTime <= BASE_WEBSITE_PRICE) return;
