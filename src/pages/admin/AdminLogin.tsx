@@ -13,6 +13,8 @@ import { lovable } from '@/integrations/lovable';
 import { hasMinimumRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { Link } from 'react-router-dom';
+import { Home } from 'lucide-react';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
