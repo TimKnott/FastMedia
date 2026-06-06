@@ -1,5 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -12,6 +13,14 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* SEO: signal not-found to crawlers/prerenderers so 404 pages aren't indexed. */}
+      <Helmet>
+        <title>Page not found (404) | FastMedia.Pro</title>
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="prerender-status-code" content="404" />
+        <meta httpEquiv="Status" content="404 Not Found" />
+        <link rel="canonical" href="https://fastmedia.pro/404" />
+      </Helmet>
       <Navbar />
       <div className="flex flex-1 items-center justify-center">
         <div className="text-center">

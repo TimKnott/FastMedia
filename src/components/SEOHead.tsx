@@ -41,7 +41,14 @@ const SEOHead = ({
   const fullTitle = effectiveTitle.includes('FastMedia')
     ? effectiveTitle
     : `${effectiveTitle} | FastMedia.Pro`;
-  const canonicalUrl = canonical ? `${BASE_URL}${canonical}` : undefined;
+  // Normalize: strip trailing slash (except root) to avoid duplicate-content
+  // signals — SiteGuru flagged /path and /path/ as separate URLs.
+  const normalizedPath = canonical
+    ? canonical === '/'
+      ? '/'
+      : canonical.replace(/\/+$/, '')
+    : undefined;
+  const canonicalUrl = normalizedPath ? `${BASE_URL}${normalizedPath}` : undefined;
 
   return (
     <Helmet>
