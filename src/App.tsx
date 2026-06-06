@@ -140,6 +140,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <TrailingSlashRedirect />
           <PaymentTestModeBanner />
           <AdminToolbar />
           <WhatsAppFloat />
