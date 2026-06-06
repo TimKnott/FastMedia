@@ -136,8 +136,15 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center gradient-hero p-4 relative">
-      {/* Language switcher in top-right */}
-      <div className="absolute top-4 right-4">
+      {/* Language switcher + Home link in top-right */}
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 text-sm text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+        >
+          <Home className="w-4 h-4" />
+          <span>Home</span>
+        </Link>
         <LanguageSwitcher triggerClassName="text-primary-foreground/80 hover:text-primary-foreground" />
       </div>
 
