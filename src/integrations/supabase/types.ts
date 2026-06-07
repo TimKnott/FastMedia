@@ -1663,6 +1663,104 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_audit_findings: {
+        Row: {
+          check_id: string
+          created_at: string
+          current_value: string | null
+          expected_value: string | null
+          first_seen_at: string
+          id: string
+          ignored_at: string | null
+          ignored_by: string | null
+          ignored_reason: string | null
+          last_seen_at: string
+          message: string | null
+          resolved_at: string | null
+          run_id: string | null
+          severity: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          check_id: string
+          created_at?: string
+          current_value?: string | null
+          expected_value?: string | null
+          first_seen_at?: string
+          id?: string
+          ignored_at?: string | null
+          ignored_by?: string | null
+          ignored_reason?: string | null
+          last_seen_at?: string
+          message?: string | null
+          resolved_at?: string | null
+          run_id?: string | null
+          severity?: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          check_id?: string
+          created_at?: string
+          current_value?: string | null
+          expected_value?: string | null
+          first_seen_at?: string
+          id?: string
+          ignored_at?: string | null
+          ignored_by?: string | null
+          ignored_reason?: string | null
+          last_seen_at?: string
+          message?: string | null
+          resolved_at?: string | null
+          run_id?: string | null
+          severity?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_audit_findings_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "seo_audit_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_audit_runs: {
+        Row: {
+          finished_at: string | null
+          health_score: number | null
+          id: string
+          issues_found: number
+          notes: string | null
+          started_at: string
+          triggered_by: string
+          urls_checked: number
+        }
+        Insert: {
+          finished_at?: string | null
+          health_score?: number | null
+          id?: string
+          issues_found?: number
+          notes?: string | null
+          started_at?: string
+          triggered_by?: string
+          urls_checked?: number
+        }
+        Update: {
+          finished_at?: string | null
+          health_score?: number | null
+          id?: string
+          issues_found?: number
+          notes?: string | null
+          started_at?: string
+          triggered_by?: string
+          urls_checked?: number
+        }
+        Relationships: []
+      }
       seo_backlinks: {
         Row: {
           authority_score: number | null

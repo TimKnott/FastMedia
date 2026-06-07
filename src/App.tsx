@@ -56,6 +56,7 @@ const AdminSitemap = lazy(() => import("./pages/admin/AdminSitemap"));
 const AdminContentHistory = lazy(() => import("./pages/admin/AdminContentHistory"));
 const AdminSEO = lazy(() => import("./pages/admin/AdminSEO"));
 const AdminSEOInsights = lazy(() => import("./pages/admin/AdminSEOInsights"));
+const AdminSEOHealth = lazy(() => import("./pages/admin/AdminSEOHealth"));
 const AdminVbout = lazy(() => import("./pages/admin/AdminVbout"));
 const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
@@ -239,6 +240,7 @@ const App = () => (
               <Route path="content-history" element={<AdminContentHistory />} />
               <Route path="seo" element={<AdminSEO />} />
               <Route path="seo-insights" element={<AdminSEOInsights />} />
+              <Route path="seo-health" element={<AdminSEOHealth />} />
               <Route path="vbout" element={<AdminVbout />} />
               <Route path="vbout-debug" element={<ProtectedRoute minRole="admin"><AdminVboutDebug /></ProtectedRoute>} />
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
