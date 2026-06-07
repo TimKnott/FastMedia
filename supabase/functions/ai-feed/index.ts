@@ -10,7 +10,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const BASE_URL = "https://fastmedia.pro";
+    const BASE_URL = "https://www.fastmedia.pro";
 
     // Core structured data feed optimized for AI search crawlers
     const feed = {
