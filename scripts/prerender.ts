@@ -43,7 +43,6 @@ function buildHead(route: RouteSeo): string {
     `<meta name="twitter:image" content="${escAttr(ogImage)}" />`,
     `<link rel="alternate" hreflang="en-GB" href="${escAttr(canonical)}" />`,
     `<link rel="alternate" hreflang="x-default" href="${escAttr(canonical)}" />`,
-    `<h1 hidden data-prerender>${escText(route.title)}</h1>`.replace(/<h1[^>]*>/, '<meta name="prerender-h1" content="') + '" />',
   ];
   if (route.jsonLd) {
     const items = Array.isArray(route.jsonLd) ? route.jsonLd : [route.jsonLd];
