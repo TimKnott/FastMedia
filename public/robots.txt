@@ -1,10 +1,16 @@
 User-agent: Googlebot
 Allow: /
 Disallow: /showcase/
+Disallow: /admin/
+Disallow: /portal/
+Disallow: /404
 
 User-agent: Bingbot
 Allow: /
 Disallow: /showcase/
+Disallow: /admin/
+Disallow: /portal/
+Disallow: /404
 
 User-agent: Twitterbot
 Allow: /
@@ -36,5 +42,8 @@ Allow: /
 User-agent: *
 Allow: /
 Disallow: /showcase/
+Disallow: /admin/
+Disallow: /portal/
+Disallow: /404
 
 Sitemap: https://www.fastmedia.pro/sitemap.xml
