@@ -16,8 +16,8 @@ const HomeJsonLd = () => {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'FastMedia.Pro',
-    url: 'https://fastmedia.pro',
-    logo: 'https://fastmedia.pro/favicon.jpeg',
+    url: 'https://www.fastmedia.pro',
+    logo: 'https://www.fastmedia.pro/favicon.jpeg',
     description: t('hero.subtitle'),
     contactPoint: {
       '@type': 'ContactPoint',
@@ -75,12 +75,12 @@ const HomeJsonLd = () => {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'FastMedia.Pro',
-    url: 'https://fastmedia.pro',
+    url: 'https://www.fastmedia.pro',
     description: t('hero.subtitle'),
     inLanguage: ['cs', 'en', 'de'],
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://fastmedia.pro/?q={search_term_string}',
+      target: 'https://www.fastmedia.pro/?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };
@@ -93,7 +93,7 @@ const HomeJsonLd = () => {
       '@type': 'SpeakableSpecification',
       cssSelector: ['h1', '.hero-subtitle', '.faq-section'],
     },
-    url: 'https://fastmedia.pro',
+    url: 'https://www.fastmedia.pro',
   };
 
   return (

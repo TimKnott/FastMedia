@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://fastmedia.pro/</loc>
+    <loc>https://www.fastmedia.pro/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://fastmedia.pro/blog</loc>
+    <loc>https://www.fastmedia.pro/blog</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://fastmedia.pro/calculator</loc>
+    <loc>https://www.fastmedia.pro/calculator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastmedia.pro/inquiry</loc>
+    <loc>https://www.fastmedia.pro/inquiry</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://fastmedia.pro/consultant/tereza</loc>
+    <loc>https://www.fastmedia.pro/consultant/tereza</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <!-- Blog articles -->
-  <url><loc>https://fastmedia.pro/blog/trendy-webdesignu-2026</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/seo-tipy-remeslnici</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/socialni-site-remeslnici</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/redesign-webu-kdy-a-proc</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/google-moje-firma</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/mobilni-web-proc</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/online-recenze-strategie</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/email-marketing-remeslnici</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/fotografie-pro-web</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/branding-pro-remeslniky</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/rychlost-webu</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/blog/online-rezervacni-system</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/trendy-webdesignu-2026</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/seo-tipy-remeslnici</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/socialni-site-remeslnici</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/redesign-webu-kdy-a-proc</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/google-moje-firma</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/mobilni-web-proc</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/online-recenze-strategie</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/email-marketing-remeslnici</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/fotografie-pro-web</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/branding-pro-remeslniky</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/rychlost-webu</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/blog/online-rezervacni-system</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <!-- Demo pages -->
-  <url><loc>https://fastmedia.pro/demo/plumbing</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/electrical</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/building</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/roofing</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/drywall</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/wells</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/heating</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/solar</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/heatpumps</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/painting</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/interior</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/exterior</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/gardening</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/cleaning</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/locksmith</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/carpentry</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/autorepair</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/pestcontrol</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/photography</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/catering</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/fitness</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/beautysalon</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/moving</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/itservices</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://fastmedia.pro/demo/eshop</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/plumbing</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/electrical</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/building</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/roofing</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/drywall</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/wells</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/heating</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/solar</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/heatpumps</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/painting</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/interior</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/exterior</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/gardening</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/cleaning</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/locksmith</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/carpentry</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/autorepair</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/pestcontrol</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/photography</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/catering</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/fitness</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/beautysalon</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/moving</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/itservices</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.fastmedia.pro/demo/eshop</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
