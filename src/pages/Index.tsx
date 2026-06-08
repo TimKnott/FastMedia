@@ -37,7 +37,8 @@ const Index = () => {
       <div className="min-h-screen">
         <Navbar />
         <ScrollToTop />
-        <main>
+        <OfferTeaser />
+        <main id="main-site">
           <HeroSection />
           <PromoBanner variant="compact" />
           <WhyFastMediaSection />
