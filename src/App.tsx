@@ -33,6 +33,7 @@ const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Showcase = lazy(() => import("./pages/Showcase"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Account = lazy(() => import("./pages/Account"));
+const OfferLanding = lazy(() => import("./pages/OfferLanding"));
 
 // Admin pages (lazy)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
@@ -152,6 +153,7 @@ const App = () => (
           <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/offer" element={<OfferLanding />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/demo/plumbing" element={<PlumbingDemo />} />

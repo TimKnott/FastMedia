@@ -379,6 +379,64 @@ Deno.serve(async (req) => {
     })
     .eq("id", runId);
 
+  // ---- Email alert: notify on NEW high-severity findings in this run ----
+  try {
+    const { data: newHighFindings } = await supabase
+      .from("seo_audit_findings")
+      .select("url, check_id, message, current_value, first_seen_at, run_id")
+      .eq("run_id", runId)
+      .eq("severity", "high")
+      .is("resolved_at", null)
+      .is("ignored_at", null);
+
+    const trulyNew = (newHighFindings ?? []).filter((f: any) => {
+      if (!f.first_seen_at) return true;
+      return Date.now() - new Date(f.first_seen_at).getTime() < 5 * 60 * 1000;
+    });
+
+    if (trulyNew.length > 0) {
+      const apiKey = Deno.env.get("MAILGUN_API_KEY");
+      const domain = Deno.env.get("MAILGUN_DOMAIN") ?? "notify.fastmedia.pro";
+      if (apiKey) {
+        const rows = trulyNew.slice(0, 25).map((f: any) =>
+          `<tr><td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:12px;"><a href="${f.url}">${f.url}</a></td>` +
+          `<td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:12px;"><code>${f.check_id}</code></td>` +
+          `<td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:12px;">${f.message ?? ""}</td></tr>`,
+        ).join("");
+        const html = `
+          <div style="font-family:Inter,Arial,sans-serif;max-width:680px;margin:auto;color:#1a1a2e;">
+            <h2 style="color:#c0392b;margin:0 0 8px;">🔴 ${trulyNew.length} new high-severity SEO issue${trulyNew.length > 1 ? "s" : ""}</h2>
+            <p style="color:#666;margin:0 0 16px;">FastMedia.Pro daily audit — health score <strong>${healthScore}/100</strong></p>
+            <table style="width:100%;border-collapse:collapse;">
+              <thead><tr style="background:#f5f6fa;text-align:left;">
+                <th style="padding:8px 10px;font-size:11px;text-transform:uppercase;">URL</th>
+                <th style="padding:8px 10px;font-size:11px;text-transform:uppercase;">Check</th>
+                <th style="padding:8px 10px;font-size:11px;text-transform:uppercase;">Issue</th>
+              </tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+            <p style="margin-top:24px;font-size:13px;">View full dashboard: <a href="https://fastmedia.pro/admin/seo-health">fastmedia.pro/admin/seo-health</a></p>
+          </div>`;
+        const form = new FormData();
+        form.append("from", `FastMedia SEO Monitor <seo@${domain}>`);
+        form.append("to", "timknott2011@gmail.com");
+        form.append("subject", `[SEO ALERT] ${trulyNew.length} new high-severity issue${trulyNew.length > 1 ? "s" : ""} — health ${healthScore}/100`);
+        form.append("html", html);
+        form.append("h:Reply-To", "support@fastmedia.pro");
+        const auth = "Basic " + btoa(`api:${apiKey}`);
+        let res = await fetch(`https://api.eu.mailgun.net/v3/${domain}/messages`, { method: "POST", headers: { Authorization: auth }, body: form });
+        if (!res.ok) {
+          res = await fetch(`https://api.mailgun.net/v3/${domain}/messages`, { method: "POST", headers: { Authorization: auth }, body: form });
+        }
+        if (!res.ok) console.error("seo-daily-audit alert mailgun error", res.status, await res.text());
+      } else {
+        console.warn("MAILGUN_API_KEY not set — skipping SEO alert email");
+      }
+    }
+  } catch (err) {
+    console.error("seo-daily-audit alert failed", err);
+  }
+
   return new Response(
     JSON.stringify({
       run_id: runId,
