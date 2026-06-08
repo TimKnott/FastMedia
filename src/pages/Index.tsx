@@ -21,6 +21,7 @@ import CertificationsSection from '@/components/CertificationsSection';
 import TeamSection from '@/components/TeamSection';
 import AppointmentPoliciesSection from '@/components/AppointmentPoliciesSection';
 import ServiceAreaMap from '@/components/ServiceAreaMap';
+import OfferTeaser from '@/components/OfferTeaser';
 
 const Index = () => {
   return (
