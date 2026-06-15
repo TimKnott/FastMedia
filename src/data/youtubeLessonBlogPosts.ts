@@ -2,12 +2,193 @@ import type { BlogPost } from './blogPosts';
 import blogWebsiteTrends from '@/assets/blog/blog-website-trends.jpg';
 import blogRedesign from '@/assets/blog/blog-redesign.jpg';
 import blogGoogleBusiness from '@/assets/blog/blog-google-business.jpg';
+import blogInstantLeadReply from '@/assets/blog/blog-instant-lead-reply.jpg';
+import blogLeadResponseTime from '@/assets/blog/blog-lead-response-time.jpg';
 
 // British English only — cs/de fields mirror en to satisfy the trilingual schema
 // while the public UI is locked to British English (see project memory).
 const tri = (text: string) => ({ cs: text, en: text, de: text });
 
 export const youtubeLessonBlogPosts: BlogPost[] = [
+  {
+    id: 'yt-never-lose-a-lead-instant-reply',
+    slug: 'never-lose-a-lead-instant-reply-crm-automation',
+    title: tri('Never Lose a Lead Again: Instant Replies, CRM Capture and the 5-Minute Rule'),
+    excerpt: tri(
+      'Why responding to a new lead in under five minutes wins more jobs than any ad campaign — and how FastMedia.Pro automates instant replies and stores every enquiry in your back-office CRM so nothing ever slips through.',
+    ),
+    sections: [
+      {
+        type: 'callout',
+        text: tri(
+          '👉 See the full FastMedia.Pro lead-capture and instant-reply system live on our homepage at https://www.fastmedia.pro — the same automation we install on every website we build.',
+        ),
+      },
+      {
+        type: 'paragraph',
+        text: tri(
+          'Every trade and service business owner knows the sinking feeling: a hot enquiry came in at 7:42pm last night, you spotted it on your phone over breakfast, you rang back at 9:15am — and the customer had already booked your competitor. That lead was never lost because the customer changed their mind. It was lost because someone else answered first. This article unpacks the research behind the famous "5-minute rule", shows you exactly what an instant-reply + CRM-capture automation looks like in practice, and explains how the FastMedia.Pro websites do it for you automatically.',
+        ),
+      },
+      {
+        type: 'video-embed',
+        url: 'https://www.youtube.com/watch?v=jbkSRLYSojo',
+        caption: tri('Speed-to-lead: why responding in minutes (not hours) wins the customer'),
+      },
+      { type: 'heading', text: tri('The brutal maths of lead response time') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'A landmark study by the Harvard Business Review and InsideSales analysed 1.25 million sales leads across 29 companies. The finding was the same in every industry, including home services: businesses that contacted a new lead within 5 minutes were 100× more likely to qualify the lead than those that waited 30 minutes, and 21× more likely than those that waited an hour. After 24 hours, the conversion probability collapses to near zero. The customer has not "gone cold" — they have already hired someone else.',
+        ),
+      },
+      {
+        type: 'image',
+        src: blogLeadResponseTime,
+        alt: tri('Phone showing an instant reply notification with a stopwatch icon'),
+        caption: tri('Every minute you wait, the probability of winning the job halves.'),
+      },
+      {
+        type: 'list',
+        items: [
+          tri('0–5 minutes → 100× more likely to qualify the lead.'),
+          tri('5–30 minutes → conversion probability drops by 80%.'),
+          tri('30–60 minutes → you are competing with whoever replied first.'),
+          tri('60+ minutes → the lead is, statistically, already gone.'),
+        ],
+      },
+      { type: 'heading', text: tri('Why human-only follow-up will always lose') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'You cannot personally answer every form submission within 5 minutes. You are on a roof, in a van, mid-quote, asleep. Hiring an admin to monitor the inbox 24/7 costs £30,000+ a year and they still cannot beat a competitor whose website auto-replies in 8 seconds. The answer is not "try harder" — it is to remove the human from the first response entirely. The human comes in later for the conversation that actually closes the job.',
+        ),
+      },
+      {
+        type: 'quote',
+        text: tri('The first business to respond wins 50% of the deal, before price, reviews or reputation are even considered.'),
+        author: 'InsideSales / Harvard Business Review',
+      },
+      { type: 'heading', text: tri('What the FastMedia.Pro instant-reply automation actually does') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'Every FastMedia.Pro website ships with a four-stage lead-capture engine that runs the moment a visitor hits "Send" on the contact form, books online, or messages the AI chat. It does the job of a full-time receptionist for £0 a month and never sleeps.',
+        ),
+      },
+      {
+        type: 'image',
+        src: blogInstantLeadReply,
+        alt: tri('FastMedia.Pro back-office CRM showing a new lead notification and instant reply'),
+        caption: tri('The same back-office CRM admins use every day at /admin/leads.'),
+      },
+      { type: 'heading', text: tri('Stage 1 — Capture (less than 1 second)') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'The lead is written instantly to the CRM with name, phone, email, postcode, the service requested, the source page, the device used and a UTM trail back to the ad or search term that brought them in. Nothing is ever stored only in an email inbox where it can be missed.',
+        ),
+      },
+      { type: 'heading', text: tri('Stage 2 — Instant reply (under 30 seconds)') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'The customer receives a branded email AND an SMS (and a WhatsApp message if they ticked the box) within 30 seconds. The reply confirms you have their enquiry, restates the problem in their own words so they feel heard, gives a realistic callback window ("Tim will call you back within 2 working hours") and includes a one-tap link to book a 15-minute call directly into your diary.',
+        ),
+      },
+      {
+        type: 'list',
+        items: [
+          tri('Branded confirmation email with your logo and the customer\'s exact words.'),
+          tri('SMS to the mobile they typed in — opened 98% of the time within 3 minutes.'),
+          tri('Optional WhatsApp message for richer two-way chat.'),
+          tri('A "Book a callback" link that drops straight into your Google Calendar.'),
+        ],
+      },
+      { type: 'heading', text: tri('Stage 3 — Notify the right human (instantly)') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'You — or whichever team member is on duty — get a push notification, email and SMS the moment a lead is captured. The notification carries everything you need to call them back without opening the laptop: name, number, service, postcode, and a hot/warm/cold score the system has already calculated based on the customer\'s answers.',
+        ),
+      },
+      { type: 'heading', text: tri('Stage 4 — Store, score and follow up forever') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'The lead is permanently stored in your back-office CRM at /admin/leads with full activity history. If you do not respond within your chosen SLA (say, 2 hours), the system escalates. If the lead goes quiet, automated nurture emails fire on day 1, day 3, day 7 and day 21 — bringing back 15–20% of "lost" enquiries that would otherwise sit in a spreadsheet for ever.',
+        ),
+      },
+      {
+        type: 'callout',
+        text: tri(
+          'Real numbers from FastMedia.Pro customers: instant-reply alone has lifted booked-job conversion by 22–41% in the first 90 days, with zero extra ad spend.',
+        ),
+      },
+      { type: 'heading', text: tri('Your back-office CRM: where the leads actually live') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'Every enquiry lands in the secure admin portal we build into every site (/admin/leads). You can see the full pipeline at a glance — new, contacted, qualified, quoted, won, lost — drag leads between stages, add private notes, attach photos, send templated quote emails, and convert a won lead into a client project with one click. No more lost Post-it notes, no more "I think Sarah handled that one".',
+        ),
+      },
+      {
+        type: 'list',
+        items: [
+          tri('Kanban pipeline view — drag a lead from "new" to "quoted" in one tap.'),
+          tri('Built-in WhatsApp, call and email actions on every lead card.'),
+          tri('Automatic lead-scoring (0–100) based on budget, urgency and service type.'),
+          tri('Full audit log — see exactly who contacted the lead and when.'),
+          tri('One-click conversion from a "won" lead into a tracked client project with invoicing.'),
+        ],
+      },
+      { type: 'heading', text: tri('A 90-day checklist to stop losing leads forever') },
+      {
+        type: 'paragraph',
+        text: tri(
+          'If you are not on FastMedia.Pro yet, this is the minimum you should put in place this month — the principles work even on a basic Squarespace site, they are just harder to implement and maintain.',
+        ),
+      },
+      {
+        type: 'list',
+        items: [
+          tri('Replace your generic "Contact Us" form with a short 4-field form (name, postcode, phone, problem).'),
+          tri('Wire the form to send an immediate branded email AND SMS to the customer.'),
+          tri('Send yourself a push notification within 30 seconds of every submission.'),
+          tri('Store every lead in a central CRM with stages — never just an email inbox.'),
+          tri('Set up automated day-1, day-3 and day-7 follow-up emails for leads you have not closed yet.'),
+          tri('Measure two numbers weekly: average response time, and percentage of leads that became booked jobs.'),
+        ],
+      },
+      {
+        type: 'quote',
+        text: tri('You do not need more leads. You need to stop losing the ones you already have.'),
+        author: 'Tim Knott, Founder of FastMedia.Pro',
+      },
+      {
+        type: 'cta',
+        text: tri('See the instant-reply + CRM system live on the FastMedia.Pro homepage →'),
+        href: '/',
+        trackingLabel: 'blog-instant-reply-homepage',
+      },
+      {
+        type: 'cta',
+        text: tri('Want this automation on your own website? Get a tailored proposal in 60 seconds →'),
+        href: '/calculator',
+        trackingLabel: 'blog-instant-reply-calculator',
+      },
+    ],
+    category: 'business',
+    image: blogInstantLeadReply,
+    videoUrl: 'https://www.youtube.com/watch?v=jbkSRLYSojo',
+    author: 'Tim Knott',
+    authorRole: tri('Founder, FastMedia.Pro'),
+    date: '2026-06-15',
+    readTime: 9,
+    featured: true,
+    tags: ['lead capture', 'CRM', 'automation', 'speed to lead', 'instant reply'],
+  },
+
   {
     id: 'yt-great-website-principles',
     slug: 'what-makes-a-great-website-lessons-from-flux-academy',
