@@ -577,4 +577,5 @@ export const blogPosts: BlogPost[] = [
   },
   ...industryBlogPosts,
   ...performanceBlogPosts,
+  ...youtubeLessonBlogPosts,
 ];
