@@ -1,5 +1,6 @@
 import { industryBlogPosts } from './industryBlogPosts';
 import { performanceBlogPosts } from './performanceBlogPosts';
+import { youtubeLessonBlogPosts } from './youtubeLessonBlogPosts';
 import blogWebsiteTrends from '@/assets/blog/blog-website-trends.jpg';
 import blogSeoTips from '@/assets/blog/blog-seo-tips.jpg';
 import blogSocialMedia from '@/assets/blog/blog-social-media.jpg';
@@ -576,4 +577,5 @@ export const blogPosts: BlogPost[] = [
   },
   ...industryBlogPosts,
   ...performanceBlogPosts,
+  ...youtubeLessonBlogPosts,
 ];
