@@ -266,6 +266,7 @@ const App = () => (
         </BrowserRouter>
         </PreviewModeProvider>
       </LanguageProvider>
+      </A11yProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
