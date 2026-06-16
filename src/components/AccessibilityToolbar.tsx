@@ -37,7 +37,7 @@ const learnMore = {
 };
 
 const AccessibilityToolbar = () => {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen } = useA11y();
   const [prefs, setPrefs] = useState<A11yPrefs>(defaultPrefs);
   const { language } = useLanguage();
   const lang = language as 'cs' | 'en' | 'de';
