@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Accessibility, X, Plus, Minus, Sun, Moon, Eye } from 'lucide-react';
+import { X, Plus, Minus, Sun, Eye } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useA11y } from '@/contexts/A11yContext';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 const A11Y_KEY = 'fm_a11y_prefs';
