@@ -142,9 +142,8 @@ Requirements:
 - Hero image prompt: photoreal, on-brand for a UK service business.
 - read_time_minutes = round(words / 220).
 
-Return JSON:
-{
-  "title": "Compelling H1, <=70 chars, contains target keyword",
+
+
 
 
 Return JSON:
