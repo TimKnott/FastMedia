@@ -156,6 +156,14 @@ const Footer = () => {
             © {new Date().getFullYear()} FastMedia.Pro. {t('footer.rights')}.
           </p>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setOpen(true)}
+              className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
+            >
+              <Accessibility className="w-4 h-4" />
+              Accessibility
+            </button>
+            <span className="text-background/20">|</span>
             <a
               href="https://wa.me/4407926400060"
               target="_blank"
