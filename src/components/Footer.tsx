@@ -9,6 +9,7 @@ import LearnMoreModal from '@/components/LearnMoreModal';
 
 const Footer = () => {
   const { t } = useLanguage();
+  const { setOpen } = useA11y();
   const { getContent, invalidate } = useSiteContent();
 
   const siteLinks = [
