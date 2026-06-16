@@ -11,3 +11,7 @@ verify_jwt = false
 
 [functions.payments-webhook]
 verify_jwt = false
+
+[functions.trigger-daily-blog]
+verify_jwt = false
+
