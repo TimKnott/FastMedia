@@ -12,6 +12,7 @@ const NOTIFY_TO = 'support@fastmedia.pro';
 const SITE_URL = 'https://fastmedia.pro';
 
 const TOPIC_POOL = [
+  // Core SEO / web
   'local SEO wins for tradespeople in 2026',
   'building Google E-E-A-T signals as a small service business',
   'Core Web Vitals: practical fixes for service websites',
@@ -32,7 +33,32 @@ const TOPIC_POOL = [
   'internal linking strategies for small content libraries',
   'image SEO: alt text, dimensions, and Core Web Vitals',
   'building a content calendar around real customer questions',
+  // AI search / GEO (Generative Engine Optimisation)
+  'how to rank in ChatGPT search results in 2026',
+  'getting cited by Perplexity AI: a practical playbook',
+  'optimising for Google AI Overviews (SGE) — what actually works',
+  'how Claude and Gemini choose which websites to cite',
+  'Generative Engine Optimisation (GEO) vs traditional SEO',
+  'llms.txt explained: the new robots.txt for AI crawlers',
+  'how to write content that AI search engines love to quote',
+  'getting your business listed in Bing Copilot and DuckAssist',
+  'AI citation tracking: measuring brand mentions in LLM answers',
+  'schema markup patterns that boost AI Overview inclusion',
+  'entity SEO: why Wikipedia, Wikidata and Knowledge Graph matter',
+  'topical authority: building content clusters AI engines trust',
+  // High-traffic People Also Ask / hidden gems
+  'how much does a small business website really cost in 2026',
+  'why is my website not showing up on Google? 12 fixes that work',
+  'do I still need a website if I have social media and Google profile',
+  'WordPress vs custom-built websites: the honest 2026 comparison',
+  'how long does SEO take to work for a new local business',
+  'the cheapest legitimate way to get more website traffic this month',
+  'Google Business Profile hacks the top 1% of locals are using',
+  'website red flags that quietly kill conversions (and how to fix each)',
+  'what to do when a competitor outranks you on every search',
+  'how to write a homepage hero that converts cold visitors',
 ];
+
 
 function slugify(s: string) {
   return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
