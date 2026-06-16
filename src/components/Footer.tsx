@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MessageCircle, Contact } from 'lucide-react';
+import { useA11y } from '@/contexts/A11yContext';
+import { MessageCircle, Contact, Accessibility } from 'lucide-react';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
