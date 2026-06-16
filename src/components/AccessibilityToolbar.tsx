@@ -72,19 +72,6 @@ const AccessibilityToolbar = () => {
 
   return (
     <>
-      {/* Trigger button */}
-      <motion.button
-        onClick={() => setOpen(!open)}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 2, type: 'spring', stiffness: 200 }}
-        whileHover={{ scale: 1.1 }}
-        aria-label="Accessibility settings"
-        className="fixed bottom-20 left-6 z-50 w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl flex items-center justify-center transition-shadow"
-      >
-        <Accessibility className="w-6 h-6" />
-      </motion.button>
-
       {/* Panel */}
       <AnimatePresence>
         {open && (
