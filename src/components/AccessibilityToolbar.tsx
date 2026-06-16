@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Minus, Sun, Eye } from 'lucide-react';
+import { Accessibility, X, Plus, Minus, Sun, Eye } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useA11y } from '@/contexts/A11yContext';
 import LearnMoreModal from '@/components/LearnMoreModal';
