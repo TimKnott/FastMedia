@@ -12,6 +12,7 @@ const NOTIFY_TO = 'support@fastmedia.pro';
 const SITE_URL = 'https://fastmedia.pro';
 
 const TOPIC_POOL = [
+  // Core SEO / web
   'local SEO wins for tradespeople in 2026',
   'building Google E-E-A-T signals as a small service business',
   'Core Web Vitals: practical fixes for service websites',
@@ -32,7 +33,32 @@ const TOPIC_POOL = [
   'internal linking strategies for small content libraries',
   'image SEO: alt text, dimensions, and Core Web Vitals',
   'building a content calendar around real customer questions',
+  // AI search / GEO (Generative Engine Optimisation)
+  'how to rank in ChatGPT search results in 2026',
+  'getting cited by Perplexity AI: a practical playbook',
+  'optimising for Google AI Overviews (SGE) — what actually works',
+  'how Claude and Gemini choose which websites to cite',
+  'Generative Engine Optimisation (GEO) vs traditional SEO',
+  'llms.txt explained: the new robots.txt for AI crawlers',
+  'how to write content that AI search engines love to quote',
+  'getting your business listed in Bing Copilot and DuckAssist',
+  'AI citation tracking: measuring brand mentions in LLM answers',
+  'schema markup patterns that boost AI Overview inclusion',
+  'entity SEO: why Wikipedia, Wikidata and Knowledge Graph matter',
+  'topical authority: building content clusters AI engines trust',
+  // High-traffic People Also Ask / hidden gems
+  'how much does a small business website really cost in 2026',
+  'why is my website not showing up on Google? 12 fixes that work',
+  'do I still need a website if I have social media and Google profile',
+  'WordPress vs custom-built websites: the honest 2026 comparison',
+  'how long does SEO take to work for a new local business',
+  'the cheapest legitimate way to get more website traffic this month',
+  'Google Business Profile hacks the top 1% of locals are using',
+  'website red flags that quietly kill conversions (and how to fix each)',
+  'what to do when a competitor outranks you on every search',
+  'how to write a homepage hero that converts cold visitors',
 ];
+
 
 function slugify(s: string) {
   return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -90,20 +116,35 @@ async function generateArticle(topic: string): Promise<ArticleJSON> {
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
   if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY missing');
 
-  const sys = `You are the senior SEO editor for FastMedia.Pro — a high-end web design studio serving tradespeople, service businesses, and small brands.
-Write British English only. Use Oxford-style punctuation and concrete, expert examples.
-Optimise for Google E-E-A-T, featured snippets, and AI Overviews.
+  const sys = `You are the senior SEO + GEO (Generative Engine Optimisation) editor for FastMedia.Pro — a high-end web design studio serving tradespeople, service businesses, and small brands.
+Write British English only. Oxford-style punctuation, concrete numbers, expert examples, named tools and entities (Google, ChatGPT, Perplexity, Claude, Gemini, Bing Copilot, Ahrefs, Semrush, GA4, Lighthouse, schema.org).
+Optimise for THREE surfaces simultaneously:
+  1. Classic Google SERPs (featured snippets, People Also Ask).
+  2. Google AI Overviews / SGE.
+  3. Generative AI search: ChatGPT search, Perplexity, Claude, Gemini, Bing Copilot, DuckAssist, You.com.
+GEO rules to follow in every article:
+  - Open with a 40-60 word direct answer paragraph (the "quotable summary") that an LLM can lift verbatim.
+  - Use clear declarative sentences with stats, dates, and named entities — LLMs prefer attributable claims.
+  - Use H2/H3 headings phrased as real user questions where natural.
+  - Include comparison tables expressed as lists when useful (LLMs cite structured data).
+  - Reference 2-3 authoritative external sources by name in the prose (e.g. "according to Google's 2025 Search Central docs") — do not invent URLs.
 Return ONLY valid JSON matching the requested schema — no markdown fences, no commentary.`;
 
-  const user = `Write a unique, evergreen blog article about: "${topic}".
+  const user = `Write a unique, evergreen, AI-search-optimised blog article about: "${topic}".
 Requirements:
-- 900-1300 words across 6-10 sections (mix of headings, paragraphs, and 1-2 lists).
-- Lead with the most valuable insight (skimmable, Google AI Overview friendly).
-- Include 4-6 SEO keywords naturally (target keyword + variations + 1-2 long-tail).
-- Include 4 FAQs (question + 30-60 word answers) — used for FAQPage schema.
-- If the topic is procedural, include a HowTo block with 4-7 numbered steps; otherwise omit "howto".
-- Hero image prompt should be photoreal, on-brand for a UK service business.
+- 1100-1500 words across 7-11 sections.
+- First section MUST be a 40-60 word "quotable summary" paragraph directly answering the headline question (for AI Overviews + LLM citation).
+- Mix headings (phrased as questions where natural), paragraphs, and 2-3 lists.
+- Include 5-7 SEO keywords (target + variations + 2 long-tail + 1 question-style).
+- Include 5 FAQs (question + 40-70 word answers) — used for FAQPage schema. Pull from real "People Also Ask" patterns.
+- Include a HowTo block with 5-8 numbered steps whenever the topic allows a procedural angle.
+- Name at least 4 entities (brands, tools, standards, people) in the prose — strengthens entity SEO.
+- Hero image prompt: photoreal, on-brand for a UK service business.
 - read_time_minutes = round(words / 220).
+
+
+
+
 
 Return JSON:
 {
