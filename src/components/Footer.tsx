@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MessageCircle, Contact } from 'lucide-react';
+import { useA11y } from '@/contexts/A11yContext';
+import { MessageCircle, Contact, Accessibility } from 'lucide-react';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
@@ -8,6 +9,7 @@ import LearnMoreModal from '@/components/LearnMoreModal';
 
 const Footer = () => {
   const { t } = useLanguage();
+  const { setOpen } = useA11y();
   const { getContent, invalidate } = useSiteContent();
 
   const siteLinks = [
@@ -154,6 +156,14 @@ const Footer = () => {
             © {new Date().getFullYear()} FastMedia.Pro. {t('footer.rights')}.
           </p>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setOpen(true)}
+              className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
+            >
+              <Accessibility className="w-4 h-4" />
+              Accessibility
+            </button>
+            <span className="text-background/20">|</span>
             <a
               href="https://wa.me/4407926400060"
               target="_blank"

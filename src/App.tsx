@@ -11,6 +11,7 @@ import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import AccessibilityToolbar from "./components/AccessibilityToolbar";
+import { A11yProvider } from "./contexts/A11yContext";
 import SuperAdminInboxBadge from "./components/SuperAdminInboxBadge";
 import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner";
 import TrailingSlashRedirect from "./components/TrailingSlashRedirect";
@@ -137,6 +138,7 @@ const PageLoader = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <A11yProvider>
       <LanguageProvider>
         <PreviewModeProvider>
         <Toaster />
@@ -264,6 +266,7 @@ const App = () => (
         </BrowserRouter>
         </PreviewModeProvider>
       </LanguageProvider>
+      </A11yProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

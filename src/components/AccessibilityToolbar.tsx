@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Accessibility, X, Plus, Minus, Sun, Moon, Eye } from 'lucide-react';
+import { Accessibility, X, Plus, Minus, Sun, Eye } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useA11y } from '@/contexts/A11yContext';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 const A11Y_KEY = 'fm_a11y_prefs';
@@ -37,7 +38,7 @@ const learnMore = {
 };
 
 const AccessibilityToolbar = () => {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen } = useA11y();
   const [prefs, setPrefs] = useState<A11yPrefs>(defaultPrefs);
   const { language } = useLanguage();
   const lang = language as 'cs' | 'en' | 'de';
@@ -71,19 +72,6 @@ const AccessibilityToolbar = () => {
 
   return (
     <>
-      {/* Trigger button */}
-      <motion.button
-        onClick={() => setOpen(!open)}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 2, type: 'spring', stiffness: 200 }}
-        whileHover={{ scale: 1.1 }}
-        aria-label="Accessibility settings"
-        className="fixed bottom-20 left-6 z-50 w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl flex items-center justify-center transition-shadow"
-      >
-        <Accessibility className="w-6 h-6" />
-      </motion.button>
-
       {/* Panel */}
       <AnimatePresence>
         {open && (
