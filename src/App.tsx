@@ -138,6 +138,7 @@ const PageLoader = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <A11yProvider>
       <LanguageProvider>
         <PreviewModeProvider>
         <Toaster />
