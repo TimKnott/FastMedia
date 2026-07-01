@@ -37,9 +37,9 @@ const orgJsonLd = {
 const STATIC_ROUTES: RouteSeo[] = [
   {
     path: "/",
-    title: "FastMedia.Pro — Professional websites for trades and service businesses",
+    title: "FastMedia.Pro — Websites for Trades & Services",
     description:
-      "FastMedia.Pro builds conversion-focused websites for tradespeople and service businesses. AI chatbot, online booking, lead capture — 47 industry templates, delivered in 10 days.",
+      "FastMedia.Pro builds high-converting websites for tradespeople and service businesses. AI chatbot, online booking, lead capture. 47 templates, live in 10 days.",
     ogImage: OG_IMG,
     changefreq: "weekly",
     priority: "1.0",
