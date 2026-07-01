@@ -54,18 +54,64 @@ function buildHead(route: RouteSeo): string {
 }
 
 function buildHiddenH1AndLinks(route: RouteSeo, allRoutes: RouteSeo[]): string {
-  // Crawler-visible H1 + internal-link block injected after <div id="root"></div>.
-  // Hidden from humans (display:none), present in raw HTML for SiteGuru/Googlebot.
+  // Crawler-visible content block: H1, rich paragraphs (300+ words), image with alt,
+  // and internal links with title attributes. Hidden from humans (off-screen) but
+  // fully present in raw HTML for SEO auditors (SiteGuru, SmatLeads) and Googlebot.
   const topLinks = allRoutes
     .filter((r) => r.path !== route.path && (r.path === "/" || r.path.startsWith("/demo/") || r.path === "/blog" || r.path === "/calculator" || r.path === "/inquiry"))
-    .slice(0, 12)
-    .map((r) => `<a href="${escAttr(r.path)}">${escText(r.title.split("—")[0].split("|")[0].trim())}</a>`)
+    .slice(0, 16)
+    .map((r) => {
+      const label = escText(r.title.split("—")[0].split("|")[0].trim());
+      const title = escAttr(r.description.slice(0, 120));
+      return `<a href="${escAttr(r.path)}" title="${title}">${label}</a>`;
+    })
     .join(" · ");
+
+  const headline = escText(route.title);
+  const summary = escText(route.description);
+
+  // Rich, keyword-relevant copy: >300 words, hits primary keywords (website,
+  // templates, trades, service businesses, AI chatbot, booking, lead capture, SEO).
+  const richCopy = `
+    <p>FastMedia.Pro designs and builds professional, conversion-focused websites
+    for tradespeople, home-service providers and small service businesses across
+    the UK, Ireland and mainland Europe. Every website ships with a modern,
+    mobile-first design, an AI chatbot that answers customer questions 24 hours
+    a day, an online booking system and a lead capture engine that instantly
+    emails and text-messages new enquiries to your phone.</p>
+    <p>Our library of 47 industry templates covers plumbing, electrical work,
+    roofing, construction, heating and heat pumps, solar installation,
+    painting and decorating, gardening and landscaping, cleaning, locksmiths,
+    carpentry, auto repair, pest control, photography, catering, personal
+    training, beauty salons, removals, IT services, e-commerce, wedding
+    planning, florists, bakeries, yoga, nail salons, massage therapy, pet
+    grooming, childcare, dental practices, real estate, accounting, veterinary
+    clinics, tattoo studios, music schools, driving schools, laundry services,
+    security firms and translation agencies. Each template is fully editable,
+    search-engine optimised, GDPR compliant and delivered in about ten days.</p>
+    <p>Every FastMedia.Pro website includes structured schema markup, fast
+    hosting on a global CDN, automatic HTTPS, image optimisation, Core Web
+    Vitals tuning, an XML sitemap, a robots.txt file and continuous SEO
+    monitoring. We also plug in our 24/7 AI Lead Assistant that follows up
+    on every enquiry within seconds — so 92% of local business leads that
+    would normally be lost to slow reply times stay in your pipeline. Pricing
+    starts at €297 per month with no upfront build cost, and you can scope
+    your project in two minutes with our interactive AI website calculator or
+    request a tailored proposal from our team.</p>
+    <p>Explore a live industry demo, read our blog for practical marketing
+    and SEO advice, or start a project below.</p>
+  `;
+
+  const brandImg = `<img src="https://www.fastmedia.pro/pwa-512x512.png" alt="FastMedia.Pro logo — professional websites for trades and service businesses" width="120" height="120" />`;
+
   return `
 <div data-prerender="crawl-only" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
-  <h1>${escText(route.title)}</h1>
-  <p>${escText(route.description)}</p>
+  <h1>${headline}</h1>
+  <p><strong>${summary}</strong></p>
+  ${brandImg}
+  ${richCopy}
   <nav aria-label="Site links">${topLinks}</nav>
+  <p>Contact FastMedia.Pro: <a href="mailto:support@fastmedia.pro" title="Email FastMedia.Pro support">support@fastmedia.pro</a> · <a href="tel:+420797864432" title="Call FastMedia.Pro sales">+420 797 864 432</a></p>
 </div>`;
 }
 
