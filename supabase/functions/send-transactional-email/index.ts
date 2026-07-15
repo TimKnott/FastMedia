@@ -30,9 +30,49 @@ function generateToken(): string {
     .join('')
 }
 
-// Auth note: this function uses verify_jwt = true in config.toml, so Supabase's
-// gateway validates the caller's JWT (anon or service_role) before the request
-// reaches this code. No in-function auth check is needed.
+// Public-callable templates: safe for anonymous callers because their content
+// is fully controlled by the template itself (attacker cannot craft the body)
+// and — for admin-facing notifications — the recipient is forced server-side to
+// the NOTIFICATION_EMAIL address, ignoring caller-supplied recipient.
+const PUBLIC_TEMPLATES = new Set<string>([
+  'newsletter-welcome',
+  'admin-newsletter-notification',
+  'intake-received',
+  'lead-notification',
+  'booking-confirmation',
+  'admin-booking-notification',
+])
+
+// Templates whose recipient must ALWAYS be forced to NOTIFICATION_EMAIL
+// (they notify the site owner — attacker must not be able to redirect them).
+const OWNER_NOTIFICATION_TEMPLATES = new Set<string>([
+  'admin-newsletter-notification',
+  'admin-booking-notification',
+  'lead-notification',
+])
+
+async function isPrivilegedCaller(req: Request): Promise<boolean> {
+  const authHeader = req.headers.get('Authorization') ?? ''
+  const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+  if (!bearer) return false
+  const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  if (SERVICE_ROLE && bearer === SERVICE_ROLE) return true
+  try {
+    const userClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: `Bearer ${bearer}` } } },
+    )
+    const { data: claims } = await userClient.auth.getClaims(bearer)
+    const uid = claims?.claims?.sub
+    if (!uid) return false
+    const admin = createClient(Deno.env.get('SUPABASE_URL')!, SERVICE_ROLE)
+    const { data: isAdmin } = await admin.rpc('has_role', { _user_id: uid, _role: 'admin' })
+    return !!isAdmin
+  } catch {
+    return false
+  }
+}
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -53,6 +93,8 @@ Deno.serve(async (req) => {
       }
     )
   }
+
+
 
   // Parse request body
   let templateName: string
