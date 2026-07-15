@@ -147,10 +147,33 @@ Deno.serve(async (req) => {
     )
   }
 
+  // Authorization: privileged callers (service-role, admins, or trusted
+  // server-side edge functions) can send any template. Anonymous / regular
+  // authenticated users can only trigger templates on the public allowlist,
+  // whose content is entirely defined server-side and thus cannot be abused
+  // for phishing.
+  const privileged = await isPrivilegedCaller(req)
+  if (!privileged && !PUBLIC_TEMPLATES.has(templateName)) {
+    return new Response(
+      JSON.stringify({ error: 'Not authorized to send this template' }),
+      {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    )
+  }
+
   // Resolve effective recipient: template-level `to` takes precedence over
   // the caller-provided recipientEmail. This allows notification templates
   // to always send to a fixed address (e.g., site owner from env var).
-  const effectiveRecipient = template.to || recipientEmail
+  // For owner-notification templates invoked by non-privileged callers, force
+  // the recipient to NOTIFICATION_EMAIL so an attacker cannot redirect the
+  // notification (and its embedded data) to an arbitrary inbox.
+  let effectiveRecipient = template.to || recipientEmail
+  if (!privileged && OWNER_NOTIFICATION_TEMPLATES.has(templateName)) {
+    const owner = Deno.env.get('NOTIFICATION_EMAIL')
+    if (owner) effectiveRecipient = owner
+  }
 
   if (!effectiveRecipient) {
     return new Response(
