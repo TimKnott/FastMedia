@@ -1,5 +1,6 @@
 // GA4 sync. Requires per-user OAuth (GA4_CLIENT_ID/SECRET/REFRESH_TOKEN). Stubs gracefully when missing.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -81,6 +82,7 @@ async function syncProperty(supabase: any, prop: { id: string; ga4_property_id: 
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders);
   try {
     const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     const token = await getAccessToken();

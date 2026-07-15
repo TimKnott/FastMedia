@@ -39,10 +39,41 @@ Deno.serve(async (req) => {
     const ELEVENLABS_API_KEY = Deno.env.get('ELEVENLABS_API_KEY');
     if (!ELEVENLABS_API_KEY) throw new Error('ELEVENLABS_API_KEY not configured');
 
+    // AuthN/AuthZ: only admins, service-role, or the internal CRON_SECRET may
+    // trigger TTS generation. This prevents anonymous abuse of the paid
+    // ElevenLabs quota. Public visitors can still play pre-generated audio via
+    // the cached `audio_url` column exposed to the client.
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+    const cronSecret = req.headers.get('x-cron-secret') ?? '';
+    const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const CRON_SECRET = Deno.env.get('CRON_SECRET') ?? '';
+
+    let authorized = false;
+    if (bearer && bearer === SERVICE_ROLE) authorized = true;
+    else if (CRON_SECRET && cronSecret && cronSecret === CRON_SECRET) authorized = true;
+    else if (bearer) {
+      const userClient = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+        global: { headers: { Authorization: `Bearer ${bearer}` } },
+      });
+      const { data: claims } = await userClient.auth.getClaims(bearer);
+      const uid = claims?.claims?.sub;
+      if (uid) {
+        const adminCheck = createClient(Deno.env.get('SUPABASE_URL')!, SERVICE_ROLE);
+        const { data: isAdmin } = await adminCheck.rpc('has_role', { _user_id: uid, _role: 'admin' });
+        if (isAdmin) authorized = true;
+      }
+    }
+    if (!authorized) {
+      return new Response(JSON.stringify({ ok: false, error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const body = await req.json().catch(() => ({}));
     const { post_id, slug, text } = body as { post_id?: string; slug?: string; text?: string };
 
-    const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+    const admin = createClient(Deno.env.get('SUPABASE_URL')!, SERVICE_ROLE);
 
     let narration = '';
     let storagePath = '';

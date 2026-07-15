@@ -1,6 +1,7 @@
 // Validates structured-data (JSON-LD) on blog/vlog posts. Records FAQ/HowTo/Article presence
 // and surfaces issues into seo_issues. Runs weekly.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -70,6 +71,7 @@ function analyzePage(url: string, html: string, isBlogPost: boolean): SchemaResu
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
+  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(cors);
   try {
     const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     const body = await req.json().catch(() => ({}));
