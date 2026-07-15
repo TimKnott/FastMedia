@@ -1,5 +1,6 @@
 // Sends weekly SEO digest email + immediate critical alerts. Uses Mailgun (notify.fastmedia.pro).
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -67,6 +68,7 @@ async function buildDigest(supabase: any, prop: any) {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders);
   try {
     const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     const body = await req.json().catch(() => ({}));

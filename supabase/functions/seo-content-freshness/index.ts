@@ -1,5 +1,6 @@
 // Content freshness: parse sitemap lastmod, cross-reference with GSC clicks, recommend refreshes.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -91,6 +92,7 @@ async function process(supabase: any, prop: { id: string; site_url: string }) {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders);
   try {
     const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     let propertyId: string | undefined;
