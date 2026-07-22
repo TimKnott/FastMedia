@@ -90,7 +90,8 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
     return () => { cancelled = true; };
   }, []);
 
-  const [freshlyGenerated, setFreshlyGenerated] = useState(false);
+
+
 
   const generate = async () => {
     setLoading(true);
