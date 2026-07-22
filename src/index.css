@@ -227,3 +227,98 @@ html.a11y-reduced-motion *::after {
   animation-iteration-count: 1 !important;
   transition-duration: 0.001ms !important;
 }
+
+/* ============ Cursor FX + Parallax utilities ============ */
+@media (hover: hover) and (pointer: fine) {
+  html, body { cursor: none; }
+  a, button, [role="button"], input, textarea, select, [data-cursor-hover] { cursor: none; }
+}
+
+.cursorfx-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursorfx-glow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 280px;
+  height: 280px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center,
+    hsl(var(--primary) / 0.28) 0%,
+    hsl(var(--accent) / 0.18) 35%,
+    transparent 70%);
+  filter: blur(28px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.cursorfx-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  border: 1.5px solid hsl(var(--accent) / 0.9);
+  box-shadow: 0 0 18px hsl(var(--accent) / 0.35), inset 0 0 8px hsl(var(--primary) / 0.25);
+  backdrop-filter: invert(0.02);
+  transition: width 0.22s ease, height 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+  will-change: transform;
+}
+.cursorfx-ring::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 4px; height: 4px;
+  border-radius: 9999px;
+  background: hsl(var(--accent));
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px hsl(var(--accent));
+}
+.cursorfx-ring--hover {
+  width: 58px;
+  height: 58px;
+  border-color: hsl(var(--primary) / 0.9);
+  background: hsl(var(--primary) / 0.08);
+}
+.cursorfx-ring--pressed {
+  width: 26px;
+  height: 26px;
+  background: hsl(var(--accent) / 0.18);
+}
+
+.cursorfx-sparks { position: fixed; inset: 0; }
+.cursorfx-spark {
+  position: fixed;
+  left: 0; top: 0;
+  width: var(--size, 6px);
+  height: var(--size, 6px);
+  border-radius: 9999px;
+  background: radial-gradient(circle, hsl(var(--accent)) 0%, hsl(var(--accent) / 0.4) 60%, transparent 100%);
+  transform: translate3d(var(--sx), var(--sy), 0) translate(-50%, -50%);
+  animation: cursorfx-spark-out 700ms ease-out forwards;
+  will-change: transform, opacity;
+  filter: blur(0.5px);
+}
+@keyframes cursorfx-spark-out {
+  0%   { opacity: 0.95; }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--sx) + var(--dx)), calc(var(--sy) + var(--dy)), 0) translate(-50%, -50%) scale(0.4);
+  }
+}
+
+/* Subtle scroll parallax utility — apply to decorative layers only.
+   Speed controlled via --parallax-speed (0 = static, 1 = full scroll). */
+.parallax-slow  { transform: translate3d(0, calc(var(--parallax-y, 0px) * 0.15), 0); will-change: transform; }
+.parallax-medium{ transform: translate3d(0, calc(var(--parallax-y, 0px) * 0.35), 0); will-change: transform; }
+.parallax-fast  { transform: translate3d(0, calc(var(--parallax-y, 0px) * 0.6), 0);  will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  html, body, a, button { cursor: auto; }
+  .cursorfx-root { display: none; }
+  .parallax-slow, .parallax-medium, .parallax-fast { transform: none !important; }
+}

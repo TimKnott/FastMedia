@@ -15,6 +15,7 @@ import { A11yProvider } from "./contexts/A11yContext";
 import SuperAdminInboxBadge from "./components/SuperAdminInboxBadge";
 import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner";
 import TrailingSlashRedirect from "./components/TrailingSlashRedirect";
+import CursorFX from "./components/CursorFX";
 
 // Critical pages loaded eagerly
 import Index from "./pages/Index";
@@ -145,6 +146,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <TrailingSlashRedirect />
+          <CursorFX />
           <PaymentTestModeBanner />
           <AdminToolbar />
           <WhatsAppFloat />
