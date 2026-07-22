@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Headphones, Loader2, AlertCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import BlogAudioPlayer from './BlogAudioPlayer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { isElevenLabsUpgradeError } from '@/lib/ttsErrors';
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+
 
 interface Props {
   /** DB-managed post id (preferred — uses cached audio_url) */
