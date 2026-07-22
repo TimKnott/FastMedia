@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Headphones, Loader2, AlertCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import BlogAudioPlayer from './BlogAudioPlayer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { isElevenLabsUpgradeError } from '@/lib/ttsErrors';
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+
 
 interface Props {
   /** DB-managed post id (preferred — uses cached audio_url) */
@@ -45,6 +48,50 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
   // Cached when the URL was supplied by parent (already persisted) OR the function says cached.
   const [cached, setCached] = useState<boolean>(!!initialAudioUrl);
   const [freshlyGenerated, setFreshlyGenerated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [probing, setProbing] = useState<boolean>(!initialAudioUrl && !!slug);
+
+  // Probe the deterministic public storage URL for pre-generated static-post audio.
+  // Public visitors can only play cached audio — the blog-tts function is admin-gated
+  // to protect the paid ElevenLabs quota.
+  useEffect(() => {
+    if (audioUrl || postId || !slug) {
+      setProbing(false);
+      return;
+    }
+    const sanitized = slug.replace(/[^a-z0-9-]/gi, '-');
+    const candidate = `${SUPABASE_URL}/storage/v1/object/public/blog-audio/static/${sanitized}.mp3`;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(candidate, { method: 'HEAD' });
+        if (!cancelled && res.ok) {
+          setAudioUrl(candidate);
+          setCached(true);
+        }
+      } catch {
+        /* ignore — no cached audio */
+      } finally {
+        if (!cancelled) setProbing(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [slug, postId, audioUrl]);
+
+  // Determine admin status so we can still surface the generate CTA to admins.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { data } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+      if (!cancelled && data) setIsAdmin(true);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+
+
 
   const generate = async () => {
     setLoading(true);
@@ -93,6 +140,15 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
       </div>
     );
   }
+
+  // Hide the CTA entirely for public visitors when no cached audio exists.
+  // Only admins can trigger paid generation via the blog-tts function.
+  if (probing) return null;
+  if (!isAdmin) return null;
+
+
+
+
 
   return (
     <div className="my-6 rounded-xl border border-border bg-card/60 backdrop-blur p-4 shadow-card flex items-center gap-3">
