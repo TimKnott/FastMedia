@@ -108,6 +108,8 @@ const CursorFX = () => {
 
     return () => {
       cancelAnimationFrame(raf);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseover', onOver);
       window.removeEventListener('mousedown', onDown);
