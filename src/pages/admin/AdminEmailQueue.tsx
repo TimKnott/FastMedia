@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Activity, RefreshCw, AlertTriangle, CheckCircle, Clock, Inbox, Zap, Radio } from 'lucide-react';
+import { Activity, RefreshCw, AlertTriangle, CheckCircle, Clock, Inbox, Zap, Radio, Download } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 
 type QueueRow = { msg_id: number; read_ct: number; enqueued_at: string; vt: string; message: Record<string, unknown> };
