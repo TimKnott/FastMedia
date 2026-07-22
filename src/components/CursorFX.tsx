@@ -12,6 +12,9 @@ const CursorFX = () => {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    // Skip on admin routes to keep data-heavy back-office UI using native cursor.
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) return;
+
     // Scroll -> CSS var powering .parallax-* utilities (runs on all devices unless reduced-motion).
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let scrollRaf = 0;
