@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Activity, RefreshCw, AlertTriangle, CheckCircle, Clock, Inbox, Zap } from 'lucide-react';
+import { Activity, RefreshCw, AlertTriangle, CheckCircle, Clock, Inbox, Zap, Radio } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 
 type QueueRow = { msg_id: number; read_ct: number; enqueued_at: string; vt: string; message: Record<string, unknown> };
