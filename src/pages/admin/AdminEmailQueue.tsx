@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Activity, RefreshCw, AlertTriangle, CheckCircle, Clock, Inbox, Zap } from 'lucide-react';
+import { Activity, RefreshCw, AlertTriangle, CheckCircle, Clock, Inbox, Zap, Radio } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 
 type QueueRow = { msg_id: number; read_ct: number; enqueued_at: string; vt: string; message: Record<string, unknown> };
@@ -27,6 +28,10 @@ type Status = {
 };
 
 const AdminEmailQueue = () => {
+  const queryClient = useQueryClient();
+  const [liveStatus, setLiveStatus] = useState<'connecting' | 'live' | 'offline'>('connecting');
+  const [lastEventAt, setLastEventAt] = useState<Date | null>(null);
+
   const statusQuery = useQuery({
     queryKey: ['admin-email-queue-status'],
     queryFn: async () => {
@@ -34,7 +39,8 @@ const AdminEmailQueue = () => {
       if (error) throw error;
       return data!;
     },
-    refetchInterval: 15_000,
+    refetchInterval: 5_000,
+    refetchIntervalInBackground: false,
   });
 
   const failuresQuery = useQuery({
@@ -67,6 +73,31 @@ const AdminEmailQueue = () => {
     refetchInterval: 15_000,
   });
 
+  // Realtime subscription — nudge queries whenever email_send_log rows change.
+  useEffect(() => {
+    const channel = supabase
+      .channel('admin-email-queue-live')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'email_send_log' },
+        () => {
+          setLastEventAt(new Date());
+          queryClient.invalidateQueries({ queryKey: ['admin-email-queue-activity'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-email-queue-failures'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-email-queue-status'] });
+        },
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') setLiveStatus('live');
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') setLiveStatus('offline');
+        else setLiveStatus('connecting');
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
   const status = statusQuery.data;
   const backoffActive = status?.state?.retry_after_until && new Date(status.state.retry_after_until) > new Date();
 
@@ -82,19 +113,35 @@ const AdminEmailQueue = () => {
             Live view of <code>email_queue_dispatch</code> and <code>email_queue_wake</code> activity, retry state, and dead-letter queues.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            statusQuery.refetch();
-            failuresQuery.refetch();
-            activityQuery.refetch();
-          }}
-          disabled={statusQuery.isFetching}
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${statusQuery.isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className={
+              liveStatus === 'live'
+                ? 'border-green-500/40 text-green-600 dark:text-green-400'
+                : liveStatus === 'offline'
+                  ? 'border-destructive/40 text-destructive'
+                  : 'border-muted-foreground/40 text-muted-foreground'
+            }
+            title={lastEventAt ? `Last event ${formatDistanceToNow(lastEventAt, { addSuffix: true })}` : 'No events yet'}
+          >
+            <Radio className={`h-3 w-3 mr-1 ${liveStatus === 'live' ? 'animate-pulse' : ''}`} />
+            {liveStatus === 'live' ? 'Live' : liveStatus === 'offline' ? 'Offline' : 'Connecting…'}
+          </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              statusQuery.refetch();
+              failuresQuery.refetch();
+              activityQuery.refetch();
+            }}
+            disabled={statusQuery.isFetching}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${statusQuery.isFetching ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Stat cards */}
