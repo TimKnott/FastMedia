@@ -146,6 +146,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <TrailingSlashRedirect />
+          <CursorFX />
           <PaymentTestModeBanner />
           <AdminToolbar />
           <WhatsAppFloat />
