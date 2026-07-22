@@ -139,7 +139,12 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
         </div>
       </div>
     );
-  }
+  // Hide the CTA entirely for public visitors when no cached audio exists.
+  // Only admins can trigger paid generation via the blog-tts function.
+  if (probing) return null;
+  if (!isAdmin) return null;
+
+
 
   return (
     <div className="my-6 rounded-xl border border-border bg-card/60 backdrop-blur p-4 shadow-card flex items-center gap-3">
