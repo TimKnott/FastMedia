@@ -113,19 +113,35 @@ const AdminEmailQueue = () => {
             Live view of <code>email_queue_dispatch</code> and <code>email_queue_wake</code> activity, retry state, and dead-letter queues.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            statusQuery.refetch();
-            failuresQuery.refetch();
-            activityQuery.refetch();
-          }}
-          disabled={statusQuery.isFetching}
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${statusQuery.isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className={
+              liveStatus === 'live'
+                ? 'border-green-500/40 text-green-600 dark:text-green-400'
+                : liveStatus === 'offline'
+                  ? 'border-destructive/40 text-destructive'
+                  : 'border-muted-foreground/40 text-muted-foreground'
+            }
+            title={lastEventAt ? `Last event ${formatDistanceToNow(lastEventAt, { addSuffix: true })}` : 'No events yet'}
+          >
+            <Radio className={`h-3 w-3 mr-1 ${liveStatus === 'live' ? 'animate-pulse' : ''}`} />
+            {liveStatus === 'live' ? 'Live' : liveStatus === 'offline' ? 'Offline' : 'Connecting…'}
+          </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              statusQuery.refetch();
+              failuresQuery.refetch();
+              activityQuery.refetch();
+            }}
+            disabled={statusQuery.isFetching}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${statusQuery.isFetching ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Stat cards */}
