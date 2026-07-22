@@ -132,6 +132,55 @@ const AdminEmailQueue = () => {
             variant="outline"
             size="sm"
             onClick={() => {
+              const activity = activityQuery.data ?? [];
+              const failures = failuresQuery.data ?? [];
+              const dispatch = status?.recent_dispatch_calls ?? [];
+              const inflight = [
+                ...(status?.queues.auth.inflight ?? []).map((r) => ({ queue: 'auth', ...r })),
+                ...(status?.queues.transactional.inflight ?? []).map((r) => ({ queue: 'transactional', ...r })),
+              ];
+              downloadCsv('email-activity', activity.map((r) => ({
+                created_at: r.created_at,
+                template: r.template_name,
+                recipient: r.recipient_email,
+                status: r.status,
+                attempt: (r.metadata as { attempt?: number } | null)?.attempt ?? '',
+                message_id: r.message_id ?? '',
+              })));
+              downloadCsv('email-failures', failures.map((r) => ({
+                created_at: r.created_at,
+                template: r.template_name,
+                recipient: r.recipient_email,
+                status: r.status,
+                error: r.error_message ?? '',
+                message_id: r.message_id ?? '',
+              })));
+              downloadCsv('email-inflight', inflight.map((r) => ({
+                queue: r.queue,
+                msg_id: r.msg_id,
+                attempts: r.read_ct,
+                enqueued_at: r.enqueued_at,
+                visible_again: r.vt,
+                recipient: (r.message as { recipient_email?: string; email?: string })?.recipient_email
+                  ?? (r.message as { recipient_email?: string; email?: string })?.email
+                  ?? '',
+                template: (r.message as { template_name?: string })?.template_name ?? '',
+              })));
+              downloadCsv('email-dispatch-calls', dispatch.map((r) => ({
+                created: r.created,
+                status_code: r.status_code ?? '',
+                error: r.error_msg ?? '',
+              })));
+            }}
+            disabled={!statusQuery.data && !activityQuery.data && !failuresQuery.data}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
               statusQuery.refetch();
               failuresQuery.refetch();
               activityQuery.refetch();
