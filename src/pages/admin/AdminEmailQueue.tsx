@@ -404,6 +404,29 @@ const AdminEmailQueue = () => {
   );
 };
 
+function downloadCsv(name: string, rows: Array<Record<string, unknown>>) {
+  if (!rows.length) return;
+  const headers = Array.from(rows.reduce((set, r) => {
+    Object.keys(r).forEach((k) => set.add(k));
+    return set;
+  }, new Set<string>()));
+  const escape = (v: unknown) => {
+    if (v === null || v === undefined) return '';
+    const s = typeof v === 'string' ? v : typeof v === 'object' ? JSON.stringify(v) : String(v);
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const csv = [headers.join(','), ...rows.map((r) => headers.map((h) => escape(r[h])).join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${name}-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 const StatCard = ({
   icon,
   label,
