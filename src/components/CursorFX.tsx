@@ -12,9 +12,28 @@ const CursorFX = () => {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    // Scroll -> CSS var powering .parallax-* utilities (runs on all devices unless reduced-motion).
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (isTouch || reduced) return;
+    let scrollRaf = 0;
+    const updateParallax = () => {
+      document.documentElement.style.setProperty('--parallax-y', `${-window.scrollY}px`);
+      scrollRaf = 0;
+    };
+    const onScroll = () => {
+      if (!scrollRaf) scrollRaf = requestAnimationFrame(updateParallax);
+    };
+    if (!reduced) {
+      window.addEventListener('scroll', onScroll, { passive: true });
+      updateParallax();
+    }
+
+    const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (isTouch || reduced) {
+      return () => {
+        window.removeEventListener('scroll', onScroll);
+        if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      };
+    }
     setEnabled(true);
 
     let mouseX = window.innerWidth / 2;
