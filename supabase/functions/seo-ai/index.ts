@@ -52,6 +52,22 @@ serve(async (req) => {
 
     const userId = claimsData.claims.sub as string;
 
+    // Require editor role or higher (SEO tooling is admin-only)
+    const adminClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+    const { data: hasEditor } = await adminClient.rpc("has_role", {
+      _user_id: userId,
+      _role: "editor",
+    });
+    if (!hasEditor) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Rate limit by authenticated user (5 req/min)
     if (!checkRateLimit(userId)) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
