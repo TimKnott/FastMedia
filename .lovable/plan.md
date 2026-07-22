@@ -1,35 +1,46 @@
-# Add 3 YouTube-Backed Blog Posts
+## Goal
 
-Three new long-form blog posts will be added to the public blog. Each one embeds a real YouTube video, summarises its key teaching points (as if transcribed/OCR'd), and turns them into actionable lessons for tradespeople and service businesses considering a new website with FastMedia.Pro.
+Make `support@fastmedia.pro` forward to your personal inbox (e.g. Gmail).
 
-The site is locked to British English (per project memory), so cs/de fields will mirror the English copy to satisfy the existing trilingual schema without leaking other languages into the UI.
+## Why not Lovable
 
-## Posts
+Lovable Emails only **sends** outbound mail — it does not host mailboxes or receive/forward incoming mail. So the forwarding side has to live at your DNS/mail provider. Nothing to build in the app for this.
 
-1. **"What Makes a Great Website? Lessons from a 10-Minute Masterclass"**
-   - Video: *"The 5 Principles of Great Website Design"* — Flux Academy (Ran Segall) — https://www.youtube.com/watch?v=GZRfp1g8q9I
-   - Lesson focus: hierarchy, white space, contrast, typography, conversion focus — mapped to trade/service sites.
+## Recommended: Cloudflare Email Routing (free, ~10 min)
 
-2. **"Why Most Small-Business Websites Fail to Convert (and How to Fix Yours)"**
-   - Video: *"Why Your Website Isn't Converting"* — Wes McDowell — https://www.youtube.com/watch?v=9V2y7Y9aGZk
-   - Lesson focus: clarity above the fold, single CTA, social proof, friction reduction, mobile-first.
+The simplest, free option. Works alongside Lovable Emails without conflict because Lovable uses the `notify.fastmedia.pro` subdomain for sending, while forwarding is set up on the root `fastmedia.pro`.
 
-3. **"Local SEO in 2026: A Plumber's Guide to Ranking on Google"**
-   - Video: *"Local SEO Tutorial for Small Business"* — Ahrefs — https://www.youtube.com/watch?v=k4Z2BNbUz-Y
-   - Lesson focus: Google Business Profile, NAP consistency, review velocity, locally-optimised landing pages, schema.
+### Steps you'll do (outside Lovable)
 
-Each post will have: hero image (reuse existing `src/assets/blog/*` images), intro paragraph, the embedded YouTube video (`video-embed` block — already supported by `RichContentRenderer` in `src/pages/BlogArticle.tsx`), 4–6 lesson sections with `heading` + `paragraph` + `list`, a pull-`quote`, a `callout` tying the lesson to FastMedia.Pro, and a closing `cta` to `/calculator` or `/inquiry`. Read-time 7–9 minutes, tagged appropriately, `featured: false`.
+1. Create a free Cloudflare account and add `fastmedia.pro` as a site (no need to change registrar — you can keep your current one or move DNS to Cloudflare).
+2. In Cloudflare → **Email → Email Routing**, enable routing. Cloudflare shows you the MX + TXT records to add.
+3. Add those MX/TXT records at whichever DNS provider currently manages `fastmedia.pro`.
+   - Important: these MX records go on the **root domain** (`fastmedia.pro`), NOT on `notify.fastmedia.pro`. Do not touch the Lovable NS delegation on the notify subdomain.
+4. In Email Routing → **Routes**, add:
+   - Custom address: `support@fastmedia.pro` → forward to your personal email.
+   - Verify the destination email (Cloudflare sends a confirmation link).
+5. Optional catch-all: forward `*@fastmedia.pro` to the same inbox so nothing gets lost.
 
-## Technical Approach
+Done — mail to `support@` lands in your personal inbox within seconds.
 
-- **New file**: `src/data/youtubeLessonBlogPosts.ts` exporting `youtubeLessonBlogPosts: BlogPost[]` using the existing `ContentBlock` union from `src/data/blogPosts.ts` (including the `video-embed` type already rendered by `BlogArticle.tsx`).
-- **Edit**: `src/data/blogPosts.ts` — import and spread the new array into the exported `blogPosts` list so they appear in `/blog` and `/blog/:slug` automatically (same path used by `industryBlogPosts` and `performanceBlogPosts`).
-- **No DB writes**: The public blog reads from the static `blogPosts` array (`src/pages/Blog.tsx`, `src/pages/BlogArticle.tsx`), not the `blog_posts` table — so static data is the correct surface and avoids the limited DB `BlogSection` type that doesn't support video embeds.
-- **No schema or routing changes**: Slugs flow through the existing `/blog/:slug` route.
-- **SEO**: Each post already gets `SEOHead` and JSON-LD from `BlogArticle.tsx`. Slugs, titles, excerpts, and tags will be SEO-optimised.
+## Alternatives if you'd rather not use Cloudflare
 
-## Verification
+- **Zoho Mail Free**: real mailbox at `support@fastmedia.pro` (webmail + IMAP), up to 5 users free. More setup (MX + SPF + DKIM + DMARC), but you get a real inbox you can log into.
+- **Google Workspace**: paid (~€6/user/mo) if you want Gmail-branded `support@fastmedia.pro`.
+- **ImprovMX / Forward Email**: dead-simple free forwarders, similar to Cloudflare.
 
-- Visit `/blog` → confirm 3 new cards appear.
-- Open each `/blog/<slug>` → confirm the YouTube iframe renders inside the article, lesson sections display, CTA links resolve.
-- Build runs clean (prerender script already enumerates blog posts from the DB only, so static posts are served via the SPA — no prerender change needed).
+## Sending replies as support@fastmedia.pro
+
+Forwarding delivers mail *to* you, but replies from Gmail will show your personal address by default. Two options:
+- Use Gmail's **Send mail as** with an SMTP relay (Zoho free tier or Brevo free tier work well).
+- Or ignore it and just reply from your personal address for now.
+
+## What I'll do in the app
+
+Nothing code-side is required for forwarding itself. But I can:
+- Update the site's contact copy / mailto links to `support@fastmedia.pro` everywhere (currently already the case, but I'll verify).
+- Once forwarding is live, we can also wire Lovable's outbound emails (auth, quotes, notifications) to use `support@fastmedia.pro` as the visible From address so replies to those emails flow back into your forwarded inbox.
+
+## Recommendation
+
+Go with **Cloudflare Email Routing** — free, fastest, and won't conflict with your existing Lovable email setup. Want me to walk you through the exact DNS values once you've enabled it on Cloudflare?
