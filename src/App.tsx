@@ -254,6 +254,7 @@ const App = () => (
               <Route path="coupons" element={<AdminCoupons />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
+              <Route path="email-queue" element={<ProtectedRoute minRole="admin"><AdminEmailQueue /></ProtectedRoute>} />
               <Route path="lead-emails" element={<AdminLeadEmails />} />
               <Route path="hr" element={<AdminHR />} />
               <Route path="integrations" element={<AdminIntegrations />} />
