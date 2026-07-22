@@ -65,6 +65,7 @@ const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
+const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
 const AdminLeadEmails = lazy(() => import("./pages/admin/AdminLeadEmails"));
 const AdminHR = lazy(() => import("./pages/admin/AdminHR"));
 const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
@@ -253,6 +254,7 @@ const App = () => (
               <Route path="coupons" element={<AdminCoupons />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
+              <Route path="email-queue" element={<ProtectedRoute minRole="admin"><AdminEmailQueue /></ProtectedRoute>} />
               <Route path="lead-emails" element={<AdminLeadEmails />} />
               <Route path="hr" element={<AdminHR />} />
               <Route path="integrations" element={<AdminIntegrations />} />
