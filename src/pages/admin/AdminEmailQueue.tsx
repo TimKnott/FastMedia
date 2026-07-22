@@ -28,6 +28,10 @@ type Status = {
 };
 
 const AdminEmailQueue = () => {
+  const queryClient = useQueryClient();
+  const [liveStatus, setLiveStatus] = useState<'connecting' | 'live' | 'offline'>('connecting');
+  const [lastEventAt, setLastEventAt] = useState<Date | null>(null);
+
   const statusQuery = useQuery({
     queryKey: ['admin-email-queue-status'],
     queryFn: async () => {
@@ -35,7 +39,8 @@ const AdminEmailQueue = () => {
       if (error) throw error;
       return data!;
     },
-    refetchInterval: 15_000,
+    refetchInterval: 5_000,
+    refetchIntervalInBackground: false,
   });
 
   const failuresQuery = useQuery({
@@ -67,6 +72,31 @@ const AdminEmailQueue = () => {
     },
     refetchInterval: 15_000,
   });
+
+  // Realtime subscription — nudge queries whenever email_send_log rows change.
+  useEffect(() => {
+    const channel = supabase
+      .channel('admin-email-queue-live')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'email_send_log' },
+        () => {
+          setLastEventAt(new Date());
+          queryClient.invalidateQueries({ queryKey: ['admin-email-queue-activity'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-email-queue-failures'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-email-queue-status'] });
+        },
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') setLiveStatus('live');
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') setLiveStatus('offline');
+        else setLiveStatus('connecting');
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const status = statusQuery.data;
   const backoffActive = status?.state?.retry_after_until && new Date(status.state.retry_after_until) > new Date();
