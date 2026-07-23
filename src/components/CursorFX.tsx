@@ -38,6 +38,7 @@ const CursorFX = () => {
       };
     }
     setEnabled(true);
+    document.body.classList.add('cursorfx-active');
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
