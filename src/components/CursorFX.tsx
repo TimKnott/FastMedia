@@ -38,6 +38,7 @@ const CursorFX = () => {
       };
     }
     setEnabled(true);
+    document.body.classList.add('cursorfx-active');
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
@@ -117,6 +118,7 @@ const CursorFX = () => {
       window.removeEventListener('mouseover', onOver);
       window.removeEventListener('mousedown', onDown);
       window.removeEventListener('mouseup', onUp);
+      document.body.classList.remove('cursorfx-active');
     };
   }, []);
 
