@@ -230,8 +230,14 @@ html.a11y-reduced-motion *::after {
 
 /* ============ Cursor FX + Parallax utilities ============ */
 @media (hover: hover) and (pointer: fine) {
-  html, body { cursor: none; }
-  a, button, [role="button"], input, textarea, select, [data-cursor-hover] { cursor: none; }
+  body.cursorfx-active,
+  body.cursorfx-active a,
+  body.cursorfx-active button,
+  body.cursorfx-active [role="button"],
+  body.cursorfx-active input,
+  body.cursorfx-active textarea,
+  body.cursorfx-active select,
+  body.cursorfx-active [data-cursor-hover] { cursor: none; }
 }
 
 .cursorfx-root {
