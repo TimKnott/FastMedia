@@ -118,6 +118,7 @@ const CursorFX = () => {
       window.removeEventListener('mouseover', onOver);
       window.removeEventListener('mousedown', onDown);
       window.removeEventListener('mouseup', onUp);
+      document.body.classList.remove('cursorfx-active');
     };
   }, []);
 
