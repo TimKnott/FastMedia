@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
     .from('blog_generation_log')
     .select('id', { count: 'exact', head: true })
     .eq('status', 'success')
-    .gte('created_at', since);
+    .gte('triggered_at', since);
 
   if ((count ?? 0) > 0) {
     return new Response(JSON.stringify({ ok: true, skipped: 'already_ran_within_20h' }), {
