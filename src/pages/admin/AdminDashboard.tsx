@@ -99,6 +99,8 @@ const AdminDashboard = () => {
 
       <DashboardCharts />
 
+      <DailyBlogStatus />
+
       <TrackingDiagnostics />
 
       <Card className="shadow-card">
