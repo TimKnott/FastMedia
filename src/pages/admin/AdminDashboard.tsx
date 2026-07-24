@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import TrackingDiagnostics from '@/components/admin/TrackingDiagnostics';
 import DashboardCharts from '@/components/admin/DashboardCharts';
+import DailyBlogStatus from '@/components/admin/DailyBlogStatus';
 import LearnMoreModal from '@/components/LearnMoreModal';
 import { useLanguage } from '@/contexts/LanguageContext';
 
