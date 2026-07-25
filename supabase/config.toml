@@ -15,3 +15,6 @@ verify_jwt = false
 [functions.trigger-daily-blog]
 verify_jwt = false
 
+[functions.daily-deliverability-probe]
+verify_jwt = false
+
