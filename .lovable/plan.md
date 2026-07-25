@@ -1,46 +1,55 @@
-## Goal
+# Fix crawler + SEO issues from SiteGuru report
 
-Make `support@fastmedia.pro` forward to your personal inbox (e.g. Gmail).
+The crawl shows two structural problems and a handful of thin/slow pages. This plan fixes them at the source (prerender + template + content) so the next SiteGuru run passes without hand-editing individual routes.
 
-## Why not Lovable
+## 1. Add all `/feature/*` routes to the prerender manifest
 
-Lovable Emails only **sends** outbound mail — it does not host mailboxes or receive/forward incoming mail. So the forwarding side has to live at your DNS/mail provider. Nothing to build in the app for this.
+`scripts/seo-routes.ts` only emits static routes + demos + blog + legal. Feature pages (30+) get the naked SPA shell — no per-page title, description, canonical, JSON-LD, or content. This is why 6 URLs even come back as 55–123 ms empty-body CDN fallbacks.
 
-## Recommended: Cloudflare Email Routing (free, ~10 min)
+Changes in `scripts/seo-routes.ts`:
+- Import `calculatorFeatures` and `getFeatureDetail`.
+- Add a `featureRoute(id)` builder producing `path: '/feature/<id>'`, a title like `"<Feature name> — Feature | FastMedia.Pro"`, a 150-char description built from `descEn` + first sentence of `detailsEn`, `ogType: 'website'`, and a `Product`/`Service` JSON-LD block with offers (oneTimePrice + monthlyPrice in CZK).
+- Include a route per entry in `calculatorFeatures` (skip any without a matching `featureDetails` entry).
+- Include the same for the 6 currently-broken IDs (all exist in both data files, so they'll be picked up automatically).
 
-The simplest, free option. Works alongside Lovable Emails without conflict because Lovable uses the `notify.fastmedia.pro` subdomain for sending, while forwarding is set up on the root `fastmedia.pro`.
+## 2. Make prerendered content actually visible to crawlers
 
-### Steps you'll do (outside Lovable)
+The off-screen block (`position:absolute; left:-10000px`) in `buildHiddenH1AndLinks` is treated as hidden text by SiteGuru/SmatLeads-style auditors, which is why every demo and feature page reports 0 words even though bytes are served.
 
-1. Create a free Cloudflare account and add `fastmedia.pro` as a site (no need to change registrar — you can keep your current one or move DNS to Cloudflare).
-2. In Cloudflare → **Email → Email Routing**, enable routing. Cloudflare shows you the MX + TXT records to add.
-3. Add those MX/TXT records at whichever DNS provider currently manages `fastmedia.pro`.
-   - Important: these MX records go on the **root domain** (`fastmedia.pro`), NOT on `notify.fastmedia.pro`. Do not touch the Lovable NS delegation on the notify subdomain.
-4. In Email Routing → **Routes**, add:
-   - Custom address: `support@fastmedia.pro` → forward to your personal email.
-   - Verify the destination email (Cloudflare sends a confirmation link).
-5. Optional catch-all: forward `*@fastmedia.pro` to the same inbox so nothing gets lost.
+Changes in `scripts/prerender.ts`:
+- Rename the block to `buildCrawlBody` and drop the off-screen positioning. Wrap it in a real `<main data-prerender="fallback">` that sits inside `#root`'s sibling and is removed at runtime by a tiny inline script the moment React hydrates (so humans never see it, but any crawler — JS or non-JS — reads plain visible HTML).
+- Runtime removal: add a `<script>document.currentScript && requestAnimationFrame(()=>document.querySelector('[data-prerender="fallback"]')?.remove())</script>` right after the block. Non-JS crawlers keep the content; real browsers strip it on paint.
+- Per-route content: replace the single generic `richCopy` with a route-specific block:
+  - Demo routes: 3 paragraphs derived from `TRADE_LABELS[trade]` covering what the template includes, who it's for, and CTAs.
+  - Feature routes: pull `detailsEn` + top 3 `benefitsEn` + first FAQ Q/A from `featureDetails` for genuine unique content per page.
+  - Static routes: keep current copy but drop the marketing-heavy list on non-home pages and replace with route-relevant copy.
 
-Done — mail to `support@` lands in your personal inbox within seconds.
+## 3. Expand thin pages
 
-## Alternatives if you'd rather not use Cloudflare
+- `src/pages/Install.tsx` — add a proper intro (~250 words) covering PWA install steps on iOS, Android, and desktop; benefits (offline access, home-screen icon, push-ready); FAQ (3 items). Content is already partially there; extend copy blocks. This lifts the crawled word count from 56 → 300+.
+- `/legal/imprint` — expand `legal_documents` row via `AdminLegal` seed migration to include full company details, VAT ID, registration authority, dispute resolution links (as required for EU imprint). Bumps 188 → 500+ words.
 
-- **Zoho Mail Free**: real mailbox at `support@fastmedia.pro` (webmail + IMAP), up to 5 users free. More setup (MX + SPF + DKIM + DMARC), but you get a real inbox you can log into.
-- **Google Workspace**: paid (~€6/user/mo) if you want Gmail-branded `support@fastmedia.pro`.
-- **ImprovMX / Forward Email**: dead-simple free forwarders, similar to Cloudflare.
+## 4. Performance quick wins
 
-## Sending replies as support@fastmedia.pro
+Homepage 3.9 s and several demos 2–3 s. Focused fixes (no architectural change):
+- Add `<link rel="preconnect" href="https://aivnnjsrupmubcjsgulb.supabase.co" crossorigin>` and `<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>` in `index.html`.
+- Add `<link rel="preload" as="image" href="…hero.jpg" fetchpriority="high">` for the hero image referenced by `HeroSection`.
+- Ensure `loading="lazy"` + `decoding="async"` on non-hero images in `DemoLayout`, `ServicesSection`, `DemosSection` (audit and set where missing).
+- Confirm the prerender injects the head block before the Vite `<script type="module">` so browsers can start rendering the SEO snapshot immediately.
 
-Forwarding delivers mail *to* you, but replies from Gmail will show your personal address by default. Two options:
-- Use Gmail's **Send mail as** with an SMTP relay (Zoho free tier or Brevo free tier work well).
-- Or ignore it and just reply from your personal address for now.
+## 5. Verify
 
-## What I'll do in the app
+- Re-run `npm run build` locally in the fix branch (build itself is auto-verified by the harness) and grep `dist/feature/before-after/index.html`, `dist/feature/blog/index.html`, `dist/demo/plumbing/index.html` for `<h1>`, `<title>`, `application/ld+json`, and route-unique paragraphs — no off-screen wrapper.
+- After deploy, re-run SiteGuru; expect: all `/feature/*` and `/demo/*` reporting 200+ words, the 6 previously broken feature URLs returning full HTML, `/install` ≥ 250 words, imprint ≥ 500 words, homepage TTFB improvement from preconnects.
 
-Nothing code-side is required for forwarding itself. But I can:
-- Update the site's contact copy / mailto links to `support@fastmedia.pro` everywhere (currently already the case, but I'll verify).
-- Once forwarding is live, we can also wire Lovable's outbound emails (auth, quotes, notifications) to use `support@fastmedia.pro` as the visible From address so replies to those emails flow back into your forwarded inbox.
+## Technical notes
 
-## Recommendation
+- Prerender runs postbuild via `scripts/prerender.ts`; no dev-server change needed.
+- No RLS or data-model changes; the legal expansion is a `supabase migration` UPDATE against `legal_documents` where `slug='imprint'` (add a version row automatically via existing `log_site_content_version` pattern — legal has its own audit).
+- No route changes in `App.tsx`; the catch-all `/demo/:tradeId` still serves `CustomDemoPage` for unknown trades.
+- Keep the runtime-removal script inline and CSP-safe (no `eval`, no external URL).
 
-Go with **Cloudflare Email Routing** — free, fastest, and won't conflict with your existing Lovable email setup. Want me to walk you through the exact DNS values once you've enabled it on Cloudflare?
+## Out of scope
+
+- SSR migration to Next/Astro (would fix everything but is a project pivot).
+- Rewriting demo pages to render meaningful content without React (they'd need a static content mirror — heavy work; the crawl-body approach solves the SEO signal without that).
