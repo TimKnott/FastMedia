@@ -36,4 +36,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'intake-received': intakeReceived,
   'inbound-forward': inboundForward,
   'deliverability-test': deliverabilityTest,
+  'deliverability-daily-report': deliverabilityDailyReport,
 }
