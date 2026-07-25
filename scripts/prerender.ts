@@ -188,7 +188,7 @@ async function main() {
 
   for (const route of routes) {
     const head = buildHead(route);
-    const body = buildHiddenH1AndLinks(route, routes);
+    const body = buildCrawlBody(route, routes);
     const html = applyToTemplate(template, head, body);
     writeRouteFile(route, html);
   }
