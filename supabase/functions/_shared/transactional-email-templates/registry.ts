@@ -20,6 +20,7 @@ import { template as portalInvite } from './portal-invite.tsx'
 import { template as clientStageUpdate } from './client-stage-update.tsx'
 import { template as intakeReceived } from './intake-received.tsx'
 import { template as inboundForward } from './inbound-forward.tsx'
+import { template as deliverabilityTest } from './deliverability-test.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'lead-notification': leadNotification,
@@ -33,4 +34,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'client-stage-update': clientStageUpdate,
   'intake-received': intakeReceived,
   'inbound-forward': inboundForward,
+  'deliverability-test': deliverabilityTest,
 }
