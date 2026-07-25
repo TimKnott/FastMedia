@@ -53,10 +53,12 @@ function buildHead(route: RouteSeo): string {
   return lines.join("\n    ");
 }
 
-function buildHiddenH1AndLinks(route: RouteSeo, allRoutes: RouteSeo[]): string {
-  // Crawler-visible content block: H1, rich paragraphs (300+ words), image with alt,
-  // and internal links with title attributes. Hidden from humans (off-screen) but
-  // fully present in raw HTML for SEO auditors (SiteGuru, SmatLeads) and Googlebot.
+function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
+  // Visible-to-crawler content block: real H1, route-specific paragraphs,
+  // image with alt, and internal links. Rendered as a normal <main> so
+  // SEO auditors (SiteGuru, SmatLeads) and non-JS crawlers extract the
+  // words. React hydration removes the block on paint so real users
+  // never see it — the SPA takes over immediately.
   const topLinks = allRoutes
     .filter((r) => r.path !== route.path && (r.path === "/" || r.path.startsWith("/demo/") || r.path === "/blog" || r.path === "/calculator" || r.path === "/inquiry"))
     .slice(0, 16)
@@ -67,12 +69,13 @@ function buildHiddenH1AndLinks(route: RouteSeo, allRoutes: RouteSeo[]): string {
     })
     .join(" · ");
 
-  const headline = escText(route.title);
+  const headline = escText(route.h1 ?? route.title);
   const summary = escText(route.description);
 
-  // Rich, keyword-relevant copy: >300 words, hits primary keywords (website,
-  // templates, trades, service businesses, AI chatbot, booking, lead capture, SEO).
-  const richCopy = `
+  // Route-specific copy when provided; otherwise a rich sitewide fallback.
+  const paragraphs = (route.contentBlocks && route.contentBlocks.length > 0)
+    ? route.contentBlocks.map((p) => `<p>${escText(p)}</p>`).join("\n    ")
+    : `
     <p>FastMedia.Pro designs and builds professional, conversion-focused websites
     for tradespeople, home-service providers and small service businesses across
     the UK, Ireland and mainland Europe. Every website ships with a modern,
@@ -102,17 +105,38 @@ function buildHiddenH1AndLinks(route: RouteSeo, allRoutes: RouteSeo[]): string {
     and SEO advice, or start a project below.</p>
   `;
 
-  const brandImg = `<img src="https://www.fastmedia.pro/pwa-512x512.png" alt="FastMedia.Pro logo — professional websites for trades and service businesses" width="120" height="120" />`;
+  const heroImgSrc = (route as { ogImage?: string }).ogImage ?? "https://www.fastmedia.pro/pwa-512x512.png";
+  const heroImg = `<img src="${escAttr(heroImgSrc)}" alt="${escAttr(route.h1 ?? route.title)}" width="1200" height="630" loading="lazy" decoding="async" />`;
 
   return `
-<div data-prerender="crawl-only" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+<main data-prerender="fallback">
   <h1>${headline}</h1>
   <p><strong>${summary}</strong></p>
-  ${brandImg}
-  ${richCopy}
+  ${heroImg}
+  ${paragraphs}
   <nav aria-label="Site links">${topLinks}</nav>
   <p>Contact FastMedia.Pro: <a href="mailto:support@fastmedia.pro" title="Email FastMedia.Pro support">support@fastmedia.pro</a> · <a href="tel:+420797864432" title="Call FastMedia.Pro sales">+420 797 864 432</a></p>
-</div>`;
+</main>
+<script>
+  // Remove the prerender fallback the instant React hydrates so real users
+  // never see it. Non-JS crawlers keep the content in the raw HTML.
+  (function(){
+    var strip = function(){
+      var n = document.querySelector('main[data-prerender="fallback"]');
+      if (n && n.parentNode) n.parentNode.removeChild(n);
+    };
+    var root = document.getElementById('root');
+    if (root && 'MutationObserver' in window) {
+      var mo = new MutationObserver(function(){
+        if (root.childElementCount > 0) { mo.disconnect(); strip(); }
+      });
+      mo.observe(root, { childList: true });
+      setTimeout(function(){ mo.disconnect(); strip(); }, 4000);
+    } else {
+      setTimeout(strip, 1500);
+    }
+  })();
+</script>`;
 }
 
 function applyToTemplate(template: string, headInjection: string, bodyInjection: string): string {
@@ -126,10 +150,11 @@ function applyToTemplate(template: string, headInjection: string, bodyInjection:
     .replace(/<script[^>]+type=["']application\/ld\+json["'][\s\S]*?<\/script>/gi, "");
   // Inject our head block just before </head>
   html = html.replace(/<\/head>/i, `    ${headInjection}\n  </head>`);
-  // Inject crawl-only content after #root
+  // Inject crawl content after #root so the SPA mounts cleanly above it.
   html = html.replace(/<div id="root"><\/div>/i, `<div id="root"></div>${bodyInjection}`);
   return html;
 }
+
 
 function writeRouteFile(route: RouteSeo, html: string) {
   const dest =
