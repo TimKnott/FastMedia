@@ -109,8 +109,16 @@ function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
   const heroImg = `<img src="${escAttr(heroImgSrc)}" alt="${escAttr(route.h1 ?? route.title)}" width="1200" height="630" loading="lazy" decoding="async" />`;
 
   return `
-<main data-prerender="fallback">
-  <h1>${headline}</h1>
+<div data-prerender="splash" style="position:fixed;inset:0;background:#0b1220;display:flex;align-items:center;justify-content:center;z-index:2147483647;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#e2e8f0;">
+  <div style="text-align:center;">
+    <img src="https://www.fastmedia.pro/pwa-192x192.png" alt="" width="72" height="72" style="border-radius:16px;margin:0 auto 16px;display:block;box-shadow:0 10px 30px rgba(0,0,0,.4);" />
+    <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;">FastMedia.Pro</div>
+    <div style="margin-top:14px;width:120px;height:2px;background:linear-gradient(90deg,transparent,#38bdf8,transparent);animation:fmPulse 1.4s ease-in-out infinite;"></div>
+  </div>
+  <style>@keyframes fmPulse{0%,100%{opacity:.25}50%{opacity:1}}</style>
+</div>
+<main data-prerender="fallback" aria-hidden="true" style="position:absolute;left:0;top:0;width:100%;max-width:960px;padding:32px 24px;box-sizing:border-box;color:#0f172a;background:#ffffff;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.55;">
+  <h1 style="font-size:28px;margin:0 0 12px;">${headline}</h1>
   <p><strong>${summary}</strong></p>
   ${heroImg}
   ${paragraphs}
@@ -118,12 +126,16 @@ function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
   <p>Contact FastMedia.Pro: <a href="mailto:support@fastmedia.pro" title="Email FastMedia.Pro support">support@fastmedia.pro</a> · <a href="tel:+420797864432" title="Call FastMedia.Pro sales">+420 797 864 432</a></p>
 </main>
 <script>
-  // Remove the prerender fallback the instant React hydrates so real users
-  // never see it. Non-JS crawlers keep the content in the raw HTML.
+  // Remove the prerender fallback + splash the instant React hydrates so
+  // real users never see the raw SEO content. Non-JS crawlers keep the
+  // fallback content in the raw HTML.
   (function(){
     var strip = function(){
-      var n = document.querySelector('main[data-prerender="fallback"]');
-      if (n && n.parentNode) n.parentNode.removeChild(n);
+      var nodes = document.querySelectorAll('[data-prerender="fallback"],[data-prerender="splash"]');
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (n && n.parentNode) n.parentNode.removeChild(n);
+      }
     };
     var root = document.getElementById('root');
     if (root && 'MutationObserver' in window) {
