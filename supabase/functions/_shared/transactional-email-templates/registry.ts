@@ -21,6 +21,7 @@ import { template as clientStageUpdate } from './client-stage-update.tsx'
 import { template as intakeReceived } from './intake-received.tsx'
 import { template as inboundForward } from './inbound-forward.tsx'
 import { template as deliverabilityTest } from './deliverability-test.tsx'
+import { template as deliverabilityDailyReport } from './deliverability-daily-report.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'lead-notification': leadNotification,
