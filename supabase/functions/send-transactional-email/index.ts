@@ -171,7 +171,7 @@ Deno.serve(async (req) => {
   // notification (and its embedded data) to an arbitrary inbox.
   let effectiveRecipient = template.to || recipientEmail
   if (!privileged && OWNER_NOTIFICATION_TEMPLATES.has(templateName)) {
-    const owner = Deno.env.get('NOTIFICATION_EMAIL')
+    const owner = (Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL'))
     if (owner) effectiveRecipient = owner
   }
 

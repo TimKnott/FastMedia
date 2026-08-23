@@ -10,7 +10,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const NOTIFICATION_EMAIL = Deno.env.get("NOTIFICATION_EMAIL");
+    const NOTIFICATION_EMAIL = Deno.env.get("PRIVATE_FORWARD_EMAIL") || Deno.env.get("NOTIFICATION_EMAIL");
     if (!NOTIFICATION_EMAIL) {
       console.error("NOTIFICATION_EMAIL is not configured");
       return new Response(JSON.stringify({ error: "Notification config missing" }), {
