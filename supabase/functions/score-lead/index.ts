@@ -335,7 +335,7 @@ serve(async (req) => {
     };
 
 
-    const adminEmail = Deno.env.get("NOTIFICATION_EMAIL") || "support@fastmedia.pro";
+    const adminEmail = Deno.env.get("PRIVATE_FORWARD_EMAIL") || Deno.env.get("NOTIFICATION_EMAIL") || "support@fastmedia.pro";
     const intakeSummary = body.intentSummary || aiAnalysis?.summary || null;
 
     // Always: notify admin a new lead is ready for review

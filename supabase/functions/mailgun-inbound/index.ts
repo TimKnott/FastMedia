@@ -14,7 +14,7 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const MAILGUN_SIGNING_KEY = Deno.env.get('MAILGUN_WEBHOOK_SIGNING_KEY') || ''
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')!
-const NOTIFICATION_EMAIL = Deno.env.get('NOTIFICATION_EMAIL') || ''
+const NOTIFICATION_EMAIL = Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL') || ''
 const VBOUT_API_KEY = Deno.env.get('VBOUT_API_KEY') || ''
 const SITE_NAME = 'FastMedia.Pro'
 
