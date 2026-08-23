@@ -47,6 +47,7 @@ Deno.serve(async (req) => {
 
   // 1) Fire probe through the outbound pipeline
   let probeError: string | null = null;
+  let probeMessageId: string | null = null;
   try {
     const res = await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
       method: 'POST',
@@ -66,28 +67,35 @@ Deno.serve(async (req) => {
         },
       }),
     });
-    if (!res.ok) probeError = `HTTP ${res.status}: ${(await res.text()).slice(0, 500)}`;
+    if (!res.ok) {
+      probeError = `HTTP ${res.status}: ${(await res.text()).slice(0, 500)}`;
+    } else {
+      const body = await res.json();
+      probeMessageId = body.messageId ?? null;
+    }
   } catch (e) {
     probeError = e instanceof Error ? e.message : String(e);
   }
 
   // 2) Poll email_send_log for terminal status of the probe (~45s max)
-  let probeStatus = 'pending';
+  let probeStatus = probeError ? 'failed' : 'pending';
   let probeLatencyMs: number | null = null;
+  if (!probeMessageId) {
+    probeError = probeError ?? 'Probe did not return a messageId; cannot track delivery';
+    probeStatus = 'failed';
+  }
   for (let i = 0; i < 15; i++) {
     await sleep(3000);
     const { data } = await admin
       .from('email_send_log')
       .select('status,error_message,created_at')
-      .eq('recipient_email', probeRecipient.toLowerCase())
+      .eq('message_id', probeMessageId)
       .order('created_at', { ascending: false })
-      .limit(10);
-    const terminal = (data ?? []).find((r: any) =>
-      ['sent', 'failed', 'dlq', 'suppressed', 'bounced', 'complained'].includes(r.status)
-    );
-    if (terminal) {
-      probeStatus = terminal.status;
-      if (!probeError && terminal.error_message) probeError = terminal.error_message;
+      .limit(5);
+    const row = data?.[0];
+    if (row && ['sent', 'failed', 'dlq', 'suppressed', 'bounced', 'complained'].includes(row.status)) {
+      probeStatus = row.status;
+      if (!probeError && row.error_message) probeError = row.error_message;
       probeLatencyMs = Date.now() - startedAt;
       break;
     }
