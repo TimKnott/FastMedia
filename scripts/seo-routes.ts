@@ -79,6 +79,15 @@ const STATIC_ROUTES: RouteSeo[] = [
     priority: "0.8",
   },
   {
+    path: "/contact",
+    title: "Contact FastMedia.Pro — Talk to Our Web Team",
+    description:
+      "Get in touch about a new website, redesign or ongoing support. Message, call or WhatsApp us — we reply within one working day.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.8",
+  },
+  {
     path: "/install",
     title: "Install the FastMedia app on your phone",
     description:

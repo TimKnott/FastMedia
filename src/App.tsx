@@ -28,6 +28,7 @@ const ConsultantTereza = lazy(() => import("./pages/ConsultantTereza"));
 const CalculatorPage = lazy(() => import("./pages/CalculatorPage"));
 const Install = lazy(() => import("./pages/Install"));
 const Inquiry = lazy(() => import("./pages/Inquiry"));
+const Contact = lazy(() => import("./pages/Contact"));
 const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
 const PackageDetail = lazy(() => import("./pages/PackageDetail"));
 const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
@@ -215,6 +216,8 @@ const App = () => (
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/install" element={<Install />} />
             <Route path="/inquiry" element={<Inquiry />} />
+            <Route path="/contact" element={<Contact />} />
+
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/package/:slug" element={<PackageDetail />} />
             <Route path="/legal/:slug" element={<LegalDocument />} />

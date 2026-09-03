@@ -2666,6 +2666,10 @@ export type Database = {
           read_ct: number
         }[]
       }
+      set_email_queue_service_key: {
+        Args: { new_key: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "super_admin" | "editor"
