@@ -3,6 +3,12 @@
 // emails an admin report to NOTIFICATION_EMAIL.
 // Callable only by pg_cron (CRON_SECRET header) or the service role.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import {
+  adminMessageUrl,
+  isFailureStatus,
+  resolveProbeOutcome,
+  type SendLogRow,
+} from '../_shared/deliverability.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,6 +26,49 @@ function authorized(req: Request): boolean {
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Post an immediate alert to Slack. Never throws — alerting must not break the report. */
+async function postSlackAlert(text: string): Promise<string | null> {
+  const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY') ?? '';
+  const SLACK_API_KEY = Deno.env.get('SLACK_API_KEY') ?? '';
+  const channel = Deno.env.get('SLACK_ALERT_CHANNEL') ?? '#general';
+  if (!LOVABLE_API_KEY || !SLACK_API_KEY) {
+    console.warn('Slack alert skipped: Slack connection not linked to this project');
+    return 'slack_not_configured';
+  }
+  try {
+    const res = await fetch('https://connector-gateway.lovable.dev/slack/api/chat.postMessage', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        'X-Connection-Api-Key': SLACK_API_KEY,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify({ channel, text }),
+    });
+    const body = await res.text();
+    if (!res.ok) {
+      console.error(`Slack alert failed [${res.status}]: ${body.slice(0, 400)}`);
+      return `http_${res.status}`;
+    }
+    let parsed: { ok?: boolean; error?: string };
+    try {
+      parsed = JSON.parse(body);
+    } catch {
+      console.error(`Slack alert returned non-JSON: ${body.slice(0, 200)}`);
+      return 'non_json_response';
+    }
+    if (!parsed.ok) {
+      console.error(`Slack alert rejected: ${parsed.error}`);
+      return parsed.error ?? 'slack_error';
+    }
+    return null;
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error('Slack alert threw:', msg);
+    return msg;
+  }
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -77,29 +126,36 @@ Deno.serve(async (req) => {
     probeError = e instanceof Error ? e.message : String(e);
   }
 
-  // 2) Poll email_send_log for terminal status of the probe (~45s max)
-  let probeStatus = probeError ? 'failed' : 'pending';
-  let probeLatencyMs: number | null = null;
-  if (!probeMessageId) {
-    probeError = probeError ?? 'Probe did not return a messageId; cannot track delivery';
-    probeStatus = 'failed';
+  if (!probeMessageId && !probeError) {
+    probeError = 'Probe did not return a messageId; delivery cannot be verified';
   }
-  for (let i = 0; i < 15; i++) {
-    await sleep(3000);
-    const { data } = await admin
-      .from('email_send_log')
-      .select('status,error_message,created_at')
-      .eq('message_id', probeMessageId)
-      .order('created_at', { ascending: false })
-      .limit(5);
-    const row = data?.[0];
-    if (row && ['sent', 'failed', 'dlq', 'suppressed', 'bounced', 'complained'].includes(row.status)) {
-      probeStatus = row.status;
-      if (!probeError && row.error_message) probeError = row.error_message;
-      probeLatencyMs = Date.now() - startedAt;
-      break;
+
+  // 2) Poll email_send_log for the probe's OWN terminal row (~45s max).
+  //    Matching is strictly by message_id — unrelated rows can never leak in.
+  let probeLatencyMs: number | null = null;
+  let matchedRows: SendLogRow[] = [];
+  if (probeMessageId) {
+    for (let i = 0; i < 15; i++) {
+      await sleep(3000);
+      const { data } = await admin
+        .from('email_send_log')
+        .select('message_id,status,error_message,created_at')
+        .eq('message_id', probeMessageId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      matchedRows = (data ?? []) as SendLogRow[];
+      const interim = resolveProbeOutcome(matchedRows, probeMessageId);
+      if (interim.matched) {
+        probeLatencyMs = Date.now() - startedAt;
+        break;
+      }
     }
   }
+
+  const outcome = resolveProbeOutcome(matchedRows, probeMessageId, probeError);
+  const probeStatus = outcome.status;
+  probeError = outcome.errorMessage;
+  const probeMessageUrl = adminMessageUrl(probeMessageId);
 
   // 3) 24h aggregate stats (deduplicated by message_id)
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -130,6 +186,7 @@ Deno.serve(async (req) => {
       status: r.status,
       template: r.template_name,
       error: (r.error_message ?? '').slice(0, 400),
+      messageUrl: adminMessageUrl(r.message_id ?? null),
     }));
 
   const { count: suppressionCount } = await admin
@@ -137,7 +194,26 @@ Deno.serve(async (req) => {
     .select('id', { count: 'exact', head: true })
     .gte('created_at', since);
 
-  // 4) Send admin report
+  // 4) Immediate Slack alert on any failure / bounce / suppression
+  let slackAlertError: string | null = null;
+  let slackAlerted = false;
+  if (isFailureStatus(probeStatus)) {
+    slackAlerted = true;
+    slackAlertError = await postSlackAlert(
+      [
+        `:rotating_light: *FastMedia.Pro deliverability FAIL* — probe ended in \`${probeStatus}\``,
+        `*Recipient:* ${probeRecipient}`,
+        `*Probe ID:* ${probeId}`,
+        `*Message ID:* ${probeMessageId ?? '—'}`,
+        probeError ? `*Error / DSN:* ${probeError.slice(0, 500)}` : null,
+        `*Evidence:* ${probeMessageUrl}`,
+      ]
+        .filter(Boolean)
+        .join('\n'),
+    );
+  }
+
+  // 5) Send admin report
   const reportPayload = {
     templateName: 'deliverability-daily-report',
     recipientEmail: NOTIFICATION_EMAIL,
@@ -145,9 +221,12 @@ Deno.serve(async (req) => {
     templateData: {
       probeId,
       probeStatus,
+      probeBadge: outcome.badgeLabel,
       probeRecipient,
       probeError,
       probeLatencyMs,
+      probeMessageId,
+      probeMessageUrl,
       window: 'last 24h',
       totals,
       failures,
@@ -175,12 +254,17 @@ Deno.serve(async (req) => {
     JSON.stringify({
       ok: !reportError,
       probeId,
+      probeMessageId,
+      probeMessageUrl,
       probeStatus,
+      probeBadge: outcome.badgeLabel,
       probeError,
       probeLatencyMs,
       totals,
       failures: failures.length,
       suppressions: suppressionCount ?? 0,
+      slackAlerted,
+      slackAlertError,
       reportError,
     }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
