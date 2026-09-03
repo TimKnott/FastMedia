@@ -9,5 +9,7 @@
 - [x] PENDING/UNKNOWN when no matching row in polling window
 - [x] message_id evidence deep link in daily report email
 - [x] 30-day PASS/PENDING/FAIL history + DSN breakdown dashboard
-- [ ] Slack alert on FAIL/bounce/suppression (needs Slack connection linked)
+- [x] Slack connection linked (bot) + alert channel #all-fastmedia stored
+- [ ] Approve Slack consent screen (channels:join + chat:write.public) so the bot can post
+- [x] Slack alert on FAIL/bounce/suppression wired into daily probe
 - [x] Automated isolation test for probe badge
