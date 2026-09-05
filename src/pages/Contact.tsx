@@ -78,10 +78,17 @@ const ContactInner = () => {
           trade: 'general',
           specialRequest: details,
           selectedFeatures: [],
+          quoteOneTime: 0,
+          quoteMonthly: 0,
+          laborHours: 0,
+          gdprConsent: true,
           language: 'en',
         },
       });
-      if (fnError) console.error('score-lead notification failed:', fnError);
+      if (fnError) {
+        console.error('score-lead notification failed:', fnError);
+        toast.warning('Your message was saved, but the notification email could not be sent. We will still see your enquiry.');
+      }
 
       setIsSubmitted(true);
       toast.success('Thank you — your message is on its way. We will reply shortly.');
