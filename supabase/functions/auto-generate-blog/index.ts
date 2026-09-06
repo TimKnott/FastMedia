@@ -336,11 +336,16 @@ Deno.serve(async (req) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('auto-generate-blog error:', msg);
+    // AI capacity problems are transient — log and skip quietly so cron does not
+    // report a hard failure. The next scheduled run retries automatically.
+    const transient = /credits exhausted \(402\)|rate limit \(429\)/i.test(msg);
     if (logId) await admin.from('blog_generation_log').update({
       status: 'failed', completed_at: new Date().toISOString(), error: msg,
+      notes: transient ? 'Skipped: AI capacity unavailable, will retry on next run' : null,
     }).eq('id', logId);
-    return new Response(JSON.stringify({ ok: false, error: msg }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    return new Response(JSON.stringify({ ok: false, skipped: transient, error: msg }), {
+      status: transient ? 200 : 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
+

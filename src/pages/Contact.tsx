@@ -56,20 +56,6 @@ const ContactInner = () => {
     ].filter(Boolean).join('\n');
 
     try {
-      const { error } = await supabase.from('leads').insert({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || null,
-        trade: 'general',
-        special_request: details,
-        source: 'contact_page',
-        language: 'en',
-        selected_features: [],
-        gdpr_consent: true,
-        consent_timestamp: new Date().toISOString(),
-      });
-      if (error) throw error;
-
       const { error: fnError } = await supabase.functions.invoke('score-lead', {
         body: {
           name: formData.name,
@@ -83,12 +69,11 @@ const ContactInner = () => {
           laborHours: 0,
           gdprConsent: true,
           language: 'en',
+          source: 'contact_page',
         },
       });
-      if (fnError) {
-        console.error('score-lead notification failed:', fnError);
-        toast.warning('Your message was saved, but the notification email could not be sent. We will still see your enquiry.');
-      }
+      if (fnError) throw fnError;
+
 
       setIsSubmitted(true);
       toast.success('Thank you — your message is on its way. We will reply shortly.');

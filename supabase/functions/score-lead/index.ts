@@ -38,6 +38,7 @@ interface LeadInput {
   laborHours: number;
   language: string;
   gdprConsent: boolean;
+  source?: string;
   intent?: Record<string, unknown> | null;
   intentSummary?: string | null;
   intentTranscript?: { key: string; question: string; answer: string }[] | null;
@@ -213,7 +214,7 @@ serve(async (req) => {
         labor_hours: body.laborHours,
         budget_range: classifyBudget(body.quoteOneTime, body.quoteMonthly),
         ai_analysis: aiAnalysis,
-        source: "calculator",
+        source: typeof body.source === "string" && body.source.length <= 50 ? body.source : "calculator",
         language: body.language || "en",
         ip_address: leadIp || null,
         user_agent: userAgent || null,
