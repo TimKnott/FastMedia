@@ -393,6 +393,54 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_enquiries: {
+        Row: {
+          company: string | null
+          created_at: string
+          details: Json
+          email: string
+          email_message_id: string | null
+          email_status: string | null
+          id: string
+          kind: string
+          message: string | null
+          name: string
+          phone: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          details?: Json
+          email: string
+          email_message_id?: string | null
+          email_status?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          details?: Json
+          email?: string
+          email_message_id?: string | null
+          email_status?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       coupon_redemptions: {
         Row: {
           coupon_id: string
