@@ -22,6 +22,7 @@ import { template as intakeReceived } from './intake-received.tsx'
 import { template as inboundForward } from './inbound-forward.tsx'
 import { template as deliverabilityTest } from './deliverability-test.tsx'
 import { template as deliverabilityDailyReport } from './deliverability-daily-report.tsx'
+import { template as contactEnquiry } from './contact-enquiry.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'lead-notification': leadNotification,
@@ -37,4 +38,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'inbound-forward': inboundForward,
   'deliverability-test': deliverabilityTest,
   'deliverability-daily-report': deliverabilityDailyReport,
+  'contact-enquiry': contactEnquiry,
 }

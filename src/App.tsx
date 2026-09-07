@@ -29,6 +29,7 @@ const CalculatorPage = lazy(() => import("./pages/CalculatorPage"));
 const Install = lazy(() => import("./pages/Install"));
 const Inquiry = lazy(() => import("./pages/Inquiry"));
 const Contact = lazy(() => import("./pages/Contact"));
+const QuoteRequest = lazy(() => import("./pages/QuoteRequest"));
 const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
 const PackageDetail = lazy(() => import("./pages/PackageDetail"));
 const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
@@ -48,6 +49,7 @@ const AdminBookings = lazy(() => import("./pages/admin/AdminBookings"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
+const AdminEnquiries = lazy(() => import("./pages/admin/AdminEnquiries"));
 const AdminResetPassword = lazy(() => import("./pages/admin/AdminResetPassword"));
 const AdminRoles = lazy(() => import("./pages/admin/AdminRoles"));
 const AdminLandingPage = lazy(() => import("./pages/admin/AdminLandingPage"));
@@ -217,6 +219,7 @@ const App = () => (
             <Route path="/install" element={<Install />} />
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/quote-request" element={<QuoteRequest />} />
 
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
             <Route path="/package/:slug" element={<PackageDetail />} />
@@ -236,6 +239,7 @@ const App = () => (
             <Route path="/admin" element={<ProtectedRoute minRole="editor"><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="leads" element={<AdminLeads />} />
+              <Route path="enquiries" element={<AdminEnquiries />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="bookings" element={<AdminBookings />} />

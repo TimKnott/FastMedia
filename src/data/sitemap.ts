@@ -17,6 +17,7 @@ export const sitemapEntries: SitemapEntry[] = [
   { path: '/consultant/tereza', changefreq: 'monthly', priority: 0.6, label: 'Consultant — Tereza', indexable: true },
   { path: '/inquiry', changefreq: 'weekly', priority: 0.8, label: 'Project Inquiry', indexable: true },
   { path: '/contact', changefreq: 'monthly', priority: 0.8, label: 'Contact', indexable: true },
+  { path: '/quote-request', changefreq: 'monthly', priority: 0.8, label: 'Request a quote', indexable: true },
 
   // Demo pages
   { path: '/demo/plumbing', changefreq: 'monthly', priority: 0.6, label: 'Demo: Plumbing', indexable: true },

@@ -50,30 +50,19 @@ const ContactInner = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const details = [
-      formData.company ? `Company: ${formData.company}` : '',
-      formData.message,
-    ].filter(Boolean).join('\n');
-
     try {
-      const { error: fnError } = await supabase.functions.invoke('score-lead', {
+      const { data, error } = await supabase.functions.invoke('submit-enquiry', {
         body: {
+          kind: 'contact',
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          trade: 'general',
-          specialRequest: details,
-          selectedFeatures: [],
-          quoteOneTime: 0,
-          quoteMonthly: 0,
-          laborHours: 0,
-          gdprConsent: true,
-          language: 'en',
-          source: 'contact_page',
+          company: formData.company,
+          message: formData.message,
         },
       });
-      if (fnError) throw fnError;
-
+      if (error) throw error;
+      if ((data as { success?: boolean })?.success !== true) throw new Error('Submission rejected');
 
       setIsSubmitted(true);
       toast.success('Thank you — your message is on its way. We will reply shortly.');
@@ -83,6 +72,7 @@ const ContactInner = () => {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <>
