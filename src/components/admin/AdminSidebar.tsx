@@ -29,6 +29,7 @@ import {
   Activity,
   TicketPercent,
   Scale,
+  Inbox,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
