@@ -27,6 +27,7 @@ const Footer = () => {
     { href: '/calculator', label: t('nav.calculator') },
     { href: '/inquiry', label: t('nav.inquiry') },
     { href: '/contact', label: 'Contact' },
+    { href: '/quote-request', label: 'Request a quote' },
     { href: '/install', label: t('nav.install') },
   ];
 

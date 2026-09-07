@@ -62,6 +62,7 @@ interface MenuItem {
 const mainItems: MenuItem[] = [
   { titleKey: 'admin.dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
   { titleKey: 'admin.leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
+  { titleKey: 'Enquiries Inbox', url: '/admin/enquiries', icon: Inbox, minRole: 'editor' },
   { titleKey: 'admin.bookings', url: '/admin/bookings', icon: CalendarCheck, minRole: 'editor' },
   { titleKey: 'admin.newsletter', url: '/admin/newsletter', icon: Mail, minRole: 'editor' },
   { titleKey: 'admin.vbout', url: '/admin/vbout', icon: Send, minRole: 'editor' },
