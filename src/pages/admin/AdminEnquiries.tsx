@@ -68,7 +68,9 @@ export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 
         .limit(300);
       const { data, error } = isQuoteMailbox
         ? await query.eq('kind', 'quote')
-        : await query.neq('kind', 'quote');
+        : isOfferMailbox
+          ? await query.eq('kind', 'offer')
+          : await query.not('kind', 'in', '("quote","offer")');
       if (error) throw error;
       return (data ?? []) as unknown as Enquiry[];
     },
