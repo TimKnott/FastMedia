@@ -102,6 +102,7 @@ const copy = {
       'Doklady a fakturace podle pravidel programu',
     ],
     grantCta: 'Průvodce dotacemi a jak žádat',
+    grantCalcCta: 'Spočítat cenu po dotaci (až 85 %)',
     testimonialsTitle: 'Co říkají majitelé firem',
     testimonials: [
       { n: 'Marek H.', r: 'Topenář, Plzeň', q: 'Dřív jsem polovinu poptávek ztratil, protože jsem byl na zakázce. Automatická odpověď je podchytí. První týden čtyři nové zakázky.' },
@@ -120,7 +121,7 @@ const copy = {
     ],
     pricingTitle: 'Vyberte si cestu',
     pricingSub: 'Buď si nechte spočítat cenu na míru, nebo si vyberte hotový balíček.',
-    calcCard: { t: 'Kalkulačka ceny', d: 'Odpovíte na pár otázek a hned uvidíte odhad ceny i rozsah. Trvá dvě minuty.', b: 'Spustit kalkulačku' },
+    calcCard: { t: 'Kalkulačka ceny', d: 'Odpovíte na pár otázek a hned uvidíte odhad ceny i rozsah — včetně posuvného odhadu dotace až 85 %. Trvá dvě minuty.', b: 'Spustit kalkulačku' },
     pkgCard: { t: 'Balíčky služeb', d: 'Čtyři úrovně od jednoduché prezentace po rozsáhlý systém na míru.', b: 'Prohlédnout balíčky' },
     faqTitle: 'Časté dotazy',
     faqs: [
@@ -208,6 +209,7 @@ const copy = {
       'Documentation and invoicing to programme rules',
     ],
     grantCta: 'Read the grant guide',
+    grantCalcCta: 'Estimate your price after a grant (up to 85%)',
     testimonialsTitle: 'What business owners say',
     testimonials: [
       { n: 'Marek H.', r: 'Heating engineer, Plzeň', q: 'I used to lose half my leads because I was on a job. The automatic reply catches them. Four new jobs in the first week.' },
@@ -226,7 +228,7 @@ const copy = {
     ],
     pricingTitle: 'Choose your route',
     pricingSub: 'Either get a bespoke price calculated, or pick a ready-made package.',
-    calcCard: { t: 'Price calculator', d: 'Answer a few questions and see an instant estimate and scope. Takes two minutes.', b: 'Open the calculator' },
+    calcCard: { t: 'Price calculator', d: 'Answer a few questions and see an instant estimate and scope — including a sliding grant estimate of up to 85%. Takes two minutes.', b: 'Open the calculator' },
     pkgCard: { t: 'Service packages', d: 'Four tiers, from a simple presentation site to a large bespoke system.', b: 'View the packages' },
     faqTitle: 'Common questions',
     faqs: [
@@ -414,9 +416,14 @@ const OfferLanding = () => {
                 </li>
               ))}
             </ul>
-            <Button asChild size="lg" className="h-14 px-8 text-base shadow-lg shadow-primary/30">
-              <Link to="/grants">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button asChild size="lg" className="h-14 px-8 text-base shadow-lg shadow-primary/30">
+                <Link to="/grants">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="h-14 px-8 text-base">
+                <Link to="/calculator#grant">{t.grantCalcCta}<ArrowRight className="w-5 h-5" /></Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

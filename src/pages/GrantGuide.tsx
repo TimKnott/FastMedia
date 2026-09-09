@@ -291,7 +291,7 @@ const GrantGuide = () => {
           <OfferEnquiryForm lang={lang} />
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
             <Button asChild size="lg" variant="outline">
-              <Link to="/calculator">{t.calc}<ArrowRight className="w-4 h-4" /></Link>
+              <Link to="/calculator#grant">{t.calc}<ArrowRight className="w-4 h-4" /></Link>
             </Button>
             <Button asChild size="lg" variant="ghost">
               <a href="tel:+420797864432"><Phone className="w-4 h-4 mr-2" />{t.call}</a>

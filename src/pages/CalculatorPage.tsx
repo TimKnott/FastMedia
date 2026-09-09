@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Slider } from '@/components/ui/slider';
 import { Eye } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Navbar from '@/components/Navbar';
@@ -261,6 +262,12 @@ const CalculatorPage = () => {
   const checkoutTotalToday = discountedOneTime + discountedAnnualHosting;
   const totalAnnualDiscount = oneTimeDiscount + monthlyDiscount * 12;
 
+  // Digitalisation grant estimator (0–85%), applies to the one-off build cost only
+  const MAX_GRANT_RATE = 85;
+  const [grantRate, setGrantRate] = useState(0);
+  const grantAmount = Math.round((discountedOneTime * grantRate) / 100);
+  const netAfterGrant = Math.max(0, discountedOneTime - grantAmount);
+
   // Promo coupon window — kept under 3 hours to create urgency
   const PROMO_CODE = 'PROMO-90';
   const PROMO_WINDOW_SECONDS = 2 * 60 * 60 + 55 * 60; // 2h 55m
@@ -308,6 +315,13 @@ const CalculatorPage = () => {
   // Auto-start the urgency countdown the moment the user lands on the summary
   useEffect(() => {
     if (step === 'summary') startCouponWindow();
+    if (step === 'summary' && window.location.hash === '#grant') {
+      const timer = window.setTimeout(
+        () => document.getElementById('grant')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+        400,
+      );
+      return () => window.clearTimeout(timer);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
@@ -504,6 +518,7 @@ const CalculatorPage = () => {
           intentSummary: staticBrief.summary,
           intentTranscript: null,
           coupon: appliedCoupon ? { code: appliedCoupon.code, oneTimeDiscount, monthlyDiscount } : null,
+          grant: grantRate > 0 ? { ratePercent: grantRate, estimatedAmount: grantAmount, netAfterGrant } : null,
         },
       });
       if (error) throw error;
@@ -841,6 +856,32 @@ const CalculatorPage = () => {
     doc.text(next, M, y + 28);
 
     y += cardH + 24;
+
+    // ---------- Grant estimate (indicative) ----------
+    if (grantRate > 0) {
+      ensureSpace(70);
+      doc.setFillColor(238, 243, 252);
+      doc.roundedRect(M, y, pageW - M * 2, 54, 8, 8, 'F');
+      doc.setTextColor(...INK);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`Digitalisation grant estimate — ${grantRate}% support rate`, M + 14, y + 20);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(...MUTED);
+      doc.text(
+        `Estimated grant contribution: ${formatPrice(grantAmount)} Kč   |   Your share after the grant: ${formatPrice(netAfterGrant)} Kč`,
+        M + 14,
+        y + 36,
+      );
+      doc.setFontSize(8);
+      doc.text(
+        'Indicative only. The support rate and eligibility are decided by the grant provider; this quote is payable in full unless a grant is awarded.',
+        M + 14,
+        y + 48,
+      );
+      y += 70;
+    }
 
     // ---------- Signature / legal strip ----------
     ensureSpace(60);
@@ -1786,6 +1827,88 @@ const CalculatorPage = () => {
                           {lang === 'cs' ? 'Celková sleva dnes' : lang === 'de' ? 'Gesamtersparnis heute' : 'Total saved today'}: {formatPrice(totalAnnualDiscount)} Kč
                         </div>
                       )}
+                    </div>
+
+                    {/* Digitalisation grant estimator */}
+                    <div id="grant" className="mt-4 p-5 rounded-xl border-2 border-primary/30 bg-primary/5 scroll-mt-24">
+                      <p className="font-display text-base font-bold text-foreground">
+                        {lang === 'cs' ? 'Odhad dotace na digitalizaci' : lang === 'de' ? 'Schätzung des Digitalisierungszuschusses' : 'Digitalisation grant estimate'}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {lang === 'cs'
+                          ? 'Posuňte na míru podpory, kterou vám poskytovatel nabídne (až 85 %). Dotace se počítá z jednorázové ceny za web.'
+                          : lang === 'de'
+                          ? 'Stellen Sie die Förderquote ein, die Ihnen angeboten wird (bis zu 85 %). Der Zuschuss gilt für die einmaligen Kosten.'
+                          : 'Slide to the support rate you are offered (up to 85%). The grant applies to the one-off build cost.'}
+                      </p>
+
+                      <div className="mt-4 flex items-center gap-3">
+                        <Slider
+                          value={[grantRate]}
+                          onValueChange={(v) => setGrantRate(Math.min(MAX_GRANT_RATE, Math.max(0, v[0])))}
+                          min={0}
+                          max={MAX_GRANT_RATE}
+                          step={5}
+                          className="flex-1"
+                        />
+                        <div className="flex items-center gap-1 shrink-0">
+                          <Input
+                            type="number"
+                            min={0}
+                            max={MAX_GRANT_RATE}
+                            value={grantRate}
+                            onChange={(e) => {
+                              const n = Number(e.target.value);
+                              setGrantRate(Number.isFinite(n) ? Math.min(MAX_GRANT_RATE, Math.max(0, Math.round(n))) : 0);
+                            }}
+                            className="h-9 w-20 text-sm"
+                          />
+                          <span className="text-sm font-semibold text-muted-foreground">%</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {[0, 30, 50, 70, 85].map((preset) => (
+                          <Button
+                            key={preset}
+                            type="button"
+                            size="sm"
+                            variant={grantRate === preset ? 'default' : 'outline'}
+                            className="h-8 px-3 text-xs"
+                            onClick={() => setGrantRate(preset)}
+                          >
+                            {preset}%
+                          </Button>
+                        ))}
+                      </div>
+
+                      {grantRate > 0 && (
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          <div className="rounded-lg bg-background border border-border p-3">
+                            <p className="text-xs text-muted-foreground">
+                              {lang === 'cs' ? 'Odhadovaný příspěvek dotace' : lang === 'de' ? 'Geschätzter Zuschuss' : 'Estimated grant contribution'}
+                            </p>
+                            <p className="font-display text-lg font-bold text-accent">−{formatPrice(grantAmount)} Kč</p>
+                          </div>
+                          <div className="rounded-lg bg-background border border-border p-3">
+                            <p className="text-xs text-muted-foreground">
+                              {lang === 'cs' ? 'Váš podíl po dotaci' : lang === 'de' ? 'Ihr Anteil nach dem Zuschuss' : 'Your share after the grant'}
+                            </p>
+                            <p className="font-display text-lg font-bold text-foreground">{formatPrice(netAfterGrant)} Kč</p>
+                          </div>
+                        </div>
+                      )}
+
+                      <p className="mt-3 text-xs text-muted-foreground">
+                        {lang === 'cs'
+                          ? 'Jde pouze o orientační odhad. Míru podpory i nárok posuzuje poskytovatel dotace; částka k úhradě výše se nemění.'
+                          : lang === 'de'
+                          ? 'Nur ein Richtwert. Förderquote und Anspruch entscheidet der Fördergeber; der oben zu zahlende Betrag bleibt unverändert.'
+                          : 'This is an indication only. The support rate and eligibility are decided by the grant provider, and the amount payable above is unchanged.'}{' '}
+                        <Link to="/grants" className="text-primary underline underline-offset-2">
+                          {lang === 'cs' ? 'Průvodce dotacemi' : lang === 'de' ? 'Förderleitfaden' : 'Read the grant guide'}
+                        </Link>
+                      </p>
                     </div>
 
                     <p className="text-xs text-muted-foreground text-center mt-4">{l.canChange}</p>
