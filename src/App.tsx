@@ -244,6 +244,7 @@ const App = () => (
               <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
               <Route path="quote-requests" element={<ProtectedRoute minRole="admin"><AdminQuoteRequests /></ProtectedRoute>} />
               <Route path="tracker" element={<ProtectedRoute minRole="admin"><AdminTracker /></ProtectedRoute>} />
+              <Route path="clients" element={<ProtectedRoute minRole="admin"><AdminClients /></ProtectedRoute>} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="bookings" element={<AdminBookings />} />
