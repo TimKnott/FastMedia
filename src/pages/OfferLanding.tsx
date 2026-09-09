@@ -121,7 +121,7 @@ const copy = {
     ],
     pricingTitle: 'Vyberte si cestu',
     pricingSub: 'Buď si nechte spočítat cenu na míru, nebo si vyberte hotový balíček.',
-    calcCard: { t: 'Kalkulačka ceny', d: 'Odpovíte na pár otázek a hned uvidíte odhad ceny i rozsah. Trvá dvě minuty.', b: 'Spustit kalkulačku' },
+    calcCard: { t: 'Kalkulačka ceny', d: 'Odpovíte na pár otázek a hned uvidíte odhad ceny i rozsah — včetně posuvného odhadu dotace až 85 %. Trvá dvě minuty.', b: 'Spustit kalkulačku' },
     pkgCard: { t: 'Balíčky služeb', d: 'Čtyři úrovně od jednoduché prezentace po rozsáhlý systém na míru.', b: 'Prohlédnout balíčky' },
     faqTitle: 'Časté dotazy',
     faqs: [
