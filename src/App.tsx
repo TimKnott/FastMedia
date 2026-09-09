@@ -51,6 +51,7 @@ const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminEnquiries = lazy(() => import("./pages/admin/AdminEnquiries"));
 const AdminQuoteRequests = lazy(() => import("./pages/admin/AdminQuoteRequests"));
 const AdminTracker = lazy(() => import("./pages/admin/AdminTracker"));
+const AdminClients = lazy(() => import("./pages/admin/AdminClients"));
 const AdminResetPassword = lazy(() => import("./pages/admin/AdminResetPassword"));
 const AdminRoles = lazy(() => import("./pages/admin/AdminRoles"));
 const AdminLandingPage = lazy(() => import("./pages/admin/AdminLandingPage"));
@@ -243,6 +244,7 @@ const App = () => (
               <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
               <Route path="quote-requests" element={<ProtectedRoute minRole="admin"><AdminQuoteRequests /></ProtectedRoute>} />
               <Route path="tracker" element={<ProtectedRoute minRole="admin"><AdminTracker /></ProtectedRoute>} />
+              <Route path="clients" element={<ProtectedRoute minRole="admin"><AdminClients /></ProtectedRoute>} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="bookings" element={<AdminBookings />} />
