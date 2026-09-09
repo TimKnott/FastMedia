@@ -139,7 +139,7 @@ export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 
       <Tabs defaultValue="enquiries">
         <TabsList>
           <TabsTrigger value="enquiries">
-            {isQuoteMailbox ? 'Quote requests' : 'Messages'} ({filteredEnquiries.length})
+            {isQuoteMailbox ? 'Quote requests' : isOfferMailbox ? 'Offer enquiries' : 'Messages'} ({filteredEnquiries.length})
           </TabsTrigger>
           {isQuoteMailbox && <TabsTrigger value="leads">Leads ({filteredLeads.length})</TabsTrigger>}
         </TabsList>
