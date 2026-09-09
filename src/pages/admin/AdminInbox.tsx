@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -34,8 +36,9 @@ const statusColors: Record<string, string> = {
 
 export const AdminInbox = () => {
   const [selected, setSelected] = useState<InboundRow | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
-  const { data: rows = [], isLoading } = useQuery({
+  const { data: rows = [], isLoading, refetch } = useQuery({
     queryKey: ['inbound-emails'],
     queryFn: async () => {
       const { data, error } = await supabase
