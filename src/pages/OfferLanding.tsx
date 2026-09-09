@@ -414,7 +414,7 @@ const OfferLanding = () => {
               ))}
             </ul>
             <Button asChild size="lg" className="h-14 px-8 text-base shadow-lg shadow-primary/30">
-              <Link to="/contact">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
+              <Link to="/grants">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
             </Button>
           </div>
         </div>
@@ -517,6 +517,13 @@ const OfferLanding = () => {
             </AccordionItem>
           ))}
         </Accordion>
+      </section>
+
+      {/* ENQUIRY FORM */}
+      <section id="enquiry" className="bg-muted/40 py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <OfferEnquiryForm lang={lang} />
+        </div>
       </section>
 
       {/* FINAL CTA */}
