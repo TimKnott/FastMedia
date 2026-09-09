@@ -393,6 +393,63 @@ export type Database = {
         }
         Relationships: []
       }
+      clients: {
+        Row: {
+          company: string | null
+          created_at: string
+          created_by: string | null
+          email: string
+          estimated_value: number | null
+          first_enquiry_at: string | null
+          id: string
+          last_contacted_at: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          source: string
+          source_id: string | null
+          status: string
+          trade: string | null
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          created_by?: string | null
+          email: string
+          estimated_value?: number | null
+          first_enquiry_at?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source?: string
+          source_id?: string | null
+          status?: string
+          trade?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          estimated_value?: number | null
+          first_enquiry_at?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: string
+          source_id?: string | null
+          status?: string
+          trade?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_enquiries: {
         Row: {
           company: string | null
