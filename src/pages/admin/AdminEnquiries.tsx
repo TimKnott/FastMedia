@@ -51,19 +51,23 @@ const statusColors: Record<string, string> = {
 const mailtoFor = (email: string, name: string, subject: string) =>
   `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi ${name.split(' ')[0]},\n\nThank you for getting in touch with FastMedia.Pro.\n\n`)}`;
 
-export const AdminEnquiries = () => {
+export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 'quote' }) => {
+  const isQuoteMailbox = mailbox === 'quote';
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Enquiry | null>(null);
   const [search, setSearch] = useState('');
 
   const { data: enquiries = [], isLoading: loadingEnquiries } = useQuery({
-    queryKey: ['contact-enquiries'],
+    queryKey: ['contact-enquiries', mailbox],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const query = supabase
         .from('contact_enquiries')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(300);
+      const { data, error } = isQuoteMailbox
+        ? await query.eq('kind', 'quote')
+        : await query.neq('kind', 'quote');
       if (error) throw error;
       return (data ?? []) as unknown as Enquiry[];
     },
@@ -72,6 +76,7 @@ export const AdminEnquiries = () => {
 
   const { data: leads = [], isLoading: loadingLeads } = useQuery({
     queryKey: ['enquiries-leads'],
+    enabled: isQuoteMailbox,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('leads')
@@ -104,6 +109,7 @@ export const AdminEnquiries = () => {
     toast.success(`Marked as ${status}.`);
 
     queryClient.invalidateQueries({ queryKey: ['contact-enquiries'] });
+
     setSelected(prev => (prev && prev.id === id ? { ...prev, status } : prev));
   };
 
@@ -113,8 +119,9 @@ export const AdminEnquiries = () => {
         <CardContent className="p-4 text-sm text-muted-foreground flex items-start gap-3">
           <Inbox className="w-4 h-4 mt-0.5 flex-shrink-0" />
           <div>
-            Every message from the contact page and quote request page appears here, alongside calculator leads.
-            Each one is also emailed to your private address as it arrives.
+            {isQuoteMailbox
+              ? 'Every project enquiry from the quote request page lands here, alongside calculator leads. Each one is also emailed to your private address as it arrives.'
+              : 'Every message from the contact page lands here. Quote requests have their own inbox. Each one is also emailed to your private address as it arrives.'}
           </div>
         </CardContent>
       </Card>
@@ -126,8 +133,10 @@ export const AdminEnquiries = () => {
 
       <Tabs defaultValue="enquiries">
         <TabsList>
-          <TabsTrigger value="enquiries">Enquiries ({filteredEnquiries.length})</TabsTrigger>
-          <TabsTrigger value="leads">Leads ({filteredLeads.length})</TabsTrigger>
+          <TabsTrigger value="enquiries">
+            {isQuoteMailbox ? 'Quote requests' : 'Messages'} ({filteredEnquiries.length})
+          </TabsTrigger>
+          {isQuoteMailbox && <TabsTrigger value="leads">Leads ({filteredLeads.length})</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="enquiries" className="mt-4">
