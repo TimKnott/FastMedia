@@ -51,8 +51,9 @@ const statusColors: Record<string, string> = {
 const mailtoFor = (email: string, name: string, subject: string) =>
   `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi ${name.split(' ')[0]},\n\nThank you for getting in touch with FastMedia.Pro.\n\n`)}`;
 
-export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 'quote' }) => {
+export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 'quote' | 'offer' }) => {
   const isQuoteMailbox = mailbox === 'quote';
+  const isOfferMailbox = mailbox === 'offer';
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Enquiry | null>(null);
   const [search, setSearch] = useState('');
