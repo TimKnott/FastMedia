@@ -239,7 +239,7 @@ const App = () => (
             <Route path="/admin" element={<ProtectedRoute minRole="editor"><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="leads" element={<AdminLeads />} />
-              <Route path="enquiries" element={<AdminEnquiries />} />
+              <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="bookings" element={<AdminBookings />} />
