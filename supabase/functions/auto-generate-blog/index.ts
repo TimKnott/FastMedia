@@ -325,16 +325,19 @@ Deno.serve(async (req) => {
     const reviewUrl = `${SITE_URL}/admin/blog-manage`;
     await sendEmail(
       `📝 Blog draft awaiting review: ${article.title}`,
-      `<div style="font-family:system-ui,sans-serif;max-width:560px">
-        <h2 style="color:#0f3a7a;margin:0 0 12px">New auto-generated draft</h2>
-        <p style="margin:0 0 8px"><strong>${article.title}</strong></p>
-        <p style="color:#555;margin:0 0 16px">${article.excerpt}</p>
-        <p style="margin:0 0 4px"><strong>Topic:</strong> ${topic}</p>
-        <p style="margin:0 0 4px"><strong>Read time:</strong> ${readTime} min · <strong>Words:</strong> ${wordCount}</p>
-        <p style="margin:0 0 16px"><strong>Keywords:</strong> ${(article.seo_keywords || []).join(', ')}</p>
-        <p><a href="${reviewUrl}" style="display:inline-block;background:#0f3a7a;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none">Review and approve →</a></p>
-        <p style="color:#888;font-size:12px;margin-top:24px">Audio narration is being generated in the background. The post will only go live after you approve it.</p>
-      </div>`
+      [
+        `New auto-generated draft: ${article.title}`,
+        '',
+        article.excerpt,
+        '',
+        `Topic: ${topic}`,
+        `Read time: ${readTime} min · Words: ${wordCount}`,
+        `Keywords: ${(article.seo_keywords || []).join(', ')}`,
+        '',
+        `Review and approve: ${reviewUrl}`,
+        '',
+        'Audio narration is generating in the background. The post only goes live after you approve it.',
+      ].join('\n'),
     );
 
     if (logId) await admin.from('blog_generation_log').update({
@@ -349,13 +352,32 @@ Deno.serve(async (req) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('auto-generate-blog error:', msg);
-    // AI capacity problems are transient — log and skip quietly so cron does not
-    // report a hard failure. The next scheduled run retries automatically.
+    // AI capacity problems are transient — record an explicit "skipped" run and
+    // notify the owner so it is never silent. The next run retries automatically.
     const transient = /credits exhausted \(402\)|rate limit \(429\)/i.test(msg);
     if (logId) await admin.from('blog_generation_log').update({
-      status: 'failed', completed_at: new Date().toISOString(), error: msg,
+      status: transient ? 'skipped' : 'failed',
+      completed_at: new Date().toISOString(),
+      error: msg,
       notes: transient ? 'Skipped: AI capacity unavailable, will retry on next run' : null,
     }).eq('id', logId);
+
+    if (transient) {
+      await sendEmail(
+        '⏭️ Daily blog post skipped — AI capacity unavailable',
+        [
+          "Today's automatic blog post was skipped instead of failing.",
+          '',
+          `Reason: ${msg}`,
+          '',
+          'This usually means the AI credit allowance ran out or the rate limit was hit.',
+          'Top up AI credits to resume; the next scheduled run retries automatically.',
+          '',
+          `Blog status: ${SITE_URL}/admin/blog-manage`,
+        ].join('\n'),
+      );
+    }
+
     return new Response(JSON.stringify({ ok: false, skipped: transient, error: msg }), {
       status: transient ? 200 : 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
