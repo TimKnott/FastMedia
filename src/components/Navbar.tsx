@@ -176,7 +176,7 @@ const Navbar = () => {
             {/* Quick contact actions - desktop only */}
             <div className="hidden md:flex items-center gap-1.5 mr-1">
               <a
-                href="https://wa.me/4407926400060"
+                href="https://wa.me/447926400060"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg text-muted-foreground hover:text-green-500 hover:bg-green-500/10 transition-colors"
@@ -347,7 +347,7 @@ const Navbar = () => {
               {/* Quick actions row */}
               <div className="flex items-center gap-3 pt-2 border-t border-border">
                 <a
-                  href="https://wa.me/4407926400060"
+                  href="https://wa.me/447926400060"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsOpen(false)}

@@ -167,7 +167,7 @@ const Footer = () => {
             </button>
             <span className="text-background/20">|</span>
             <a
-              href="https://wa.me/4407926400060"
+              href="https://wa.me/447926400060"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-green-400 transition-colors"
