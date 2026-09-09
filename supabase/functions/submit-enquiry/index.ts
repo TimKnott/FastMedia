@@ -35,7 +35,8 @@ Deno.serve(async (req) => {
     return json({ error: 'Invalid JSON body' }, 400)
   }
 
-  const kind = body.kind === 'quote' ? 'quote' : 'contact'
+  const ALLOWED_KINDS = ['contact', 'quote', 'offer']
+  const kind = typeof body.kind === 'string' && ALLOWED_KINDS.includes(body.kind) ? body.kind : 'contact'
   const name = str(body.name, 120)
   const email = str(body.email, 200)
   const phone = str(body.phone, 40)

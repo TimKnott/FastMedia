@@ -14,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import SEOHead from '@/components/SEOHead';
 import Footer from '@/components/Footer';
+import OfferEnquiryForm from '@/components/OfferEnquiryForm';
 import casePlumbing from '@/assets/offer/case-plumbing.jpg';
 import caseSalon from '@/assets/offer/case-salon.jpg';
 import caseEshop from '@/assets/offer/case-eshop.jpg';
