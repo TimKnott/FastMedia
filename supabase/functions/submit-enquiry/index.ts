@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
 
   if (owner) {
     try {
-      const res = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+      const res = await fetch(`${supabaseUrl}/functions/v1/send-app-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

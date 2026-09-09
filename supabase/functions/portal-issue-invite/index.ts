@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
       })
       try {
         const { data: emailData, error: emailErr } = await admin.functions.invoke(
-          'send-transactional-email',
+          'send-app-email',
           { body: payload },
         )
         emailResponse = emailData ?? null
@@ -133,14 +133,14 @@ Deno.serve(async (req) => {
             try { detail += ` | body=${await ctx.text()}` } catch { /* ignore */ }
           }
           emailError = detail
-          console.error('[portal-issue-invite] send-transactional-email failed', {
+          console.error('[portal-issue-invite] send-app-email failed', {
             recipient: email,
             error: detail,
             data: emailData,
           })
         } else {
           emailStatus = 'queued'
-          console.log('[portal-issue-invite] send-transactional-email queued', {
+          console.log('[portal-issue-invite] send-app-email queued', {
             recipient: email,
             data: emailData,
           })
@@ -148,7 +148,7 @@ Deno.serve(async (req) => {
       } catch (emailErr) {
         emailStatus = 'error'
         emailError = emailErr instanceof Error ? emailErr.message : String(emailErr)
-        console.error('[portal-issue-invite] send-transactional-email threw', {
+        console.error('[portal-issue-invite] send-app-email threw', {
           recipient: email,
           error: emailError,
         })

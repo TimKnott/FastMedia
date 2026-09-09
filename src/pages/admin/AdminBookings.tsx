@@ -136,7 +136,7 @@ const AdminBookings = () => {
       const scheduledFormatted = newBooking.scheduled_at
         ? newBooking.scheduled_at.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
         : '';
-      supabase.functions.invoke('send-transactional-email', {
+      supabase.functions.invoke('send-app-email', {
         body: {
           templateName: 'booking-confirmation',
           recipientEmail: newBooking.customer_email,
@@ -153,7 +153,7 @@ const AdminBookings = () => {
       }).catch(() => {});
 
       // Notify admin inbox of new booking (fire-and-forget)
-      supabase.functions.invoke('send-transactional-email', {
+      supabase.functions.invoke('send-app-email', {
         body: {
           templateName: 'admin-booking-notification',
           recipientEmail: 'support@fastmedia.pro',
@@ -557,7 +557,7 @@ const BookingDetailSheet = ({
                     return;
                   }
                   try {
-                    await supabase.functions.invoke('send-transactional-email', {
+                    await supabase.functions.invoke('send-app-email', {
                       body: {
                         templateName: 'kanban-task-assignment',
                         recipientEmail,

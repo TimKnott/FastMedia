@@ -1,6 +1,6 @@
 // Mailgun inbound webhook → AI autoresponder
 // Receives forwarded inbound emails from Mailgun Routes, verifies signature,
-// generates an AI reply via Lovable AI Gateway, and sends it back via send-transactional-email.
+// generates an AI reply via Lovable AI Gateway, and sends it back via send-app-email.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
 
@@ -24,7 +24,7 @@ async function forwardToAdmin(supabase: any, payload: {
 }) {
   if (!NOTIFICATION_EMAIL) return
   try {
-    await supabase.functions.invoke('send-transactional-email', {
+    await supabase.functions.invoke('send-app-email', {
       body: {
         templateName: 'inbound-forward',
         recipientEmail: NOTIFICATION_EMAIL,
@@ -273,7 +273,7 @@ Deno.serve(async (req) => {
 
     // Send the reply via the existing transactional pipeline
     const idempotencyKey = `ai-inbound-${messageId}`
-    const { error: sendErr } = await supabase.functions.invoke('send-transactional-email', {
+    const { error: sendErr } = await supabase.functions.invoke('send-app-email', {
       body: {
         templateName: 'ai-inbound-reply',
         recipientEmail: fromEmail,

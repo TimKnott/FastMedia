@@ -147,7 +147,7 @@ const AdminEmailDeliverability = () => {
     try {
       const { data: userData } = await supabase.auth.getUser();
       const triggeredBy = userData.user?.email ?? 'unknown';
-      const { data, error } = await supabase.functions.invoke('send-transactional-email', {
+      const { data, error } = await supabase.functions.invoke('send-app-email', {
         body: {
           templateName: PROBE_TEMPLATE,
           recipientEmail: email,

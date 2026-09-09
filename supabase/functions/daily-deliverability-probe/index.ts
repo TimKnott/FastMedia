@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
   let probeError: string | null = null;
   let probeMessageId: string | null = null;
   try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-app-email`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${SERVICE_ROLE}`,
@@ -237,7 +237,7 @@ Deno.serve(async (req) => {
 
   let reportError: string | null = null;
   try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-app-email`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${SERVICE_ROLE}`,

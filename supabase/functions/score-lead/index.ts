@@ -257,7 +257,7 @@ serve(async (req) => {
     //      up in score-lead logs instead of being silently swallowed.
     //   4. Poll email_send_log briefly for the idempotency key so we don't
     //      return until the queue insert has actually happened.
-    const SEND_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-transactional-email`;
+    const SEND_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-app-email`;
     const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
@@ -287,16 +287,16 @@ serve(async (req) => {
 
         if (!res.ok) {
           console.error(
-            `[score-lead] send-transactional-email http ${res.status} for ${templateName} (${idempotencyKey}): ${text.slice(0, 500)}`,
+            `[score-lead] send-app-email http ${res.status} for ${templateName} (${idempotencyKey}): ${text.slice(0, 500)}`,
           );
         } else {
           console.log(
-            `[score-lead] send-transactional-email ok for ${templateName} (${idempotencyKey})`,
+            `[score-lead] send-app-email ok for ${templateName} (${idempotencyKey})`,
           );
         }
 
         // Verify the queue insert actually happened. We poll briefly because
-        // send-transactional-email may insert the email_send_log row right
+        // send-app-email may insert the email_send_log row right
         // before responding.
         let queued = false;
         for (let attempt = 0; attempt < 5; attempt++) {
@@ -328,7 +328,7 @@ serve(async (req) => {
         return { ok: res.ok, status: res.status, queued, error: res.ok ? undefined : text.slice(0, 500) };
       } catch (notifyErr) {
         const message = notifyErr instanceof Error ? notifyErr.message : String(notifyErr);
-        console.error(`[score-lead] send-transactional-email fetch failed (${templateName}, ${idempotencyKey}): ${message}`);
+        console.error(`[score-lead] send-app-email fetch failed (${templateName}, ${idempotencyKey}): ${message}`);
         return { ok: false, error: message };
       } finally {
         clearTimeout(timeout);

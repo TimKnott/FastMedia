@@ -242,7 +242,7 @@ Deno.serve(async (req) => {
         })
 
         const dispatchStart = Date.now()
-        const { data: emailData, error: emailErr } = await admin.functions.invoke('send-transactional-email', {
+        const { data: emailData, error: emailErr } = await admin.functions.invoke('send-app-email', {
           body: {
             templateName: 'client-stage-update',
             recipientEmail: tokenRow.email,
@@ -381,7 +381,7 @@ Deno.serve(async (req) => {
         })
 
         const dispatchStart = Date.now()
-        const { data: emailData, error: emailErr } = await admin.functions.invoke('send-transactional-email', {
+        const { data: emailData, error: emailErr } = await admin.functions.invoke('send-app-email', {
           body: {
             templateName: 'client-stage-update',
             recipientEmail: tokenRow.email,
