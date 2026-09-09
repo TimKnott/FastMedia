@@ -92,12 +92,17 @@ export const AdminEnquiries = () => {
   const filteredLeads = leads.filter(l => match(l.name, l.email, l.trade, l.special_request));
 
   const markStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from('contact_enquiries').update({ status }).eq('id', id);
-    if (error) {
-      toast.error('Could not update this enquiry.');
+    const { data, error } = await supabase
+      .from('contact_enquiries')
+      .update({ status })
+      .eq('id', id)
+      .select('id');
+    if (error || !data || data.length === 0) {
+      toast.error('Could not update this enquiry — you may not have permission.');
       return;
     }
     toast.success(`Marked as ${status}.`);
+
     queryClient.invalidateQueries({ queryKey: ['contact-enquiries'] });
     setSelected(prev => (prev && prev.id === id ? { ...prev, status } : prev));
   };
