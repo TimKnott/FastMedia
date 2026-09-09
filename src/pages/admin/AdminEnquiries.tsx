@@ -109,6 +109,7 @@ export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 
     toast.success(`Marked as ${status}.`);
 
     queryClient.invalidateQueries({ queryKey: ['contact-enquiries'] });
+
     setSelected(prev => (prev && prev.id === id ? { ...prev, status } : prev));
   };
 
