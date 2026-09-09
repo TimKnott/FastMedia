@@ -68,7 +68,14 @@ Deno.serve(async (req) => {
     if (!token) return json({ error: 'unauthorized' }, 401)
 
     // Cron / service-role calls bypass the admin check.
-    if (token !== SERVICE_ROLE) {
+    let isServiceRole = token === SERVICE_ROLE
+    if (!isServiceRole) {
+      try {
+        const claims = JSON.parse(b64urlDecode(token.split('.')[1] ?? ''))
+        isServiceRole = claims?.role === 'service_role'
+      } catch { /* not a JWT we can read */ }
+    }
+    if (!isServiceRole) {
       const userClient = createClient(SUPABASE_URL, ANON, { global: { headers: { Authorization: authHeader } } })
       const { data: userData } = await userClient.auth.getUser()
       if (!userData?.user) return json({ error: 'unauthorized' }, 401)
