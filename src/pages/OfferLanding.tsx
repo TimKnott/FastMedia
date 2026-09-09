@@ -102,6 +102,7 @@ const copy = {
       'Doklady a fakturace podle pravidel programu',
     ],
     grantCta: 'Průvodce dotacemi a jak žádat',
+    grantCalcCta: 'Spočítat cenu po dotaci (až 85 %)',
     testimonialsTitle: 'Co říkají majitelé firem',
     testimonials: [
       { n: 'Marek H.', r: 'Topenář, Plzeň', q: 'Dřív jsem polovinu poptávek ztratil, protože jsem byl na zakázce. Automatická odpověď je podchytí. První týden čtyři nové zakázky.' },
@@ -208,6 +209,7 @@ const copy = {
       'Documentation and invoicing to programme rules',
     ],
     grantCta: 'Read the grant guide',
+    grantCalcCta: 'Estimate your price after a grant (up to 85%)',
     testimonialsTitle: 'What business owners say',
     testimonials: [
       { n: 'Marek H.', r: 'Heating engineer, Plzeň', q: 'I used to lose half my leads because I was on a job. The automatic reply catches them. Four new jobs in the first week.' },

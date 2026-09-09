@@ -315,6 +315,13 @@ const CalculatorPage = () => {
   // Auto-start the urgency countdown the moment the user lands on the summary
   useEffect(() => {
     if (step === 'summary') startCouponWindow();
+    if (step === 'summary' && window.location.hash === '#grant') {
+      const timer = window.setTimeout(
+        () => document.getElementById('grant')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+        400,
+      );
+      return () => window.clearTimeout(timer);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
