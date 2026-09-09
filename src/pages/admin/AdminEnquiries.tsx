@@ -51,19 +51,23 @@ const statusColors: Record<string, string> = {
 const mailtoFor = (email: string, name: string, subject: string) =>
   `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi ${name.split(' ')[0]},\n\nThank you for getting in touch with FastMedia.Pro.\n\n`)}`;
 
-export const AdminEnquiries = () => {
+export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 'quote' }) => {
+  const isQuoteMailbox = mailbox === 'quote';
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Enquiry | null>(null);
   const [search, setSearch] = useState('');
 
   const { data: enquiries = [], isLoading: loadingEnquiries } = useQuery({
-    queryKey: ['contact-enquiries'],
+    queryKey: ['contact-enquiries', mailbox],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const query = supabase
         .from('contact_enquiries')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(300);
+      const { data, error } = isQuoteMailbox
+        ? await query.eq('kind', 'quote')
+        : await query.neq('kind', 'quote');
       if (error) throw error;
       return (data ?? []) as unknown as Enquiry[];
     },
@@ -72,6 +76,7 @@ export const AdminEnquiries = () => {
 
   const { data: leads = [], isLoading: loadingLeads } = useQuery({
     queryKey: ['enquiries-leads'],
+    enabled: isQuoteMailbox,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('leads')
