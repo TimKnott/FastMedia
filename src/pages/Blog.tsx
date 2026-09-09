@@ -13,6 +13,8 @@ import ScrollToTop from '@/components/ScrollToTop';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
+import { usePublishedBlogPosts } from '@/hooks/usePublishedBlogPosts';
+
 
 type ViewMode = 'grid' | 'list';
 
@@ -47,12 +49,16 @@ const Blog = () => {
     articles: { cs: 'článků', en: 'articles', de: 'Artikel' },
   };
 
-  const featuredPosts = blogPosts.filter((p) => p.featured);
+  const { data: dbPosts } = usePublishedBlogPosts();
+
+  const allPosts = useMemo(() => [...(dbPosts ?? []), ...blogPosts], [dbPosts]);
+
+  const featuredPosts = allPosts.filter((p) => p.featured);
   const heroPost = featuredPosts[0];
 
   const filtered = useMemo(() => {
     setVisibleCount(POSTS_PER_PAGE);
-    return blogPosts.filter((post) => {
+    return allPosts.filter((post) => {
       const matchesCategory = activeCategory === 'all' || post.category === activeCategory;
       const matchesSearch =
         !search ||
@@ -61,7 +67,8 @@ const Blog = () => {
         post.tags.some((tag) => tag.toLowerCase().includes(search.toLowerCase()));
       return matchesCategory && matchesSearch;
     });
-  }, [search, activeCategory, language]);
+  }, [search, activeCategory, language, allPosts]);
+
 
   const visiblePosts = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
