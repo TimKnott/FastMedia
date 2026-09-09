@@ -90,4 +90,14 @@
   <url><loc>https://www.fastmedia.pro/blog/niche-website-templates-plumber-bakery-different-theme</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.fastmedia.pro/blog/optimising-voice-search-near-me-queries</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.fastmedia.pro/blog/build-authority-online-credentials-awards-case-studies</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url>
+    <loc>https://www.fastmedia.pro/offer</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.fastmedia.pro/grants</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
