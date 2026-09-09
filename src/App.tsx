@@ -33,7 +33,6 @@ const QuoteRequest = lazy(() => import("./pages/QuoteRequest"));
 const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
 const PackageDetail = lazy(() => import("./pages/PackageDetail"));
 const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
-const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Showcase = lazy(() => import("./pages/Showcase"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Account = lazy(() => import("./pages/Account"));
@@ -225,7 +224,6 @@ const App = () => (
             <Route path="/package/:slug" element={<PackageDetail />} />
             <Route path="/legal/:slug" element={<LegalDocument />} />
             <Route path="/sitemap.xml" element={<SitemapRedirect />} />
-            <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/showcase/:slug" element={<Showcase />} />
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/checkout/return" element={<CheckoutSuccess />} />
