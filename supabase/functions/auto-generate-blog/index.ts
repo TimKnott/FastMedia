@@ -81,21 +81,34 @@ async function logRun(admin: ReturnType<typeof createClient>, fields: Record<str
   await admin.from('blog_generation_log').insert(fields);
 }
 
-async function sendEmail(subject: string, html: string) {
-  const apiKey = Deno.env.get('MAILGUN_API_KEY');
-  const domain = Deno.env.get('MAILGUN_DOMAIN') ?? 'notify.fastmedia.pro';
-  if (!apiKey) { console.warn('MAILGUN_API_KEY missing — skipping admin email'); return { skipped: true }; }
-  const form = new FormData();
-  form.append('from', `FastMedia Editorial <editor@${domain}>`);
-  form.append('to', NOTIFY_TO);
-  form.append('subject', subject);
-  form.append('html', html);
-  const tryHost = async (host: string) => fetch(`https://${host}/v3/${domain}/messages`, {
-    method: 'POST', headers: { Authorization: 'Basic ' + btoa(`api:${apiKey}`) }, body: form,
-  });
-  let res = await tryHost('api.eu.mailgun.net');
-  if (!res.ok) res = await tryHost('api.mailgun.net');
-  return { ok: res.ok, status: res.status };
+// Sends an admin notice through the managed email sender.
+async function sendEmail(subject: string, bodyPlain: string) {
+  const url = Deno.env.get('SUPABASE_URL');
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!url || !key) return { skipped: true };
+  const to = Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL') || NOTIFY_TO;
+  try {
+    const res = await fetch(`${url}/functions/v1/send-app-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        templateName: 'inbound-forward',
+        recipientEmail: to,
+        templateData: {
+          fromAddress: 'editor@fastmedia.pro',
+          fromName: 'FastMedia Editorial',
+          toAddress: to,
+          subject,
+          bodyPlain,
+          status: 'automated',
+        },
+      }),
+    });
+    return { ok: res.ok, status: res.status };
+  } catch (e) {
+    console.error('auto-generate-blog admin email failed:', e);
+    return { ok: false };
+  }
 }
 
 interface ArticleJSON {
