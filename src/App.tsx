@@ -51,6 +51,7 @@ const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminEnquiries = lazy(() => import("./pages/admin/AdminEnquiries"));
 const AdminQuoteRequests = lazy(() => import("./pages/admin/AdminQuoteRequests"));
 const AdminTracker = lazy(() => import("./pages/admin/AdminTracker"));
+const AdminClients = lazy(() => import("./pages/admin/AdminClients"));
 const AdminResetPassword = lazy(() => import("./pages/admin/AdminResetPassword"));
 const AdminRoles = lazy(() => import("./pages/admin/AdminRoles"));
 const AdminLandingPage = lazy(() => import("./pages/admin/AdminLandingPage"));
