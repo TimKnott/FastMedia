@@ -14,6 +14,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import BlogAudioCTA from '@/components/blog/BlogAudioCTA';
+import { usePublishedBlogPosts } from '@/hooks/usePublishedBlogPosts';
+
 
 type Language = 'cs' | 'en' | 'de';
 
@@ -139,18 +141,30 @@ const BlogArticle = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  const post = blogPosts.find((p) => p.slug === slug);
+  const { data: dbPosts, isLoading: dbLoading } = usePublishedBlogPosts();
+  const allPosts = [...(dbPosts ?? []), ...blogPosts];
+  const post = allPosts.find((p) => p.slug === slug);
 
-  if (!post) return <Navigate to="/blog" replace />;
+  if (!post) {
+    if (dbLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+        </div>
+      );
+    }
+    return <Navigate to="/blog" replace />;
+  }
 
   const formattedDate = new Date(post.date).toLocaleDateString(
     language === 'cs' ? 'cs-CZ' : language === 'de' ? 'de-DE' : 'en-US',
     { day: 'numeric', month: 'long', year: 'numeric' }
   );
 
-  const related = blogPosts
+  const related = allPosts
     .filter((p) => p.id !== post.id && (p.category === post.category || p.tags.some((t) => post.tags.includes(t))))
     .slice(0, 3);
+
 
   const toc: TocItem[] = post.sections
     .map((block, i) => block.type === 'heading' ? { id: `heading-${i}`, text: block.text[language] } : null)
