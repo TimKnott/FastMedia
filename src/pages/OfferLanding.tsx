@@ -228,7 +228,7 @@ const copy = {
     ],
     pricingTitle: 'Choose your route',
     pricingSub: 'Either get a bespoke price calculated, or pick a ready-made package.',
-    calcCard: { t: 'Price calculator', d: 'Answer a few questions and see an instant estimate and scope. Takes two minutes.', b: 'Open the calculator' },
+    calcCard: { t: 'Price calculator', d: 'Answer a few questions and see an instant estimate and scope — including a sliding grant estimate of up to 85%. Takes two minutes.', b: 'Open the calculator' },
     pkgCard: { t: 'Service packages', d: 'Four tiers, from a simple presentation site to a large bespoke system.', b: 'View the packages' },
     faqTitle: 'Common questions',
     faqs: [
@@ -416,9 +416,14 @@ const OfferLanding = () => {
                 </li>
               ))}
             </ul>
-            <Button asChild size="lg" className="h-14 px-8 text-base shadow-lg shadow-primary/30">
-              <Link to="/grants">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button asChild size="lg" className="h-14 px-8 text-base shadow-lg shadow-primary/30">
+                <Link to="/grants">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="h-14 px-8 text-base">
+                <Link to="/calculator#grant">{t.grantCalcCta}<ArrowRight className="w-5 h-5" /></Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
