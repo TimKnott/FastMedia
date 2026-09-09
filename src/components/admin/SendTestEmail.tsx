@@ -16,7 +16,7 @@ export const SendTestEmail = () => {
     if (!email.trim()) return;
     setBusy(true);
     try {
-      const { data, error } = await supabase.functions.invoke('send-transactional-email', {
+      const { data, error } = await supabase.functions.invoke('send-app-email', {
         body: {
           templateName: 'newsletter-welcome',
           recipientEmail: email.trim(),

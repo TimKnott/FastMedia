@@ -102,7 +102,7 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
         toast.success(labels.subscribed[language]);
         // Send welcome email to subscriber (fire-and-forget)
         const subId = crypto.randomUUID();
-        supabase.functions.invoke('send-transactional-email', {
+        supabase.functions.invoke('send-app-email', {
           body: {
             templateName: 'newsletter-welcome',
             recipientEmail: trimmedEmail,
@@ -111,7 +111,7 @@ const BlogSidebar = ({ currentSlug, toc = [] }: BlogSidebarProps) => {
           },
         }).catch(() => {});
         // Notify admin of the new subscriber (fire-and-forget)
-        supabase.functions.invoke('send-transactional-email', {
+        supabase.functions.invoke('send-app-email', {
           body: {
             templateName: 'admin-newsletter-notification',
             recipientEmail: 'support@fastmedia.pro',

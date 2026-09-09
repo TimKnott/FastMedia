@@ -180,7 +180,7 @@ const AdminClientProjectDetail = () => {
     const idem = `stage-${stage}-${project.id}-${Date.now()}`;
     try {
       // Client copy
-      const clientRes = await supabase.functions.invoke('send-transactional-email', {
+      const clientRes = await supabase.functions.invoke('send-app-email', {
         body: {
           templateName: 'client-stage-update',
           recipientEmail: project.client_email,
@@ -190,7 +190,7 @@ const AdminClientProjectDetail = () => {
       });
       if (clientRes.error) throw clientRes.error;
       // Admin copy (best-effort — uses NOTIFICATION_EMAIL configured server-side via fallback to support)
-      await supabase.functions.invoke('send-transactional-email', {
+      await supabase.functions.invoke('send-app-email', {
         body: {
           templateName: 'client-stage-update',
           recipientEmail: 'support@fastmedia.pro',
@@ -387,7 +387,7 @@ const AdminClientProjectDetail = () => {
     if (!project) return;
     const url = portalUrlForToken(t.token);
     try {
-      const { error } = await supabase.functions.invoke('send-transactional-email', {
+      const { error } = await supabase.functions.invoke('send-app-email', {
         body: {
           templateName: 'portal-invite',
           recipientEmail: t.email,
