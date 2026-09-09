@@ -51,8 +51,9 @@ const statusColors: Record<string, string> = {
 const mailtoFor = (email: string, name: string, subject: string) =>
   `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi ${name.split(' ')[0]},\n\nThank you for getting in touch with FastMedia.Pro.\n\n`)}`;
 
-export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 'quote' }) => {
+export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 'quote' | 'offer' }) => {
   const isQuoteMailbox = mailbox === 'quote';
+  const isOfferMailbox = mailbox === 'offer';
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Enquiry | null>(null);
   const [search, setSearch] = useState('');
@@ -67,7 +68,9 @@ export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 
         .limit(300);
       const { data, error } = isQuoteMailbox
         ? await query.eq('kind', 'quote')
-        : await query.neq('kind', 'quote');
+        : isOfferMailbox
+          ? await query.eq('kind', 'offer')
+          : await query.not('kind', 'in', '("quote","offer")');
       if (error) throw error;
       return (data ?? []) as unknown as Enquiry[];
     },
@@ -121,7 +124,9 @@ export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 
           <div>
             {isQuoteMailbox
               ? 'Every project enquiry from the quote request page lands here, alongside calculator leads. Each one is also emailed to your private address as it arrives.'
-              : 'Every message from the contact page lands here. Quote requests have their own inbox. Each one is also emailed to your private address as it arrives.'}
+              : isOfferMailbox
+                ? 'Every enquiry from the campaign offer page and the grant guide lands here. Each one is also emailed to your private address as it arrives.'
+                : 'Every message from the contact page lands here. Quote requests and offer enquiries have their own inboxes. Each one is also emailed to your private address as it arrives.'}
           </div>
         </CardContent>
       </Card>
@@ -134,7 +139,7 @@ export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 
       <Tabs defaultValue="enquiries">
         <TabsList>
           <TabsTrigger value="enquiries">
-            {isQuoteMailbox ? 'Quote requests' : 'Messages'} ({filteredEnquiries.length})
+            {isQuoteMailbox ? 'Quote requests' : isOfferMailbox ? 'Offer enquiries' : 'Messages'} ({filteredEnquiries.length})
           </TabsTrigger>
           {isQuoteMailbox && <TabsTrigger value="leads">Leads ({filteredLeads.length})</TabsTrigger>}
         </TabsList>

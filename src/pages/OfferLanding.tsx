@@ -14,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import SEOHead from '@/components/SEOHead';
 import Footer from '@/components/Footer';
+import OfferEnquiryForm from '@/components/OfferEnquiryForm';
 import casePlumbing from '@/assets/offer/case-plumbing.jpg';
 import caseSalon from '@/assets/offer/case-salon.jpg';
 import caseEshop from '@/assets/offer/case-eshop.jpg';
@@ -29,8 +30,8 @@ const caseImages = [casePlumbing, caseSalon, caseEshop, caseBuilding];
 
 const copy = {
   cs: {
-    seoTitle: 'Webové stránky s garancí spokojenosti | Až 85 % z dotace | FastMedia',
-    seoDesc: 'Moderní web na míru: mobile-first, dvojjazyčně, s AI asistentem a rezervacemi. 30denní garance vrácení peněz. Registrovaný dodavatel — až 85 % z dotace.',
+    seoTitle: 'Webové stránky s garancí spokojenosti | Podpora z dotací | FastMedia',
+    seoDesc: 'Moderní web na míru: mobile-first, dvojjazyčně, s AI asistentem a rezervacemi. 30denní garance vrácení peněz a podklady pro dotace na digitalizaci.',
     switchLabel: 'English',
     badge: 'Omezený počet zakázek každý měsíc',
     h1: 'Web, se kterým budete spokojeni. Jinak vám vrátíme peníze.',
@@ -93,14 +94,14 @@ const copy = {
         fomo: 'Stavební firmy si obvykle rezervují termín na jaro už na podzim.',
       },
     ],
-    grantTitle: 'Až 85 % ceny může pokrýt dotace',
-    grantBody: 'Jsme registrovaný dodavatel pro veřejný sektor a české dotační programy na digitalizaci. Pokud vaše firma splní podmínky programu, může být způsobilá získat až 85 % nákladů na nový web zpět formou dotace. Nárok a výši vždy posuzuje poskytovatel dotace — my vám připravíme podklady, technickou specifikaci i cenovou nabídku ve formátu, který úřad vyžaduje.',
+    grantTitle: 'Část ceny může pokrýt dotace na digitalizaci',
+    grantBody: 'V Česku běží evropské programy na digitalizaci malých a středních firem — nový web v nich bývá uznatelným nákladem jako součást digitalizačního projektu. Míru podpory určuje konkrétní výzva, velikost firmy a region; nárok i výši posuzuje vždy poskytovatel dotace. My vám připravíme technickou specifikaci, položkovou nabídku a doklady ve formátu, který žádost vyžaduje.',
     grantPoints: [
       'Bezplatné posouzení, zda můžete žádat',
       'Technická specifikace a nabídka pro žádost',
       'Doklady a fakturace podle pravidel programu',
     ],
-    grantCta: 'Zjistit, zda mám nárok',
+    grantCta: 'Průvodce dotacemi a jak žádat',
     testimonialsTitle: 'Co říkají majitelé firem',
     testimonials: [
       { n: 'Marek H.', r: 'Topenář, Plzeň', q: 'Dřív jsem polovinu poptávek ztratil, protože jsem byl na zakázce. Automatická odpověď je podchytí. První týden čtyři nové zakázky.' },
@@ -135,8 +136,8 @@ const copy = {
     call: 'Zavolat +420 797 864 432',
   },
   en: {
-    seoTitle: 'Websites With a Happiness Guarantee | Up to 85% Grant Funded | FastMedia',
-    seoDesc: 'A bespoke, mobile-first bilingual website with AI lead assistant, bookings and payments. 30-day money-back guarantee. Registered supplier — up to 85% grant funding.',
+    seoTitle: 'Websites With a Happiness Guarantee | Grant-Ready Quotes | FastMedia',
+    seoDesc: 'A bespoke, mobile-first bilingual website with AI lead assistant, bookings and payments. 30-day money-back guarantee and grant-ready documentation.',
     switchLabel: 'Čeština',
     badge: 'Limited number of projects each month',
     h1: "A website you'll be happy with. Or your money back.",
@@ -199,14 +200,14 @@ const copy = {
         fomo: 'Construction firms usually book their spring slot back in the autumn.',
       },
     ],
-    grantTitle: 'Up to 85% of the cost may be grant funded',
-    grantBody: 'We are a registered supplier for the public sector and Czech digitalisation grant programmes. If your business meets a programme’s conditions, you may be eligible to claim back up to 85% of the cost of your new website. Eligibility and the final amount are always decided by the grant provider — we prepare the paperwork, the technical specification and the quotation in the format the authority requires.',
+    grantTitle: 'A digitalisation grant may cover part of the cost',
+    grantBody: 'The Czech Republic runs EU-funded digitalisation programmes for small and medium-sized businesses, and a new website is often an eligible cost within a wider digitalisation project. The support rate is set by the individual call, your company size and your region, and eligibility is always decided by the grant provider. We prepare the technical specification, an itemised quotation and the records the application requires.',
     grantPoints: [
       'Free assessment of whether you can apply',
       'Technical specification and quotation for the application',
       'Documentation and invoicing to programme rules',
     ],
-    grantCta: 'Check if I qualify',
+    grantCta: 'Read the grant guide',
     testimonialsTitle: 'What business owners say',
     testimonials: [
       { n: 'Marek H.', r: 'Heating engineer, Plzeň', q: 'I used to lose half my leads because I was on a job. The automatic reply catches them. Four new jobs in the first week.' },
@@ -414,7 +415,7 @@ const OfferLanding = () => {
               ))}
             </ul>
             <Button asChild size="lg" className="h-14 px-8 text-base shadow-lg shadow-primary/30">
-              <Link to="/contact">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
+              <Link to="/grants">{t.grantCta}<ArrowRight className="w-5 h-5" /></Link>
             </Button>
           </div>
         </div>
@@ -517,6 +518,13 @@ const OfferLanding = () => {
             </AccordionItem>
           ))}
         </Accordion>
+      </section>
+
+      {/* ENQUIRY FORM */}
+      <section id="enquiry" className="bg-muted/40 py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <OfferEnquiryForm lang={lang} />
+        </div>
       </section>
 
       {/* FINAL CTA */}

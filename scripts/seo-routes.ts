@@ -88,6 +88,34 @@ const STATIC_ROUTES: RouteSeo[] = [
     priority: "0.8",
   },
   {
+    path: "/offer",
+    title: "Bespoke Websites With a 30-Day Happiness Guarantee | FastMedia.Pro",
+    description:
+      "A mobile-first, bilingual website built by a British web team in Czechia. AI lead assistant, bookings and payments, with a 30-day money-back guarantee.",
+    ogImage: OG_IMG,
+    changefreq: "weekly",
+    priority: "0.9",
+    h1: "Bespoke websites with a 30-day happiness guarantee",
+    contentBlocks: [
+      "FastMedia.Pro builds bespoke, mobile-first websites for Czech businesses, written in perfect British English when you need it, with an AI lead assistant, bookings, payments and SEO built in.",
+      "If you are not happy within 30 days of publishing, you get a full refund. See the case studies, packages and instant cost calculator on the page.",
+    ],
+  },
+  {
+    path: "/grants",
+    title: "Czech Digitalisation Grants for a New Website | FastMedia.Pro",
+    description:
+      "An honest guide to Czech and EU digitalisation grant programmes, who can apply, what a website project needs, and the documents we prepare for your application.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.7",
+    h1: "Czech digitalisation grants for a new website",
+    contentBlocks: [
+      "Czech and EU digitalisation programmes such as OP TAK Digitální podnik can support digitalisation projects for small and medium-sized businesses, and a website is often an eligible cost within a wider project.",
+      "Eligibility, support rates and open calls are decided by the grant provider. We prepare the technical specification, itemised quotation and supplier documents your application needs.",
+    ],
+  },
+  {
     path: "/quote-request",
     title: "Request a Quote — FastMedia.Pro Web Design",
     description:

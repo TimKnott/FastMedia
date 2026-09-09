@@ -37,6 +37,7 @@ const Showcase = lazy(() => import("./pages/Showcase"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
+const GrantGuide = lazy(() => import("./pages/GrantGuide"));
 
 // Admin pages (lazy)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
@@ -50,6 +51,7 @@ const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminEnquiries = lazy(() => import("./pages/admin/AdminEnquiries"));
 const AdminQuoteRequests = lazy(() => import("./pages/admin/AdminQuoteRequests"));
+const AdminOfferLeads = lazy(() => import("./pages/admin/AdminOfferLeads"));
 const AdminTracker = lazy(() => import("./pages/admin/AdminTracker"));
 const AdminClients = lazy(() => import("./pages/admin/AdminClients"));
 const AdminResetPassword = lazy(() => import("./pages/admin/AdminResetPassword"));
@@ -166,6 +168,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/offer" element={<OfferLanding />} />
+            <Route path="/grants" element={<GrantGuide />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/demo/plumbing" element={<PlumbingDemo />} />
@@ -243,6 +246,7 @@ const App = () => (
               <Route path="leads" element={<AdminLeads />} />
               <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
               <Route path="quote-requests" element={<ProtectedRoute minRole="admin"><AdminQuoteRequests /></ProtectedRoute>} />
+              <Route path="offer-leads" element={<ProtectedRoute minRole="admin"><AdminOfferLeads /></ProtectedRoute>} />
               <Route path="tracker" element={<ProtectedRoute minRole="admin"><AdminTracker /></ProtectedRoute>} />
               <Route path="clients" element={<ProtectedRoute minRole="admin"><AdminClients /></ProtectedRoute>} />
               <Route path="users" element={<AdminUsers />} />
