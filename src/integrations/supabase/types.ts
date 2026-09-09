@@ -2652,6 +2652,57 @@ export type Database = {
         }
         Relationships: []
       }
+      tracker_items: {
+        Row: {
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          owner: string | null
+          source: string
+          source_id: string | null
+          stage: string
+          title: string
+          updated_at: string
+          value: number | null
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          owner?: string | null
+          source?: string
+          source_id?: string | null
+          stage?: string
+          title: string
+          updated_at?: string
+          value?: number | null
+        }
+        Update: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          owner?: string | null
+          source?: string
+          source_id?: string | null
+          stage?: string
+          title?: string
+          updated_at?: string
+          value?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
