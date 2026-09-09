@@ -119,8 +119,9 @@ export const AdminEnquiries = ({ mailbox = 'contact' }: { mailbox?: 'contact' | 
         <CardContent className="p-4 text-sm text-muted-foreground flex items-start gap-3">
           <Inbox className="w-4 h-4 mt-0.5 flex-shrink-0" />
           <div>
-            Every message from the contact page and quote request page appears here, alongside calculator leads.
-            Each one is also emailed to your private address as it arrives.
+            {isQuoteMailbox
+              ? 'Every project enquiry from the quote request page lands here, alongside calculator leads. Each one is also emailed to your private address as it arrives.'
+              : 'Every message from the contact page lands here. Quote requests have their own inbox. Each one is also emailed to your private address as it arrives.'}
           </div>
         </CardContent>
       </Card>
