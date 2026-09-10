@@ -31,6 +31,7 @@ import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import SEOHead from "@/components/SEOHead";
 import terezaPhoto from "@/assets/team/tereza-novakova.jpg";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const successStories = [
   {
@@ -110,7 +111,29 @@ const clientReviews = [
   },
 ];
 
+const czechStories = [
+  { client: 'Martin Kovář', trade: 'Instalatér', emoji: '🔧', story: 'Martin se patnáct let spoléhal na doporučení, ale noví konkurenti mu začali získávat zákazníky lepšími weby. Tereza s ním připravila čistý mobilní web s ukázkami práce a online rezervacemi. Za tři měsíce měl kalendář plný a získal nový pohled na své podnikání.' },
+  { client: 'Eva Nováková', trade: 'Interiérová designérka', emoji: '🎨', story: 'Eva měla krásné portfolio na Instagramu, ale chyběl jí profesionální web pro hodnotnější zakázky. S Terezou vytvořily výrazné portfolio s referencemi a formulářem, který lépe třídí poptávky. Krátce po spuštění získala dosud největší zakázku.' },
+  { client: 'Tomáš Dvořák', trade: 'Elektrikář', emoji: '⚡', story: 'Tomášův zastaralý web skrýval jeho skvělé recenze. Tereza navrhla moderní prezentaci s hodnoceními, mapou oblasti a rychlým nouzovým voláním. V prvním měsíci vzrostl počet poptávek o 60 %.' },
+  { client: 'Lucie Šťastná', trade: 'Úklidové služby', emoji: '✨', story: 'Lucie trávila hodiny telefonáty o cenách a dostupnosti. Chytrá kalkulačka a automatické rezervace zachovaly přátelský dojem, snížily počet telefonátů o 70 % a zdvojnásobily rezervace.' },
+];
+
+const czechReviews = [
+  ['Petr Horák', 'Pokrývač', 'Tereza byla neuvěřitelně trpělivá a opravdu poslouchala, co potřebuji. Celý proces byl snadný a příjemný!'],
+  ['Jana Procházková', 'Zahradnice', 'Z webu jsem měla obavy, ale Tereza vše vysvětlila krok za krokem. Výsledek překonal má očekávání.'],
+  ['Ondřej Malý', 'Stavitel', 'Po jediném rozhovoru Tereza pochopila mé podnikání. Je to profesionálka, které na zákaznících záleží.'],
+  ['Kateřina Černá', 'Malířka', 'Spolupráce s Terezou byla jako práce s kamarádkou. Vždy byla k dispozici a web je krásný.'],
+  ['David Veselý', 'Topenář', 'Po naší spolupráci jsem Terezu doporučil dalším třem řemeslníkům. Je znalá, milá a efektivní.'],
+  ['Markéta Svobodová', 'Zámečnice', 'Tereza proměnila mé neurčité nápady v nádherný web. Výborně chápe, co zákazníci potřebují.'],
+  ['Filip Král', 'Montáž solárních systémů', 'Skvělá zkušenost. Tereza reagovala rychle a pomohla mi vybrat správný balíček pro můj rozpočet.'],
+  ['Tereza Pokorná', 'Sádrokartonářka', 'Vše velmi zjednodušila a výsledky mluví samy za sebe — každý týden máme více zákazníků!'],
+].map(([name, trade, text], index) => ({ name, trade, text, rating: index === 6 ? 4 : 5 }));
+
 const ConsultantTereza = () => {
+  const { language } = useLanguage();
+  const en = language === 'en';
+  const stories = en ? successStories : czechStories;
+  const reviews = en ? clientReviews : czechReviews;
   const [callbackDate, setCallbackDate] = useState<Date>();
   const [callbackTime, setCallbackTime] = useState("");
   const [enquiryType, setEnquiryType] = useState("");
@@ -123,7 +146,7 @@ const ConsultantTereza = () => {
     // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    toast.success("Your enquiry has been sent to Tereza! She will get back to you shortly.");
+     toast.success(en ? 'Your enquiry has been sent to Tereza. She will reply shortly.' : 'Vaše poptávka byla odeslána Tereze. Brzy se vám ozve.');
     setIsSubmitting(false);
     (e.target as HTMLFormElement).reset();
     setCallbackDate(undefined);
@@ -134,8 +157,8 @@ const ConsultantTereza = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Tereza Nováková — Web Consultant"
-        description="Meet Tereza Nováková, your personal web consultant at FastMedia.Pro. Years of experience helping tradespeople build websites that drive customers."
+         title={en ? 'Tereza Nováková — Web Consultant' : 'Tereza Nováková — webová konzultantka'}
+         description={en ? 'Meet Tereza Nováková, your personal web consultant at FastMedia.Pro.' : 'Seznamte se s Terezou Novákovou, osobní webovou konzultantkou FastMedia.Pro.'}
         canonical="/consultant/tereza"
         ogType="profile"
         pagePath="/consultant/tereza"
@@ -198,24 +221,21 @@ const ConsultantTereza = () => {
               className="text-center lg:text-left max-w-2xl"
             >
               <span className="inline-block px-4 py-1.5 rounded-full bg-primary-foreground/20 text-primary-foreground text-sm font-semibold mb-4">
-                Your Personal Consultant
+                 {en ? 'Your Personal Consultant' : 'Vaše osobní konzultantka'}
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 text-primary-foreground">
-                Hi, I'm Tereza Nováková
+                 {en ? "Hi, I'm Tereza Nováková" : 'Dobrý den, jsem Tereza Nováková'}
               </h1>
               <p className="text-lg lg:text-xl text-primary-foreground/90 leading-relaxed mb-4">
-                Welcome! I'm here to guide you through every step of creating the perfect website for your business.
-                Whether you're starting from scratch or refreshing an existing site, I'll help you choose the right
-                features, design, and strategy — so your online presence truly works for you.
+                 {en ? "Welcome! I'll guide you through every step of creating the right website for your business, from features and design to strategy." : 'Vítejte! Provedu vás každým krokem tvorby správného webu — od funkcí a designu až po strategii, která bude pro vaše podnikání skutečně fungovat.'}
               </p>
               <p className="text-primary-foreground/80 leading-relaxed">
-                With years of experience helping tradespeople and small businesses across Czechia, I understand the
-                unique challenges you face. Let's turn your vision into something your customers will love.
+                 {en ? "With years of experience helping tradespeople and small businesses across Czechia, I understand your challenges. Let's turn your vision into something customers will love." : 'Díky zkušenostem s řemeslníky a malými firmami v celé České republice rozumím vašim výzvám. Proměňme vaši představu v něco, co si zákazníci oblíbí.'}
               </p>
               <div className="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
                 <a href="#contact">
                   <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity gap-2 h-12 px-8">
-                    <MessageCircle className="w-5 h-5" /> Get in Touch
+                     <MessageCircle className="w-5 h-5" /> {en ? 'Get in touch' : 'Kontaktovat Terezu'}
                   </Button>
                 </a>
                 <a href="#stories">
@@ -223,7 +243,7 @@ const ConsultantTereza = () => {
                     variant="outline"
                     className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 h-12 px-8 gap-2"
                   >
-                    <Heart className="w-5 h-5" /> Read Success Stories
+                     <Heart className="w-5 h-5" /> {en ? 'Read success stories' : 'Přečíst příběhy klientů'}
                   </Button>
                 </a>
               </div>
@@ -241,17 +261,17 @@ const ConsultantTereza = () => {
             viewport={{ once: true }}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <span className="text-accent font-semibold text-sm uppercase tracking-wider">Success Stories</span>
+             <span className="text-accent font-semibold text-sm uppercase tracking-wider">{en ? 'Success Stories' : 'Příběhy úspěchu'}</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-              Real Customers, Real Results
+               {en ? 'Real Customers, Real Results' : 'Skuteční zákazníci, skutečné výsledky'}
             </h2>
             <p className="text-muted-foreground text-lg">
-              Every project is a journey. Here are some stories from customers Tereza has helped along the way.
+               {en ? 'Every project is a journey. Here are stories from customers Tereza has helped.' : 'Každý projekt je cesta. Přečtěte si příběhy zákazníků, kterým Tereza pomohla.'}
             </p>
           </motion.div>
 
           <div className="space-y-8 max-w-4xl mx-auto">
-            {successStories.map((story, index) => (
+             {stories.map((story, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
@@ -303,18 +323,17 @@ const ConsultantTereza = () => {
                 </div>
                 <div className="md:w-3/5 p-6 lg:p-8 flex flex-col justify-center">
                   <span className="text-accent font-semibold text-xs uppercase tracking-wider mb-2">
-                    AI-Powered Tool
+                     {en ? 'AI-Powered Tool' : 'Nástroj s umělou inteligencí'}
                   </span>
                   <h3 className="text-xl lg:text-2xl font-display font-bold text-foreground mb-2">
-                    Try Our Smart Website Calculator
+                     {en ? 'Try Our Smart Website Calculator' : 'Vyzkoušejte chytrou kalkulačku webu'}
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                    Get an instant, personalised quote for your website. Our AI recommends the best features for your
-                    trade and builds a custom price breakdown in seconds.
+                     {en ? 'Get an instant, personalised website quote. AI recommends suitable features and creates a price breakdown in seconds.' : 'Získejte okamžitou nabídku webu na míru. AI doporučí vhodné funkce pro váš obor a během několika sekund připraví rozpis ceny.'}
                   </p>
                   <div className="flex items-center gap-2 text-accent font-semibold text-sm group-hover:gap-3 transition-all">
                     <Calculator className="w-4 h-4" />
-                    Build Your Quote Now →
+                     {en ? 'Build Your Quote Now →' : 'Sestavit nabídku →'}
                   </div>
                 </div>
               </div>
@@ -331,9 +350,9 @@ const ConsultantTereza = () => {
             viewport={{ once: true }}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <span className="text-accent font-semibold text-sm uppercase tracking-wider">Client Reviews</span>
+             <span className="text-accent font-semibold text-sm uppercase tracking-wider">{en ? 'Client Reviews' : 'Hodnocení klientů'}</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-              What People Say About Tereza
+               {en ? 'What People Say About Tereza' : 'Co klienti říkají o Tereze'}
             </h2>
           </motion.div>
 
@@ -346,9 +365,9 @@ const ConsultantTereza = () => {
                   animate={{ x: row === 0 ? [0, -1200] : [-1200, 0] }}
                   transition={{ duration: 30 + row * 5, repeat: Infinity, ease: "linear" }}
                 >
-                  {[...clientReviews, ...clientReviews]
+                   {[...reviews, ...reviews]
                     .slice(row * 4, row * 4 + 8)
-                    .concat([...clientReviews, ...clientReviews].slice(row * 4, row * 4 + 8))
+                     .concat([...reviews, ...reviews].slice(row * 4, row * 4 + 8))
                     .map((review, i) => (
                       <div
                         key={i}
@@ -393,13 +412,12 @@ const ConsultantTereza = () => {
             viewport={{ once: true }}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <span className="text-accent font-semibold text-sm uppercase tracking-wider">Get in Touch</span>
+             <span className="text-accent font-semibold text-sm uppercase tracking-wider">{en ? 'Get in Touch' : 'Kontakt'}</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-              Contact Tereza
+               {en ? 'Contact Tereza' : 'Kontaktujte Terezu'}
             </h2>
             <p className="text-muted-foreground text-lg">
-              Fill in your details below and Tereza will get back to you personally. You can also request a callback at a
-              time that suits you.
+               {en ? 'Fill in your details and Tereza will reply personally. You can also request a callback.' : 'Vyplňte své údaje a Tereza se vám osobně ozve. Můžete také požádat o zpětné zavolání.'}
             </p>
           </motion.div>
 
@@ -416,11 +434,11 @@ const ConsultantTereza = () => {
               {/* Personal Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name *</Label>
+                   <Label htmlFor="firstName">{en ? 'First name *' : 'Jméno *'}</Label>
                   <Input id="firstName" name="firstName" required placeholder="e.g. Martin" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name *</Label>
+                   <Label htmlFor="lastName">{en ? 'Last name *' : 'Příjmení *'}</Label>
                   <Input id="lastName" name="lastName" required placeholder="e.g. Kovář" />
                 </div>
               </div>
@@ -431,13 +449,13 @@ const ConsultantTereza = () => {
                   <Input id="email" name="email" type="email" required placeholder="you@example.com" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                   <Label htmlFor="phone">{en ? 'Phone number' : 'Telefon'}</Label>
                   <Input id="phone" name="phone" type="tel" placeholder="+420 ..." />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="whatsapp">WhatsApp Number *</Label>
+                 <Label htmlFor="whatsapp">{en ? 'WhatsApp number *' : 'Číslo WhatsApp *'}</Label>
                 <div className="relative">
                   <MessageCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input id="whatsapp" name="whatsapp" required placeholder="+420 ..." className="pl-10" />
@@ -446,31 +464,31 @@ const ConsultantTereza = () => {
 
               {/* Enquiry Type */}
               <div className="space-y-2">
-                <Label>Type of Enquiry *</Label>
+                 <Label>{en ? 'Type of enquiry *' : 'Typ poptávky *'}</Label>
                 <Select value={enquiryType} onValueChange={setEnquiryType} required>
                   <SelectTrigger>
-                    <SelectValue placeholder="What are you looking for?" />
+                     <SelectValue placeholder={en ? 'What are you looking for?' : 'Co hledáte?'} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new-website">🌐 New Website</SelectItem>
-                    <SelectItem value="makeover">✨ Website Makeover / Redesign</SelectItem>
-                    <SelectItem value="seo">📈 SEO & Online Visibility</SelectItem>
-                    <SelectItem value="booking-system">📅 Booking System</SelectItem>
-                    <SelectItem value="branding">🎨 Branding & Logo</SelectItem>
-                    <SelectItem value="other">💬 Something Else</SelectItem>
+                     <SelectItem value="new-website">🌐 {en ? 'New website' : 'Nový web'}</SelectItem>
+                     <SelectItem value="makeover">✨ {en ? 'Website redesign' : 'Redesign webu'}</SelectItem>
+                     <SelectItem value="seo">📈 {en ? 'SEO & online visibility' : 'SEO a viditelnost'}</SelectItem>
+                     <SelectItem value="booking-system">📅 {en ? 'Booking system' : 'Rezervační systém'}</SelectItem>
+                     <SelectItem value="branding">🎨 {en ? 'Branding & logo' : 'Značka a logo'}</SelectItem>
+                     <SelectItem value="other">💬 {en ? 'Something else' : 'Něco jiného'}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Message */}
               <div className="space-y-2">
-                <Label htmlFor="message">Tell Tereza about your project *</Label>
+                 <Label htmlFor="message">{en ? 'Tell Tereza about your project *' : 'Popište Tereze svůj projekt *'}</Label>
                 <Textarea
                   id="message"
                   name="message"
                   required
                   rows={4}
-                  placeholder="Describe what you need, your business, any specific wishes..."
+                   placeholder={en ? 'Describe your business, what you need and any specific wishes…' : 'Popište své podnikání, potřeby a zvláštní přání…'}
                 />
               </div>
 
@@ -478,11 +496,11 @@ const ConsultantTereza = () => {
               <div className="border border-border rounded-xl p-5 space-y-4 bg-secondary/30">
                 <div className="flex items-center gap-2 text-foreground font-semibold">
                   <Phone className="w-5 h-5 text-accent" />
-                  <span>Request a Callback (optional)</span>
+                   <span>{en ? 'Request a callback (optional)' : 'Požádat o zavolání (nepovinné)'}</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label>Preferred Date</Label>
+                     <Label>{en ? 'Preferred date' : 'Preferované datum'}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -493,7 +511,7 @@ const ConsultantTereza = () => {
                           )}
                         >
                           <Calendar className="w-4 h-4 mr-2" />
-                          {callbackDate ? format(callbackDate, "PPP") : "Pick a date"}
+                           {callbackDate ? format(callbackDate, "PPP") : (en ? 'Pick a date' : 'Vyberte datum')}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -509,10 +527,10 @@ const ConsultantTereza = () => {
                     </Popover>
                   </div>
                   <div className="space-y-2">
-                    <Label>Preferred Time</Label>
+                     <Label>{en ? 'Preferred time' : 'Preferovaný čas'}</Label>
                     <Select value={callbackTime} onValueChange={setCallbackTime}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Choose a time" />
+                         <SelectValue placeholder={en ? 'Choose a time' : 'Vyberte čas'} />
                       </SelectTrigger>
                       <SelectContent>
                         {["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"].map(
@@ -539,14 +557,13 @@ const ConsultantTereza = () => {
                   </motion.div>
                 ) : (
                   <>
-                    <Send className="w-5 h-5" /> Send Enquiry to Tereza
+                     <Send className="w-5 h-5" /> {en ? 'Send enquiry to Tereza' : 'Odeslat poptávku Tereze'}
                   </>
                 )}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">
-                Your enquiry will be sent directly to <strong>Tereza Nováková</strong> at FastMedia.Pro. She typically
-                responds within 24 hours.
+                 {en ? <>Your enquiry will go directly to <strong>Tereza Nováková</strong>, who usually replies within 24 hours.</> : <>Vaše poptávka bude odeslána přímo <strong>Tereze Novákové</strong>, která obvykle odpoví do 24 hodin.</>}
               </p>
             </form>
           </motion.div>
