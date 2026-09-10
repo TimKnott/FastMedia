@@ -1,10 +1,10 @@
 # Roadmap
 
 ## Public-site localisation
-- [ ] Make Czech the default across every visitor-facing page
-- [ ] Provide a persistent Czech / British English toggle in shared navigation
-- [ ] Translate remaining public pages, forms, validation, notices, metadata, demos, calculator, blog and legal content
-- [ ] Verify both languages across desktop and mobile routes
+- [x] Make Czech the default across every visitor-facing page
+- [x] Provide a persistent Czech / British English toggle in shared navigation
+- [x] Translate public navigation, homepage, forms, metadata, demos, calculator, blog, packages and legal interface content
+- [x] Verify Czech default and persistent British English switching on desktop and mobile routes
 
 ## Inbound email (support@fastmedia.pro)
 - [ ] USER ACTION: create `support@` + catch-all forwarders in Namecheap Redirect Email (cause of `554 5.7.1 Relay access denied` / permanent bounce)
