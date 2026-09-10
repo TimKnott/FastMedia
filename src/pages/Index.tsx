@@ -1,6 +1,5 @@
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
-import HeroSection from '@/components/HeroSection';
 import WhyFastMediaSection from '@/components/WhyFastMediaSection';
 import AutomationSection from '@/components/AutomationSection';
 import DemosSection from '@/components/DemosSection';
@@ -39,7 +38,6 @@ const Index = () => {
         <ScrollToTop />
         <OfferTeaser />
         <main id="main-site">
-          <HeroSection />
           <PromoBanner variant="compact" />
           <WhyFastMediaSection />
           <CertificationsSection />
