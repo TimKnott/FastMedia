@@ -10,6 +10,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LegalDoc {
   id: string;
@@ -30,6 +31,9 @@ const REGIONS = [
 ];
 
 const LegalDocument = () => {
+  const { language } = useLanguage();
+  const isEnglish = language === 'en';
+  const locale = isEnglish ? 'en-GB' : 'cs-CZ';
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const region = searchParams.get('region') || '';
@@ -62,8 +66,8 @@ const LegalDocument = () => {
     <>
       <ScrollToTop />
       <SEOHead
-        title={`${active?.title || 'Legal'} — FastMedia.Pro`}
-        description={active?.summary || 'Legal documentation for FastMedia.Pro'}
+        title={`${active?.title || (isEnglish ? 'Legal' : 'Právní dokumenty')} — FastMedia.Pro`}
+        description={active?.summary || (isEnglish ? 'Legal documentation for FastMedia.Pro' : 'Právní dokumentace FastMedia.Pro')}
         pagePath={`/legal/${slug}`}
       />
       <Navbar />
@@ -71,7 +75,7 @@ const LegalDocument = () => {
         <div className="container max-w-3xl mx-auto px-4">
           <div className="mb-6">
             <Link to="/" className="text-sm text-muted-foreground hover:text-accent">
-              ← Back to home
+               ← {isEnglish ? 'Back to home' : 'Zpět na hlavní stránku'}
             </Link>
           </div>
 
@@ -86,12 +90,12 @@ const LegalDocument = () => {
 
           {!loading && !active && (
             <div className="text-center py-16">
-              <h1 className="font-display text-3xl mb-2">Document not found</h1>
+               <h1 className="font-display text-3xl mb-2">{isEnglish ? 'Document not found' : 'Dokument nebyl nalezen'}</h1>
               <p className="text-muted-foreground mb-6">
-                The requested legal document does not exist or is not published.
+                 {isEnglish ? 'The requested legal document does not exist or is not published.' : 'Požadovaný právní dokument neexistuje nebo není zveřejněn.'}
               </p>
               <Link to="/" className="text-accent underline">
-                Return home
+                 {isEnglish ? 'Return home' : 'Zpět domů'}
               </Link>
             </div>
           )}
@@ -105,7 +109,7 @@ const LegalDocument = () => {
                   </Badge>
                   <Badge variant="secondary">v{active.version}</Badge>
                   <span className="text-xs text-muted-foreground">
-                    Effective {new Date(active.effective_date).toLocaleDateString()}
+                     {isEnglish ? 'Effective' : 'Platné od'} {new Date(active.effective_date).toLocaleDateString(locale)}
                   </span>
                 </div>
                 <h1 className="font-display text-4xl font-bold text-foreground">{active.title}</h1>
@@ -115,7 +119,7 @@ const LegalDocument = () => {
 
                 {docs.length > 1 && (
                   <div className="mt-5 flex flex-wrap gap-2">
-                    <span className="text-xs text-muted-foreground self-center">Region:</span>
+                     <span className="text-xs text-muted-foreground self-center">{isEnglish ? 'Region:' : 'Oblast:'}</span>
                     {docs.map((d) => (
                       <Button
                         key={d.id}
@@ -136,11 +140,11 @@ const LegalDocument = () => {
 
               <footer className="mt-12 pt-6 border-t border-border text-sm text-muted-foreground">
                 <p>
-                  Questions? Contact{' '}
+                   {isEnglish ? 'Questions? Contact' : 'Máte otázky? Napište na'}{' '}
                   <a className="text-accent" href="mailto:support@fastmedia.pro">
                     support@fastmedia.pro
                   </a>
-                  . Last updated {new Date(active.updated_at).toLocaleDateString()}.
+                   . {isEnglish ? 'Last updated' : 'Naposledy aktualizováno'} {new Date(active.updated_at).toLocaleDateString(locale)}.
                 </p>
               </footer>
             </article>

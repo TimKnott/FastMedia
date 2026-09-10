@@ -23,7 +23,8 @@ const PAYMENTS_ENV: 'sandbox' | 'live' =
     : 'live';
 
 const Navbar = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEnglish = language === 'en';
   const navigate = useNavigate();
   const location = useLocation();
   const navBarRef = useRef<HTMLDivElement>(null);
@@ -108,7 +109,7 @@ const Navbar = () => {
 
   const openBillingPortal = async () => {
     if (!userEmail) {
-      toast.error('Sign in first to manage billing.');
+      toast.error(isEnglish ? 'Sign in first to manage billing.' : 'Pro správu plateb se nejprve přihlaste.');
       return;
     }
     setBillingLoading(true);
@@ -125,7 +126,7 @@ const Navbar = () => {
       if (!url) throw new Error((data as { error?: string })?.error ?? 'No portal URL returned.');
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Could not open the billing portal.';
+      const msg = e instanceof Error ? e.message : (isEnglish ? 'Could not open the billing portal.' : 'Platební portál se nepodařilo otevřít.');
       console.error('[Navbar billing]', e);
       toast.error(msg);
     } finally {
@@ -202,10 +203,10 @@ const Navbar = () => {
                 <Button
                   size="sm"
                   className="h-9 px-3 sm:px-4 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-glow border border-accent/40"
-                  title="Open the Website Builder"
+                  title={isEnglish ? 'Open the Website Builder' : 'Otevřít tvůrce webu'}
                 >
                   <LayoutDashboard className="w-4 h-4 sm:mr-1.5" />
-                  <span className="hidden sm:inline">Builder</span>
+                  <span className="hidden sm:inline">{isEnglish ? 'Builder' : 'Tvůrce webu'}</span>
                 </Button>
               </Link>
             )}
@@ -218,11 +219,11 @@ const Navbar = () => {
                     size="sm"
                     variant="outline"
                     className="h-9 px-2 sm:px-3 shrink-0"
-                    title="Account"
-                    aria-label="Account menu"
+                    title={isEnglish ? 'Account' : 'Účet'}
+                    aria-label={isEnglish ? 'Account menu' : 'Nabídka účtu'}
                   >
                     <UserCircle2 className="w-4 h-4 sm:mr-1.5" />
-                    <span className="hidden sm:inline">Account</span>
+                    <span className="hidden sm:inline">{isEnglish ? 'Account' : 'Účet'}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-60">
@@ -242,18 +243,18 @@ const Navbar = () => {
                     ) : (
                       <CreditCard className="w-4 h-4" />
                     )}
-                    Manage billing
+                     {isEnglish ? 'Manage billing' : 'Spravovat platby'}
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/account">
                       <UserCircle2 className="w-4 h-4" />
-                      Account page
+                       {isEnglish ? 'Account page' : 'Stránka účtu'}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={(e) => { e.preventDefault(); void signOut(); }}>
                     <LogOut className="w-4 h-4" />
-                    Sign out
+                     {isEnglish ? 'Sign out' : 'Odhlásit se'}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -272,7 +273,7 @@ const Navbar = () => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 text-foreground shrink-0 rounded-lg hover:bg-muted/50 transition-colors"
-              aria-label="Toggle menu"
+               aria-label={isEnglish ? 'Toggle menu' : 'Otevřít nebo zavřít nabídku'}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -298,9 +299,9 @@ const Navbar = () => {
                 >
                   <span className="flex items-center gap-2">
                     <LayoutDashboard className="w-4 h-4" />
-                    Open Website Builder
+                     {isEnglish ? 'Open Website Builder' : 'Otevřít tvůrce webu'}
                   </span>
-                  <span className="text-[10px] uppercase tracking-wide opacity-80">Signed in</span>
+                   <span className="text-[10px] uppercase tracking-wide opacity-80">{isEnglish ? 'Signed in' : 'Přihlášeno'}</span>
                 </Link>
               )}
               {isAuthed && (
@@ -317,7 +318,7 @@ const Navbar = () => {
                   ) : (
                     <CreditCard className="w-4 h-4" />
                   )}
-                  Manage billing
+                   {isEnglish ? 'Manage billing' : 'Spravovat platby'}
                 </button>
               )}
               {navLinks.map((link) =>
@@ -363,7 +364,7 @@ const Navbar = () => {
                   className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
                 >
                   <Contact className="w-4 h-4" />
-                  Save Contact
+                   {isEnglish ? 'Save Contact' : 'Uložit kontakt'}
                 </a>
                 {'share' in navigator && (
                   <button
@@ -374,7 +375,7 @@ const Navbar = () => {
                     className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
                   >
                     <Share2 className="w-4 h-4" />
-                    Share
+                     {isEnglish ? 'Share' : 'Sdílet'}
                   </button>
                 )}
               </div>

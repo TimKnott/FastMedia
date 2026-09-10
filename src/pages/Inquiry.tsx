@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -258,10 +258,6 @@ const InquiryForm = () => {
   );
 };
 
-const Inquiry = () => (
-  <LanguageProvider>
-    <InquiryForm />
-  </LanguageProvider>
-);
+const Inquiry = () => <InquiryForm />;
 
 export default Inquiry;
