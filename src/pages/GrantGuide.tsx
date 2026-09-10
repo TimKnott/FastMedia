@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -13,6 +12,8 @@ import {
 import SEOHead from '@/components/SEOHead';
 import Footer from '@/components/Footer';
 import OfferEnquiryForm from '@/components/OfferEnquiryForm';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type Lang = 'cs' | 'en';
 
@@ -154,7 +155,8 @@ const copy = {
 } as const;
 
 const GrantGuide = () => {
-  const [lang, setLang] = useState<Lang>('cs');
+  const { language } = useLanguage();
+  const lang: Lang = language === 'en' ? 'en' : 'cs';
   const t = copy[lang];
 
   return (
@@ -172,9 +174,7 @@ const GrantGuide = () => {
           <Link to="/offer" className="text-sm text-muted-foreground hover:text-foreground">
             ← {t.backToOffer}
           </Link>
-          <Button size="sm" variant="outline" onClick={() => setLang(lang === 'cs' ? 'en' : 'cs')}>
-            {t.switchLabel}
-          </Button>
+          <LanguageSwitcher />
         </div>
       </div>
 

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -15,6 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import SEOHead from '@/components/SEOHead';
 import Footer from '@/components/Footer';
 import OfferEnquiryForm from '@/components/OfferEnquiryForm';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 import casePlumbing from '@/assets/offer/case-plumbing.jpg';
 import caseSalon from '@/assets/offer/case-salon.jpg';
 import caseEshop from '@/assets/offer/case-eshop.jpg';
@@ -246,7 +247,8 @@ const copy = {
 } as const;
 
 const OfferLanding = () => {
-  const [lang, setLang] = useState<Lang>('cs');
+  const { language } = useLanguage();
+  const lang: Lang = language === 'en' ? 'en' : 'cs';
   const t = copy[lang];
 
   return (
@@ -263,13 +265,7 @@ const OfferLanding = () => {
       <div className="sticky top-0 z-50 backdrop-blur bg-background/80 border-b border-border/60">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
           <Link to="/" className="font-semibold tracking-tight">FastMedia<span className="text-primary">.Pro</span></Link>
-          <Button
-            variant="outline" size="sm"
-            onClick={() => setLang(lang === 'cs' ? 'en' : 'cs')}
-            aria-label="Change language"
-          >
-            <Languages className="w-4 h-4" /> {t.switchLabel}
-          </Button>
+          <LanguageSwitcher />
         </div>
       </div>
 
