@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Showcase = () => {
   const { slug } = useParams<{ slug: string }>();
   const [params] = useSearchParams();
   const token = params.get("k") ?? "";
+  const { language } = useLanguage();
+  const en = language === 'en';
   const [state, setState] = useState<{ status: "loading" | "ok" | "error"; name?: string; url?: string }>({
     status: "loading",
   });
@@ -56,9 +59,9 @@ const Showcase = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-6">
         <div className="max-w-md text-center space-y-3">
-          <h1 className="text-2xl font-semibold text-foreground">Link invalid or expired</h1>
+           <h1 className="text-2xl font-semibold text-foreground">{en ? 'Link invalid or expired' : 'Odkaz je neplatný nebo vypršel'}</h1>
           <p className="text-muted-foreground">
-            This showcase link is no longer valid. Please request a new link from the project owner.
+             {en ? 'This showcase link is no longer valid. Please request a new link from the project owner.' : 'Tento odkaz na ukázku již není platný. Požádejte vlastníka projektu o nový odkaz.'}
           </p>
         </div>
       </div>

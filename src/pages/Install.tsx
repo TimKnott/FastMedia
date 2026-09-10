@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
@@ -12,6 +12,8 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const InstallContent = () => {
+  const { language } = useLanguage();
+  const en = language === 'en';
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -50,8 +52,8 @@ const InstallContent = () => {
   return (
     <div className="min-h-screen pt-20">
       <SEOHead
-        title="Install the FastMedia.Pro app on your phone or desktop"
-        description="Add FastMedia.Pro to your home screen or desktop as a Progressive Web App — instant loading, offline access, no App Store required. Step-by-step guides for iPhone, Android, Windows and macOS."
+         title={en ? 'Install the FastMedia.Pro app on your phone or desktop' : 'Nainstalujte si aplikaci FastMedia.Pro do telefonu nebo počítače'}
+         description={en ? 'Add FastMedia.Pro to your home screen or desktop as a Progressive Web App.' : 'Přidejte si FastMedia.Pro na domovskou obrazovku nebo plochu jako progresivní webovou aplikaci.'}
         canonical="/install"
       />
       <Navbar />
@@ -62,18 +64,16 @@ const InstallContent = () => {
           </div>
 
           <h1 className="font-display text-4xl font-bold text-foreground">
-            Install the FastMedia.Pro app
+             {en ? 'Install the FastMedia.Pro app' : 'Nainstalujte si aplikaci FastMedia.Pro'}
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Add FastMedia.Pro to your home screen or desktop in one tap. It runs as a Progressive
-            Web App — instant loading, offline access, native-feeling window, and no App Store
-            account required.
+             {en ? 'Add FastMedia.Pro to your home screen or desktop in one tap. It works as a Progressive Web App with fast loading and offline access, without an app-store account.' : 'Přidejte si FastMedia.Pro jedním klepnutím na domovskou obrazovku nebo plochu. Funguje jako progresivní webová aplikace s rychlým načítáním a přístupem offline, bez účtu v obchodě s aplikacemi.'}
           </p>
 
           {isInstalled ? (
             <div className="flex items-center justify-center gap-3 text-accent">
               <CheckCircle className="w-6 h-6" />
-              <span className="text-lg font-semibold">The app is installed on this device.</span>
+               <span className="text-lg font-semibold">{en ? 'The app is installed on this device.' : 'Aplikace je v tomto zařízení nainstalována.'}</span>
             </div>
           ) : deferredPrompt ? (
             <Button
@@ -82,38 +82,38 @@ const InstallContent = () => {
               className="gradient-accent text-accent-foreground font-semibold shadow-glow text-lg px-8"
             >
               <Download className="w-5 h-5 mr-2" />
-              Install the app
+               {en ? 'Install the app' : 'Nainstalovat aplikaci'}
             </Button>
           ) : isIOS ? (
             <div className="bg-card border border-border rounded-xl p-6 text-left space-y-4">
               <h2 className="font-semibold text-foreground flex items-center gap-2">
                 <Share className="w-5 h-5 text-accent" />
-                Install on iPhone or iPad
+                 {en ? 'Install on iPhone or iPad' : 'Instalace na iPhone nebo iPad'}
               </h2>
               <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                <li>Open this page in <strong>Safari</strong> (the install shortcut only works there).</li>
-                <li>Tap the <strong>Share</strong> icon in the bottom toolbar — a square with an upward arrow.</li>
-                <li>Scroll down the share sheet and choose <strong>Add to Home Screen</strong>.</li>
-                <li>Confirm the name and tap <strong>Add</strong>. FastMedia.Pro now lives on your home screen.</li>
+                 <li>{en ? 'Open this page in Safari.' : 'Otevřete tuto stránku v Safari.'}</li>
+                 <li>{en ? 'Tap the Share icon in the bottom toolbar.' : 'Klepněte na ikonu Sdílet ve spodní liště.'}</li>
+                 <li>{en ? 'Choose Add to Home Screen.' : 'Zvolte Přidat na plochu.'}</li>
+                 <li>{en ? 'Confirm the name and tap Add.' : 'Potvrďte název a klepněte na Přidat.'}</li>
               </ol>
             </div>
           ) : (
             <div className="bg-card border border-border rounded-xl p-6 text-left space-y-4">
               <h2 className="font-semibold text-foreground flex items-center gap-2">
                 <Monitor className="w-5 h-5 text-accent" />
-                Install on Android, Windows or macOS
+                 {en ? 'Install on Android, Windows or macOS' : 'Instalace na Android, Windows nebo macOS'}
               </h2>
               <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                <li>Open this page in <strong>Chrome</strong>, <strong>Edge</strong> or <strong>Brave</strong>.</li>
-                <li>Click the install icon at the right edge of the address bar, or open the browser menu and choose <strong>Install app</strong>.</li>
-                <li>Confirm to add FastMedia.Pro to your home screen (Android) or dock/taskbar (desktop).</li>
+                 <li>{en ? 'Open this page in Chrome, Edge or Brave.' : 'Otevřete tuto stránku v Chrome, Edge nebo Brave.'}</li>
+                 <li>{en ? 'Use the install icon in the address bar or choose Install app in the browser menu.' : 'Použijte ikonu instalace v adresním řádku nebo v nabídce prohlížeče zvolte Nainstalovat aplikaci.'}</li>
+                 <li>{en ? 'Confirm adding FastMedia.Pro to your home screen or desktop.' : 'Potvrďte přidání FastMedia.Pro na domovskou obrazovku nebo plochu.'}</li>
               </ol>
             </div>
           )}
 
           <section className="text-left space-y-4 pt-8">
             <h2 className="font-display text-2xl font-bold text-foreground">
-              Why install FastMedia.Pro as an app?
+               {en ? 'Why install FastMedia.Pro as an app?' : 'Proč si FastMedia.Pro nainstalovat jako aplikaci?'}
             </h2>
             <p className="text-muted-foreground">
               FastMedia.Pro is a Progressive Web App (PWA). That means you install it straight from
@@ -181,10 +181,6 @@ const InstallContent = () => {
   );
 };
 
-const Install = () => (
-  <LanguageProvider>
-    <InstallContent />
-  </LanguageProvider>
-);
+const Install = () => <InstallContent />;
 
 export default Install;

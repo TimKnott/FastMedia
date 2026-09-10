@@ -8,7 +8,8 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEnglish = language === 'en';
   const { setOpen } = useA11y();
   const { getContent, invalidate } = useSiteContent();
 
@@ -26,8 +27,8 @@ const Footer = () => {
     { href: '/consultant/tereza', label: t('nav.consultant') },
     { href: '/calculator', label: t('nav.calculator') },
     { href: '/inquiry', label: t('nav.inquiry') },
-    { href: '/contact', label: 'Contact' },
-    { href: '/quote-request', label: 'Request a quote' },
+    { href: '/contact', label: isEnglish ? 'Contact' : 'Kontakt' },
+    { href: '/quote-request', label: isEnglish ? 'Request a quote' : 'Nezávazná nabídka' },
     { href: '/install', label: t('nav.install') },
   ];
 
@@ -97,9 +98,9 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-sm uppercase tracking-wider text-background/80 mb-4 inline-flex items-center gap-1.5">
               {t('footer.terms')}
               <LearnMoreModal
-                title="Accessibility & Compliance"
-                explanation="FastMedia.Pro is committed to accessibility (WCAG 2.1 AA), GDPR compliance, and transparent data handling across all our websites."
-                benefits={['WCAG 2.1 AA accessible', 'GDPR compliant data handling', 'Multi-language support (CS/EN/DE)']}
+                title={isEnglish ? 'Accessibility & Compliance' : 'Přístupnost a soulad s předpisy'}
+                explanation={isEnglish ? 'FastMedia.Pro is committed to WCAG 2.1 AA accessibility, GDPR compliance and transparent data handling.' : 'FastMedia.Pro dbá na přístupnost podle WCAG 2.1 AA, soulad s GDPR a transparentní zpracování údajů.'}
+                benefits={isEnglish ? ['WCAG 2.1 AA accessible', 'GDPR-compliant data handling', 'Czech and British English'] : ['Přístupnost WCAG 2.1 AA', 'Zpracování údajů v souladu s GDPR', 'Čeština a britská angličtina']}
               />
             </h4>
             <ul className="space-y-2.5">
@@ -115,7 +116,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/legal/cookie-policy" className="text-sm text-background/60 hover:text-accent transition-colors">
-                  Cookie Policy
+                   {isEnglish ? 'Cookie Policy' : 'Zásady používání cookies'}
                 </Link>
               </li>
               <li>
@@ -125,27 +126,27 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/legal/privacy-policy?region=us" className="text-sm text-background/60 hover:text-accent transition-colors">
-                  US Privacy Notice
+                   {isEnglish ? 'US Privacy Notice' : 'Ochrana soukromí v USA'}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/dpa" className="text-sm text-background/60 hover:text-accent transition-colors">
-                  Data Processing Agreement
+                   {isEnglish ? 'Data Processing Agreement' : 'Smlouva o zpracování údajů'}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/acceptable-use" className="text-sm text-background/60 hover:text-accent transition-colors">
-                  Acceptable Use
+                   {isEnglish ? 'Acceptable Use' : 'Pravidla přijatelného používání'}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/refund-policy" className="text-sm text-background/60 hover:text-accent transition-colors">
-                  Refunds &amp; Cancellation
+                   {isEnglish ? 'Refunds & Cancellation' : 'Vrácení peněz a zrušení'}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/imprint" className="text-sm text-background/60 hover:text-accent transition-colors">
-                  Imprint
+                   {isEnglish ? 'Imprint' : 'Identifikační údaje'}
                 </Link>
               </li>
             </ul>
@@ -163,7 +164,7 @@ const Footer = () => {
               className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
             >
               <Accessibility className="w-4 h-4" />
-              Accessibility
+               {isEnglish ? 'Accessibility' : 'Přístupnost'}
             </button>
             <span className="text-background/20">|</span>
             <a
@@ -182,7 +183,7 @@ const Footer = () => {
               className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
             >
               <Contact className="w-4 h-4" />
-              Save Contact
+               {isEnglish ? 'Save Contact' : 'Uložit kontakt'}
             </a>
           </div>
         </div>

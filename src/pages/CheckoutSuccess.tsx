@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BillingPortalButton } from "@/components/BillingPortalButton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 /**
  * Post-checkout success page.
@@ -21,6 +22,8 @@ const CheckoutSuccess = () => {
   const sessionId = searchParams.get("session_id");
   const emailFromUrl = searchParams.get("email") ?? "";
   const [email, setEmail] = useState(emailFromUrl);
+  const { language } = useLanguage();
+  const en = language === 'en';
 
   useEffect(() => {
     setEmail(emailFromUrl);
@@ -29,8 +32,8 @@ const CheckoutSuccess = () => {
   return (
     <>
       <SEOHead
-        title="Payment Successful — FastMedia.Pro"
-        description="Your subscription is active. Manage billing, view invoices, or update your payment method."
+         title={en ? 'Payment Successful — FastMedia.Pro' : 'Platba proběhla úspěšně — FastMedia.Pro'}
+         description={en ? 'Your subscription is active. Manage billing, view invoices, or update your payment method.' : 'Vaše předplatné je aktivní. Spravujte platby, faktury a platební metodu.'}
         canonical="/checkout/success"
         noindex
       />
@@ -42,29 +45,28 @@ const CheckoutSuccess = () => {
               <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                 <CheckCircle2 className="h-9 w-9 text-primary" />
               </div>
-              <CardTitle className="text-3xl font-display">Payment successful</CardTitle>
+               <CardTitle className="text-3xl font-display">{en ? 'Payment successful' : 'Platba proběhla úspěšně'}</CardTitle>
               <CardDescription className="text-base">
-                Thanks — your purchase is confirmed and a receipt is on its way to your inbox.
+                 {en ? 'Thanks — your purchase is confirmed and a receipt is on its way to your inbox.' : 'Děkujeme — nákup je potvrzen a doklad míří do vaší e-mailové schránky.'}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {sessionId && (
                 <div className="rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
-                  <span className="font-medium text-foreground">Reference:</span>{" "}
+                   <span className="font-medium text-foreground">{en ? 'Reference:' : 'Číslo objednávky:'}</span>{" "}
                   <code className="text-xs break-all">{sessionId}</code>
                 </div>
               )}
 
               <div className="space-y-3">
-                <h3 className="font-semibold">Manage your subscription</h3>
+                 <h3 className="font-semibold">{en ? 'Manage your subscription' : 'Správa předplatného'}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Open the secure billing portal to update your payment method, download invoices,
-                  switch plans, or cancel at any time.
+                   {en ? 'Open the secure billing portal to update your payment method, download invoices, switch plans, or cancel at any time.' : 'V bezpečném platebním portálu můžete změnit platební metodu, stáhnout faktury, přejít na jiný tarif nebo předplatné zrušit.'}
                 </p>
 
                 {!emailFromUrl && (
                   <div className="space-y-2">
-                    <Label htmlFor="success-email">Email used at checkout</Label>
+                     <Label htmlFor="success-email">{en ? 'Email used at checkout' : 'E-mail použitý při platbě'}</Label>
                     <Input
                       id="success-email"
                       type="email"
@@ -80,11 +82,11 @@ const CheckoutSuccess = () => {
                     email={email || undefined}
                     returnUrl={`${window.location.origin}/account`}
                     variant="default"
-                    label="Manage billing"
+                     label={en ? 'Manage billing' : 'Spravovat platby'}
                   />
                   <Button asChild variant="ghost">
                     <Link to="/account">
-                      Go to your account
+                       {en ? 'Go to your account' : 'Přejít do účtu'}
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
@@ -92,7 +94,7 @@ const CheckoutSuccess = () => {
               </div>
 
               <div className="border-t pt-6 text-sm text-muted-foreground">
-                Need help? Email{" "}
+                 {en ? 'Need help? Email' : 'Potřebujete pomoc? Napište na'}{" "}
                 <a className="text-primary hover:underline" href="mailto:support@fastmedia.pro">
                   support@fastmedia.pro
                 </a>

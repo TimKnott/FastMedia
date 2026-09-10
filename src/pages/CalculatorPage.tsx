@@ -93,11 +93,11 @@ const CalculatorPage = () => {
   } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
 
-  const lang = language as 'cs' | 'en' | 'de';
+  const lang = language === 'en' ? 'en' : 'cs';
 
   const formatPrice = (value: number): string => {
-    if (lang === 'en') return value.toLocaleString('en-US');
-    return value.toLocaleString('de-DE');
+    if (lang === 'en') return value.toLocaleString('en-GB');
+    return value.toLocaleString('cs-CZ');
   };
   const nameKey = `name${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'nameCs' | 'nameEn' | 'nameDe';
   const descKey = `desc${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'descCs' | 'descEn' | 'descDe';

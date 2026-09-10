@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -14,7 +14,35 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
-const faqs = [
+const content = {
+  cs: {
+    seoTitle: 'Kontaktujte FastMedia.Pro — webové stránky na míru', seoDescription: 'Kontaktujte FastMedia.Pro kvůli novému webu, redesignu nebo podpoře. Odpovíme do jednoho pracovního dne.',
+    title: 'Kontaktujte nás', intro: 'Napište nám, co potřebujete. Ozveme se s jasným doporučením a férovou cenou — bez nátlaku.', whatsapp: 'Napsat přes WhatsApp', reply: 'Odpovíme do jednoho pracovního dne',
+    received: 'Zpráva přijata', receivedBody: 'Vaše údaje máme a brzy se vám ozveme.', calculator: 'Získat okamžitý odhad v AI kalkulačce →',
+    name: 'Jméno a příjmení', email: 'E-mail', phone: 'Telefon', company: 'Firma', help: 'Jak vám můžeme pomoci?', placeholder: 'Napište nám o svém podnikání, co potřebujete a jaký máte termín.',
+    sending: 'Odesílám…', send: 'Odeslat zprávu', consent: 'Odesláním formuláře souhlasíte s našimi', privacy: 'zásadami ochrany osobních údajů', faqTitle: 'Časté dotazy',
+    success: 'Děkujeme — vaše zpráva byla odeslána. Brzy se ozveme.', error: 'Něco se nepodařilo. Zkuste to znovu nebo napište na support@fastmedia.pro.',
+  },
+  en: {
+    seoTitle: 'Contact FastMedia.Pro — Talk to Our Web Team', seoDescription: 'Get in touch with FastMedia.Pro about a new website, redesign or ongoing support. We reply within one working day.',
+    title: 'Contact us', intro: 'Tell us what you need and we will come back with clear advice and a straight price — no sales pressure.', whatsapp: 'WhatsApp us', reply: 'Replies within one working day',
+    received: 'Message received', receivedBody: 'We have your details and will be in touch shortly.', calculator: 'Get an instant quote with the AI calculator →',
+    name: 'Full name', email: 'Email', phone: 'Phone', company: 'Company', help: 'How can we help?', placeholder: 'Tell us about your business, what you need and any deadline you are working to.',
+    sending: 'Sending…', send: 'Send message', consent: 'By sending this form you agree to our', privacy: 'privacy policy', faqTitle: 'Frequently asked questions',
+    success: 'Thank you — your message is on its way. We will reply shortly.', error: 'Something went wrong. Please try again or email support@fastmedia.pro.',
+  },
+} as const;
+
+const faqs = {
+ cs: [
+  { q: 'Jak rychle odpovíte?', a: 'Každou poptávku ihned předáme do našeho inboxu a odpovíme do jednoho pracovního dne, obvykle dříve. Naléhavé požadavky pošlete přes WhatsApp.' },
+  { q: 'Kolik stojí webové stránky?', a: 'Začínáme pevným základem a cena roste podle vybraných funkcí. AI kalkulačka připraví položkový odhad přibližně za dvě minuty a bez závazků.' },
+  { q: 'Jak dlouho projekt trvá?', a: 'Běžný firemní web spouštíme zpravidla do dvou až tří týdnů od schválení obsahu. Rozsáhlejší e-shopy a rezervační systémy trvají déle.' },
+  { q: 'Pracujete i pro firmy mimo Českou republiku?', a: 'Ano. Sídlíme v České republice a projekty dodáváme na dálku klientům po celém světě, v češtině i britské angličtině.' },
+  { q: 'Je hosting a údržba součástí služby?', a: 'Hosting, bezpečnostní aktualizace a monitoring pokrývá měsíční plán, aby web zůstal rychlý, bezpečný a dostupný.' },
+  { q: 'Můžete vylepšit můj stávající web?', a: 'Ano. Pošlete nám jeho adresu a připravíme upřímné doporučení, co řešit jako první.' },
+ ],
+ en: [
   {
     q: 'How quickly will you reply to my message?',
     a: 'Every enquiry is forwarded straight to our inbox and we reply within one working day, usually much sooner. Urgent jobs are best sent via WhatsApp.',
@@ -39,9 +67,14 @@ const faqs = [
     q: 'Can you improve a website I already have?',
     a: 'Absolutely. Send us the address in the form above and we will come back with an honest assessment of what to fix first.',
   },
-];
+ ],
+} as const;
 
 const ContactInner = () => {
+  const { language } = useLanguage();
+  const lang = language === 'en' ? 'en' : 'cs';
+  const c = content[lang];
+  const pageFaqs = faqs[lang];
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', company: '', message: '' });
@@ -65,9 +98,9 @@ const ContactInner = () => {
       if ((data as { success?: boolean })?.success !== true) throw new Error('Submission rejected');
 
       setIsSubmitted(true);
-      toast.success('Thank you — your message is on its way. We will reply shortly.');
+      toast.success(c.success);
     } catch {
-      toast.error('Something went wrong. Please try again or email support@fastmedia.pro.');
+      toast.error(c.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -77,8 +110,8 @@ const ContactInner = () => {
   return (
     <>
       <SEOHead
-        title="Contact FastMedia.Pro — Talk to Our Web Team"
-        description="Get in touch with FastMedia.Pro. Send a message, call or WhatsApp us about a new website, redesign or ongoing support. We reply within one working day."
+        title={c.seoTitle}
+        description={c.seoDescription}
         canonical="/contact"
         ogType="website"
         pagePath="/contact"
@@ -89,7 +122,7 @@ const ContactInner = () => {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
-            mainEntity: faqs.map((f) => ({
+            mainEntity: pageFaqs.map((f) => ({
               '@type': 'Question',
               name: f.q,
               acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -106,9 +139,9 @@ const ContactInner = () => {
               <div className="max-w-5xl mx-auto grid lg:grid-cols-5 gap-12">
                 <div className="lg:col-span-2">
                   <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-                    <h1 className="text-3xl lg:text-4xl font-display font-bold text-foreground mb-4">Contact us</h1>
+                     <h1 className="text-3xl lg:text-4xl font-display font-bold text-foreground mb-4">{c.title}</h1>
                     <p className="text-muted-foreground text-lg mb-8">
-                      Tell us what you need and we will come back with clear advice and a straight price — no sales pressure.
+                       {c.intro}
                     </p>
 
                     <ul className="space-y-4 text-sm">
@@ -127,12 +160,12 @@ const ContactInner = () => {
                       <li className="flex items-center gap-3">
                         <MessageCircle className="w-5 h-5 text-accent shrink-0" />
                         <a href="https://wa.me/447926400060" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-accent transition-colors">
-                          WhatsApp us
+                           {c.whatsapp}
                         </a>
                       </li>
                       <li className="flex items-center gap-3">
                         <Clock className="w-5 h-5 text-accent shrink-0" />
-                        <span className="text-muted-foreground">Replies within one working day</span>
+                         <span className="text-muted-foreground">{c.reply}</span>
                       </li>
                     </ul>
                   </motion.div>
@@ -147,54 +180,54 @@ const ContactInner = () => {
                   {isSubmitted ? (
                     <div className="bg-card rounded-3xl p-10 shadow-md text-center">
                       <CheckCircle className="w-16 h-16 text-accent mx-auto mb-4" />
-                      <p className="text-foreground font-display font-bold text-xl mb-2">Message received</p>
+                       <p className="text-foreground font-display font-bold text-xl mb-2">{c.received}</p>
                       <p className="text-muted-foreground text-sm mb-4">
-                        We have your details and will be in touch shortly.
+                         {c.receivedBody}
                       </p>
                       <Link to="/calculator" className="text-accent font-medium text-sm hover:underline">
-                        Get an instant quote with the AI calculator →
+                         {c.calculator}
                       </Link>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="bg-card rounded-3xl p-8 lg:p-10 shadow-md space-y-5">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="contact-name" className="block text-foreground text-sm font-medium mb-1.5">Full name</label>
+                           <label htmlFor="contact-name" className="block text-foreground text-sm font-medium mb-1.5">{c.name}</label>
                           <Input id="contact-name" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="h-11" />
                         </div>
                         <div>
-                          <label htmlFor="contact-email" className="block text-foreground text-sm font-medium mb-1.5">Email</label>
+                           <label htmlFor="contact-email" className="block text-foreground text-sm font-medium mb-1.5">{c.email}</label>
                           <Input id="contact-email" required type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="h-11" />
                         </div>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="contact-phone" className="block text-foreground text-sm font-medium mb-1.5">Phone</label>
+                           <label htmlFor="contact-phone" className="block text-foreground text-sm font-medium mb-1.5">{c.phone}</label>
                           <Input id="contact-phone" type="tel" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="h-11" />
                         </div>
                         <div>
-                          <label htmlFor="contact-company" className="block text-foreground text-sm font-medium mb-1.5">Company</label>
+                           <label htmlFor="contact-company" className="block text-foreground text-sm font-medium mb-1.5">{c.company}</label>
                           <Input id="contact-company" value={formData.company} onChange={e => setFormData({ ...formData, company: e.target.value })} className="h-11" />
                         </div>
                       </div>
                       <div>
-                        <label htmlFor="contact-message" className="block text-foreground text-sm font-medium mb-1.5">How can we help?</label>
+                         <label htmlFor="contact-message" className="block text-foreground text-sm font-medium mb-1.5">{c.help}</label>
                         <Textarea
                           id="contact-message"
                           required
                           rows={6}
                           value={formData.message}
                           onChange={e => setFormData({ ...formData, message: e.target.value })}
-                          placeholder="Tell us about your business, what you need and any deadline you are working to."
+                           placeholder={c.placeholder}
                         />
                       </div>
                       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full gradient-accent text-accent-foreground font-semibold h-14 text-lg shadow-glow hover:opacity-90 transition-opacity">
-                        {isSubmitting ? 'Sending…' : 'Send message'}
+                         {isSubmitting ? c.sending : c.send}
                         <Send className="ml-2 w-5 h-5" />
                       </Button>
                       <p className="text-muted-foreground text-xs text-center">
-                        By sending this form you agree to our{' '}
-                        <Link to="/legal/privacy-policy" className="underline hover:text-accent">privacy policy</Link>.
+                         {c.consent}{' '}
+                         <Link to="/legal/privacy-policy" className="underline hover:text-accent">{c.privacy}</Link>.
                       </p>
                     </form>
                   )}
@@ -207,10 +240,10 @@ const ContactInner = () => {
             <div className="container mx-auto px-4 lg:px-8">
               <div className="max-w-3xl mx-auto">
                 <h2 className="text-2xl lg:text-3xl font-display font-bold text-foreground mb-8 text-center">
-                  Frequently asked questions
+                   {c.faqTitle}
                 </h2>
                 <Accordion type="single" collapsible className="space-y-3">
-                  {faqs.map((f, i) => (
+                   {pageFaqs.map((f, i) => (
                     <AccordionItem key={f.q} value={`faq-${i}`} className="bg-card rounded-2xl px-5 border-none shadow-sm">
                       <AccordionTrigger className="text-left text-foreground font-medium hover:no-underline">
                         {f.q}
@@ -229,10 +262,6 @@ const ContactInner = () => {
   );
 };
 
-const Contact = () => (
-  <LanguageProvider>
-    <ContactInner />
-  </LanguageProvider>
-);
+const Contact = () => <ContactInner />;
 
 export default Contact;

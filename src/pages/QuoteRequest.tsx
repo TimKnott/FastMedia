@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -13,16 +13,26 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
-const budgets = ['Under 20,000 CZK', '20,000–50,000 CZK', '50,000–100,000 CZK', 'Over 100,000 CZK', 'Not sure yet'];
-const timelines = ['As soon as possible', 'Within a month', '1–3 months', 'Just researching'];
-const projectTypes = ['New website', 'Redesign of an existing site', 'Online shop', 'Booking system', 'Video or content production', 'Something else'];
+const options = {
+  cs: {
+    budgets: ['Do 20 000 Kč', '20 000–50 000 Kč', '50 000–100 000 Kč', 'Nad 100 000 Kč', 'Zatím nevím'], timelines: ['Co nejdříve', 'Do jednoho měsíce', '1–3 měsíce', 'Zatím zjišťuji možnosti'], projectTypes: ['Nový web', 'Redesign stávajícího webu', 'E-shop', 'Rezervační systém', 'Video nebo tvorba obsahu', 'Něco jiného'],
+    title: 'Nezávazná nabídka', intro: 'Sdělte nám několik údajů o projektu a připravíme jasnou položkovou cenu — bez závazků a nátlaku.', quoteTime: 'Písemná nabídka do jednoho pracovního dne', fixed: 'Pevné ceny — žádné pozdější příplatky', calculator: 'Chcete okamžitý odhad? Použijte kalkulačku', received: 'Poptávka přijata', receivedBody: 'Údaje o projektu máme a nabídku vám brzy pošleme.', instant: 'Mezitím si zobrazit okamžitý odhad →', name: 'Jméno a příjmení', email: 'E-mail', phone: 'Telefon', company: 'Firma', website: 'Současný web (pokud existuje)', type: 'Typ projektu', budget: 'Rozpočet', timeline: 'Termín', details: 'Podrobnosti projektu', placeholder: 'Čím se vaše firma zabývá, jaké stránky nebo funkce potřebujete a jaký máte termín?', sending: 'Odesílám…', submit: 'Vyžádat nabídku', consent: 'Odesláním formuláře souhlasíte s našimi', privacy: 'zásadami ochrany osobních údajů', success: 'Děkujeme — vaše poptávka byla odeslána. Brzy se ozveme.', error: 'Poptávku se nepodařilo odeslat. Zkuste to znovu nebo napište na support@fastmedia.pro.', none: 'Žádný', seoTitle: 'Nezávazná nabídka webu — FastMedia.Pro', seoDesc: 'Popište svůj projekt a získejte jasnou položkovou nabídku nového webu, redesignu, e-shopu nebo rezervačního systému.',
+  },
+  en: {
+    budgets: ['Under CZK 20,000', 'CZK 20,000–50,000', 'CZK 50,000–100,000', 'Over CZK 100,000', 'Not sure yet'], timelines: ['As soon as possible', 'Within a month', '1–3 months', 'Just researching'], projectTypes: ['New website', 'Redesign of an existing site', 'Online shop', 'Booking system', 'Video or content production', 'Something else'],
+    title: 'Request a quote', intro: 'Share a few details about your project and we will come back with a clear, itemised price — no obligation and no sales pressure.', quoteTime: 'A written quote within one working day', fixed: 'Fixed prices — nothing added later', calculator: 'Prefer an instant estimate? Use the calculator', received: 'Request received', receivedBody: 'We have your project details and will send your quote shortly.', instant: 'See an instant estimate meanwhile →', name: 'Full name', email: 'Email', phone: 'Phone', company: 'Company', website: 'Current website (if any)', type: 'Project type', budget: 'Budget', timeline: 'Timeline', details: 'Project details', placeholder: 'What does your business do, what pages or features do you need, and is there a deadline we should know about?', sending: 'Sending…', submit: 'Request my quote', consent: 'By sending this form you agree to our', privacy: 'privacy policy', success: 'Thank you — your request has been sent. We will reply shortly.', error: 'We could not send your request. Please email support@fastmedia.pro or try again.', none: 'None', seoTitle: 'Request a Quote — FastMedia.Pro Web Design', seoDesc: 'Tell us about your project and get a clear, itemised quote for a new website, redesign, online shop or booking system.',
+  },
+} as const;
 
 const QuoteRequestInner = () => {
+  const { language } = useLanguage();
+  const lang = language === 'en' ? 'en' : 'cs';
+  const c = options[lang];
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: '', email: '', phone: '', company: '', website: '',
-    projectType: projectTypes[0], budget: budgets[1], timeline: timelines[1], message: '',
+    projectType: '', budget: '', timeline: '', message: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,16 +51,16 @@ const QuoteRequestInner = () => {
             'Project type': form.projectType,
             Budget: form.budget,
             Timeline: form.timeline,
-            'Current website': form.website || 'None',
+             'Current website': form.website || c.none,
           },
         },
       });
       if (error) throw error;
       if ((data as { success?: boolean })?.success !== true) throw new Error('Submission rejected');
       setIsSubmitted(true);
-      toast.success('Thank you — your request has been sent. We will reply shortly.');
+       toast.success(c.success);
     } catch {
-      toast.error('We could not send your request. Please email support@fastmedia.pro or try again.');
+       toast.error(c.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -59,8 +69,8 @@ const QuoteRequestInner = () => {
   return (
     <>
       <SEOHead
-        title="Request a Quote — FastMedia.Pro Web Design"
-        description="Tell us about your project and get a clear, itemised quote for a new website, redesign, online shop or booking system. No obligation, reply within one working day."
+         title={c.seoTitle}
+         description={c.seoDesc}
         canonical="/quote-request"
         ogType="website"
         pagePath="/quote-request"
@@ -74,23 +84,23 @@ const QuoteRequestInner = () => {
               <div className="max-w-5xl mx-auto grid lg:grid-cols-5 gap-12">
                 <div className="lg:col-span-2">
                   <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-                    <h1 className="text-3xl lg:text-4xl font-display font-bold text-foreground mb-4">Request a quote</h1>
+                     <h1 className="text-3xl lg:text-4xl font-display font-bold text-foreground mb-4">{c.title}</h1>
                     <p className="text-muted-foreground text-lg mb-8">
-                      Share a few details about your project and we will come back with a clear, itemised price — no obligation and no sales pressure.
+                       {c.intro}
                     </p>
                     <ul className="space-y-4 text-sm">
                       <li className="flex items-center gap-3">
                         <Clock className="w-5 h-5 text-accent shrink-0" />
-                        <span className="text-muted-foreground">A written quote within one working day</span>
+                         <span className="text-muted-foreground">{c.quoteTime}</span>
                       </li>
                       <li className="flex items-center gap-3">
                         <ShieldCheck className="w-5 h-5 text-accent shrink-0" />
-                        <span className="text-muted-foreground">Fixed prices — nothing added later</span>
+                         <span className="text-muted-foreground">{c.fixed}</span>
                       </li>
                       <li className="flex items-center gap-3">
                         <Calculator className="w-5 h-5 text-accent shrink-0" />
                         <Link to="/calculator" className="text-foreground hover:text-accent transition-colors">
-                          Prefer an instant estimate? Use the calculator
+                           {c.calculator}
                         </Link>
                       </li>
                     </ul>
@@ -106,93 +116,93 @@ const QuoteRequestInner = () => {
                   {isSubmitted ? (
                     <div className="bg-card rounded-3xl p-10 shadow-md text-center">
                       <CheckCircle className="w-16 h-16 text-accent mx-auto mb-4" />
-                      <p className="text-foreground font-display font-bold text-xl mb-2">Request received</p>
+                       <p className="text-foreground font-display font-bold text-xl mb-2">{c.received}</p>
                       <p className="text-muted-foreground text-sm mb-4">
-                        We have your project details and will send your quote shortly.
+                         {c.receivedBody}
                       </p>
                       <Link to="/calculator" className="text-accent font-medium text-sm hover:underline">
-                        See an instant estimate meanwhile →
+                         {c.instant}
                       </Link>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="bg-card rounded-3xl p-8 lg:p-10 shadow-md space-y-5">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="q-name" className="block text-foreground text-sm font-medium mb-1.5">Full name</label>
+                           <label htmlFor="q-name" className="block text-foreground text-sm font-medium mb-1.5">{c.name}</label>
                           <Input id="q-name" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="h-11" />
                         </div>
                         <div>
-                          <label htmlFor="q-email" className="block text-foreground text-sm font-medium mb-1.5">Email</label>
+                           <label htmlFor="q-email" className="block text-foreground text-sm font-medium mb-1.5">{c.email}</label>
                           <Input id="q-email" required type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="h-11" />
                         </div>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="q-phone" className="block text-foreground text-sm font-medium mb-1.5">Phone</label>
+                           <label htmlFor="q-phone" className="block text-foreground text-sm font-medium mb-1.5">{c.phone}</label>
                           <Input id="q-phone" type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="h-11" />
                         </div>
                         <div>
-                          <label htmlFor="q-company" className="block text-foreground text-sm font-medium mb-1.5">Company</label>
+                           <label htmlFor="q-company" className="block text-foreground text-sm font-medium mb-1.5">{c.company}</label>
                           <Input id="q-company" value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} className="h-11" />
                         </div>
                       </div>
                       <div>
-                        <label htmlFor="q-website" className="block text-foreground text-sm font-medium mb-1.5">Current website (if any)</label>
+                         <label htmlFor="q-website" className="block text-foreground text-sm font-medium mb-1.5">{c.website}</label>
                         <Input id="q-website" value={form.website} onChange={e => setForm({ ...form, website: e.target.value })} className="h-11" placeholder="www.example.com" />
                       </div>
                       <div className="grid sm:grid-cols-3 gap-4">
                         <div>
-                          <label htmlFor="q-type" className="block text-foreground text-sm font-medium mb-1.5">Project type</label>
+                           <label htmlFor="q-type" className="block text-foreground text-sm font-medium mb-1.5">{c.type}</label>
                           <select
                             id="q-type"
                             value={form.projectType}
                             onChange={e => setForm({ ...form, projectType: e.target.value })}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                            {projectTypes.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.projectTypes.map(o => <option key={o} value={o}>{o}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label htmlFor="q-budget" className="block text-foreground text-sm font-medium mb-1.5">Budget</label>
+                           <label htmlFor="q-budget" className="block text-foreground text-sm font-medium mb-1.5">{c.budget}</label>
                           <select
                             id="q-budget"
                             value={form.budget}
                             onChange={e => setForm({ ...form, budget: e.target.value })}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                            {budgets.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.budgets.map(o => <option key={o} value={o}>{o}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label htmlFor="q-timeline" className="block text-foreground text-sm font-medium mb-1.5">Timeline</label>
+                           <label htmlFor="q-timeline" className="block text-foreground text-sm font-medium mb-1.5">{c.timeline}</label>
                           <select
                             id="q-timeline"
                             value={form.timeline}
                             onChange={e => setForm({ ...form, timeline: e.target.value })}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                            {timelines.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.timelines.map(o => <option key={o} value={o}>{o}</option>)}
                           </select>
                         </div>
                       </div>
                       <div>
-                        <label htmlFor="q-message" className="block text-foreground text-sm font-medium mb-1.5">Project details</label>
+                         <label htmlFor="q-message" className="block text-foreground text-sm font-medium mb-1.5">{c.details}</label>
                         <Textarea
                           id="q-message"
                           required
                           rows={6}
                           value={form.message}
                           onChange={e => setForm({ ...form, message: e.target.value })}
-                          placeholder="What does your business do, what pages or features do you need, and is there a deadline we should know about?"
+                           placeholder={c.placeholder}
                         />
                       </div>
                       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full gradient-accent text-accent-foreground font-semibold h-14 text-lg shadow-glow hover:opacity-90 transition-opacity">
-                        {isSubmitting ? 'Sending…' : 'Request my quote'}
+                         {isSubmitting ? c.sending : c.submit}
                         <Send className="ml-2 w-5 h-5" />
                       </Button>
                       <p className="text-muted-foreground text-xs text-center">
-                        By sending this form you agree to our{' '}
-                        <Link to="/legal/privacy-policy" className="underline hover:text-accent">privacy policy</Link>.
+                         {c.consent}{' '}
+                         <Link to="/legal/privacy-policy" className="underline hover:text-accent">{c.privacy}</Link>.
                       </p>
                     </form>
                   )}
@@ -207,10 +217,6 @@ const QuoteRequestInner = () => {
   );
 };
 
-const QuoteRequest = () => (
-  <LanguageProvider>
-    <QuoteRequestInner />
-  </LanguageProvider>
-);
+const QuoteRequest = () => <QuoteRequestInner />;
 
 export default QuoteRequest;

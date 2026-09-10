@@ -16,19 +16,34 @@ import {
 import { Button } from '@/components/ui/button';
 import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const services = [
-  { icon: Globe2, label: 'High-converting websites', position: 'left-[7%] top-[18%]' },
-  { icon: Bot, label: '24/7 AI lead assistant', position: 'left-[15%] bottom-[18%]' },
-  { icon: CalendarCheck, label: 'Bookings & follow-up', position: 'right-[9%] top-[16%]' },
-  { icon: Gauge, label: 'SEO & performance', position: 'right-[6%] bottom-[20%]' },
-  { icon: Megaphone, label: 'Campaigns that convert', position: 'left-1/2 top-[7%] -translate-x-1/2' },
-  { icon: ShieldCheck, label: 'Secure, managed growth', position: 'left-1/2 bottom-[7%] -translate-x-1/2' },
+  { icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', position: 'left-[7%] top-[18%]' },
+  { icon: Bot, cs: 'AI asistent pro poptávky 24/7', en: '24/7 AI lead assistant', position: 'left-[15%] bottom-[18%]' },
+  { icon: CalendarCheck, cs: 'Rezervace a následná péče', en: 'Bookings & follow-up', position: 'right-[9%] top-[16%]' },
+  { icon: Gauge, cs: 'SEO a rychlost', en: 'SEO & performance', position: 'right-[6%] bottom-[20%]' },
+  { icon: Megaphone, cs: 'Kampaně, které prodávají', en: 'Campaigns that convert', position: 'left-1/2 top-[7%] -translate-x-1/2' },
+  { icon: ShieldCheck, cs: 'Bezpečný řízený růst', en: 'Secure, managed growth', position: 'left-1/2 bottom-[7%] -translate-x-1/2' },
 ];
 
-const headlineWords = ['Launch', 'your business', 'beyond ordinary.'];
+const heroCopy = {
+  cs: {
+    aria: 'Start vašeho podnikání s FastMedia', alt: 'Měsíční hvězdná obloha nad zářícím západem slunce', eyebrow: 'Vaše další kapitola je připravena',
+    headline: ['Odstartujte', 'své podnikání', 'a překonejte běžné hranice.'], body: 'Krásné weby, chytrá automatizace a měřitelný růst — vše v jedné výkonné digitální startovací platformě.',
+    primary: 'Zahájit start', secondary: 'Prohlédnout balíčky', control: 'Řídicí centrum', servicesTitle: 'Vše, co potřebujete k růstu.', servicesBody: 'Jeden propojený systém promění pozornost v poptávky a poptávky ve věrné zákazníky.', servicesCta: 'Prozkoumat všechny služby', previous: 'Předchozí scéna', next: 'Další scéna', launchScene: 'Zobrazit startovací scénu', servicesScene: 'Zobrazit scénu služeb', servicesAria: 'Služby FastMedia',
+  },
+  en: {
+    aria: 'FastMedia launch', alt: 'A moonlit starry sky glowing above a distant sunset', eyebrow: 'Your next chapter is ready',
+    headline: ['Launch', 'your business', 'beyond ordinary.'], body: 'Beautiful websites, intelligent automation and measurable growth — built into one powerful digital launchpad.',
+    primary: 'Start your launch', secondary: 'Explore packages', control: 'Mission control', servicesTitle: 'Everything you need to grow in orbit.', servicesBody: 'One connected system turns attention into enquiries — and enquiries into loyal customers.', servicesCta: 'Explore every service', previous: 'Previous scene', next: 'Next scene', launchScene: 'Show launch scene', servicesScene: 'Show services scene', servicesAria: 'FastMedia services',
+  },
+} as const;
 
 const OfferTeaser = () => {
+  const { language } = useLanguage();
+  const lang = language === 'en' ? 'en' : 'cs';
+  const copy = heroCopy[lang];
   const reduceMotion = useReducedMotion();
   const [scene, setScene] = useState(0);
 
@@ -42,12 +57,12 @@ const OfferTeaser = () => {
 
   return (
     <section
-      aria-label="FastMedia launch"
+      aria-label={copy.aria}
       className="launch-hero relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground"
     >
       <img
         src={launchSky}
-        alt="A moonlit starry sky glowing above a distant sunset"
+        alt={copy.alt}
         width={1920}
         height={1088}
         fetchPriority="high"
@@ -77,11 +92,11 @@ const OfferTeaser = () => {
                 className="mb-6 flex items-center gap-3 text-sm font-bold uppercase text-launch-accent"
               >
                 <span className="h-px w-12 bg-launch-accent" />
-                Your next chapter is ready
+                 {copy.eyebrow}
               </motion.div>
 
               <h1 className="max-w-3xl text-5xl font-bold leading-[0.95] sm:text-6xl lg:text-8xl">
-                {headlineWords.map((line, index) => (
+                 {copy.headline.map((line, index) => (
                   <motion.span
                     key={line}
                     initial={{ opacity: 0, y: reduceMotion ? 0 : 38 }}
@@ -100,7 +115,7 @@ const OfferTeaser = () => {
                 transition={{ delay: 0.9 }}
                 className="mt-7 max-w-xl text-base leading-relaxed text-launch-muted sm:text-lg"
               >
-                Beautiful websites, intelligent automation and measurable growth—built into one powerful digital launchpad.
+                 {copy.body}
               </motion.p>
 
               <motion.div
@@ -111,11 +126,11 @@ const OfferTeaser = () => {
               >
                 <Button asChild size="lg" className="h-13 bg-accent px-7 text-accent-foreground shadow-glow hover:bg-accent/90">
                   <Link to="/calculator">
-                    Start your launch <ArrowRight className="h-4 w-4" />
+                     {copy.primary} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-13 border-launch-border bg-launch-surface text-launch-foreground backdrop-blur-md hover:bg-launch-surface-strong hover:text-launch-foreground">
-                  <a href="#pricing">Explore packages</a>
+                   <a href="#pricing">{copy.secondary}</a>
                 </Button>
               </motion.div>
             </motion.div>
@@ -129,16 +144,16 @@ const OfferTeaser = () => {
               className="relative z-20 mx-auto flex w-full max-w-5xl flex-col items-center text-center"
             >
               <div className="mb-4 flex items-center gap-3 text-sm font-bold uppercase text-launch-accent">
-                <span className="h-px w-10 bg-launch-accent" /> Mission control <span className="h-px w-10 bg-launch-accent" />
+                 <span className="h-px w-10 bg-launch-accent" /> {copy.control} <span className="h-px w-10 bg-launch-accent" />
               </div>
               <h2 className="max-w-3xl text-4xl font-bold leading-tight sm:text-5xl lg:text-7xl">
-                Everything you need to <span className="text-launch-accent">grow in orbit.</span>
+                 {copy.servicesTitle}
               </h2>
               <p className="mt-5 max-w-2xl text-base text-launch-muted sm:text-lg">
-                One connected system turns attention into enquiries—and enquiries into loyal customers.
+                 {copy.servicesBody}
               </p>
 
-              <div className="relative mt-9 hidden h-72 w-full md:block" aria-label="FastMedia services">
+               <div className="relative mt-9 hidden h-72 w-full md:block" aria-label={copy.servicesAria}>
                 <motion.div
                   animate={reduceMotion ? undefined : { rotate: 360 }}
                   transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
@@ -149,29 +164,29 @@ const OfferTeaser = () => {
                 </div>
                 {services.map((service, index) => (
                   <motion.div
-                    key={service.label}
+                     key={service.en}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1, y: reduceMotion ? 0 : [0, -6, 0] }}
                     transition={{ opacity: { delay: 0.18 + index * 0.08 }, scale: { delay: 0.18 + index * 0.08 }, y: { duration: 3 + index * 0.22, repeat: Infinity, ease: 'easeInOut' } }}
                     className={`absolute ${service.position} flex items-center gap-3 rounded-md border border-launch-border bg-launch-surface px-4 py-3 text-left shadow-lg backdrop-blur-md`}
                   >
                     <service.icon className="h-5 w-5 text-launch-accent" />
-                    <span className="text-sm font-semibold text-launch-foreground">{service.label}</span>
+                     <span className="text-sm font-semibold text-launch-foreground">{service[lang]}</span>
                   </motion.div>
                 ))}
               </div>
 
               <div className="mt-8 grid w-full grid-cols-2 gap-2 md:hidden">
                 {services.map((service) => (
-                  <div key={service.label} className="flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border border-launch-border bg-launch-surface p-3 backdrop-blur-md">
+                   <div key={service.en} className="flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border border-launch-border bg-launch-surface p-3 backdrop-blur-md">
                     <service.icon className="h-5 w-5 text-launch-accent" />
-                    <span className="text-xs font-semibold">{service.label}</span>
+                     <span className="text-xs font-semibold">{service[lang]}</span>
                   </div>
                 ))}
               </div>
 
               <Button asChild size="lg" className="mt-7 bg-accent text-accent-foreground hover:bg-accent/90">
-                <a href="#services">Explore every service <ArrowRight className="h-4 w-4" /></a>
+                 <a href="#services">{copy.servicesCta} <ArrowRight className="h-4 w-4" /></a>
               </Button>
             </motion.div>
           )}
@@ -194,7 +209,7 @@ const OfferTeaser = () => {
       </motion.div>
 
       <div className="absolute bottom-7 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 rounded-full border border-launch-border bg-launch-surface px-3 py-2 backdrop-blur-md">
-        <Button variant="ghost" size="icon" onClick={() => selectScene((scene + 1) % 2)} className="h-8 w-8 rounded-full text-launch-foreground hover:bg-launch-surface-strong hover:text-launch-foreground" aria-label="Previous scene">
+         <Button variant="ghost" size="icon" onClick={() => selectScene((scene + 1) % 2)} className="h-8 w-8 rounded-full text-launch-foreground hover:bg-launch-surface-strong hover:text-launch-foreground" aria-label={copy.previous}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
         {[0, 1].map((item) => (
@@ -203,11 +218,11 @@ const OfferTeaser = () => {
             type="button"
             onClick={() => selectScene(item)}
             className={`h-1.5 rounded-full transition-all ${scene === item ? 'w-9 bg-launch-accent' : 'w-3 bg-launch-muted/50'}`}
-            aria-label={`Show ${item === 0 ? 'launch' : 'services'} scene`}
+             aria-label={item === 0 ? copy.launchScene : copy.servicesScene}
             aria-current={scene === item ? 'true' : undefined}
           />
         ))}
-        <Button variant="ghost" size="icon" onClick={() => selectScene((scene + 1) % 2)} className="h-8 w-8 rounded-full text-launch-foreground hover:bg-launch-surface-strong hover:text-launch-foreground" aria-label="Next scene">
+         <Button variant="ghost" size="icon" onClick={() => selectScene((scene + 1) % 2)} className="h-8 w-8 rounded-full text-launch-foreground hover:bg-launch-surface-strong hover:text-launch-foreground" aria-label={copy.next}>
           <ChevronRight className="h-4 w-4" />
         </Button>
         <Play className="ml-1 h-3.5 w-3.5 text-launch-muted" aria-hidden="true" />

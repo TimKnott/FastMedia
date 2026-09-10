@@ -9,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import ScrollToTop from '@/components/ScrollToTop';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PackageData {
   slug: string;
@@ -193,10 +194,44 @@ const PACKAGES: Record<string, PackageData> = {
   },
 };
 
+const CZECH_PACKAGES: Record<string, Partial<PackageData>> = {
+  starter: {
+    tagline: 'Profesionální jednostránkový web pro rychlý start na internetu.', hosting: '1 500 Kč/měsíc', description: 'Balíček Starter je ideální pro řemeslníky, živnostníky a nové firmy, které potřebují profesionální prezentaci bez složitosti rozsáhlého webu.',
+    bestFor: ['Živnostníci a freelanceři', 'Nové firmy ověřující nabídku', 'Náhrada samotné stránky na sociálních sítích'],
+    features: ['Responzivní jednostránkový web', 'Mobilní design pro ostré displeje', 'Kontaktní formulář s ochranou proti spamu', 'Základní SEO, strukturovaná data a mapa webu', 'Mapa oblasti působnosti', 'WhatsApp a tlačítko pro volání', 'SSL a bezpečný hosting', 'Jedno kolo úprav'],
+    deliverables: ['Domovská stránka na míru s nabídkou, referencemi a výzvou k akci', 'Připojení domény a nastavení DNS', 'Optimalizace výkonu', 'Sladění s firemním profilem Google'], timeline: '5–7 pracovních dnů',
+    faqs: [{ q: 'Mohu později přidat další stránky?', a: 'Ano. Kdykoliv můžete přejít na vyšší balíček.' }, { q: 'Bude web můj?', a: 'Ano. Kód, obsah i doména patří vám.' }],
+  },
+  basic: {
+    tagline: 'Profesionální vícestránkový web s galerií, SEO a jasnou cestou k poptávce.', hosting: '2 000 Kč/měsíc', description: 'Balíček Basic nabízí rostoucím firmám až pět stránek na míru, galerii realizací a kvalitní SEO základ pro místní vyhledávání.',
+    bestFor: ['Zavedená řemesla a služby', 'Studia, salony a kliniky', 'Firmy se dvěma až deseti službami'],
+    features: ['Až 5 navržených stránek', 'Prémiový responzivní design', 'Galerie projektů', 'Vícekrokový kontaktní formulář', 'Pokročilé SEO a schema.org', 'Příprava pro blog', 'Google Analytics a Search Console', 'WhatsApp, telefon a e-mail', 'SSL, CDN a denní zálohy', 'Tři kola úprav'],
+    deliverables: ['Informační architektura a mapa webu', 'Doporučení textů a výběr obrazového materiálu', 'Cílové skóre rychlosti 90+ na mobilu i počítači', '30 dnů podpory po spuštění'], timeline: '10–14 pracovních dnů',
+    faqs: [{ q: 'Mohu obsah upravovat sám?', a: 'Ano. Balíček obsahuje jednoduchou úpravu textů a obrázků.' }, { q: 'Je součástí blog?', a: 'Ano, připravíme jeho strukturu a články lze kdykoliv doplnit.' }],
+  },
+  professional: {
+    tagline: 'Kompletní firemní web s rezervacemi, analytikou a přednostní podporou.', hosting: '3 500 Kč/měsíc', description: 'Náš nejoblíbenější balíček přináší až deset stránek, integrované rezervace, prémiový design, pokročilé SEO a podrobnou analytiku.',
+    bestFor: ['Služby přijímající online rezervace', 'Kliniky, salony, studia a agentury', 'Značky v konkurenčních místních oborech'],
+    features: ['Až 10 navržených stránek', 'Prémiový designový systém', 'Integrovaný rezervační systém', 'Pokročilé SEO a interní prolinkování', 'Galerie a ověřené reference', 'GA4 a měření konverzí', 'Newsletter a magnet na kontakty', 'Příprava pro živý chat', 'Přednostní podpora', 'Pět kol úprav'],
+    deliverables: ['UX návrh a wireframy', 'Ikony a animace v souladu se značkou', 'Rezervace podle vašeho provozu', '90 dnů optimalizace po spuštění'], timeline: '3–4 týdny',
+    faqs: [{ q: 'Jaký rezervační systém používáte?', a: 'Vybereme nejvhodnější řešení, například Calendly, Cal.com, Reservio nebo systém na míru.' }, { q: 'Připravíte také texty?', a: 'Ano, profesionální texty v češtině nebo britské angličtině jsou součástí.' }],
+  },
+  enterprise: {
+    tagline: 'Řešení na míru s CMS, e-shopem a vlastním projektovým manažerem.', price: 'Na míru', hosting: 'od 5 000 Kč/měsíc', description: 'Pro firmy, které potřebují víc než web: neomezené stránky, integrace na míru, e-shop, více jazyků a vyhrazený tým.',
+    bestFor: ['Firmy s více pobočkami a jazyky', 'E-shopy a předplatitelské služby', 'Společnosti nahrazující starší systémy'],
+    features: ['Neomezené stránky a typy obsahu', 'Design zcela na míru', 'Kompletní e-shop', 'CMS s uživatelskými rolemi', 'Více jazyků a oblastí', 'API a integrace třetích stran', 'Vlastní projektový manažer', 'Podpora 24/7 podle SLA', 'Neomezené úpravy během tvorby', 'Čtvrtletní strategické konzultace'],
+    deliverables: ['Úvodní workshop a plán', 'Designový systém a knihovna komponent', 'Migrace obsahu se zachováním SEO', 'Školení a dokumentace'], timeline: '6–12 týdnů podle rozsahu',
+    faqs: [{ q: 'Jak se počítá cena?', a: 'Po bezplatné konzultaci dostanete nabídku s pevnou cenou a platbami po etapách.' }, { q: 'Umíte migraci z WordPressu nebo Shopify?', a: 'Ano, provedeme kompletní migraci se zachováním SEO.' }],
+  },
+};
+
 const PackageDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const pkg = slug ? PACKAGES[slug] : undefined;
+  const { language } = useLanguage();
+  const en = language === 'en';
+  const sourcePkg = slug ? PACKAGES[slug] : undefined;
+  const pkg = sourcePkg && !en ? { ...sourcePkg, ...CZECH_PACKAGES[sourcePkg.slug] } as PackageData : sourcePkg;
 
   if (!pkg) return <Navigate to="/" replace />;
 
@@ -206,10 +241,10 @@ const PackageDetail = () => {
   const CTARow = ({ variant = 'default' as 'default' | 'inverse' }) => (
     <div className={`flex flex-col sm:flex-row gap-3 ${variant === 'inverse' ? 'justify-center' : ''}`}>
       <Button onClick={buyNow} size="lg" className="font-semibold gap-2">
-        <ShoppingCart className="w-5 h-5" /> Buy {pkg.name} now
+         <ShoppingCart className="w-5 h-5" /> {en ? `Buy ${pkg.name} now` : `Objednat ${pkg.name}`}
       </Button>
       <Button onClick={bookConsult} size="lg" variant="outline" className="font-semibold gap-2">
-        <MessageCircle className="w-5 h-5" /> Book a consultation
+         <MessageCircle className="w-5 h-5" /> {en ? 'Book a consultation' : 'Rezervovat konzultaci'}
       </Button>
     </div>
   );
@@ -217,7 +252,7 @@ const PackageDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title={`${pkg.name} Website Package — FastMedia`}
+         title={`${pkg.name} ${en ? 'Website Package' : '— balíček webu'} — FastMedia`}
         description={pkg.tagline}
         pagePath={`/package/${pkg.slug}`}
       />
@@ -229,28 +264,28 @@ const PackageDetail = () => {
         <section className="relative py-16 lg:py-24 bg-gradient-to-br from-primary/10 via-background to-accent/10">
           <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
             <Link to="/#pricing" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to all packages
+               <ArrowLeft className="w-4 h-4 mr-2" /> {en ? 'Back to all packages' : 'Zpět na všechny balíčky'}
             </Link>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               {pkg.popular && (
                 <Badge className="mb-4 bg-accent text-accent-foreground gap-1">
-                  <Star className="w-3 h-3 fill-current" /> Most Popular
+                   <Star className="w-3 h-3 fill-current" /> {en ? 'Most Popular' : 'Nejoblíbenější'}
                 </Badge>
               )}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4">
-                {pkg.name} Package
+                 {pkg.name} {en ? 'Package' : 'balíček'}
               </h1>
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl">{pkg.tagline}</p>
               <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 mb-8">
                 <div>
                   <div className="text-4xl font-display font-bold text-foreground">{pkg.price}</div>
-                  <div className="text-sm text-muted-foreground">one-time build</div>
+                   <div className="text-sm text-muted-foreground">{en ? 'one-time build' : 'jednorázová tvorba'}</div>
                 </div>
                 <div className="text-muted-foreground">
-                  + Hosting & care: <span className="font-semibold text-foreground">{pkg.hosting}</span>
+                   + {en ? 'Hosting & care' : 'Hosting a péče'}: <span className="font-semibold text-foreground">{pkg.hosting}</span>
                 </div>
                 <div className="text-muted-foreground">
-                  Delivery: <span className="font-semibold text-foreground">{pkg.timeline}</span>
+                   {en ? 'Delivery' : 'Dodání'}: <span className="font-semibold text-foreground">{pkg.timeline}</span>
                 </div>
               </div>
               <CTARow />
@@ -262,7 +297,7 @@ const PackageDetail = () => {
         <section className="py-16 lg:py-20">
           <div className="container mx-auto px-4 lg:px-8 max-w-5xl grid lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
-              <h2 className="text-2xl sm:text-3xl font-display font-bold mb-4">What you get</h2>
+               <h2 className="text-2xl sm:text-3xl font-display font-bold mb-4">{en ? 'What you get' : 'Co získáte'}</h2>
               <p className="text-muted-foreground text-lg leading-relaxed mb-8">{pkg.description}</p>
               <div className="grid sm:grid-cols-2 gap-3">
                 {pkg.features.map((f) => (
@@ -277,7 +312,7 @@ const PackageDetail = () => {
               <Card className="bg-secondary/40 border-border">
                 <CardContent className="p-6">
                   <h3 className="font-display font-bold text-lg mb-3 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-accent" /> Best for
+                     <Sparkles className="w-5 h-5 text-accent" /> {en ? 'Best for' : 'Ideální pro'}
                   </h3>
                   <ul className="space-y-2 mb-6">
                     {pkg.bestFor.map((b) => (
@@ -287,7 +322,7 @@ const PackageDetail = () => {
                     ))}
                   </ul>
                   <h3 className="font-display font-bold text-lg mb-3 flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-accent" /> Included
+                     <ShieldCheck className="w-5 h-5 text-accent" /> {en ? 'Included' : 'Součástí balíčku'}
                   </h3>
                   <ul className="space-y-2">
                     {pkg.deliverables.map((d) => (
@@ -306,14 +341,14 @@ const PackageDetail = () => {
         <section className="py-12 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 lg:px-8 max-w-5xl text-center">
             <h2 className="text-2xl sm:text-3xl font-display font-bold mb-3">
-              Ready to launch with the {pkg.name} package?
+               {en ? `Ready to launch with the ${pkg.name} package?` : `Chcete odstartovat s balíčkem ${pkg.name}?`}
             </h2>
             <p className="text-primary-foreground/80 mb-6">
-              Lock in your project today — or talk it through with our team first. No pressure.
+               {en ? 'Secure your project today — or talk it through with our team first. No pressure.' : 'Zajistěte si projekt ještě dnes, nebo ho nejprve nezávazně proberte s naším týmem.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button onClick={buyNow} size="lg" variant="secondary" className="font-semibold gap-2">
-                <ShoppingCart className="w-5 h-5" /> Buy {pkg.name} now
+                 <ShoppingCart className="w-5 h-5" /> {en ? `Buy ${pkg.name} now` : `Objednat ${pkg.name}`}
               </Button>
               <Button
                 onClick={bookConsult}
@@ -321,7 +356,7 @@ const PackageDetail = () => {
                 variant="outline"
                 className="font-semibold gap-2 bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground hover:text-primary"
               >
-                <MessageCircle className="w-5 h-5" /> Book a consultation
+                 <MessageCircle className="w-5 h-5" /> {en ? 'Book a consultation' : 'Rezervovat konzultaci'}
               </Button>
             </div>
           </div>
@@ -331,10 +366,10 @@ const PackageDetail = () => {
         <section className="py-16 lg:py-20">
           <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
             <h2 className="text-2xl sm:text-3xl font-display font-bold mb-2 flex items-center gap-2">
-              <Zap className="w-6 h-6 text-accent" /> Live examples
+               <Zap className="w-6 h-6 text-accent" /> {en ? 'Live examples' : 'Živé ukázky'}
             </h2>
             <p className="text-muted-foreground mb-8">
-              Real demo sites built in the {pkg.name} tier. Explore each one to see the quality you can expect.
+               {en ? `Real demo sites built in the ${pkg.name} tier. Explore each one to see the quality you can expect.` : `Skutečné ukázkové weby v balíčku ${pkg.name}. Prohlédněte si kvalitu, kterou můžete očekávat.`}
             </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {pkg.examples.map((ex) => (
@@ -344,7 +379,7 @@ const PackageDetail = () => {
                     <p className="text-sm text-muted-foreground mb-4">{ex.description}</p>
                     {ex.link && (
                       <Link to={ex.link}>
-                        <Button variant="outline" size="sm">View demo</Button>
+                         <Button variant="outline" size="sm">{en ? 'View demo' : 'Zobrazit ukázku'}</Button>
                       </Link>
                     )}
                   </CardContent>
@@ -358,7 +393,7 @@ const PackageDetail = () => {
         <section className="py-16 lg:py-20 bg-secondary/30">
           <div className="container mx-auto px-4 lg:px-8 max-w-3xl">
             <h2 className="text-2xl sm:text-3xl font-display font-bold mb-6 flex items-center gap-2">
-              <HelpCircle className="w-6 h-6 text-accent" /> Frequently asked questions
+               <HelpCircle className="w-6 h-6 text-accent" /> {en ? 'Frequently asked questions' : 'Časté dotazy'}
             </h2>
             <Accordion type="single" collapsible className="w-full">
               {pkg.faqs.map((faq, i) => (
@@ -375,11 +410,10 @@ const PackageDetail = () => {
         <section className="py-20">
           <div className="container mx-auto px-4 lg:px-8 max-w-3xl text-center">
             <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
-              Let's build your {pkg.name} website
+               {en ? `Let's build your ${pkg.name} website` : `Pojďme vytvořit váš web ${pkg.name}`}
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              Buy the {pkg.name} package now and we'll kick off within 24 hours. Still have questions?
-              Book a free 20-minute consultation and we'll walk you through it.
+               {en ? `Buy the ${pkg.name} package now and we'll start within 24 hours. Still have questions? Book a free 20-minute consultation.` : `Objednejte balíček ${pkg.name} a začneme do 24 hodin. Máte otázky? Rezervujte si bezplatnou dvacetiminutovou konzultaci.`}
             </p>
             <CTARow variant="inverse" />
           </div>

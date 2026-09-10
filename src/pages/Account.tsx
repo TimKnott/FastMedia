@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BillingPortalButton } from "@/components/BillingPortalButton";
 import { Loader2, UserCircle2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 /**
  * Customer account page. If the visitor is logged in, we use their email
@@ -19,6 +20,8 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
   const [authedEmail, setAuthedEmail] = useState<string | null>(null);
   const [guestEmail, setGuestEmail] = useState("");
+  const { language } = useLanguage();
+  const en = language === 'en';
 
   useEffect(() => {
     let mounted = true;
@@ -39,8 +42,8 @@ const Account = () => {
   return (
     <>
       <SEOHead
-        title="Your Account — FastMedia.Pro"
-        description="Manage your subscription, billing details, and invoices."
+         title={en ? 'Your Account — FastMedia.Pro' : 'Váš účet — FastMedia.Pro'}
+         description={en ? 'Manage your subscription, billing details, and invoices.' : 'Spravujte předplatné, platební údaje a faktury.'}
         canonical="/account"
         noindex
       />
@@ -48,9 +51,9 @@ const Account = () => {
       <main className="min-h-[70vh] bg-background py-24 px-4">
         <div className="container mx-auto max-w-3xl space-y-8">
           <header className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-display font-semibold">Your account</h1>
+             <h1 className="text-3xl md:text-4xl font-display font-semibold">{en ? 'Your account' : 'Váš účet'}</h1>
             <p className="text-muted-foreground">
-              Manage your subscription, payment method, and invoices.
+               {en ? 'Manage your subscription, payment method, and invoices.' : 'Spravujte předplatné, platební metodu a faktury.'}
             </p>
           </header>
 
@@ -61,9 +64,9 @@ const Account = () => {
                   <UserCircle2 className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle>Subscription &amp; billing</CardTitle>
+                   <CardTitle>{en ? 'Subscription & billing' : 'Předplatné a platby'}</CardTitle>
                   <CardDescription>
-                    Open the secure billing portal to change plan, update card, view invoices, or cancel.
+                     {en ? 'Open the secure billing portal to change plan, update card, view invoices, or cancel.' : 'V bezpečném platebním portálu můžete změnit tarif či kartu, zobrazit faktury nebo předplatné zrušit.'}
                   </CardDescription>
                 </div>
               </div>
@@ -72,25 +75,25 @@ const Account = () => {
               {loading ? (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Loading your account…
+                   {en ? 'Loading your account…' : 'Načítám váš účet…'}
                 </div>
               ) : authedEmail ? (
                 <div className="space-y-4">
                   <div className="rounded-lg bg-muted/40 p-4 text-sm">
-                    <span className="text-muted-foreground">Signed in as </span>
+                     <span className="text-muted-foreground">{en ? 'Signed in as ' : 'Přihlášený účet: '}</span>
                     <span className="font-medium">{authedEmail}</span>
                   </div>
                   <BillingPortalButton
                     email={authedEmail}
                     returnUrl={`${window.location.origin}/account`}
                     variant="default"
-                    label="Manage billing"
+                     label={en ? 'Manage billing' : 'Spravovat platby'}
                   />
                 </div>
               ) : (
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Enter the email you used at checkout to open your billing portal.
+                     {en ? 'Enter the email you used at checkout to open your billing portal.' : 'Zadejte e-mail použitý při platbě a otevřete platební portál.'}
                   </p>
                   <div className="space-y-2 max-w-sm">
                     <Label htmlFor="guest-email">Email</Label>
@@ -106,13 +109,13 @@ const Account = () => {
                     email={guestEmail || undefined}
                     returnUrl={`${window.location.origin}/account`}
                     variant="default"
-                    label="Open billing portal"
+                     label={en ? 'Open billing portal' : 'Otevřít platební portál'}
                   />
                 </div>
               )}
 
               <div className="border-t pt-4 text-sm text-muted-foreground">
-                The portal opens in a new tab. Need help? Email{" "}
+                 {en ? 'The portal opens in a new tab. Need help? Email' : 'Portál se otevře na nové kartě. Potřebujete pomoc? Napište na'}{" "}
                 <a className="text-primary hover:underline" href="mailto:support@fastmedia.pro">
                   support@fastmedia.pro
                 </a>

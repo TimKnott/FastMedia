@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { usePageSeo } from '@/hooks/usePageSeo';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SEOHeadProps {
   title: string;
@@ -27,6 +28,8 @@ const SEOHead = ({
   ogType = 'website',
   pagePath,
 }: SEOHeadProps) => {
+  const { language } = useLanguage();
+  const isEnglish = language === 'en';
   const seo = usePageSeo(pagePath ?? '');
 
   // DB values override props when available
@@ -61,16 +64,14 @@ const SEOHead = ({
       {/* Hreflang for multilingual SEO */}
       {canonicalUrl && <link rel="alternate" hrefLang="cs" href={canonicalUrl} />}
       {canonicalUrl && <link rel="alternate" hrefLang="en" href={canonicalUrl} />}
-      {canonicalUrl && <link rel="alternate" hrefLang="de" href={canonicalUrl} />}
       {canonicalUrl && <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />}
 
       <meta property="og:title" content={effectiveOgTitle || fullTitle} />
       <meta property="og:description" content={effectiveOgDescription || effectiveDescription} />
       <meta property="og:type" content={effectiveOgType} />
       <meta property="og:site_name" content="FastMedia.Pro" />
-      <meta property="og:locale" content="cs_CZ" />
-      <meta property="og:locale:alternate" content="en_US" />
-      <meta property="og:locale:alternate" content="de_DE" />
+      <meta property="og:locale" content={isEnglish ? 'en_GB' : 'cs_CZ'} />
+      <meta property="og:locale:alternate" content={isEnglish ? 'cs_CZ' : 'en_GB'} />
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
       {effectiveOgImage && <meta property="og:image" content={effectiveOgImage} />}
 
