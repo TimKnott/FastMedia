@@ -22,6 +22,7 @@ const copy = {
     message: 'Co potřebujete?',
     messagePlaceholder: 'Např. nový web pro instalatérskou firmu, rezervace termínů a anglická verze.',
     grant: 'Mám zájem o posouzení dotace',
+    grantLevel: 'Očekávaná výše dotace (orientačně)',
     submit: 'Odeslat poptávku',
     sending: 'Odesílám…',
     doneTitle: 'Poptávka odeslána',
@@ -41,6 +42,7 @@ const copy = {
     message: 'What do you need?',
     messagePlaceholder: 'E.g. a new website for a plumbing firm, online booking and an English version.',
     grant: 'I would like a grant eligibility check',
+    grantLevel: 'Expected grant level (indicative)',
     submit: 'Send enquiry',
     sending: 'Sending…',
     doneTitle: 'Enquiry sent',
@@ -58,6 +60,7 @@ const OfferEnquiryForm = ({ lang = 'cs' }: { lang?: Lang }) => {
   const t = copy[lang];
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', message: '' });
   const [grant, setGrant] = useState(true);
+  const [grantPercent, setGrantPercent] = useState('50');
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -84,6 +87,7 @@ const OfferEnquiryForm = ({ lang = 'cs' }: { lang?: Lang }) => {
             Source: 'Offer campaign page (/offer)',
             Language: lang === 'cs' ? 'Czech' : 'English',
             'Grant check requested': grant ? 'Yes' : 'No',
+            ...(grant ? { 'Expected grant level': `${grantPercent}%` } : {}),
           },
         },
       });
@@ -141,6 +145,21 @@ const OfferEnquiryForm = ({ lang = 'cs' }: { lang?: Lang }) => {
             <Checkbox id="offer-grant" checked={grant} onCheckedChange={v => setGrant(v === true)} />
             <Label htmlFor="offer-grant" className="text-sm font-normal">{t.grant}</Label>
           </div>
+          {grant && (
+            <div className="space-y-2">
+              <Label htmlFor="offer-grant-level">{t.grantLevel}</Label>
+              <select
+                id="offer-grant-level"
+                value={grantPercent}
+                onChange={e => setGrantPercent(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                {['0', '25', '40', '50', '60', '70', '85'].map(v => (
+                  <option key={v} value={v}>{v}%</option>
+                ))}
+              </select>
+            </div>
+          )}
           <Button type="submit" size="lg" className="w-full h-12" disabled={sending}>
             <Send className="w-4 h-4 mr-2" />
             {sending ? t.sending : t.submit}
