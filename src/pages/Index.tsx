@@ -1,4 +1,4 @@
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
 import WhyFastMediaSection from '@/components/WhyFastMediaSection';
 import AutomationSection from '@/components/AutomationSection';
@@ -23,11 +23,13 @@ import ServiceAreaMap from '@/components/ServiceAreaMap';
 import OfferTeaser from '@/components/OfferTeaser';
 
 const Index = () => {
+  const { language } = useLanguage();
+  const isEnglish = language === 'en';
   return (
-    <LanguageProvider>
+    <>
       <SEOHead
-        title="FastMedia.Pro — Profesionální weby pro řemeslníky a služby"
-        description="FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI chatbot, online rezervace, sběr poptávek. 37 oborových šablon, dodání do 10 dní."
+        title={isEnglish ? 'FastMedia.Pro — Websites for Trades and Services' : 'FastMedia.Pro — Profesionální weby pro řemeslníky a služby'}
+        description={isEnglish ? 'Conversion-focused websites for trades and services, with AI assistance, online bookings and lead capture. Delivered worldwide.' : 'FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI asistent, online rezervace a sběr poptávek.'}
         canonical="/"
         ogType="website"
         pagePath="/"
@@ -58,7 +60,7 @@ const Index = () => {
         <Footer />
         <StickyCTABar />
       </div>
-    </LanguageProvider>
+    </>
   );
 };
 
