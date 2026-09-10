@@ -34,6 +34,15 @@
     --accent: 16 90% 55%;
     --accent-foreground: 0 0% 100%;
 
+    /* Cinematic launch experience */
+    --launch: 219 71% 7%;
+    --launch-foreground: 210 40% 98%;
+    --launch-muted: 215 27% 82%;
+    --launch-accent: 16 90% 62%;
+    --launch-surface: 219 55% 9% / 0.62;
+    --launch-surface-strong: 219 55% 9% / 0.84;
+    --launch-border: 210 40% 98% / 0.2;
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
@@ -197,6 +206,49 @@
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
   }
+
+  .launch-hero__shade {
+    background: linear-gradient(90deg, hsl(var(--launch) / 0.98) 0%, hsl(var(--launch) / 0.82) 38%, hsl(var(--launch) / 0.16) 76%, transparent 100%);
+  }
+
+  .launch-hero__vignette {
+    box-shadow: inset 0 0 180px hsl(var(--launch) / 0.74);
+  }
+
+  .launch-stars {
+    background-image:
+      radial-gradient(circle at 12% 18%, hsl(var(--launch-foreground) / 0.9) 0 1px, transparent 1.7px),
+      radial-gradient(circle at 28% 38%, hsl(var(--launch-foreground) / 0.65) 0 1px, transparent 1.8px),
+      radial-gradient(circle at 48% 12%, hsl(var(--launch-accent) / 0.8) 0 1px, transparent 2px),
+      radial-gradient(circle at 67% 30%, hsl(var(--launch-foreground) / 0.7) 0 1.2px, transparent 2px);
+    background-size: 250px 210px, 340px 300px, 430px 380px, 520px 460px;
+    animation: launch-stars-drift 22s linear infinite;
+  }
+
+  .launch-flame {
+    border-radius: 70% 10% 70% 20%;
+    background: linear-gradient(90deg, hsl(var(--launch-accent) / 0), hsl(var(--launch-accent) / 0.95), hsl(var(--launch-foreground) / 0.9));
+    filter: blur(6px);
+    transform-origin: right center;
+    animation: launch-flame 0.18s ease-in-out infinite alternate;
+  }
+
+  .launch-orbit {
+    border: 1px solid hsl(var(--launch-border));
+    box-shadow: 0 0 70px hsl(var(--launch-accent) / 0.14), inset 0 0 50px hsl(var(--launch-foreground) / 0.04);
+  }
+
+  .launch-orbit::before,
+  .launch-orbit::after {
+    content: '';
+    position: absolute;
+    border-radius: 9999px;
+    background: hsl(var(--launch-accent));
+    box-shadow: 0 0 18px hsl(var(--launch-accent));
+  }
+
+  .launch-orbit::before { left: -4px; top: 50%; width: 8px; height: 8px; }
+  .launch-orbit::after { right: 12%; top: 8%; width: 6px; height: 6px; }
 }
 
 @keyframes float {
@@ -208,6 +260,22 @@
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+@keyframes launch-stars-drift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 40px 22px, -28px 36px, 18px -34px, -22px -18px; }
+}
+
+@keyframes launch-flame {
+  from { opacity: 0.65; transform: scaleX(0.82); }
+  to { opacity: 1; transform: scaleX(1.18); }
+}
+
+@media (max-width: 767px) {
+  .launch-hero__shade {
+    background: linear-gradient(180deg, hsl(var(--launch) / 0.75) 0%, hsl(var(--launch) / 0.94) 72%, hsl(var(--launch)) 100%);
+  }
 }
 
 /* Accessibility overrides */
@@ -334,4 +402,5 @@ html.a11y-reduced-motion *::after {
   body.cursorfx-active [data-cursor-hover] { cursor: auto; }
   .cursorfx-root { display: none; }
   .parallax-slow, .parallax-medium, .parallax-fast { transform: none !important; }
+  .launch-stars, .launch-flame { animation: none !important; }
 }

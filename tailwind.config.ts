@@ -43,6 +43,15 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        launch: {
+          DEFAULT: "hsl(var(--launch))",
+          foreground: "hsl(var(--launch-foreground))",
+          muted: "hsl(var(--launch-muted))",
+          accent: "hsl(var(--launch-accent))",
+          surface: "hsl(var(--launch-surface))",
+          "surface-strong": "hsl(var(--launch-surface-strong))",
+          border: "hsl(var(--launch-border))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
