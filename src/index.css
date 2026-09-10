@@ -7,6 +7,11 @@
 /* FastMedia.Pro Design System - Professional & Modern */
 
 @layer base {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
   :root {
     /* Core Colors - Professional Deep Blue Theme */
     --background: 210 20% 98%;

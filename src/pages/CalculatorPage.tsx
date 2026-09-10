@@ -93,7 +93,8 @@ const CalculatorPage = () => {
   } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
 
-  const lang = language === 'en' ? 'en' : 'cs';
+  // Keep the legacy German data keys type-compatible while public selection is Czech or English.
+  const lang = (language === 'en' ? 'en' : 'cs') as 'cs' | 'en' | 'de';
 
   const formatPrice = (value: number): string => {
     if (lang === 'en') return value.toLocaleString('en-GB');
