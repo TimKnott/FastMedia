@@ -14,7 +14,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import launchSky from '@/assets/launch-sky.jpg';
+import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
 
 const services = [
@@ -56,6 +56,8 @@ const OfferTeaser = () => {
       <div className="launch-hero__shade absolute inset-0" />
       <div className="launch-hero__vignette absolute inset-0" />
       <div className="launch-stars absolute inset-0" aria-hidden="true" />
+      <div className="shooting-star shooting-star--one absolute z-[5]" aria-hidden="true" />
+      <div className="shooting-star shooting-star--two absolute z-[5]" aria-hidden="true" />
 
       <div className="container relative z-10 mx-auto flex min-h-[92svh] items-center px-5 pb-24 pt-28 sm:px-8 lg:px-12">
         <AnimatePresence mode="wait">
