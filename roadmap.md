@@ -32,5 +32,5 @@
 - [x] /contact page with form (emails private inbox via score-lead) + FAQ
 - [x] Route, footer link, prerender route, sitemap entry
 
-- [ ] Fix fastmedia.pro DNS so Seznam adverts open the site (missing _lovable and _lovable.www TXT records)
+- [x] Fix fastmedia.pro DNS so Seznam adverts open the site (verification TXT records added, site live)
 - [ ] Add _lovable-email TXT to fastmedia.pro so enquiry emails send
