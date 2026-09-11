@@ -56,7 +56,7 @@ const copy = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const OfferEnquiryForm = ({ lang = 'cs' }: { lang?: Lang }) => {
+const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: string }) => {
   const t = copy[lang];
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', message: '' });
   const [grant, setGrant] = useState(true);
@@ -84,7 +84,7 @@ const OfferEnquiryForm = ({ lang = 'cs' }: { lang?: Lang }) => {
           company: form.company.trim() || null,
           message: form.message.trim(),
           details: {
-            Source: 'Offer campaign page (/offer)',
+            Source: source ?? 'Offer campaign page (/offer)',
             Language: lang === 'cs' ? 'Czech' : 'English',
             'Grant check requested': grant ? 'Yes' : 'No',
             ...(grant ? { 'Expected grant level': `${grantPercent}%` } : {}),
