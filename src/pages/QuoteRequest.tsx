@@ -31,9 +31,15 @@ const QuoteRequestInner = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', company: '', website: '',
-    projectType: '', budget: '', timeline: '', message: '',
+    name: '', email: '', phone: '', company: '', website: '', message: '',
   });
+  // Store selections as indices so they survive a CZ/EN language switch.
+  const [typeIdx, setTypeIdx] = useState(0);
+  const [budgetIdx, setBudgetIdx] = useState(1);
+  const [timelineIdx, setTimelineIdx] = useState(1);
+  const projectType = c.projectTypes[typeIdx];
+  const budget = c.budgets[budgetIdx];
+  const timeline = c.timelines[timelineIdx];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
