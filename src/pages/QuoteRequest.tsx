@@ -31,9 +31,15 @@ const QuoteRequestInner = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', company: '', website: '',
-    projectType: '', budget: '', timeline: '', message: '',
+    name: '', email: '', phone: '', company: '', website: '', message: '',
   });
+  // Store selections as indices so they survive a CZ/EN language switch.
+  const [typeIdx, setTypeIdx] = useState(0);
+  const [budgetIdx, setBudgetIdx] = useState(1);
+  const [timelineIdx, setTimelineIdx] = useState(1);
+  const projectType = c.projectTypes[typeIdx];
+  const budget = c.budgets[budgetIdx];
+  const timeline = c.timelines[timelineIdx];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,9 +54,9 @@ const QuoteRequestInner = () => {
           company: form.company,
           message: form.message,
           details: {
-            'Project type': form.projectType,
-            Budget: form.budget,
-            Timeline: form.timeline,
+            'Project type': projectType,
+            Budget: budget,
+            Timeline: timeline,
              'Current website': form.website || c.none,
           },
         },
@@ -155,33 +161,33 @@ const QuoteRequestInner = () => {
                            <label htmlFor="q-type" className="block text-foreground text-sm font-medium mb-1.5">{c.type}</label>
                           <select
                             id="q-type"
-                            value={form.projectType}
-                            onChange={e => setForm({ ...form, projectType: e.target.value })}
+                            value={String(typeIdx)}
+                            onChange={e => setTypeIdx(Number(e.target.value))}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                             {c.projectTypes.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.projectTypes.map((o, i) => <option key={o} value={i}>{o}</option>)}
                           </select>
                         </div>
                         <div>
                            <label htmlFor="q-budget" className="block text-foreground text-sm font-medium mb-1.5">{c.budget}</label>
                           <select
                             id="q-budget"
-                            value={form.budget}
-                            onChange={e => setForm({ ...form, budget: e.target.value })}
+                            value={String(budgetIdx)}
+                            onChange={e => setBudgetIdx(Number(e.target.value))}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                             {c.budgets.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.budgets.map((o, i) => <option key={o} value={i}>{o}</option>)}
                           </select>
                         </div>
                         <div>
                            <label htmlFor="q-timeline" className="block text-foreground text-sm font-medium mb-1.5">{c.timeline}</label>
                           <select
                             id="q-timeline"
-                            value={form.timeline}
-                            onChange={e => setForm({ ...form, timeline: e.target.value })}
+                            value={String(timelineIdx)}
+                            onChange={e => setTimelineIdx(Number(e.target.value))}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                             {c.timelines.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.timelines.map((o, i) => <option key={o} value={i}>{o}</option>)}
                           </select>
                         </div>
                       </div>

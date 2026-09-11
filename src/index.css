@@ -9,7 +9,7 @@
 @layer base {
   html,
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   :root {
@@ -133,13 +133,13 @@
 
   html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4, h5, h6 {
