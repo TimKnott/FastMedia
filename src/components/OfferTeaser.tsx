@@ -19,12 +19,12 @@ import launchRocket from '@/assets/launch-rocket.png';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const services = [
-  { icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', position: 'left-[7%] top-[18%]' },
-  { icon: Bot, cs: 'AI asistent pro poptávky 24/7', en: '24/7 AI lead assistant', position: 'left-[15%] bottom-[18%]' },
-  { icon: CalendarCheck, cs: 'Rezervace a následná péče', en: 'Bookings & follow-up', position: 'right-[9%] top-[16%]' },
-  { icon: Gauge, cs: 'SEO a rychlost', en: 'SEO & performance', position: 'right-[6%] bottom-[20%]' },
-  { icon: Megaphone, cs: 'Kampaně, které prodávají', en: 'Campaigns that convert', position: 'left-1/2 top-[7%] -translate-x-1/2' },
-  { icon: ShieldCheck, cs: 'Bezpečný řízený růst', en: 'Secure, managed growth', position: 'left-1/2 bottom-[7%] -translate-x-1/2' },
+  { slug: 'websites', icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', position: 'left-[7%] top-[18%]' },
+  { slug: 'ai-lead-assistant', icon: Bot, cs: 'AI asistent pro poptávky 24/7', en: '24/7 AI lead assistant', position: 'left-[15%] bottom-[18%]' },
+  { slug: 'bookings', icon: CalendarCheck, cs: 'Rezervace a následná péče', en: 'Bookings & follow-up', position: 'right-[9%] top-[16%]' },
+  { slug: 'seo-performance', icon: Gauge, cs: 'SEO a rychlost', en: 'SEO & performance', position: 'right-[6%] bottom-[20%]' },
+  { slug: 'campaigns', icon: Megaphone, cs: 'Kampaně, které prodávají', en: 'Campaigns that convert', position: 'left-1/2 top-[7%] -translate-x-1/2' },
+  { slug: 'managed-growth', icon: ShieldCheck, cs: 'Bezpečný řízený růst', en: 'Secure, managed growth', position: 'left-1/2 bottom-[7%] -translate-x-1/2' },
 ];
 
 const heroCopy = {
@@ -168,20 +168,25 @@ const OfferTeaser = () => {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1, y: reduceMotion ? 0 : [0, -6, 0] }}
                     transition={{ opacity: { delay: 0.18 + index * 0.08 }, scale: { delay: 0.18 + index * 0.08 }, y: { duration: 3 + index * 0.22, repeat: Infinity, ease: 'easeInOut' } }}
-                    className={`absolute ${service.position} flex items-center gap-3 rounded-md border border-launch-border bg-launch-surface px-4 py-3 text-left shadow-lg backdrop-blur-md`}
+                    className={`absolute ${service.position}`}
                   >
-                    <service.icon className="h-5 w-5 text-launch-accent" />
-                     <span className="text-sm font-semibold text-launch-foreground">{service[lang]}</span>
+                    <Link
+                      to={`/service/${service.slug}`}
+                      className="flex items-center gap-3 rounded-md border border-launch-border bg-launch-surface px-4 py-3 text-left shadow-lg backdrop-blur-md transition-colors hover:bg-launch-surface-strong"
+                    >
+                      <service.icon className="h-5 w-5 text-launch-accent" />
+                      <span className="text-sm font-semibold text-launch-foreground">{service[lang]}</span>
+                    </Link>
                   </motion.div>
                 ))}
               </div>
 
               <div className="mt-8 grid w-full grid-cols-2 gap-2 md:hidden">
                 {services.map((service) => (
-                   <div key={service.en} className="flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border border-launch-border bg-launch-surface p-3 backdrop-blur-md">
+                   <Link key={service.en} to={`/service/${service.slug}`} className="flex min-h-20 flex-col items-center justify-center gap-2 rounded-md border border-launch-border bg-launch-surface p-3 text-center backdrop-blur-md transition-colors hover:bg-launch-surface-strong">
                     <service.icon className="h-5 w-5 text-launch-accent" />
                      <span className="text-xs font-semibold">{service[lang]}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
 
