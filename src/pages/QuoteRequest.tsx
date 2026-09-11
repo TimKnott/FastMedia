@@ -54,9 +54,9 @@ const QuoteRequestInner = () => {
           company: form.company,
           message: form.message,
           details: {
-            'Project type': form.projectType,
-            Budget: form.budget,
-            Timeline: form.timeline,
+            'Project type': projectType,
+            Budget: budget,
+            Timeline: timeline,
              'Current website': form.website || c.none,
           },
         },
