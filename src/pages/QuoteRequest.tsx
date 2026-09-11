@@ -161,33 +161,33 @@ const QuoteRequestInner = () => {
                            <label htmlFor="q-type" className="block text-foreground text-sm font-medium mb-1.5">{c.type}</label>
                           <select
                             id="q-type"
-                            value={form.projectType}
-                            onChange={e => setForm({ ...form, projectType: e.target.value })}
+                            value={String(typeIdx)}
+                            onChange={e => setTypeIdx(Number(e.target.value))}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                             {c.projectTypes.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.projectTypes.map((o, i) => <option key={o} value={i}>{o}</option>)}
                           </select>
                         </div>
                         <div>
                            <label htmlFor="q-budget" className="block text-foreground text-sm font-medium mb-1.5">{c.budget}</label>
                           <select
                             id="q-budget"
-                            value={form.budget}
-                            onChange={e => setForm({ ...form, budget: e.target.value })}
+                            value={String(budgetIdx)}
+                            onChange={e => setBudgetIdx(Number(e.target.value))}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                             {c.budgets.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.budgets.map((o, i) => <option key={o} value={i}>{o}</option>)}
                           </select>
                         </div>
                         <div>
                            <label htmlFor="q-timeline" className="block text-foreground text-sm font-medium mb-1.5">{c.timeline}</label>
                           <select
                             id="q-timeline"
-                            value={form.timeline}
-                            onChange={e => setForm({ ...form, timeline: e.target.value })}
+                            value={String(timelineIdx)}
+                            onChange={e => setTimelineIdx(Number(e.target.value))}
                             className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm text-foreground"
                           >
-                             {c.timelines.map(o => <option key={o} value={o}>{o}</option>)}
+                             {c.timelines.map((o, i) => <option key={o} value={i}>{o}</option>)}
                           </select>
                         </div>
                       </div>
