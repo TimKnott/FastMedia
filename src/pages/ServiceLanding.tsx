@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import SEOHead from '@/components/SEOHead';
 import Footer from '@/components/Footer';
-import Navigation from '@/components/Navigation';
+import Navbar from '@/components/Navbar';
 import OfferEnquiryForm from '@/components/OfferEnquiryForm';
 import { getServiceLanding, serviceLandings } from '@/data/serviceLandings';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -53,7 +53,7 @@ const ServiceLanding = () => {
         description={service.seoDescription}
         pagePath={`/service/${service.slug}`}
       />
-      <Navigation />
+      <Navbar />
 
       <header className="launch-hero relative overflow-hidden bg-launch text-launch-foreground">
         <img
