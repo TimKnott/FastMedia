@@ -38,6 +38,7 @@ const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
 const GrantGuide = lazy(() => import("./pages/GrantGuide"));
+const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 
 // Admin pages (lazy)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
@@ -169,6 +170,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/offer" element={<OfferLanding />} />
             <Route path="/grants" element={<GrantGuide />} />
+            <Route path="/service/:slug" element={<ServiceLanding />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/demo/plumbing" element={<PlumbingDemo />} />

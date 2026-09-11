@@ -5,6 +5,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { calculatorFeatures } from "../src/data/calculatorFeatures.ts";
 import { getFeatureDetail } from "../src/data/featureDetails.ts";
+import { serviceLandings } from "../src/data/serviceLandings.ts";
 
 export interface RouteSeo {
   path: string;
@@ -256,8 +257,34 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     .map((f) => featureRoute(f.id))
     .filter((r): r is RouteSeo => r !== null);
 
+  const serviceRoutes: RouteSeo[] = serviceLandings.map((s) => ({
+    path: `/service/${s.slug}`,
+    title: s.seoTitle,
+    description: s.seoDescription,
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.8",
+    h1: s.en.headline,
+    contentBlocks: [
+      s.en.intro,
+      `What you get: ${s.en.benefits.join("; ")}.`,
+      `What's included: ${s.en.deliverables.join("; ")}.`,
+      `${s.en.outcome} Talk to FastMedia.Pro at support@fastmedia.pro or +420 797 864 432, or send an enquiry from this page.`,
+    ],
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: s.en.name,
+      description: s.seoDescription,
+      provider: { "@type": "Organization", name: BRAND },
+      areaServed: "Worldwide",
+      url: `https://www.fastmedia.pro/service/${s.slug}`,
+    },
+  }));
+
   const routes: RouteSeo[] = [
     ...STATIC_ROUTES,
+    ...serviceRoutes,
     ...DEMO_TRADES.map(demoRoute),
     ...featureRoutes,
   ];
