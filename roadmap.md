@@ -43,3 +43,8 @@
 - [x] 5-step flow: identity -> eligibility gate -> creative scope -> budget calc -> hub routing
 - [x] Budget maths: 58,824-250,000 CZK, default 176,470, 85% capped at 150,000 CZK
 - [x] PDF summary on submit + internal lead notification
+- [x] /grant-eligibility rules page + FAQ, /grant-hubs regional map (linked from wizard + services)
+- [x] /grant-process: phases, deadlines, application + accounting documents (linked from hub card)
+- [ ] Downloadable application template (Ministry of Culture forms + submission instructions) on /grant-application
+- [ ] /admin/grant-follow-up: one tracked task per wizard enquiry (region, modules, budget)
+- [ ] /grant-portal: applicant login to view their own saved application
