@@ -426,9 +426,6 @@ const GrantWizard = () => {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="font-display font-bold text-lg">FastMedia<span className="text-accent">.Pro</span></Link>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setLanguage(lang === 'cs' ? 'en' : 'cs')}>
-              {t.switchLabel}
-            </Button>
             <LanguageSwitcher />
           </div>
         </div>
