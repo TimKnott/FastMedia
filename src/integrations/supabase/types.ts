@@ -877,6 +877,44 @@ export type Database = {
         }
         Relationships: []
       }
+      grant_documents: {
+        Row: {
+          created_at: string
+          enquiry_id: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          enquiry_id: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          enquiry_id?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          owner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grant_documents_enquiry_id_fkey"
+            columns: ["enquiry_id"]
+            isOneToOne: false
+            referencedRelation: "contact_enquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inbound_emails: {
         Row: {
           ai_reply: string | null
