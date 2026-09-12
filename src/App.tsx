@@ -40,6 +40,8 @@ const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
 const GrantGuide = lazy(() => import("./pages/GrantGuide"));
 const GrantWizard = lazy(() => import("./pages/GrantWizard"));
+const GrantEligibility = lazy(() => import("./pages/GrantEligibility"));
+const GrantHubs = lazy(() => import("./pages/GrantHubs"));
 const GrantApplication = lazy(() => import("./pages/GrantApplication"));
 const MediaKit = lazy(() => import("./pages/MediaKit"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
@@ -176,6 +178,8 @@ const App = () => (
             <Route path="/offer" element={<OfferLanding />} />
             <Route path="/grants" element={<GrantGuide />} />
             <Route path="/grant-wizard" element={<GrantWizard />} />
+            <Route path="/grant-eligibility" element={<GrantEligibility />} />
+            <Route path="/grant-hubs" element={<GrantHubs />} />
             <Route path="/grant-application" element={<GrantApplication />} />
             <Route path="/media-kit" element={<MediaKit />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />

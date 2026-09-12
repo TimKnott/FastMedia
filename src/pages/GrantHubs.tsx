@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import SEOHead from '@/components/SEOHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { grantRegions, nationalPool, czechOutlinePath } from '@/data/grantRegions';
 
