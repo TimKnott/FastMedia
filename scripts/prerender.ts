@@ -60,6 +60,7 @@ function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
   // words. React hydration removes the block on paint so real users
   // never see it — the SPA takes over immediately.
   const topLinks = allRoutes
+    .filter((r) => r && typeof r.path === "string" && typeof r.title === "string" && typeof r.description === "string")
     .filter((r) => r.path !== route.path && (r.path === "/" || r.path.startsWith("/demo/") || r.path === "/blog" || r.path === "/calculator" || r.path === "/inquiry"))
     .slice(0, 16)
     .map((r) => {
