@@ -43,9 +43,20 @@ Deno.serve(async (req) => {
   const company = str(body.company, 160)
   const message = str(body.message, 5000)
 
-  if (!name) return json({ error: 'Please enter your name.' }, 400)
-  if (!email || !EMAIL_RE.test(email)) return json({ error: 'Please enter a valid email address.' }, 400)
-  if (!message) return json({ error: 'Please tell us how we can help.' }, 400)
+  const partial = body.partial === true
+  const sessionKey = str(body.sessionKey, 80)
+
+  if (!partial) {
+    if (!name) return json({ error: 'Please enter your name.' }, 400)
+    if (!email || !EMAIL_RE.test(email)) return json({ error: 'Please enter a valid email address.' }, 400)
+    if (!message) return json({ error: 'Please tell us how we can help.' }, 400)
+  }
+  if (partial && !sessionKey) return json({ error: 'A session key is required for partial saves.' }, 400)
+  if (email && !EMAIL_RE.test(email)) return json({ error: 'Please enter a valid email address.' }, 400)
+
+  const safeName = name ?? 'Wizard in progress'
+  const safeEmail = email ?? 'no-email-yet@fastmedia.pro'
+  const safeMessage = message ?? 'Wizard in progress — no message yet.'
 
   // Only string key/value pairs, capped, are accepted as extra details.
   const details: Record<string, string> = {}
@@ -59,15 +70,62 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(supabaseUrl, serviceKey)
 
-  const { data: inserted, error: insertError } = await supabase
-    .from('contact_enquiries')
-    .insert({ kind, name, email, phone, company, message, details })
-    .select('id')
-    .single()
+  if (sessionKey) details.Session = sessionKey
 
-  if (insertError) {
-    console.error('Failed to store enquiry', insertError)
-    return json({ error: 'Could not save your enquiry. Please try again.' }, 500)
+  const row = {
+    kind,
+    name: safeName,
+    email: safeEmail,
+    phone,
+    company,
+    message: safeMessage,
+    details,
+    status: partial ? 'in_progress' : 'new',
+  }
+
+  // A wizard session keeps updating the same row as the visitor moves through the steps.
+  let existingId: string | null = null
+  if (sessionKey) {
+    const { data: existing } = await supabase
+      .from('contact_enquiries')
+      .select('id')
+      .eq('kind', kind)
+      .eq('details->>Session', sessionKey)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    existingId = existing?.id ?? null
+  }
+
+  let inserted: { id: string }
+  if (existingId) {
+    const { data: updated, error: updateError } = await supabase
+      .from('contact_enquiries')
+      .update(row)
+      .eq('id', existingId)
+      .select('id')
+      .single()
+    if (updateError || !updated) {
+      console.error('Failed to update enquiry', updateError)
+      return json({ error: 'Could not save your enquiry. Please try again.' }, 500)
+    }
+    inserted = updated
+  } else {
+    const { data: created, error: insertError } = await supabase
+      .from('contact_enquiries')
+      .insert(row)
+      .select('id')
+      .single()
+    if (insertError || !created) {
+      console.error('Failed to store enquiry', insertError)
+      return json({ error: 'Could not save your enquiry. Please try again.' }, 500)
+    }
+    inserted = created
+  }
+
+  // Partial saves are follow-up material only — never email them.
+  if (partial) {
+    return json({ success: true, id: inserted.id, partial: true, emailStatus: 'skipped' })
   }
 
   const owner = Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL')
@@ -87,7 +145,7 @@ Deno.serve(async (req) => {
           recipientEmail: owner,
           idempotencyKey: `enquiry-${inserted.id}`,
           templateData: {
-            kind, name, email, phone, company, message, details, enquiryId: inserted.id,
+            kind, name: safeName, email: safeEmail, phone, company, message: safeMessage, details, enquiryId: inserted.id,
           },
         }),
       })
