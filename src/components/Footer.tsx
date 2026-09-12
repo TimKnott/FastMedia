@@ -30,6 +30,7 @@ const Footer = () => {
     { href: '/inquiry', label: t('nav.inquiry') },
     { href: '/contact', label: isEnglish ? 'Contact' : 'Kontakt' },
     { href: '/quote-request', label: isEnglish ? 'Request a quote' : 'Nezávazná nabídka' },
+    { href: '/media-kit', label: isEnglish ? 'Media kit' : 'Média kit' },
     { href: '/install', label: t('nav.install') },
   ];
 
