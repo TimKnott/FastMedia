@@ -201,6 +201,7 @@ const copy = {
     start: 'Start the navigator',
     rules: 'Rules and conditions',
     hubsLink: 'Map of regional partners',
+    processLink: 'Process, deadlines and documents',
     stepLabel: 'Step',
     of: 'of',
     elTitle: 'Legal eligibility checks',
