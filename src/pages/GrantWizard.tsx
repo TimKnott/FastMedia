@@ -859,7 +859,9 @@ const GrantWizard = () => {
                     <span>{t.reportDisclaimer}</span>
                   </div>
 
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                  <p className="mt-6 text-sm text-muted-foreground">{t.applyNote}</p>
+
+                  <div className="mt-4 flex flex-col sm:flex-row gap-3">
                     <Link to="/grant-application" className="flex-1">
                       <Button className="w-full">{t.applyLink}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                     </Link>
