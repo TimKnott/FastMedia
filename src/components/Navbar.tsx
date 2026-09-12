@@ -145,7 +145,7 @@ const Navbar = () => {
     { href: '#demos', label: t('nav.demos') },
     { href: '#services', label: t('nav.services') },
     { href: '#reviews', label: t('nav.reviews') },
-    { href: '#pricing', label: t('nav.pricing') },
+    ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
     { href: '#faq', label: t('nav.faq') },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },

@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSiteSetting } from '@/hooks/useSiteSettings';
 import Navbar from '@/components/Navbar';
 import WhyFastMediaSection from '@/components/WhyFastMediaSection';
 import AutomationSection from '@/components/AutomationSection';
@@ -25,6 +26,7 @@ import OfferTeaser from '@/components/OfferTeaser';
 const Index = () => {
   const { language } = useLanguage();
   const isEnglish = language === 'en';
+  const { enabled: showPricing } = useSiteSetting('show_pricing');
   return (
     <>
       <SEOHead
@@ -50,7 +52,7 @@ const Index = () => {
           <PromoBanner variant="full" />
           <ReviewsSection />
           <TeamSection />
-          <PricingSection />
+          {showPricing && <PricingSection />}
           <FAQSection />
           <AppointmentPoliciesSection />
           <ConsultantSection />
