@@ -31,6 +31,7 @@ import {
   TicketPercent,
   Scale,
   Inbox,
+  FileCheck2,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -101,6 +102,14 @@ const contentItems: MenuItem[] = [
   { titleKey: 'Legal Documents', url: '/admin/legal', icon: Scale, minRole: 'admin' },
 ];
 
+const publicPageItems: MenuItem[] = [
+  { titleKey: 'Offer page', url: '/offer', icon: TicketPercent, minRole: 'editor' },
+  { titleKey: 'Case studies', url: '/showcase', icon: Eye, minRole: 'editor' },
+  { titleKey: 'Grant wizard form', url: '/grant-wizard', icon: FileText, minRole: 'editor' },
+  { titleKey: 'Grant eligibility', url: '/grant-eligibility', icon: FileCheck2, minRole: 'editor' },
+  { titleKey: 'Grant hubs map', url: '/grant-hubs', icon: Map, minRole: 'editor' },
+];
+
 const adminItems: MenuItem[] = [
   { titleKey: 'admin.users', url: '/admin/users', icon: Users, minRole: 'admin' },
   { titleKey: 'admin.roles', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
@@ -137,6 +146,7 @@ const AdminSidebar = () => {
 
   const visibleMain = mainItems.filter(item => hasMinRole(item.minRole));
   const visibleContent = contentItems.filter(item => hasMinRole(item.minRole));
+  const visiblePublicPages = publicPageItems.filter(item => hasMinRole(item.minRole));
   const visibleAdmin = adminItems.filter(item => hasMinRole(item.minRole));
   const visibleSettings = settingsItems.filter(item => hasMinRole(item.minRole));
 
@@ -191,6 +201,7 @@ const AdminSidebar = () => {
       <SidebarContent>
         {visibleMain.length > 0 && renderGroup(visibleMain, t('admin.main_menu'))}
         {visibleContent.length > 0 && renderGroup(visibleContent, t('admin.content'))}
+        {visiblePublicPages.length > 0 && renderGroup(visiblePublicPages, 'Public pages')}
         {visibleAdmin.length > 0 && renderGroup(visibleAdmin, t('admin.administration'))}
         {visibleSettings.length > 0 && renderGroup(visibleSettings, t('admin.system'))}
       </SidebarContent>

@@ -17,6 +17,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/logo.jpeg';
+import { useSiteSetting } from '@/hooks/useSiteSettings';
 
 const PAYMENTS_ENV: 'sandbox' | 'live' =
   (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined)?.startsWith('pk_test_')
@@ -26,6 +27,7 @@ const PAYMENTS_ENV: 'sandbox' | 'live' =
 const Navbar = () => {
   const { t, language } = useLanguage();
   const isEnglish = language === 'en';
+  const { enabled: showPricing } = useSiteSetting('show_pricing');
   const navigate = useNavigate();
   const location = useLocation();
   const navBarRef = useRef<HTMLDivElement>(null);
@@ -145,7 +147,7 @@ const Navbar = () => {
     { href: '#demos', label: t('nav.demos') },
     { href: '#services', label: t('nav.services') },
     { href: '#reviews', label: t('nav.reviews') },
-    { href: '#pricing', label: t('nav.pricing') },
+    ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
     { href: '#faq', label: t('nav.faq') },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
