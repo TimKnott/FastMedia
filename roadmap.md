@@ -49,3 +49,5 @@
 - [ ] "Apply for a grant" link in navbar + footer -> /grant-wizard (after fact check)
 - [ ] /admin/grant-follow-up: one tracked task per wizard enquiry (region, modules, budget)
 - [ ] /grant-portal: applicant login to view their own saved application
+- [ ] /grant-portal adds document upload + DPMK reference tracking
+- [ ] Bank iD login (blocked: needs certified identity provider registration)
