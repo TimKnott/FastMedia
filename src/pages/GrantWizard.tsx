@@ -346,6 +346,22 @@ const GrantWizard = () => {
     }
 
     setLoading(true);
+    try {
+      sessionStorage.setItem(GRANT_PREFILL_KEY, JSON.stringify({
+        business: business.trim(),
+        ico: ico.trim(),
+        regionId,
+        contactName: contactName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        projectDescription: projectDescription.trim(),
+        budget,
+        vatRegistered,
+        deliverables: upgrades,
+      }));
+    } catch {
+      /* storage unavailable */
+    }
     const upgradeLabels = upgrades.map(id => UPGRADES.find(u => u.id === id)?.[lang] ?? id);
     const industryLabel = INDUSTRIES.find(i => i.id === industry)?.[lang] ?? industry;
     const regionLabel = region ? region[lang] : '';
