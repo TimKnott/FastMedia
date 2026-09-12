@@ -42,6 +42,7 @@ const GrantGuide = lazy(() => import("./pages/GrantGuide"));
 const GrantWizard = lazy(() => import("./pages/GrantWizard"));
 const GrantEligibility = lazy(() => import("./pages/GrantEligibility"));
 const GrantHubs = lazy(() => import("./pages/GrantHubs"));
+const GrantProcess = lazy(() => import("./pages/GrantProcess"));
 const GrantApplication = lazy(() => import("./pages/GrantApplication"));
 const MediaKit = lazy(() => import("./pages/MediaKit"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
