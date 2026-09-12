@@ -26,6 +26,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import OfferEnquiryForm from '@/components/OfferEnquiryForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { grantRegions, nationalPool } from '@/data/grantRegions';
+import { GRANT_PREFILL_KEY } from './GrantApplication';
 import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
 

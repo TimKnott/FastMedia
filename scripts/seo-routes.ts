@@ -117,6 +117,20 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
+    path: "/grant-application",
+    title: "Creative Voucher Application Pack — Forms & Declarations | FastMedia",
+    description:
+      "Complete the Kreativni vouchery application pack: business details, project scope, 85/15 budget breakdown, de minimis and declarations. We return submission-ready documents.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.7",
+    h1: "Creative Voucher application pack",
+    contentBlocks: [
+      "This page collects every detail a Czech creative voucher call normally requires: applicant identification and IČO, region of delivery, project description and measurable goals, creative deliverables, an 85/15 budget breakdown, de minimis history and the standard declarations.",
+      "FastMedia.Pro is not the grant provider and does not decide applications. We prepare the technical specification, itemised supplier quotation and declarations checklist so the applicant can submit through their regional partner or the DPMK portal.",
+    ],
+  },
+  {
     path: "/media-kit",
     title: "Media Kit — FastMedia.Pro Company Bio, Portfolio & Testimonials",
     description:
