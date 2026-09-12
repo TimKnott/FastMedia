@@ -75,7 +75,7 @@ const copy = {
     kicker: 'Kreativní vouchery',
     h1: 'Navigátor kreativních voucherů',
     tagline: 'Nastartujte svůj projekt s podporou až 85 %',
-    sub: 'Čtyři kroky a víte, jestli je vaše firma na žádost připravená, kolik zaplatíte ze svého a s jakým regionálním partnerem budete jednat. Umělá inteligence vám navíc řekne, co ve vaší žádosti chybí.',
+    sub: 'Pět kroků a víte, jestli je vaše firma na žádost připravená, kolik zaplatíte ze svého a s jakým regionálním partnerem budete jednat. Umělá inteligence vám navíc řekne, co ve vaší žádosti chybí.',
     heroNote: 'Nejsme poskytovatel dotace. Připravíme vás na žádost, ale samotnou žádost podává a rozhoduje o ní vždy poskytovatel.',
     start: 'Spustit navigátor',
     rules: 'Pravidla a podmínky',
@@ -194,7 +194,7 @@ const copy = {
     kicker: 'Creative Vouchers',
     h1: 'Creative Voucher Navigator',
     tagline: 'Launch your project with up to 85% covered',
-    sub: 'Four steps tell you whether your business is ready to apply, what you pay out of pocket, and which regional partner handles your case. AI then explains exactly what your application is missing.',
+    sub: 'Five steps tell you whether your business is ready to apply, what you pay out of pocket, and which regional partner handles your case. AI then explains exactly what your application is missing.',
     heroNote: 'We are not the grant provider. We prepare you for the application; the provider always receives it and decides.',
     start: 'Start the navigator',
     rules: 'Rules and conditions',
@@ -1137,7 +1137,10 @@ const GrantWizard = () => {
                     <Link to="/calculator" className="flex-1">
                       <Button className="w-full">{t.calcLink}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                     </Link>
-                    <Button variant="outline" onClick={restart}>{t.again}</Button>
+                    <Button variant="outline" onClick={() => downloadPdf(report.chancePercent)}>
+                      <Download className="w-4 h-4 mr-2" />{t.pdf}
+                    </Button>
+                    <Button variant="ghost" onClick={restart}>{t.again}</Button>
                   </div>
 
                   {sent && (
