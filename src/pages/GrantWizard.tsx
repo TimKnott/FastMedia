@@ -149,6 +149,8 @@ const copy = {
     contactSub: 'Napište nám a připravíme rozsah projektu i cenovou nabídku ve struktuře, kterou žádost vyžaduje.',
     grantsLink: 'Přečtěte si náš průvodce dotacemi',
     calcLink: 'Spočítat cenu v kalkulátoru',
+    applyLink: 'Vyplnit podklady k žádosti',
+    applyNote: 'Připraveni pokračovat? Vyplňte kompletní podklady k žádosti — údaje z navigátoru předvyplníme.',
   },
   en: {
     seoTitle: 'Creative Vouchers: application navigator | FastMedia',
