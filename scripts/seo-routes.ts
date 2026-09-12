@@ -131,6 +131,21 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
+    path: "/grant-process",
+    title: "Creative Vouchers: Application Process, Deadlines, Documents | FastMedia.Pro",
+    description:
+      "How a Kreativni vouchery application runs step by step: the seven phases of a call, the deadlines you cannot miss, and every document needed for the application and final accounting.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.8",
+    h1: "The creative voucher application process, deadlines and documents",
+    contentBlocks: [
+      "A creative voucher application runs in fixed phases: the regional partner publishes the call, the applicant prepares an itemised supplier quotation and technical specification, submits electronically within the fixed window, waits for assessment, and may only start delivery after the decision or signed contract.",
+      "The application pack typically includes register extracts, debt-free confirmations, an SME declaration, a de minimis declaration covering three years, a project description, an itemised quotation and evidence the supplier is listed in the national gallery of creatives.",
+      "Final accounting requires the supplier invoice, proof of payment, project outputs and a final report. The partner then reimburses 85 per cent of eligible costs up to 150,000 CZK, so the applicant must pre-finance the full invoice.",
+    ],
+  },
+  {
     path: "/grant-eligibility",
     title: "Creative Voucher Eligibility Rules Explained | FastMedia.Pro",
     description:

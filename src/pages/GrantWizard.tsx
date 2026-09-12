@@ -80,6 +80,7 @@ const copy = {
     start: 'Spustit navigátor',
     rules: 'Pravidla a podmínky',
     hubsLink: 'Mapa regionálních partnerů',
+    processLink: 'Průběh žádosti, termíny a podklady',
     stepLabel: 'Krok',
     of: 'ze',
     // Step 1
@@ -200,6 +201,7 @@ const copy = {
     start: 'Start the navigator',
     rules: 'Rules and conditions',
     hubsLink: 'Map of regional partners',
+    processLink: 'Process, deadlines and documents',
     stepLabel: 'Step',
     of: 'of',
     elTitle: 'Legal eligibility checks',
@@ -1059,6 +1061,9 @@ const GrantWizard = () => {
                           <Link to="/grant-hubs" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
                             {t.hubsLink} <ArrowRight className="w-3 h-3" />
                           </Link>
+                          <Link to="/grant-process" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
+                            {t.processLink} <ArrowRight className="w-3 h-3" />
+                          </Link>
                         </div>
                       </>
                     )}
@@ -1196,6 +1201,7 @@ const GrantWizard = () => {
             <Link to="/grants" className="text-primary inline-flex items-center gap-1">{t.grantsLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/grant-eligibility" className="text-primary inline-flex items-center gap-1">{t.rules}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/grant-hubs" className="text-primary inline-flex items-center gap-1">{t.hubsLink}<ArrowRight className="w-3 h-3" /></Link>
+            <Link to="/grant-process" className="text-primary inline-flex items-center gap-1">{t.processLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/calculator" className="text-primary inline-flex items-center gap-1">{t.calcLink}<ArrowRight className="w-3 h-3" /></Link>
           </div>
         </div>
