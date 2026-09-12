@@ -763,13 +763,21 @@ const GrantWizard = () => {
       {/* Wizard */}
       <section id="wizard" className="py-14 md:py-20">
         <div className="container mx-auto px-4 max-w-3xl">
-          {step <= 4 && !gateFailed && (
-            <div className="mb-8">
+          {step <= TOTAL_STEPS && !gateFailed && (
+            <div className="sticky top-16 z-40 -mx-4 px-4 py-3 mb-8 bg-background/95 backdrop-blur border-b border-border">
               <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                <span>{t.stepLabel} {step} {t.of} 4</span>
-                <span>{Math.round(progress)}%</span>
+                <span className="inline-flex items-center gap-2">
+                  <BadgeCheck className="w-4 h-4 text-primary" />
+                  {t.stepLabel} {step} {t.of} {TOTAL_STEPS}
+                </span>
+                <span className="font-semibold text-foreground">{Math.round(progress)}%</span>
               </div>
               <Progress value={progress} className="h-2" />
+              {savedAt && (
+                <p className="mt-2 text-xs text-primary inline-flex items-center gap-1">
+                  <Save className="w-3 h-3" />{t.draftSaved} · {savedAt}
+                </p>
+              )}
             </div>
           )}
 
@@ -793,7 +801,7 @@ const GrantWizard = () => {
             </Card>
           )}
 
-          {/* Step 1 */}
+          {/* Step 1 — identity, contact and optional sign-in */}
           {!gateFailed && step === 1 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-5">
@@ -801,6 +809,29 @@ const GrantWizard = () => {
                   <h2 className="text-2xl font-bold">{t.s1title}</h2>
                   <p className="text-muted-foreground text-sm mt-1">{t.s1sub}</p>
                 </div>
+
+                <Card className="bg-muted/40 border-primary/30">
+                  <CardContent className="p-5 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Lock className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-semibold">{t.authTitle}</p>
+                        <p className="text-sm text-muted-foreground">{t.authSub}</p>
+                      </div>
+                    </div>
+                    {userEmail ? (
+                      <p className="text-sm text-primary inline-flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4" />{t.signedIn} {userEmail}
+                      </p>
+                    ) : (
+                      <Button variant="outline" onClick={signIn}>
+                        <LogIn className="w-4 h-4 mr-2" />{t.signIn}
+                      </Button>
+                    )}
+                    <p className="text-xs text-muted-foreground">{t.identityNote}</p>
+                  </CardContent>
+                </Card>
+
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="gw-business">{t.business}</Label>
@@ -810,7 +841,20 @@ const GrantWizard = () => {
                     <Label htmlFor="gw-ico">{t.ico}</Label>
                     <Input id="gw-ico" value={ico} onChange={e => setIco(e.target.value)} inputMode="numeric" maxLength={12} />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="gw-name">{t.contactName}</Label>
+                    <Input id="gw-name" value={contactName} onChange={e => setContactName(e.target.value)} maxLength={120} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="gw-email">{t.email}</Label>
+                    <Input id="gw-email" type="email" value={email} onChange={e => setEmail(e.target.value)} maxLength={200} />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="gw-phone">{t.phone}</Label>
+                    <Input id="gw-phone" value={phone} onChange={e => setPhone(e.target.value)} maxLength={40} />
+                  </div>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="gw-region">{t.region}</Label>
                   <select
@@ -825,19 +869,7 @@ const GrantWizard = () => {
                     ))}
                   </select>
                 </div>
-                <Separator />
-                <div className="space-y-4">
-                  {([
-                    [t.chk1, activeBusiness, setActiveBusiness, 'gw-c1'],
-                    [t.chk2, noDebts, setNoDebts, 'gw-c2'],
-                    [t.chk3, deMinimisOk, setDeMinimisOk, 'gw-c3'],
-                  ] as const).map(([label, val, set, id]) => (
-                    <div key={id} className="flex items-start gap-3">
-                      <Checkbox id={id} checked={val} onCheckedChange={v => set(v === true)} className="mt-0.5" />
-                      <Label htmlFor={id} className="text-sm font-normal leading-snug">{label}</Label>
-                    </div>
-                  ))}
-                </div>
+
                 <Button size="lg" className="w-full" onClick={goStep1Next}>
                   {t.next}<ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -845,8 +877,36 @@ const GrantWizard = () => {
             </Card>
           )}
 
-          {/* Step 2 */}
+          {/* Step 2 — legal eligibility gate */}
           {!gateFailed && step === 2 && (
+            <Card>
+              <CardContent className="p-6 md:p-8 space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold">{t.elTitle}</h2>
+                  <p className="text-muted-foreground text-sm mt-1">{t.elSub}</p>
+                </div>
+                <div className="space-y-4">
+                  {([
+                    [t.chk1, activeBusiness, setActiveBusiness, 'gw-c1'],
+                    [t.chk2, noDebts, setNoDebts, 'gw-c2'],
+                    [t.chk3, deMinimisOk, setDeMinimisOk, 'gw-c3'],
+                  ] as const).map(([label, val, set, id]) => (
+                    <div key={id} className="flex items-start gap-3 rounded-lg border border-border p-3">
+                      <Checkbox id={id} checked={val} onCheckedChange={v => set(v === true)} className="mt-0.5" />
+                      <Label htmlFor={id} className="text-sm font-normal leading-snug">{label}</Label>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={() => setStep(1)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
+                  <Button className="flex-1" onClick={goStep2Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Step 3 — creative and strategic scope */}
+          {!gateFailed && step === 3 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-6">
                 <div>
@@ -881,17 +941,18 @@ const GrantWizard = () => {
                       </div>
                     ))}
                   </div>
+                  <p className="text-xs text-muted-foreground rounded-lg bg-muted/50 p-3">{t.moduleHint}</p>
                 </div>
                 <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep(1)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
-                  <Button className="flex-1" onClick={goStep2Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                  <Button variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
+                  <Button className="flex-1" onClick={goStep3Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Step 3 */}
-          {!gateFailed && step === 3 && (
+          {/* Step 4 — budget calculator */}
+          {!gateFailed && step === 4 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-6">
                 <div>
@@ -905,20 +966,20 @@ const GrantWizard = () => {
                   </div>
                   <Slider
                     id="gw-budget"
-                    min={60000}
-                    max={176000}
+                    min={BUDGET_MIN}
+                    max={BUDGET_MAX}
                     step={1000}
                     value={[budget]}
                     onValueChange={v => setBudget(v[0])}
                   />
                   <Input
                     type="number"
-                    min={60000}
-                    max={176000}
+                    min={BUDGET_MIN}
+                    max={BUDGET_MAX}
                     value={budget}
                     onChange={e => {
                       const n = Number(e.target.value);
-                      if (Number.isFinite(n)) setBudget(Math.min(176000, Math.max(60000, Math.round(n))));
+                      if (Number.isFinite(n)) setBudget(Math.min(BUDGET_MAX, Math.max(BUDGET_MIN, Math.round(n))));
                     }}
                   />
                 </div>
@@ -933,36 +994,37 @@ const GrantWizard = () => {
                       <span className="font-semibold">{fmtCzk(budget, lang)} CZK</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">{t.reimb}</span>
+                      <span className="text-muted-foreground">{t.subsidyPaid}</span>
                       <span className="font-semibold text-primary">{fmtCzk(reimbursement, lang)} CZK</span>
                     </div>
                     <Separator />
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">{t.share}</span>
+                      <span className="font-medium">{t.netInvestment}</span>
                       <span className="font-display font-bold text-xl text-accent">{fmtCzk(share, lang)} CZK</span>
                     </div>
+                    <p className="text-xs text-muted-foreground">{t.capNote}</p>
                     <p className="text-xs text-muted-foreground flex items-start gap-2">
                       <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <span>{t.prefinance}</span>
+                      <span>{t.prefinanceLong}</span>
                     </p>
                     <p className="text-xs text-muted-foreground">{vatRegistered ? t.vatNote : t.vatNoteNo}</p>
                   </CardContent>
                 </Card>
                 <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
-                  <Button className="flex-1" onClick={() => setStep(4)}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                  <Button variant="outline" onClick={() => setStep(3)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
+                  <Button className="flex-1" onClick={goStep4Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Step 4 */}
-          {!gateFailed && step === 4 && (
+          {/* Step 5 — hub routing, project detail and submission */}
+          {!gateFailed && step === 5 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold">{t.s4title}</h2>
-                  <p className="text-muted-foreground text-sm mt-1">{t.s4sub}</p>
+                  <h2 className="text-2xl font-bold">{t.s5title}</h2>
+                  <p className="text-muted-foreground text-sm mt-1">{t.s5sub}</p>
                 </div>
 
                 <Card className="bg-muted/40">
@@ -993,21 +1055,6 @@ const GrantWizard = () => {
                   </CardContent>
                 </Card>
 
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="gw-name">{t.contactName}</Label>
-                    <Input id="gw-name" value={contactName} onChange={e => setContactName(e.target.value)} maxLength={120} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="gw-email">{t.email}</Label>
-                    <Input id="gw-email" type="email" value={email} onChange={e => setEmail(e.target.value)} maxLength={200} />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="gw-phone">{t.phone}</Label>
-                    <Input id="gw-phone" value={phone} onChange={e => setPhone(e.target.value)} maxLength={40} />
-                  </div>
-                </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="gw-project">{t.project}</Label>
                   <Textarea
@@ -1034,7 +1081,7 @@ const GrantWizard = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button variant="outline" onClick={() => setStep(3)} disabled={loading}>
+                  <Button variant="outline" onClick={() => setStep(4)} disabled={loading}>
                     <ArrowLeft className="w-4 h-4 mr-2" />{t.back}
                   </Button>
                   <Button className="flex-1" size="lg" onClick={submit} disabled={loading}>
@@ -1047,7 +1094,7 @@ const GrantWizard = () => {
           )}
 
           {/* Report */}
-          {step === 5 && report && (
+          {step === 6 && report && (
             <div className="space-y-6">
               <Card className="border-primary/40">
                 <CardContent className="p-6 md:p-8">
