@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
 import AdminToolbar from "@/components/AdminToolbar";
@@ -151,6 +152,7 @@ const PageLoader = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem storageKey="fastmedia-theme" disableTransitionOnChange>
       <A11yProvider>
       <LanguageProvider>
         <PreviewModeProvider>
@@ -294,6 +296,7 @@ const App = () => (
         </PreviewModeProvider>
       </LanguageProvider>
       </A11yProvider>
+      </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

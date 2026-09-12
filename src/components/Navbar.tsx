@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import ThemeToggle from '@/components/ThemeToggle';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/logo.jpeg';
@@ -260,6 +261,8 @@ const Navbar = () => {
               </DropdownMenu>
             )}
 
+            <ThemeToggle className="hidden sm:inline-flex" />
+
             <LanguageSwitcher />
 
             {/* CTA Button - hidden on mobile, visible sm+ */}
@@ -321,6 +324,12 @@ const Navbar = () => {
                    {isEnglish ? 'Manage billing' : 'Spravovat platby'}
                 </button>
               )}
+              <div className="flex items-center justify-between gap-3 py-2 sm:hidden">
+                <span className="text-sm font-medium text-foreground">
+                  {isEnglish ? 'Dark mode' : 'Tmavý režim'}
+                </span>
+                <ThemeToggle />
+              </div>
               {navLinks.map((link) =>
                 link.isRoute ? (
                   <Link

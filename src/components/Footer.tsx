@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useA11y } from '@/contexts/A11yContext';
 import { MessageCircle, Contact, Accessibility } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
@@ -159,6 +160,8 @@ const Footer = () => {
             © {new Date().getFullYear()} FastMedia.Pro. {t('footer.rights')}.
           </p>
           <div className="flex items-center gap-3">
+            <ThemeToggle variant="inverted" />
+            <span className="text-background/20">|</span>
             <button
               onClick={() => setOpen(true)}
               className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
