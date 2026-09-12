@@ -411,5 +411,14 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     }
   }
 
-  return routes;
+  // Guard: drop any malformed entry so prerendering can never crash on it
+  return routes.filter(
+    (r): r is RouteSeo =>
+      !!r &&
+      typeof r.path === "string" &&
+      r.path.startsWith("/") &&
+      !r.path.includes("undefined") &&
+      typeof r.title === "string" &&
+      typeof r.description === "string",
+  );
 }
