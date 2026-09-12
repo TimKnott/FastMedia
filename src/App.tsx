@@ -44,6 +44,8 @@ const GrantEligibility = lazy(() => import("./pages/GrantEligibility"));
 const GrantHubs = lazy(() => import("./pages/GrantHubs"));
 const GrantProcess = lazy(() => import("./pages/GrantProcess"));
 const GrantApplication = lazy(() => import("./pages/GrantApplication"));
+const GrantPortal = lazy(() => import("./pages/GrantPortal"));
+const AdminGrantFollowUp = lazy(() => import("./pages/admin/AdminGrantFollowUp"));
 const MediaKit = lazy(() => import("./pages/MediaKit"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 
@@ -183,6 +185,7 @@ const App = () => (
             <Route path="/grant-hubs" element={<GrantHubs />} />
             <Route path="/grant-process" element={<GrantProcess />} />
             <Route path="/grant-application" element={<GrantApplication />} />
+            <Route path="/grant-portal" element={<GrantPortal />} />
             <Route path="/media-kit" element={<MediaKit />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />
             <Route path="/blog" element={<Blog />} />
