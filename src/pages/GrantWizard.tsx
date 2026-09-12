@@ -1201,6 +1201,7 @@ const GrantWizard = () => {
             <Link to="/grants" className="text-primary inline-flex items-center gap-1">{t.grantsLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/grant-eligibility" className="text-primary inline-flex items-center gap-1">{t.rules}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/grant-hubs" className="text-primary inline-flex items-center gap-1">{t.hubsLink}<ArrowRight className="w-3 h-3" /></Link>
+            <Link to="/grant-process" className="text-primary inline-flex items-center gap-1">{t.processLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/calculator" className="text-primary inline-flex items-center gap-1">{t.calcLink}<ArrowRight className="w-3 h-3" /></Link>
           </div>
         </div>
