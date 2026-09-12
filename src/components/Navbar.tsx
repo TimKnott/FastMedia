@@ -324,6 +324,12 @@ const Navbar = () => {
                    {isEnglish ? 'Manage billing' : 'Spravovat platby'}
                 </button>
               )}
+              <div className="flex items-center justify-between gap-3 py-2 sm:hidden">
+                <span className="text-sm font-medium text-foreground">
+                  {isEnglish ? 'Dark mode' : 'Tmavý režim'}
+                </span>
+                <ThemeToggle />
+              </div>
               {navLinks.map((link) =>
                 link.isRoute ? (
                   <Link
