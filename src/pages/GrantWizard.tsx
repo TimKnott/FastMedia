@@ -585,10 +585,6 @@ const GrantWizard = () => {
     } catch {
       /* storage unavailable */
     }
-    const upgradeLabels = upgrades.map(id => UPGRADES.find(u => u.id === id)?.[lang] ?? id);
-    const industryLabel = INDUSTRIES.find(i => i.id === industry)?.[lang] ?? industry;
-    const regionLabel = region ? region[lang] : '';
-
     try {
       const { data, error } = await supabase.functions.invoke('grant-wizard-assess', {
         body: {
@@ -616,6 +612,7 @@ const GrantWizard = () => {
       const { error: enquiryError } = await supabase.functions.invoke('submit-enquiry', {
         body: {
           kind: 'offer',
+          sessionKey: sessionKeyRef.current,
           name: contactName.trim(),
           email: email.trim(),
           phone: phone.trim(),
@@ -623,12 +620,14 @@ const GrantWizard = () => {
           message: projectDescription.trim(),
           details: {
             Source: 'Creative voucher navigator (/grant-wizard)',
+            Status: 'Submitted',
+            'Signed in as': userEmail ?? 'not signed in',
             Language: lang === 'cs' ? 'Czech' : 'English',
             'IČO': ico.trim(),
             Region: regionLabel,
             'Regional hub': region?.hub ?? '',
             Industry: industryLabel,
-            'Creative upgrades': upgradeLabels.join(', '),
+            'Creative modules': upgradeLabels.join(', '),
             'Project budget (CZK)': String(budget),
             'VAT registered': vatRegistered ? 'Yes' : 'No',
             'Estimated reimbursement (CZK)': String(Math.round(reimbursement)),
@@ -641,7 +640,8 @@ const GrantWizard = () => {
         },
       });
       if (!enquiryError) setSent(true);
-      setStep(5);
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+      setStep(6);
     } catch (err) {
       toast.error(err instanceof Error && err.message
         ? err.message
@@ -658,7 +658,7 @@ const GrantWizard = () => {
     setStep(1);
   };
 
-  const progress = Math.min(100, (Math.min(step, 4) / 4) * 100);
+  const progress = Math.min(100, (Math.min(step, TOTAL_STEPS) / TOTAL_STEPS) * 100);
 
   return (
     <div className="min-h-screen bg-background">
