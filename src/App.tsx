@@ -40,6 +40,7 @@ const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
 const GrantGuide = lazy(() => import("./pages/GrantGuide"));
 const GrantWizard = lazy(() => import("./pages/GrantWizard"));
+const MediaKit = lazy(() => import("./pages/MediaKit"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 
 // Admin pages (lazy)
@@ -174,6 +175,7 @@ const App = () => (
             <Route path="/offer" element={<OfferLanding />} />
             <Route path="/grants" element={<GrantGuide />} />
             <Route path="/grant-wizard" element={<GrantWizard />} />
+            <Route path="/media-kit" element={<MediaKit />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />

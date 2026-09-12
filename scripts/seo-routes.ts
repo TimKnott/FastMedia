@@ -117,7 +117,20 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
-    path: "/quote-request",
+    path: "/media-kit",
+    title: "Media Kit — FastMedia.Pro Company Bio, Portfolio & Testimonials",
+    description:
+      "The official FastMedia.Pro media kit: company bio, key facts, live website showcases for trades and services, and testimonials from Czech business owners.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.6",
+    h1: "FastMedia.Pro at a glance",
+    contentBlocks: [
+      "FastMedia.Pro is a digital studio designing and running modern, mobile-first, bilingual websites for tradespeople and small businesses in Czechia and worldwide, founded by a British entrepreneur.",
+      "The media kit includes the company bio, key facts, selected live website showcases, client testimonials and the press contact.",
+    ],
+  },
+  {
     title: "Request a Quote — FastMedia.Pro Web Design",
     description:
       "Tell us about your project and get a clear, itemised quote for a website, online shop or booking system. Reply within one working day.",
