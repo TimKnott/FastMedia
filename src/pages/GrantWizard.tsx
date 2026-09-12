@@ -378,21 +378,186 @@ const GrantWizard = () => {
   const toggleUpgrade = (id: string) =>
     setUpgrades(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
 
+  const upgradeLabels = useMemo(
+    () => upgrades.map(id => UPGRADES.find(u => u.id === id)?.[lang] ?? id),
+    [upgrades, lang],
+  );
+  const industryLabel = INDUSTRIES.find(i => i.id === industry)?.[lang] ?? industry;
+  const regionLabel = region ? region[lang] : '';
+
+  /** Everything we know so far, shared by the local draft and the inbox row. */
+  const snapshot = useCallback(() => ({
+    business, ico, regionId, activeBusiness, noDebts, deMinimisOk,
+    industry, upgrades, budget, vatRegistered,
+    contactName, email, phone, projectDescription,
+    hasWebsite, hasBranding, hasPortfolio, step,
+  }), [business, ico, regionId, activeBusiness, noDebts, deMinimisOk, industry, upgrades,
+    budget, vatRegistered, contactName, email, phone, projectDescription,
+    hasWebsite, hasBranding, hasPortfolio, step]);
+
+  // Signed-in visitors can leave and resume their draft.
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUserEmail(data.session?.user?.email ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const d = JSON.parse(raw) as Record<string, unknown>;
+      if (typeof d.business === 'string') setBusiness(d.business);
+      if (typeof d.ico === 'string') setIco(d.ico);
+      if (typeof d.regionId === 'string') setRegionId(d.regionId);
+      if (typeof d.activeBusiness === 'boolean') setActiveBusiness(d.activeBusiness);
+      if (typeof d.noDebts === 'boolean') setNoDebts(d.noDebts);
+      if (typeof d.deMinimisOk === 'boolean') setDeMinimisOk(d.deMinimisOk);
+      if (typeof d.industry === 'string') setIndustry(d.industry);
+      if (Array.isArray(d.upgrades)) setUpgrades(d.upgrades.filter((x): x is string => typeof x === 'string'));
+      if (typeof d.budget === 'number') setBudget(d.budget);
+      if (typeof d.vatRegistered === 'boolean') setVatRegistered(d.vatRegistered);
+      if (typeof d.contactName === 'string') setContactName(d.contactName);
+      if (typeof d.email === 'string') setEmail(d.email);
+      if (typeof d.phone === 'string') setPhone(d.phone);
+      if (typeof d.projectDescription === 'string') setProjectDescription(d.projectDescription);
+      if (typeof d.hasWebsite === 'boolean') setHasWebsite(d.hasWebsite);
+      if (typeof d.hasBranding === 'boolean') setHasBranding(d.hasBranding);
+      if (typeof d.hasPortfolio === 'boolean') setHasPortfolio(d.hasPortfolio);
+      if (typeof d.business === 'string' && d.business) toast.success(t.draftRestored);
+    } catch {
+      /* ignore unreadable drafts */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** Save the current answers into the Offer Enquiries inbox as an in-progress row. */
+  const saveProgress = useCallback(async (currentStep: number, gated = false) => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(snapshot()));
+    } catch { /* storage unavailable */ }
+    if (!EMAIL_RE.test(email.trim())) return;
+    try {
+      await supabase.functions.invoke('submit-enquiry', {
+        body: {
+          kind: 'offer',
+          partial: true,
+          sessionKey: sessionKeyRef.current,
+          name: contactName.trim() || business.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          company: business.trim(),
+          message: projectDescription.trim() || `Creative voucher wizard — step ${currentStep} of ${TOTAL_STEPS}`,
+          details: {
+            Source: 'Creative voucher navigator (/grant-wizard)',
+            Status: gated ? 'Not eligible — standard rates' : `In progress — step ${currentStep} of ${TOTAL_STEPS}`,
+            Language: lang === 'cs' ? 'Czech' : 'English',
+            'Signed in as': userEmail ?? 'not signed in',
+            'IČO': ico.trim(),
+            Region: regionLabel,
+            'Regional hub': region?.hub ?? '',
+            Industry: industryLabel,
+            'Creative modules': upgradeLabels.join(', '),
+            'Project budget (CZK)': String(budget),
+            'VAT registered': vatRegistered ? 'Yes' : 'No',
+            'Estimated reimbursement (CZK)': String(Math.round(reimbursement)),
+            'Client share (CZK)': String(Math.round(share)),
+            'Eligibility passed': activeBusiness && noDebts && deMinimisOk ? 'Yes' : 'No',
+          },
+        },
+      });
+      setSavedAt(new Date().toLocaleTimeString(lang === 'cs' ? 'cs-CZ' : 'en-GB'));
+    } catch { /* progress saving must never block the visitor */ }
+  }, [snapshot, email, contactName, business, phone, projectDescription, lang, userEmail, ico,
+    regionLabel, region, industryLabel, upgradeLabels, budget, vatRegistered, reimbursement, share,
+    activeBusiness, noDebts, deMinimisOk]);
+
+  const signIn = async () => {
+    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: `${window.location.origin}/grant-wizard` });
+    if (result.error) {
+      toast.error(lang === 'cs' ? 'Přihlášení se nepodařilo. Zkuste to prosím znovu.' : 'Sign-in failed. Please try again.');
+    }
+  };
+
   const goStep1Next = () => {
     if (!business.trim()) return toast.error(lang === 'cs' ? 'Zadejte název firmy.' : 'Please enter your business name.');
     if (!/^\d{6,10}$/.test(ico.replace(/\s/g, ''))) return toast.error(lang === 'cs' ? 'Zadejte platné IČO (6–10 číslic).' : 'Please enter a valid IČO (6–10 digits).');
+    if (!EMAIL_RE.test(email.trim())) return toast.error(lang === 'cs' ? 'Zadejte platný e-mail.' : 'Please enter a valid email address.');
+    if (!phone.trim()) return toast.error(lang === 'cs' ? 'Zadejte telefon.' : 'Please enter a phone number.');
     if (!regionId) return toast.error(lang === 'cs' ? 'Vyberte kraj.' : 'Please select your region.');
-    if (!activeBusiness || !noDebts || !deMinimisOk) {
-      setGateFailed(true);
-      return;
-    }
     setStep(2);
+    void saveProgress(1);
   };
 
   const goStep2Next = () => {
+    if (!activeBusiness || !noDebts || !deMinimisOk) {
+      setGateFailed(true);
+      void saveProgress(2, true);
+      return;
+    }
+    setStep(3);
+    void saveProgress(2);
+  };
+
+  const goStep3Next = () => {
     if (!industry) return toast.error(lang === 'cs' ? 'Vyberte hlavní obor.' : 'Please select your primary industry.');
     if (upgrades.length === 0) return toast.error(t.upgradeHint);
-    setStep(3);
+    setStep(4);
+    void saveProgress(3);
+  };
+
+  const goStep4Next = () => {
+    setStep(5);
+    void saveProgress(4);
+  };
+
+  /** Branded one-page summary of the wizard result. */
+  const downloadPdf = (chance?: number) => {
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const margin = 56;
+    let y = margin;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+    doc.text('FastMedia.Pro', margin, y);
+    doc.setFontSize(13); y += 22;
+    doc.text(lang === 'cs' ? 'Kreativní vouchery — souhrn projektu' : 'Creative Vouchers — project summary', margin, y);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(120); y += 16;
+    doc.text(new Date().toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-GB'), margin, y);
+    doc.setTextColor(0); doc.setFontSize(10.5); y += 26;
+
+    const rows: [string, string][] = [
+      [t.business, business],
+      [t.ico, ico],
+      [t.region, regionLabel],
+      [t.hubTitle, region?.hub ?? ''],
+      [t.industry, industryLabel],
+      [t.upgrades, upgradeLabels.join(', ')],
+      [t.total, `${fmtCzk(budget, lang)} CZK`],
+      [t.subsidyPaid, `${fmtCzk(reimbursement, lang)} CZK`],
+      [t.netInvestment, `${fmtCzk(share, lang)} CZK`],
+      [t.vat, vatRegistered ? (lang === 'cs' ? 'Ano' : 'Yes') : (lang === 'cs' ? 'Ne' : 'No')],
+      [t.contactName, contactName],
+      [t.email, email],
+      [t.phone, phone],
+    ];
+    if (typeof chance === 'number') rows.push([t.chance, `${chance}%`]);
+
+    rows.forEach(([k, v], i) => {
+      if (i % 2 === 0) { doc.setFillColor(244, 246, 250); doc.rect(margin - 8, y - 11, 483, 20, 'F'); }
+      doc.setFont('helvetica', 'bold'); doc.text(String(k), margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(doc.splitTextToSize(String(v || '—'), 250), margin + 220, y);
+      y += 22;
+    });
+
+    y += 12;
+    doc.setFontSize(9); doc.setTextColor(110);
+    doc.text(doc.splitTextToSize(t.prefinanceLong, 483), margin, y);
+    y += 34;
+    doc.text(doc.splitTextToSize(t.reportDisclaimer, 483), margin, y);
+    doc.setTextColor(0);
+    doc.save(`fastmedia-creative-voucher-${(business || 'summary').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.pdf`);
   };
 
   const submit = async () => {
