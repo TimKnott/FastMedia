@@ -81,7 +81,18 @@
     --sidebar-ring: 215 90% 32%;
   }
 
+  :root {
+    color-scheme: light;
+  }
+
   .dark {
+    color-scheme: dark;
+
+    --shadow-sm: 0 2px 8px -2px hsla(0 0% 0% / 0.5);
+    --shadow-md: 0 8px 24px -8px hsla(0 0% 0% / 0.6);
+    --shadow-lg: 0 16px 48px -12px hsla(0 0% 0% / 0.7);
+    --shadow-card: 0 4px 20px -4px hsla(0 0% 0% / 0.55);
+
     --background: 220 25% 8%;
     --foreground: 210 20% 95%;
 
