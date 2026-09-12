@@ -1,12 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight, ArrowLeft, BadgeCheck, Rocket, ShieldCheck, Sparkles, Landmark,
   AlertTriangle, CheckCircle2, Loader2, FileText, ExternalLink, Scale, Phone, Mail,
+  LogIn, Save, Lock, Download,
 } from 'lucide-react';
+import jsPDF from 'jspdf';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable/index';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +43,19 @@ const UPGRADES = [
   { id: 'interactive', cs: 'Interaktivní moduly zákaznické zkušenosti', en: 'Interactive customer experience modules' },
 ] as const;
 
+const BUDGET_MIN = 58824;
+const BUDGET_MAX = 250000;
+const BUDGET_DEFAULT = 176470;
+const GRANT_CAP = 150000;
+const DRAFT_KEY = 'fastmedia-grant-wizard-draft';
+const TOTAL_STEPS = 5;
+
+/** 85% of the budget, capped at the 150,000 CZK ceiling; the client funds the rest. */
+const grantSplit = (b: number) => {
+  const reimbursement = Math.min(b * 0.85, GRANT_CAP);
+  return { reimbursement, share: b - reimbursement };
+};
+
 const INDUSTRIES = [
   { id: 'trades', cs: 'Řemesla a stavebnictví', en: 'Trades / construction' },
   { id: 'professional', cs: 'Profesionální služby', en: 'Professional services' },
@@ -66,6 +82,23 @@ const copy = {
     stepLabel: 'Krok',
     of: 'ze',
     // Step 1
+    elTitle: 'Zákonné podmínky programu',
+    elSub: 'Všechny tři body musí platit, jinak vás program nepustí dál.',
+    authTitle: 'Uložte si rozpracovanou žádost',
+    authSub: 'Přihlaste se a vraťte se k rozpracované žádosti kdykoli později. Vaše odpovědi ukládáme šifrovaně (TLS 1.3 při přenosu, AES-256 v databázi).',
+    signIn: 'Přihlásit se přes Google',
+    signedIn: 'Přihlášeni jako',
+    draftSaved: 'Rozpracovaná žádost je uložena',
+    draftRestored: 'Načetli jsme vaši rozpracovanou žádost.',
+    identityNote: 'Ověření přes Bank iD / Identitu občana připravujeme. Nikdy nezadávejte přihlašovací údaje k datové schránce — používáme výhradně standardní tokeny OIDC.',
+    moduleHint: 'Dotace pokrývá 85 % strategického UX/UI designu, interaktivních procesů a propojení digitálních systémů. Hosting a domény se fakturují zvlášť, mimo dotaci.',
+    s5title: 'Regionální partner a odeslání',
+    s5sub: 'Podle vašeho kraje vám přiřadíme partnera a připravíme podklady.',
+    subsidyPaid: 'Dotace vyplacená zpětně (ex-post)',
+    netInvestment: 'Čistá investice klienta',
+    capNote: 'Strop dotace je 150 000 Kč. Nad rozpočet 176 470 Kč hradíte vše nad tímto stropem sami.',
+    prefinanceLong: 'Celou fakturu zaplatíte po dokončení projektu, dotaci ve výši 85 % vám ministerstvo vyplatí zpětně po schválení vyúčtování.',
+    pdf: 'Stáhnout souhrn v PDF',
     s1title: 'Základní způsobilost firmy',
     s1sub: 'Údaje potřebujeme jen pro posouzení a přípravu nabídky.',
     business: 'Název firmy',
@@ -167,6 +200,23 @@ const copy = {
     rules: 'Rules and conditions',
     stepLabel: 'Step',
     of: 'of',
+    elTitle: 'Legal eligibility checks',
+    elSub: 'All three must be true, otherwise the programme cannot take your project.',
+    authTitle: 'Save your draft application',
+    authSub: 'Sign in and return to your draft whenever you like. Your answers are stored encrypted (TLS 1.3 in transit, AES-256 at rest).',
+    signIn: 'Sign in with Google',
+    signedIn: 'Signed in as',
+    draftSaved: 'Draft saved',
+    draftRestored: 'We restored your saved draft.',
+    identityNote: 'Bank iD / Identita občana verification is coming. Never enter Datová schránka credentials — we only ever use standard OIDC tokens.',
+    moduleHint: 'The grant covers 85% of strategic UX/UI design, interactive workflows and digital system integration. Hosting and domain infrastructure are billed separately, outside the grant.',
+    s5title: 'Regional hub routing and submission',
+    s5sub: 'We match your region to its agency and prepare your documents.',
+    subsidyPaid: 'State subsidy paid to you (ex-post)',
+    netInvestment: 'Net client investment',
+    capNote: 'The reimbursement ceiling is 150,000 CZK. Above a 176,470 CZK budget you fund everything over that ceiling yourself.',
+    prefinanceLong: 'You pay the full invoice on completion, then receive the 85% grant payout back from the Ministry once your report is filed and approved.',
+    pdf: 'Download PDF summary',
     s1title: 'Basic business eligibility',
     s1sub: 'We only use these details to assess your case and prepare a proposal.',
     business: 'Business name',
@@ -283,7 +333,7 @@ const GrantWizard = () => {
   const [industry, setIndustry] = useState<string>('');
   const [upgrades, setUpgrades] = useState<string[]>([]);
 
-  const [budget, setBudget] = useState(150000);
+  const [budget, setBudget] = useState(BUDGET_DEFAULT);
   const [vatRegistered, setVatRegistered] = useState(false);
 
   const [contactName, setContactName] = useState('');
@@ -297,10 +347,17 @@ const GrantWizard = () => {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [sent, setSent] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+
+  // One key per visitor session keeps every partial save on a single inbox row.
+  const sessionKeyRef = useRef<string>('');
+  if (!sessionKeyRef.current) {
+    sessionKeyRef.current = `gw-${(crypto.randomUUID?.() ?? String(Date.now()))}`;
+  }
 
   const region = grantRegions.find(r => r.id === regionId);
-  const reimbursement = budget * 0.85;
-  const share = budget * 0.15;
+  const { reimbursement, share } = grantSplit(budget);
 
   const baselineScore = useMemo(() => {
     let s = 30;
