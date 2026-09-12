@@ -245,6 +245,8 @@ const copy = {
     contactSub: 'Send us a line and we will prepare the project scope and a quotation in the structure the application requires.',
     grantsLink: 'Read our grant guide',
     calcLink: 'Price it in the calculator',
+    applyLink: 'Fill in the application pack',
+    applyNote: 'Ready to go further? Complete the full application pack — we pre-fill it from the navigator.',
   },
 } as const;
 
