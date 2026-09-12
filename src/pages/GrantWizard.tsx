@@ -859,6 +859,9 @@ const GrantWizard = () => {
                   </div>
 
                   <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                    <Link to="/grant-application" className="flex-1">
+                      <Button className="w-full">{t.applyLink}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                    </Link>
                     <Link to="/calculator" className="flex-1">
                       <Button className="w-full">{t.calcLink}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                     </Link>
