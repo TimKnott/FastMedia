@@ -38,6 +38,7 @@ const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
 const GrantGuide = lazy(() => import("./pages/GrantGuide"));
+const GrantWizard = lazy(() => import("./pages/GrantWizard"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 
 // Admin pages (lazy)
