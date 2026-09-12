@@ -1,12 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight, ArrowLeft, BadgeCheck, Rocket, ShieldCheck, Sparkles, Landmark,
   AlertTriangle, CheckCircle2, Loader2, FileText, ExternalLink, Scale, Phone, Mail,
+  LogIn, Save, Lock, Download,
 } from 'lucide-react';
+import jsPDF from 'jspdf';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable/index';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +43,19 @@ const UPGRADES = [
   { id: 'interactive', cs: 'Interaktivní moduly zákaznické zkušenosti', en: 'Interactive customer experience modules' },
 ] as const;
 
+const BUDGET_MIN = 58824;
+const BUDGET_MAX = 250000;
+const BUDGET_DEFAULT = 176470;
+const GRANT_CAP = 150000;
+const DRAFT_KEY = 'fastmedia-grant-wizard-draft';
+const TOTAL_STEPS = 5;
+
+/** 85% of the budget, capped at the 150,000 CZK ceiling; the client funds the rest. */
+const grantSplit = (b: number) => {
+  const reimbursement = Math.min(b * 0.85, GRANT_CAP);
+  return { reimbursement, share: b - reimbursement };
+};
+
 const INDUSTRIES = [
   { id: 'trades', cs: 'Řemesla a stavebnictví', en: 'Trades / construction' },
   { id: 'professional', cs: 'Profesionální služby', en: 'Professional services' },
@@ -59,13 +75,30 @@ const copy = {
     kicker: 'Kreativní vouchery',
     h1: 'Navigátor kreativních voucherů',
     tagline: 'Nastartujte svůj projekt s podporou až 85 %',
-    sub: 'Čtyři kroky a víte, jestli je vaše firma na žádost připravená, kolik zaplatíte ze svého a s jakým regionálním partnerem budete jednat. Umělá inteligence vám navíc řekne, co ve vaší žádosti chybí.',
+    sub: 'Pět kroků a víte, jestli je vaše firma na žádost připravená, kolik zaplatíte ze svého a s jakým regionálním partnerem budete jednat. Umělá inteligence vám navíc řekne, co ve vaší žádosti chybí.',
     heroNote: 'Nejsme poskytovatel dotace. Připravíme vás na žádost, ale samotnou žádost podává a rozhoduje o ní vždy poskytovatel.',
     start: 'Spustit navigátor',
     rules: 'Pravidla a podmínky',
     stepLabel: 'Krok',
     of: 'ze',
     // Step 1
+    elTitle: 'Zákonné podmínky programu',
+    elSub: 'Všechny tři body musí platit, jinak vás program nepustí dál.',
+    authTitle: 'Uložte si rozpracovanou žádost',
+    authSub: 'Přihlaste se a vraťte se k rozpracované žádosti kdykoli později. Vaše odpovědi ukládáme šifrovaně (TLS 1.3 při přenosu, AES-256 v databázi).',
+    signIn: 'Přihlásit se přes Google',
+    signedIn: 'Přihlášeni jako',
+    draftSaved: 'Rozpracovaná žádost je uložena',
+    draftRestored: 'Načetli jsme vaši rozpracovanou žádost.',
+    identityNote: 'Ověření přes Bank iD / Identitu občana připravujeme. Nikdy nezadávejte přihlašovací údaje k datové schránce — používáme výhradně standardní tokeny OIDC.',
+    moduleHint: 'Dotace pokrývá 85 % strategického UX/UI designu, interaktivních procesů a propojení digitálních systémů. Hosting a domény se fakturují zvlášť, mimo dotaci.',
+    s5title: 'Regionální partner a odeslání',
+    s5sub: 'Podle vašeho kraje vám přiřadíme partnera a připravíme podklady.',
+    subsidyPaid: 'Dotace vyplacená zpětně (ex-post)',
+    netInvestment: 'Čistá investice klienta',
+    capNote: 'Strop dotace je 150 000 Kč. Nad rozpočet 176 470 Kč hradíte vše nad tímto stropem sami.',
+    prefinanceLong: 'Celou fakturu zaplatíte po dokončení projektu, dotaci ve výši 85 % vám ministerstvo vyplatí zpětně po schválení vyúčtování.',
+    pdf: 'Stáhnout souhrn v PDF',
     s1title: 'Základní způsobilost firmy',
     s1sub: 'Údaje potřebujeme jen pro posouzení a přípravu nabídky.',
     business: 'Název firmy',
@@ -161,12 +194,29 @@ const copy = {
     kicker: 'Creative Vouchers',
     h1: 'Creative Voucher Navigator',
     tagline: 'Launch your project with up to 85% covered',
-    sub: 'Four steps tell you whether your business is ready to apply, what you pay out of pocket, and which regional partner handles your case. AI then explains exactly what your application is missing.',
+    sub: 'Five steps tell you whether your business is ready to apply, what you pay out of pocket, and which regional partner handles your case. AI then explains exactly what your application is missing.',
     heroNote: 'We are not the grant provider. We prepare you for the application; the provider always receives it and decides.',
     start: 'Start the navigator',
     rules: 'Rules and conditions',
     stepLabel: 'Step',
     of: 'of',
+    elTitle: 'Legal eligibility checks',
+    elSub: 'All three must be true, otherwise the programme cannot take your project.',
+    authTitle: 'Save your draft application',
+    authSub: 'Sign in and return to your draft whenever you like. Your answers are stored encrypted (TLS 1.3 in transit, AES-256 at rest).',
+    signIn: 'Sign in with Google',
+    signedIn: 'Signed in as',
+    draftSaved: 'Draft saved',
+    draftRestored: 'We restored your saved draft.',
+    identityNote: 'Bank iD / Identita občana verification is coming. Never enter Datová schránka credentials — we only ever use standard OIDC tokens.',
+    moduleHint: 'The grant covers 85% of strategic UX/UI design, interactive workflows and digital system integration. Hosting and domain infrastructure are billed separately, outside the grant.',
+    s5title: 'Regional hub routing and submission',
+    s5sub: 'We match your region to its agency and prepare your documents.',
+    subsidyPaid: 'State subsidy paid to you (ex-post)',
+    netInvestment: 'Net client investment',
+    capNote: 'The reimbursement ceiling is 150,000 CZK. Above a 176,470 CZK budget you fund everything over that ceiling yourself.',
+    prefinanceLong: 'You pay the full invoice on completion, then receive the 85% grant payout back from the Ministry once your report is filed and approved.',
+    pdf: 'Download PDF summary',
     s1title: 'Basic business eligibility',
     s1sub: 'We only use these details to assess your case and prepare a proposal.',
     business: 'Business name',
@@ -283,7 +333,7 @@ const GrantWizard = () => {
   const [industry, setIndustry] = useState<string>('');
   const [upgrades, setUpgrades] = useState<string[]>([]);
 
-  const [budget, setBudget] = useState(150000);
+  const [budget, setBudget] = useState(BUDGET_DEFAULT);
   const [vatRegistered, setVatRegistered] = useState(false);
 
   const [contactName, setContactName] = useState('');
@@ -297,10 +347,17 @@ const GrantWizard = () => {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
   const [sent, setSent] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+
+  // One key per visitor session keeps every partial save on a single inbox row.
+  const sessionKeyRef = useRef<string>('');
+  if (!sessionKeyRef.current) {
+    sessionKeyRef.current = `gw-${(crypto.randomUUID?.() ?? String(Date.now()))}`;
+  }
 
   const region = grantRegions.find(r => r.id === regionId);
-  const reimbursement = budget * 0.85;
-  const share = budget * 0.15;
+  const { reimbursement, share } = grantSplit(budget);
 
   const baselineScore = useMemo(() => {
     let s = 30;
@@ -321,21 +378,186 @@ const GrantWizard = () => {
   const toggleUpgrade = (id: string) =>
     setUpgrades(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
 
+  const upgradeLabels = useMemo(
+    () => upgrades.map(id => UPGRADES.find(u => u.id === id)?.[lang] ?? id),
+    [upgrades, lang],
+  );
+  const industryLabel = INDUSTRIES.find(i => i.id === industry)?.[lang] ?? industry;
+  const regionLabel = region ? region[lang] : '';
+
+  /** Everything we know so far, shared by the local draft and the inbox row. */
+  const snapshot = useCallback(() => ({
+    business, ico, regionId, activeBusiness, noDebts, deMinimisOk,
+    industry, upgrades, budget, vatRegistered,
+    contactName, email, phone, projectDescription,
+    hasWebsite, hasBranding, hasPortfolio, step,
+  }), [business, ico, regionId, activeBusiness, noDebts, deMinimisOk, industry, upgrades,
+    budget, vatRegistered, contactName, email, phone, projectDescription,
+    hasWebsite, hasBranding, hasPortfolio, step]);
+
+  // Signed-in visitors can leave and resume their draft.
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUserEmail(data.session?.user?.email ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const d = JSON.parse(raw) as Record<string, unknown>;
+      if (typeof d.business === 'string') setBusiness(d.business);
+      if (typeof d.ico === 'string') setIco(d.ico);
+      if (typeof d.regionId === 'string') setRegionId(d.regionId);
+      if (typeof d.activeBusiness === 'boolean') setActiveBusiness(d.activeBusiness);
+      if (typeof d.noDebts === 'boolean') setNoDebts(d.noDebts);
+      if (typeof d.deMinimisOk === 'boolean') setDeMinimisOk(d.deMinimisOk);
+      if (typeof d.industry === 'string') setIndustry(d.industry);
+      if (Array.isArray(d.upgrades)) setUpgrades(d.upgrades.filter((x): x is string => typeof x === 'string'));
+      if (typeof d.budget === 'number') setBudget(d.budget);
+      if (typeof d.vatRegistered === 'boolean') setVatRegistered(d.vatRegistered);
+      if (typeof d.contactName === 'string') setContactName(d.contactName);
+      if (typeof d.email === 'string') setEmail(d.email);
+      if (typeof d.phone === 'string') setPhone(d.phone);
+      if (typeof d.projectDescription === 'string') setProjectDescription(d.projectDescription);
+      if (typeof d.hasWebsite === 'boolean') setHasWebsite(d.hasWebsite);
+      if (typeof d.hasBranding === 'boolean') setHasBranding(d.hasBranding);
+      if (typeof d.hasPortfolio === 'boolean') setHasPortfolio(d.hasPortfolio);
+      if (typeof d.business === 'string' && d.business) toast.success(t.draftRestored);
+    } catch {
+      /* ignore unreadable drafts */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** Save the current answers into the Offer Enquiries inbox as an in-progress row. */
+  const saveProgress = useCallback(async (currentStep: number, gated = false) => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(snapshot()));
+    } catch { /* storage unavailable */ }
+    if (!EMAIL_RE.test(email.trim())) return;
+    try {
+      await supabase.functions.invoke('submit-enquiry', {
+        body: {
+          kind: 'offer',
+          partial: true,
+          sessionKey: sessionKeyRef.current,
+          name: contactName.trim() || business.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          company: business.trim(),
+          message: projectDescription.trim() || `Creative voucher wizard — step ${currentStep} of ${TOTAL_STEPS}`,
+          details: {
+            Source: 'Creative voucher navigator (/grant-wizard)',
+            Status: gated ? 'Not eligible — standard rates' : `In progress — step ${currentStep} of ${TOTAL_STEPS}`,
+            Language: lang === 'cs' ? 'Czech' : 'English',
+            'Signed in as': userEmail ?? 'not signed in',
+            'IČO': ico.trim(),
+            Region: regionLabel,
+            'Regional hub': region?.hub ?? '',
+            Industry: industryLabel,
+            'Creative modules': upgradeLabels.join(', '),
+            'Project budget (CZK)': String(budget),
+            'VAT registered': vatRegistered ? 'Yes' : 'No',
+            'Estimated reimbursement (CZK)': String(Math.round(reimbursement)),
+            'Client share (CZK)': String(Math.round(share)),
+            'Eligibility passed': activeBusiness && noDebts && deMinimisOk ? 'Yes' : 'No',
+          },
+        },
+      });
+      setSavedAt(new Date().toLocaleTimeString(lang === 'cs' ? 'cs-CZ' : 'en-GB'));
+    } catch { /* progress saving must never block the visitor */ }
+  }, [snapshot, email, contactName, business, phone, projectDescription, lang, userEmail, ico,
+    regionLabel, region, industryLabel, upgradeLabels, budget, vatRegistered, reimbursement, share,
+    activeBusiness, noDebts, deMinimisOk]);
+
+  const signIn = async () => {
+    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: `${window.location.origin}/grant-wizard` });
+    if (result.error) {
+      toast.error(lang === 'cs' ? 'Přihlášení se nepodařilo. Zkuste to prosím znovu.' : 'Sign-in failed. Please try again.');
+    }
+  };
+
   const goStep1Next = () => {
     if (!business.trim()) return toast.error(lang === 'cs' ? 'Zadejte název firmy.' : 'Please enter your business name.');
     if (!/^\d{6,10}$/.test(ico.replace(/\s/g, ''))) return toast.error(lang === 'cs' ? 'Zadejte platné IČO (6–10 číslic).' : 'Please enter a valid IČO (6–10 digits).');
+    if (!EMAIL_RE.test(email.trim())) return toast.error(lang === 'cs' ? 'Zadejte platný e-mail.' : 'Please enter a valid email address.');
+    if (!phone.trim()) return toast.error(lang === 'cs' ? 'Zadejte telefon.' : 'Please enter a phone number.');
     if (!regionId) return toast.error(lang === 'cs' ? 'Vyberte kraj.' : 'Please select your region.');
-    if (!activeBusiness || !noDebts || !deMinimisOk) {
-      setGateFailed(true);
-      return;
-    }
     setStep(2);
+    void saveProgress(1);
   };
 
   const goStep2Next = () => {
+    if (!activeBusiness || !noDebts || !deMinimisOk) {
+      setGateFailed(true);
+      void saveProgress(2, true);
+      return;
+    }
+    setStep(3);
+    void saveProgress(2);
+  };
+
+  const goStep3Next = () => {
     if (!industry) return toast.error(lang === 'cs' ? 'Vyberte hlavní obor.' : 'Please select your primary industry.');
     if (upgrades.length === 0) return toast.error(t.upgradeHint);
-    setStep(3);
+    setStep(4);
+    void saveProgress(3);
+  };
+
+  const goStep4Next = () => {
+    setStep(5);
+    void saveProgress(4);
+  };
+
+  /** Branded one-page summary of the wizard result. */
+  const downloadPdf = (chance?: number) => {
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const margin = 56;
+    let y = margin;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+    doc.text('FastMedia.Pro', margin, y);
+    doc.setFontSize(13); y += 22;
+    doc.text(lang === 'cs' ? 'Kreativní vouchery — souhrn projektu' : 'Creative Vouchers — project summary', margin, y);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(120); y += 16;
+    doc.text(new Date().toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-GB'), margin, y);
+    doc.setTextColor(0); doc.setFontSize(10.5); y += 26;
+
+    const rows: [string, string][] = [
+      [t.business, business],
+      [t.ico, ico],
+      [t.region, regionLabel],
+      [t.hubTitle, region?.hub ?? ''],
+      [t.industry, industryLabel],
+      [t.upgrades, upgradeLabels.join(', ')],
+      [t.total, `${fmtCzk(budget, lang)} CZK`],
+      [t.subsidyPaid, `${fmtCzk(reimbursement, lang)} CZK`],
+      [t.netInvestment, `${fmtCzk(share, lang)} CZK`],
+      [t.vat, vatRegistered ? (lang === 'cs' ? 'Ano' : 'Yes') : (lang === 'cs' ? 'Ne' : 'No')],
+      [t.contactName, contactName],
+      [t.email, email],
+      [t.phone, phone],
+    ];
+    if (typeof chance === 'number') rows.push([t.chance, `${chance}%`]);
+
+    rows.forEach(([k, v], i) => {
+      if (i % 2 === 0) { doc.setFillColor(244, 246, 250); doc.rect(margin - 8, y - 11, 483, 20, 'F'); }
+      doc.setFont('helvetica', 'bold'); doc.text(String(k), margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(doc.splitTextToSize(String(v || '—'), 250), margin + 220, y);
+      y += 22;
+    });
+
+    y += 12;
+    doc.setFontSize(9); doc.setTextColor(110);
+    doc.text(doc.splitTextToSize(t.prefinanceLong, 483), margin, y);
+    y += 34;
+    doc.text(doc.splitTextToSize(t.reportDisclaimer, 483), margin, y);
+    doc.setTextColor(0);
+    doc.save(`fastmedia-creative-voucher-${(business || 'summary').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.pdf`);
   };
 
   const submit = async () => {
@@ -363,10 +585,6 @@ const GrantWizard = () => {
     } catch {
       /* storage unavailable */
     }
-    const upgradeLabels = upgrades.map(id => UPGRADES.find(u => u.id === id)?.[lang] ?? id);
-    const industryLabel = INDUSTRIES.find(i => i.id === industry)?.[lang] ?? industry;
-    const regionLabel = region ? region[lang] : '';
-
     try {
       const { data, error } = await supabase.functions.invoke('grant-wizard-assess', {
         body: {
@@ -394,6 +612,7 @@ const GrantWizard = () => {
       const { error: enquiryError } = await supabase.functions.invoke('submit-enquiry', {
         body: {
           kind: 'offer',
+          sessionKey: sessionKeyRef.current,
           name: contactName.trim(),
           email: email.trim(),
           phone: phone.trim(),
@@ -401,12 +620,14 @@ const GrantWizard = () => {
           message: projectDescription.trim(),
           details: {
             Source: 'Creative voucher navigator (/grant-wizard)',
+            Status: 'Submitted',
+            'Signed in as': userEmail ?? 'not signed in',
             Language: lang === 'cs' ? 'Czech' : 'English',
             'IČO': ico.trim(),
             Region: regionLabel,
             'Regional hub': region?.hub ?? '',
             Industry: industryLabel,
-            'Creative upgrades': upgradeLabels.join(', '),
+            'Creative modules': upgradeLabels.join(', '),
             'Project budget (CZK)': String(budget),
             'VAT registered': vatRegistered ? 'Yes' : 'No',
             'Estimated reimbursement (CZK)': String(Math.round(reimbursement)),
@@ -419,7 +640,8 @@ const GrantWizard = () => {
         },
       });
       if (!enquiryError) setSent(true);
-      setStep(5);
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+      setStep(6);
     } catch (err) {
       toast.error(err instanceof Error && err.message
         ? err.message
@@ -436,7 +658,7 @@ const GrantWizard = () => {
     setStep(1);
   };
 
-  const progress = Math.min(100, (Math.min(step, 4) / 4) * 100);
+  const progress = Math.min(100, (Math.min(step, TOTAL_STEPS) / TOTAL_STEPS) * 100);
 
   return (
     <div className="min-h-screen bg-background">
@@ -541,13 +763,21 @@ const GrantWizard = () => {
       {/* Wizard */}
       <section id="wizard" className="py-14 md:py-20">
         <div className="container mx-auto px-4 max-w-3xl">
-          {step <= 4 && !gateFailed && (
-            <div className="mb-8">
+          {step <= TOTAL_STEPS && !gateFailed && (
+            <div className="sticky top-16 z-40 -mx-4 px-4 py-3 mb-8 bg-background/95 backdrop-blur border-b border-border">
               <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                <span>{t.stepLabel} {step} {t.of} 4</span>
-                <span>{Math.round(progress)}%</span>
+                <span className="inline-flex items-center gap-2">
+                  <BadgeCheck className="w-4 h-4 text-primary" />
+                  {t.stepLabel} {step} {t.of} {TOTAL_STEPS}
+                </span>
+                <span className="font-semibold text-foreground">{Math.round(progress)}%</span>
               </div>
               <Progress value={progress} className="h-2" />
+              {savedAt && (
+                <p className="mt-2 text-xs text-primary inline-flex items-center gap-1">
+                  <Save className="w-3 h-3" />{t.draftSaved} · {savedAt}
+                </p>
+              )}
             </div>
           )}
 
@@ -571,7 +801,7 @@ const GrantWizard = () => {
             </Card>
           )}
 
-          {/* Step 1 */}
+          {/* Step 1 — identity, contact and optional sign-in */}
           {!gateFailed && step === 1 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-5">
@@ -579,6 +809,29 @@ const GrantWizard = () => {
                   <h2 className="text-2xl font-bold">{t.s1title}</h2>
                   <p className="text-muted-foreground text-sm mt-1">{t.s1sub}</p>
                 </div>
+
+                <Card className="bg-muted/40 border-primary/30">
+                  <CardContent className="p-5 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Lock className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-semibold">{t.authTitle}</p>
+                        <p className="text-sm text-muted-foreground">{t.authSub}</p>
+                      </div>
+                    </div>
+                    {userEmail ? (
+                      <p className="text-sm text-primary inline-flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4" />{t.signedIn} {userEmail}
+                      </p>
+                    ) : (
+                      <Button variant="outline" onClick={signIn}>
+                        <LogIn className="w-4 h-4 mr-2" />{t.signIn}
+                      </Button>
+                    )}
+                    <p className="text-xs text-muted-foreground">{t.identityNote}</p>
+                  </CardContent>
+                </Card>
+
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="gw-business">{t.business}</Label>
@@ -588,7 +841,20 @@ const GrantWizard = () => {
                     <Label htmlFor="gw-ico">{t.ico}</Label>
                     <Input id="gw-ico" value={ico} onChange={e => setIco(e.target.value)} inputMode="numeric" maxLength={12} />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="gw-name">{t.contactName}</Label>
+                    <Input id="gw-name" value={contactName} onChange={e => setContactName(e.target.value)} maxLength={120} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="gw-email">{t.email}</Label>
+                    <Input id="gw-email" type="email" value={email} onChange={e => setEmail(e.target.value)} maxLength={200} />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="gw-phone">{t.phone}</Label>
+                    <Input id="gw-phone" value={phone} onChange={e => setPhone(e.target.value)} maxLength={40} />
+                  </div>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="gw-region">{t.region}</Label>
                   <select
@@ -603,19 +869,7 @@ const GrantWizard = () => {
                     ))}
                   </select>
                 </div>
-                <Separator />
-                <div className="space-y-4">
-                  {([
-                    [t.chk1, activeBusiness, setActiveBusiness, 'gw-c1'],
-                    [t.chk2, noDebts, setNoDebts, 'gw-c2'],
-                    [t.chk3, deMinimisOk, setDeMinimisOk, 'gw-c3'],
-                  ] as const).map(([label, val, set, id]) => (
-                    <div key={id} className="flex items-start gap-3">
-                      <Checkbox id={id} checked={val} onCheckedChange={v => set(v === true)} className="mt-0.5" />
-                      <Label htmlFor={id} className="text-sm font-normal leading-snug">{label}</Label>
-                    </div>
-                  ))}
-                </div>
+
                 <Button size="lg" className="w-full" onClick={goStep1Next}>
                   {t.next}<ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -623,8 +877,36 @@ const GrantWizard = () => {
             </Card>
           )}
 
-          {/* Step 2 */}
+          {/* Step 2 — legal eligibility gate */}
           {!gateFailed && step === 2 && (
+            <Card>
+              <CardContent className="p-6 md:p-8 space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold">{t.elTitle}</h2>
+                  <p className="text-muted-foreground text-sm mt-1">{t.elSub}</p>
+                </div>
+                <div className="space-y-4">
+                  {([
+                    [t.chk1, activeBusiness, setActiveBusiness, 'gw-c1'],
+                    [t.chk2, noDebts, setNoDebts, 'gw-c2'],
+                    [t.chk3, deMinimisOk, setDeMinimisOk, 'gw-c3'],
+                  ] as const).map(([label, val, set, id]) => (
+                    <div key={id} className="flex items-start gap-3 rounded-lg border border-border p-3">
+                      <Checkbox id={id} checked={val} onCheckedChange={v => set(v === true)} className="mt-0.5" />
+                      <Label htmlFor={id} className="text-sm font-normal leading-snug">{label}</Label>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={() => setStep(1)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
+                  <Button className="flex-1" onClick={goStep2Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Step 3 — creative and strategic scope */}
+          {!gateFailed && step === 3 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-6">
                 <div>
@@ -659,17 +941,18 @@ const GrantWizard = () => {
                       </div>
                     ))}
                   </div>
+                  <p className="text-xs text-muted-foreground rounded-lg bg-muted/50 p-3">{t.moduleHint}</p>
                 </div>
                 <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep(1)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
-                  <Button className="flex-1" onClick={goStep2Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                  <Button variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
+                  <Button className="flex-1" onClick={goStep3Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Step 3 */}
-          {!gateFailed && step === 3 && (
+          {/* Step 4 — budget calculator */}
+          {!gateFailed && step === 4 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-6">
                 <div>
@@ -683,20 +966,20 @@ const GrantWizard = () => {
                   </div>
                   <Slider
                     id="gw-budget"
-                    min={60000}
-                    max={176000}
+                    min={BUDGET_MIN}
+                    max={BUDGET_MAX}
                     step={1000}
                     value={[budget]}
                     onValueChange={v => setBudget(v[0])}
                   />
                   <Input
                     type="number"
-                    min={60000}
-                    max={176000}
+                    min={BUDGET_MIN}
+                    max={BUDGET_MAX}
                     value={budget}
                     onChange={e => {
                       const n = Number(e.target.value);
-                      if (Number.isFinite(n)) setBudget(Math.min(176000, Math.max(60000, Math.round(n))));
+                      if (Number.isFinite(n)) setBudget(Math.min(BUDGET_MAX, Math.max(BUDGET_MIN, Math.round(n))));
                     }}
                   />
                 </div>
@@ -711,36 +994,37 @@ const GrantWizard = () => {
                       <span className="font-semibold">{fmtCzk(budget, lang)} CZK</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">{t.reimb}</span>
+                      <span className="text-muted-foreground">{t.subsidyPaid}</span>
                       <span className="font-semibold text-primary">{fmtCzk(reimbursement, lang)} CZK</span>
                     </div>
                     <Separator />
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">{t.share}</span>
+                      <span className="font-medium">{t.netInvestment}</span>
                       <span className="font-display font-bold text-xl text-accent">{fmtCzk(share, lang)} CZK</span>
                     </div>
+                    <p className="text-xs text-muted-foreground">{t.capNote}</p>
                     <p className="text-xs text-muted-foreground flex items-start gap-2">
                       <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <span>{t.prefinance}</span>
+                      <span>{t.prefinanceLong}</span>
                     </p>
                     <p className="text-xs text-muted-foreground">{vatRegistered ? t.vatNote : t.vatNoteNo}</p>
                   </CardContent>
                 </Card>
                 <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
-                  <Button className="flex-1" onClick={() => setStep(4)}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                  <Button variant="outline" onClick={() => setStep(3)}><ArrowLeft className="w-4 h-4 mr-2" />{t.back}</Button>
+                  <Button className="flex-1" onClick={goStep4Next}>{t.next}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Step 4 */}
-          {!gateFailed && step === 4 && (
+          {/* Step 5 — hub routing, project detail and submission */}
+          {!gateFailed && step === 5 && (
             <Card>
               <CardContent className="p-6 md:p-8 space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold">{t.s4title}</h2>
-                  <p className="text-muted-foreground text-sm mt-1">{t.s4sub}</p>
+                  <h2 className="text-2xl font-bold">{t.s5title}</h2>
+                  <p className="text-muted-foreground text-sm mt-1">{t.s5sub}</p>
                 </div>
 
                 <Card className="bg-muted/40">
@@ -771,21 +1055,6 @@ const GrantWizard = () => {
                   </CardContent>
                 </Card>
 
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="gw-name">{t.contactName}</Label>
-                    <Input id="gw-name" value={contactName} onChange={e => setContactName(e.target.value)} maxLength={120} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="gw-email">{t.email}</Label>
-                    <Input id="gw-email" type="email" value={email} onChange={e => setEmail(e.target.value)} maxLength={200} />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="gw-phone">{t.phone}</Label>
-                    <Input id="gw-phone" value={phone} onChange={e => setPhone(e.target.value)} maxLength={40} />
-                  </div>
-                </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="gw-project">{t.project}</Label>
                   <Textarea
@@ -812,7 +1081,7 @@ const GrantWizard = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button variant="outline" onClick={() => setStep(3)} disabled={loading}>
+                  <Button variant="outline" onClick={() => setStep(4)} disabled={loading}>
                     <ArrowLeft className="w-4 h-4 mr-2" />{t.back}
                   </Button>
                   <Button className="flex-1" size="lg" onClick={submit} disabled={loading}>
@@ -825,7 +1094,7 @@ const GrantWizard = () => {
           )}
 
           {/* Report */}
-          {step === 5 && report && (
+          {step === 6 && report && (
             <div className="space-y-6">
               <Card className="border-primary/40">
                 <CardContent className="p-6 md:p-8">
@@ -868,7 +1137,10 @@ const GrantWizard = () => {
                     <Link to="/calculator" className="flex-1">
                       <Button className="w-full">{t.calcLink}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                     </Link>
-                    <Button variant="outline" onClick={restart}>{t.again}</Button>
+                    <Button variant="outline" onClick={() => downloadPdf(report.chancePercent)}>
+                      <Download className="w-4 h-4 mr-2" />{t.pdf}
+                    </Button>
+                    <Button variant="ghost" onClick={restart}>{t.again}</Button>
                   </div>
 
                   {sent && (

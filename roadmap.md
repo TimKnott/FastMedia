@@ -34,3 +34,12 @@
 
 - [x] Fix fastmedia.pro DNS so Seznam adverts open the site (verification TXT records added, site live)
 - [ ] Add _lovable-email TXT to fastmedia.pro so enquiry emails send
+
+## Creative Vouchers wizard (v2)
+- [x] Save each wizard step + enquiry into Offer Enquiries (region, industry, budget)
+- [x] Google sign-in option + resume saved draft (auto-restore on return)
+- [ ] Bank iD / Identita Obcana OIDC verification (needs external provider registration)
+- [x] Sticky progress bar %, Next/Previous with inline validation, registered-provider badge
+- [x] 5-step flow: identity -> eligibility gate -> creative scope -> budget calc -> hub routing
+- [x] Budget maths: 58,824-250,000 CZK, default 176,470, 85% capped at 150,000 CZK
+- [x] PDF summary on submit + internal lead notification
