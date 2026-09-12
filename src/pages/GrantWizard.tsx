@@ -1061,6 +1061,9 @@ const GrantWizard = () => {
                           <Link to="/grant-hubs" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
                             {t.hubsLink} <ArrowRight className="w-3 h-3" />
                           </Link>
+                          <Link to="/grant-process" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
+                            {t.processLink} <ArrowRight className="w-3 h-3" />
+                          </Link>
                         </div>
                       </>
                     )}
