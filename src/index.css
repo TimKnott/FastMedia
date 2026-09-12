@@ -488,5 +488,6 @@ html.a11y-reduced-motion *::after {
   body.cursorfx-active [data-cursor-hover] { cursor: auto; }
   .cursorfx-root { display: none; }
   .parallax-slow, .parallax-medium, .parallax-fast { transform: none !important; }
-  .launch-stars, .launch-flame, .shooting-star { animation: none !important; }
+  .launch-stars, .launch-flame, .shooting-star,
+  .grant-road__lines, .grant-pad-rocket, .grant-pad-trail { animation: none !important; }
 }
