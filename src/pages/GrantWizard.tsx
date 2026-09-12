@@ -79,6 +79,7 @@ const copy = {
     heroNote: 'Nejsme poskytovatel dotace. Připravíme vás na žádost, ale samotnou žádost podává a rozhoduje o ní vždy poskytovatel.',
     start: 'Spustit navigátor',
     rules: 'Pravidla a podmínky',
+    hubsLink: 'Mapa regionálních partnerů',
     stepLabel: 'Krok',
     of: 'ze',
     // Step 1
@@ -198,6 +199,7 @@ const copy = {
     heroNote: 'We are not the grant provider. We prepare you for the application; the provider always receives it and decides.',
     start: 'Start the navigator',
     rules: 'Rules and conditions',
+    hubsLink: 'Map of regional partners',
     stepLabel: 'Step',
     of: 'of',
     elTitle: 'Legal eligibility checks',
@@ -746,11 +748,16 @@ const GrantWizard = () => {
                 {t.start}
               </Button>
             </a>
-            <a href="#rules">
+            <Link to="/grant-eligibility">
               <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent border-launch-border text-launch-foreground hover:bg-launch-foreground/10">
                 {t.rules}
               </Button>
-            </a>
+            </Link>
+            <Link to="/grant-hubs">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent border-launch-border text-launch-foreground hover:bg-launch-foreground/10">
+                {t.hubsLink}
+              </Button>
+            </Link>
           </motion.div>
 
           <p className="mt-6 text-xs text-launch-muted max-w-xl mx-auto flex items-start gap-2 justify-center">
@@ -1049,6 +1056,9 @@ const GrantWizard = () => {
                           <a href={region.hubUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary inline-flex items-center gap-1 mt-1">
                             {region.hubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')} <ExternalLink className="w-3 h-3" />
                           </a>
+                          <Link to="/grant-hubs" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
+                            {t.hubsLink} <ArrowRight className="w-3 h-3" />
+                          </Link>
                         </div>
                       </>
                     )}
@@ -1184,6 +1194,8 @@ const GrantWizard = () => {
 
           <div className="mt-8 flex flex-wrap gap-4 text-sm">
             <Link to="/grants" className="text-primary inline-flex items-center gap-1">{t.grantsLink}<ArrowRight className="w-3 h-3" /></Link>
+            <Link to="/grant-eligibility" className="text-primary inline-flex items-center gap-1">{t.rules}<ArrowRight className="w-3 h-3" /></Link>
+            <Link to="/grant-hubs" className="text-primary inline-flex items-center gap-1">{t.hubsLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/calculator" className="text-primary inline-flex items-center gap-1">{t.calcLink}<ArrowRight className="w-3 h-3" /></Link>
           </div>
         </div>
