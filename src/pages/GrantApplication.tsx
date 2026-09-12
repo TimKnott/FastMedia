@@ -6,6 +6,8 @@ import {
   AlertTriangle, Printer, Building2, Wallet, ClipboardList, Sparkles, ExternalLink,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Download } from 'lucide-react';
+import { downloadGrantTemplatePdf } from '@/lib/grantTemplatePdf';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
