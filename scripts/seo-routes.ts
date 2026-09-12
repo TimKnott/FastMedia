@@ -117,6 +117,34 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
+    path: "/grant-hubs",
+    title: "Creative Voucher Regional Partners in All 14 Czech Regions | FastMedia.Pro",
+    description:
+      "An interactive map of the regional innovation partners administering Kreativni vouchery in all 14 Czech regions, from ICUK and SIC to JIC, MSIC and TIC Zlin.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.7",
+    h1: "Creative voucher regional partners by region",
+    contentBlocks: [
+      "Each Czech region has its own innovation partner that publishes creative voucher calls and receives applications, including Pii in Prague, SIC in Central Bohemia, ICUK in the Usti Region, JIC in South Moravia and MSIC in the Moravian-Silesian Region.",
+      "Select your region to see the partner handling your application, alongside the national pool administered through the DPMK portal under the National Recovery Plan.",
+    ],
+  },
+  {
+    path: "/grant-eligibility",
+    title: "Creative Voucher Eligibility Rules Explained | FastMedia.Pro",
+    description:
+      "Who qualifies for the Czech Kreativni vouchery: eligible costs, the 85% support rate, the 150,000 CZK cap, de minimis limits, pre-financing and a step-by-step FAQ.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.8",
+    h1: "Eligibility rules: who qualifies for a creative voucher",
+    contentBlocks: [
+      "The Czech creative vouchers cover up to 85% of eligible bespoke creative work, capped at 150,000 CZK, and are reimbursed after the project is delivered and accounted for.",
+      "Applicants must be active Czech businesses with no tax debts or insolvency, within the de minimis limit, working with a supplier listed in the national gallery of creatives. FastMedia.Pro is not the grant provider.",
+    ],
+  },
+  {
     path: "/grant-application",
     title: "Creative Voucher Application Pack — Forms & Declarations | FastMedia",
     description:

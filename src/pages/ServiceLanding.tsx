@@ -23,6 +23,10 @@ const ui = {
     calculator: 'Spočítat cenu',
     enquire: 'Nezávazně poptat',
     enquiryHeading: 'Máte zájem?',
+    grantTitle: 'Až 85 % z kreativních voucherů',
+    grantBody: 'Tato služba může být hrazena z kreativních voucherů. Podívejte se na podmínky způsobilosti nebo najděte svého regionálního partnera na mapě.',
+    grantRules: 'Podmínky způsobilosti',
+    grantHubs: 'Mapa regionálních partnerů',
   },
   en: {
     benefits: 'What you get',
@@ -31,6 +35,10 @@ const ui = {
     calculator: 'Calculate a price',
     enquire: 'Send an enquiry',
     enquiryHeading: 'Interested?',
+    grantTitle: 'Up to 85% from creative vouchers',
+    grantBody: 'This service can be funded by the Czech creative vouchers. Check the eligibility rules or find your regional partner on the map.',
+    grantRules: 'Eligibility rules',
+    grantHubs: 'Map of regional partners',
   },
 } as const;
 
@@ -138,6 +146,23 @@ const ServiceLanding = () => {
             <h2 className="mb-8 text-center font-display text-2xl font-bold md:text-3xl">{t.enquiryHeading}</h2>
             <OfferEnquiryForm lang={lang} source={`Service page (/service/${service.slug}) — ${service.en.name}`} />
           </div>
+        </section>
+
+        <section className="container mx-auto px-4 pt-16">
+          <Card className="border-primary/30">
+            <CardContent className="p-6 md:p-8">
+              <h2 className="font-display text-xl font-bold md:text-2xl">{t.grantTitle}</h2>
+              <p className="mt-3 max-w-2xl text-sm text-muted-foreground">{t.grantBody}</p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Button asChild variant="outline">
+                  <Link to="/grant-eligibility">{t.grantRules}</Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <Link to="/grant-hubs">{t.grantHubs} <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         <section className="container mx-auto px-4 py-16">
