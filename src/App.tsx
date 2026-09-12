@@ -176,6 +176,7 @@ const App = () => (
             <Route path="/offer" element={<OfferLanding />} />
             <Route path="/grants" element={<GrantGuide />} />
             <Route path="/grant-wizard" element={<GrantWizard />} />
+            <Route path="/grant-application" element={<GrantApplication />} />
             <Route path="/media-kit" element={<MediaKit />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />
             <Route path="/blog" element={<Blog />} />
