@@ -80,6 +80,7 @@ const copy = {
     start: 'Spustit navigátor',
     rules: 'Pravidla a podmínky',
     hubsLink: 'Mapa regionálních partnerů',
+    processLink: 'Průběh žádosti, termíny a podklady',
     stepLabel: 'Krok',
     of: 'ze',
     // Step 1
