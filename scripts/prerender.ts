@@ -196,7 +196,13 @@ async function main() {
     return;
   }
   const template = readFileSync(TEMPLATE_PATH, "utf8");
-  const routes = await getAllRoutes();
+  const allRoutes = await getAllRoutes();
+  const routes = allRoutes.filter(
+    (r) => r && typeof r.path === "string" && r.path.startsWith("/") && typeof r.title === "string" && typeof r.description === "string",
+  );
+  if (routes.length !== allRoutes.length) {
+    console.warn(`[prerender] skipped ${allRoutes.length - routes.length} malformed route entries`);
+  }
   console.log(`[prerender] generating ${routes.length} routes`);
 
   for (const route of routes) {
