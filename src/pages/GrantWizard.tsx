@@ -262,7 +262,7 @@ type Report = {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const GrantWizard = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
   const lang: Lang = language === 'cs' ? 'cs' : 'en';
   const t = copy[lang];
 
