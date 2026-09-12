@@ -439,6 +439,27 @@ export default function GrantApplication() {
 
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 max-w-3xl space-y-6">
+          {/* Downloadable blank application template */}
+          <Card className="border-dashed">
+            <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-primary" />
+                  {lang === 'cs' ? 'Vzor žádosti ke stažení (PDF)' : 'Downloadable application template (PDF)'}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {lang === 'cs'
+                    ? 'Prázdný formulář ve struktuře oficiální žádosti Ministerstva kultury — pole žadatele, rozpočet, prohlášení, povinné přílohy a postup podání přes portál DPMK.'
+                    : 'A blank form structured like the official Ministry of Culture application — applicant fields, budget, declarations, required attachments and DPMK portal submission steps.'}
+                </p>
+              </div>
+              <Button variant="outline" className="shrink-0" onClick={() => downloadGrantTemplatePdf(lang)}>
+                <Download className="w-4 h-4 mr-2" />
+                {lang === 'cs' ? 'Stáhnout vzor' : 'Download template'}
+              </Button>
+            </CardContent>
+          </Card>
+
           {sent ? (
             <Card className="border-primary/40">
               <CardContent className="p-6 md:p-8">
