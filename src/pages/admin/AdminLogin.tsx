@@ -200,18 +200,19 @@ const AdminLogin = () => {
               </div>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-5">
+            <form onSubmit={handleLogin} method="post" action="#" className="space-y-5">
 
               <div className="space-y-2">
                 <Label htmlFor="email">{t('admin.email')}</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="admin@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  autoComplete="email"
+                  autoComplete="username email"
                   className="h-11"
                 />
               </div>
@@ -221,6 +222,7 @@ const AdminLogin = () => {
                 <div className="relative">
                   <Input
                     id="password"
+                    name="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
