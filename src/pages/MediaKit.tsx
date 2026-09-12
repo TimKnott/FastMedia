@@ -125,7 +125,7 @@ const MediaKit = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SEOHead title={t.seoTitle} description={t.seoDesc} path="/media-kit" />
+      <SEOHead title={t.seoTitle} description={t.seoDesc} pagePath="/media-kit" />
 
       {/* Top bar */}
       <header className="border-b border-border bg-background/80 backdrop-blur sticky top-0 z-40">
