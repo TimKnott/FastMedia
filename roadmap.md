@@ -47,7 +47,7 @@
 - [x] /grant-process: phases, deadlines, application + accounting documents (linked from hub card)
 - [ ] Downloadable application template (Ministry of Culture forms + submission instructions) on /grant-application
 - [ ] "Apply for a grant" link in navbar + footer -> /grant-wizard (after fact check)
-- [ ] /admin/grant-follow-up: one tracked task per wizard enquiry (region, modules, budget)
+- [x] /admin/grant-follow-up
 - [x] /grant-portal
 - [x] /grant-portal docs upload + DPMK ref
 - [ ] Bank iD login (blocked: needs certified identity provider registration)
