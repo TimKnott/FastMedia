@@ -26,6 +26,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import OfferEnquiryForm from '@/components/OfferEnquiryForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { grantRegions, nationalPool } from '@/data/grantRegions';
+import { GRANT_PREFILL_KEY } from './GrantApplication';
 import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
 
@@ -149,6 +150,8 @@ const copy = {
     contactSub: 'Napište nám a připravíme rozsah projektu i cenovou nabídku ve struktuře, kterou žádost vyžaduje.',
     grantsLink: 'Přečtěte si náš průvodce dotacemi',
     calcLink: 'Spočítat cenu v kalkulátoru',
+    applyLink: 'Vyplnit podklady k žádosti',
+    applyNote: 'Připraveni pokračovat? Vyplňte kompletní podklady k žádosti — údaje z navigátoru předvyplníme.',
   },
   en: {
     seoTitle: 'Creative Vouchers: application navigator | FastMedia',
@@ -243,6 +246,8 @@ const copy = {
     contactSub: 'Send us a line and we will prepare the project scope and a quotation in the structure the application requires.',
     grantsLink: 'Read our grant guide',
     calcLink: 'Price it in the calculator',
+    applyLink: 'Fill in the application pack',
+    applyNote: 'Ready to go further? Complete the full application pack — we pre-fill it from the navigator.',
   },
 } as const;
 
@@ -342,6 +347,22 @@ const GrantWizard = () => {
     }
 
     setLoading(true);
+    try {
+      sessionStorage.setItem(GRANT_PREFILL_KEY, JSON.stringify({
+        business: business.trim(),
+        ico: ico.trim(),
+        regionId,
+        contactName: contactName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        projectDescription: projectDescription.trim(),
+        budget,
+        vatRegistered,
+        deliverables: upgrades,
+      }));
+    } catch {
+      /* storage unavailable */
+    }
     const upgradeLabels = upgrades.map(id => UPGRADES.find(u => u.id === id)?.[lang] ?? id);
     const industryLabel = INDUSTRIES.find(i => i.id === industry)?.[lang] ?? industry;
     const regionLabel = region ? region[lang] : '';
@@ -838,7 +859,12 @@ const GrantWizard = () => {
                     <span>{t.reportDisclaimer}</span>
                   </div>
 
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                  <p className="mt-6 text-sm text-muted-foreground">{t.applyNote}</p>
+
+                  <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                    <Link to="/grant-application" className="flex-1">
+                      <Button className="w-full">{t.applyLink}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                    </Link>
                     <Link to="/calculator" className="flex-1">
                       <Button className="w-full">{t.calcLink}<ArrowRight className="w-4 h-4 ml-2" /></Button>
                     </Link>
