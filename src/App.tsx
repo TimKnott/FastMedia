@@ -40,6 +40,7 @@ const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
 const GrantGuide = lazy(() => import("./pages/GrantGuide"));
 const GrantWizard = lazy(() => import("./pages/GrantWizard"));
+const GrantApplication = lazy(() => import("./pages/GrantApplication"));
 const MediaKit = lazy(() => import("./pages/MediaKit"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 
