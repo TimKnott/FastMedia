@@ -67,6 +67,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'Enquiries Inbox', url: '/admin/enquiries', icon: Inbox, minRole: 'admin' },
   { titleKey: 'Quote Requests', url: '/admin/quote-requests', icon: FileText, minRole: 'admin' },
   { titleKey: 'Offer Enquiries', url: '/admin/offer-leads', icon: FileText, minRole: 'admin' },
+  { titleKey: 'Grant follow-up', url: '/admin/grant-follow-up', icon: FileText, minRole: 'admin' },
   { titleKey: 'Support Inbox', url: '/admin/inbox', icon: Inbox, minRole: 'admin' },
   { titleKey: 'Clients', url: '/admin/clients', icon: Users, minRole: 'admin' },
   { titleKey: 'Project Tracker', url: '/admin/tracker', icon: FolderKanban, minRole: 'admin' },

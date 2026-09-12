@@ -151,6 +151,7 @@ const Navbar = () => {
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
     { href: '/calculator', label: t('nav.calculator'), isRoute: true },
     { href: '/inquiry', label: t('nav.inquiry'), isRoute: true },
+    { href: '/grant-wizard', label: t('nav.grant'), isRoute: true },
     { href: '#contact', label: t('nav.contact') },
     { href: '/install', label: t('nav.install'), isRoute: true, mobileOnly: true },
     { href: '/admin/login', label: t('nav.admin'), isRoute: true },
