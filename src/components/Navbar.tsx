@@ -289,7 +289,30 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Desktop quick links row — makes the key pages reachable without opening the menu */}
+        <div className="hidden lg:flex items-center gap-1 flex-wrap pb-2 -mt-1">
+          {[
+            { to: '/offer', label: isEnglish ? 'Offer' : 'Nabídka' },
+            { to: '/offer#case-studies', label: isEnglish ? 'Case studies' : 'Případové studie' },
+            { to: '/grant-wizard', label: isEnglish ? 'Grant wizard' : 'Žádost o grant' },
+            { to: '/grant-eligibility', label: isEnglish ? 'Grant rules' : 'Podmínky grantu' },
+            { to: '/grant-hubs', label: isEnglish ? 'Grant hubs map' : 'Mapa krajů' },
+            { to: '/calculator', label: isEnglish ? 'Calculator' : 'Kalkulačka' },
+            { to: '/blog', label: 'Blog' },
+            { to: '/contact', label: isEnglish ? 'Contact' : 'Kontakt' },
+          ].map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className="px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
       </div>
+
 
       {/* Mobile Menu */}
       <AnimatePresence>
