@@ -251,6 +251,18 @@ const OfferLanding = () => {
   const { language } = useLanguage();
   const lang: Lang = language === 'en' ? 'en' : 'cs';
   const t = copy[lang];
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.slice(1);
+    const timer = window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [hash]);
+
+
 
   return (
     <div className="min-h-screen bg-background">
