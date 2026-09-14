@@ -84,6 +84,7 @@ const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
 const AdminEmailDashboard = lazy(() => import("./pages/admin/AdminEmailDashboard"));
+const AdminInboxPage = lazy(() => import("./pages/admin/AdminInbox"));
 const AdminEmailDeliverability = lazy(() => import("./pages/admin/AdminEmailDeliverability"));
 const AdminLeadEmails = lazy(() => import("./pages/admin/AdminLeadEmails"));
 const AdminHR = lazy(() => import("./pages/admin/AdminHR"));
