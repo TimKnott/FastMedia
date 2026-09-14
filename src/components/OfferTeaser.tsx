@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const services = [
   { slug: 'websites', icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', position: 'left-[7%] top-[18%]' },
@@ -42,8 +43,22 @@ const heroCopy = {
 
 const OfferTeaser = () => {
   const { language } = useLanguage();
+  const { getContent } = useSiteContent();
   const lang = language === 'en' ? 'en' : 'cs';
-  const copy = heroCopy[lang];
+  const base = heroCopy[lang];
+  const headlineOverride = getContent('hero.headline', '');
+  const copy = {
+    ...base,
+    eyebrow: getContent('hero.eyebrow', base.eyebrow),
+    headline: headlineOverride
+      ? headlineOverride.split('\n').map((line) => line.trim()).filter(Boolean)
+      : base.headline,
+    body: getContent('hero.body', base.body),
+    primary: getContent('hero.cta_primary', base.primary),
+    secondary: getContent('hero.cta_secondary', base.secondary),
+    servicesTitle: getContent('hero.services_title', base.servicesTitle),
+    servicesBody: getContent('hero.services_body', base.servicesBody),
+  };
   const reduceMotion = useReducedMotion();
   const [scene, setScene] = useState(0);
 
