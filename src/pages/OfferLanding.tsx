@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   ArrowRight, CheckCircle2, ShieldCheck, Smartphone, Languages, Gauge, Search,
   Bot, CalendarCheck, CreditCard, LineChart, Lock, Sparkles, Star, Quote,
