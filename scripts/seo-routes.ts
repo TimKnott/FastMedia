@@ -188,6 +188,7 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
+    path: "/quote-request",
     title: "Request a Quote — FastMedia.Pro Web Design",
     description:
       "Tell us about your project and get a clear, itemised quote for a website, online shop or booking system. Reply within one working day.",
