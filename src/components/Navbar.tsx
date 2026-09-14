@@ -150,6 +150,7 @@ const Navbar = () => {
     ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
     { href: '#faq', label: t('nav.faq') },
     { href: '/offer', label: t('nav.offer'), isRoute: true },
+    { href: '/offer#case-studies', label: isEnglish ? 'Case studies' : 'Případové studie', isRoute: true },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
     { href: '/calculator', label: t('nav.calculator'), isRoute: true },
