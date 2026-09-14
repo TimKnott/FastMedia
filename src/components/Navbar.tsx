@@ -291,7 +291,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop quick links row — makes the key pages reachable without opening the menu */}
-        <div className="hidden lg:flex items-center gap-1 flex-wrap pb-2 -mt-1">
+        <div className="hidden md:flex items-center gap-1 flex-wrap pb-2 -mt-1">
           {[
             { to: '/offer', label: isEnglish ? 'Offer' : 'Nabídka' },
             { to: '/offer#case-studies', label: isEnglish ? 'Case studies' : 'Případové studie' },
