@@ -71,9 +71,11 @@ const AdminLandingPage = () => {
     [rowMap]
   );
 
-  const builtIn = (key: string, lang: Lang) => {
-    const dict = (translations as Record<string, Record<string, string>>)[lang];
-    return dict?.[key] ?? '';
+  const builtIn = (field: { key: string; defaultCs?: string; defaultEn?: string }, lang: Lang) => {
+    const own = lang === 'cs' ? field.defaultCs : field.defaultEn;
+    if (own) return own;
+    const dict = (translations as unknown as Record<string, Record<string, string>>)[lang];
+    return dict?.[field.key] ?? '';
   };
 
   const customCount = (section: HomeSectionDef) =>
@@ -318,7 +320,7 @@ const AdminLandingPage = () => {
                   <TabsContent key={lang} value={lang} className="space-y-4 pt-4">
                     {open.fields.map((field) => {
                       const id = `${lang}:${field.key}`;
-                      const fallback = builtIn(field.key, lang);
+                      const fallback = builtIn(field, lang);
                       return (
                         <div key={id} className="space-y-1.5">
                           <div className="flex items-center justify-between gap-2">
@@ -356,8 +358,10 @@ const AdminLandingPage = () => {
                               }
                             />
                           )}
-                          {field.hint && (
-                            <p className="text-[11px] text-muted-foreground">{field.hint}</p>
+                          {(isCs ? field.hintCs ?? field.hint : field.hint) && (
+                            <p className="text-[11px] text-muted-foreground">
+                              {isCs ? field.hintCs ?? field.hint : field.hint}
+                            </p>
                           )}
                         </div>
                       );

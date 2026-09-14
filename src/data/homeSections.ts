@@ -26,6 +26,10 @@ export interface HomeSectionField {
   labelCs: string;
   multiline?: boolean;
   hint?: string;
+  hintCs?: string;
+  /** Built-in wording shown as the placeholder when no override exists */
+  defaultCs?: string;
+  defaultEn?: string;
 }
 
 export interface HomeSectionDef {
@@ -41,13 +45,13 @@ export interface HomeSectionDef {
   fields: HomeSectionField[];
 }
 
-const f = (key: string, labelEn: string, labelCs: string, multiline = false, hint?: string): HomeSectionField => ({
-  key,
-  labelEn,
-  labelCs,
-  multiline,
-  hint,
-});
+const f = (
+  key: string,
+  labelEn: string,
+  labelCs: string,
+  multiline = false,
+  extra: Partial<HomeSectionField> = {}
+): HomeSectionField => ({ key, labelEn, labelCs, multiline, ...extra });
 
 export const HOME_SECTIONS: HomeSectionDef[] = [
   {
@@ -60,13 +64,36 @@ export const HOME_SECTIONS: HomeSectionDef[] = [
     icon: Megaphone,
     defaultEnabled: true,
     fields: [
-      f('hero.eyebrow', 'Small label above the headline', 'Malý text nad titulkem'),
-      f('hero.headline', 'Headline', 'Titulek', true, 'One line per row — the last line is highlighted.'),
-      f('hero.body', 'Intro paragraph', 'Úvodní odstavec', true),
-      f('hero.cta_primary', 'Main button', 'Hlavní tlačítko'),
-      f('hero.cta_secondary', 'Second button', 'Druhé tlačítko'),
-      f('hero.services_title', 'Services scene heading', 'Titulek scény služeb'),
-      f('hero.services_body', 'Services scene text', 'Text scény služeb', true),
+      f('hero.eyebrow', 'Small label above the headline', 'Malý text nad titulkem', false, {
+        defaultCs: 'Vaše další kapitola je připravena',
+        defaultEn: 'Your next chapter is ready',
+      }),
+      f('hero.headline', 'Headline', 'Titulek', true, {
+        hint: 'One line per row — the last line is highlighted.',
+        hintCs: 'Jeden řádek na řádek — poslední řádek je zvýrazněn.',
+        defaultCs: 'Odstartujte\nsvé podnikání\na překonejte běžné hranice.',
+        defaultEn: 'Launch\nyour business\nbeyond ordinary.',
+      }),
+      f('hero.body', 'Intro paragraph', 'Úvodní odstavec', true, {
+        defaultCs: 'Krásné weby, chytrá automatizace a měřitelný růst — vše v jedné výkonné digitální startovací platformě.',
+        defaultEn: 'Beautiful websites, intelligent automation and measurable growth — built into one powerful digital launchpad.',
+      }),
+      f('hero.cta_primary', 'Main button', 'Hlavní tlačítko', false, {
+        defaultCs: 'Zahájit start',
+        defaultEn: 'Start your launch',
+      }),
+      f('hero.cta_secondary', 'Second button', 'Druhé tlačítko', false, {
+        defaultCs: 'Prohlédnout balíčky',
+        defaultEn: 'Explore packages',
+      }),
+      f('hero.services_title', 'Services scene heading', 'Titulek scény služeb', false, {
+        defaultCs: 'Vše, co potřebujete k růstu.',
+        defaultEn: 'Everything you need to grow in orbit.',
+      }),
+      f('hero.services_body', 'Services scene text', 'Text scény služeb', true, {
+        defaultCs: 'Jeden propojený systém promění pozornost v poptávky a poptávky ve věrné zákazníky.',
+        defaultEn: 'One connected system turns attention into enquiries — and enquiries into loyal customers.',
+      }),
     ],
   },
   {
