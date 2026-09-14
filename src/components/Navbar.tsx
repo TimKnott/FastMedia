@@ -149,6 +149,7 @@ const Navbar = () => {
     { href: '#reviews', label: t('nav.reviews') },
     ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
     { href: '#faq', label: t('nav.faq') },
+    { href: '/offer', label: t('nav.offer'), isRoute: true },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
     { href: '/calculator', label: t('nav.calculator'), isRoute: true },

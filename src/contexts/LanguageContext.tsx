@@ -25,6 +25,9 @@ export const translations: Translations = {
   'nav.install': { cs: 'Instalovat aplikaci', en: 'Install App', de: 'App installieren' },
   'nav.inquiry': { cs: 'Poptávka', en: 'Inquiry', de: 'Anfrage' },
   'nav.grant': { cs: 'Žádost o grant', en: 'Apply for a grant', de: 'Förderung beantragen' },
+  'nav.offer': { cs: 'Nabídka', en: 'Offer', de: 'Angebot' },
+  'nav.grant_rules': { cs: 'Podmínky grantu', en: 'Grant rules', de: 'Förderbedingungen' },
+  'nav.grant_hubs': { cs: 'Mapa krajů', en: 'Regional hubs', de: 'Regionale Zentren' },
   'nav.admin': { cs: 'Přihlášení', en: 'Login', de: 'Anmelden' },
 
   // Hero — direct answer in first sentence
