@@ -171,6 +171,12 @@ export const AdminInbox = () => {
             Every message arriving at <strong className="text-foreground">support@fastmedia.pro</strong> appears here.
             Replies are sent from that same Google Workspace mailbox, so the customer sees a normal email from you.
             {unread > 0 && <> <strong className="text-foreground">{unread} unread.</strong></>}
+            <div className="mt-1 text-xs">
+              Copies are pulled from Google Workspace every hour.{' '}
+              {rows.length > 0
+                ? <>Newest message here: <strong className="text-foreground">{format(new Date(rows[0].created_at), 'dd.MM.yyyy HH:mm')}</strong> ({rows.length} stored).</>
+                : 'No copies stored yet.'}
+            </div>
           </div>
           <Button size="sm" variant="outline" onClick={syncGoogle} disabled={syncing} className="flex-shrink-0">
             <RefreshCw className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
