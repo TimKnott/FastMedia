@@ -12,6 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Inbox, Clock, Mail, Sparkles, RefreshCw, Reply, Send, Archive, Check } from 'lucide-react';
 import { format } from 'date-fns';
+import EmailBody from '@/components/admin/EmailBody';
 
 type InboundRow = {
   id: string;
@@ -259,7 +260,7 @@ export const AdminInbox = () => {
               </div>
               <div className="border-t pt-4">
                 <h4 className="font-semibold mb-2">Message</h4>
-                <pre className="whitespace-pre-wrap bg-muted/40 p-3 rounded text-xs">{selected.body_plain || '(empty)'}</pre>
+                <EmailBody html={selected.body_html} text={selected.body_plain} />
               </div>
               {selected.ai_reply && (
                 <div className="border-t pt-4">
