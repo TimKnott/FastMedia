@@ -359,7 +359,8 @@ const OfferLanding = () => {
       </section>
 
       {/* CASE STUDIES */}
-      <section className="container mx-auto px-4 py-16 md:py-24">
+      <section id="case-studies" className="container mx-auto px-4 py-16 md:py-24 scroll-mt-24">
+
         <div className="max-w-3xl mx-auto text-center mb-14">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">{t.casesTitle}</h2>
           <p className="text-lg text-muted-foreground">{t.casesSub}</p>
