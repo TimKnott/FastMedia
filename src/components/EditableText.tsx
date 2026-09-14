@@ -76,12 +76,12 @@ const EditableText = ({
 
     setSaving(false);
     if (error) {
-      toast.error('Fehler beim Speichern');
+      toast.error('Could not save your change');
       console.error(error);
       return;
     }
 
-    toast.success('Als Entwurf gespeichert');
+    toast.success('Saved as a draft');
     onSave?.(contentKey, draft);
     setEditing(false);
     setPreview(true);
@@ -132,14 +132,14 @@ const EditableText = ({
           onClick={handleSave}
           disabled={saving}
           className="flex-shrink-0 p-1.5 rounded-md bg-accent text-accent-foreground hover:opacity-90 transition-opacity"
-          title="Speichern"
+          title="Save"
         >
           <Check className="w-4 h-4" />
         </button>
         <button
           onClick={() => setEditing(false)}
           className="flex-shrink-0 p-1.5 rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
-          title="Abbrechen"
+          title="Cancel"
         >
           <X className="w-4 h-4" />
         </button>
@@ -152,7 +152,7 @@ const EditableText = ({
     <Tag
       className={cn('group/editable relative cursor-pointer inline', className)}
       onClick={() => setEditing(true)}
-      title="Klicken zum Bearbeiten"
+      title="Click to edit"
     >
       {displayValue}
       <Pencil className="inline-block w-4 h-4 ml-2 opacity-0 group-hover/editable:opacity-70 transition-opacity text-accent" />

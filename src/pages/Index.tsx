@@ -1,5 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useSiteSetting } from '@/hooks/useSiteSettings';
+import { useAllSiteSettings } from '@/hooks/useSiteSettings';
 import Navbar from '@/components/Navbar';
 import WhyFastMediaSection from '@/components/WhyFastMediaSection';
 import AutomationSection from '@/components/AutomationSection';
@@ -26,7 +26,8 @@ import OfferTeaser from '@/components/OfferTeaser';
 const Index = () => {
   const { language } = useLanguage();
   const isEnglish = language === 'en';
-  const { enabled: showPricing } = useSiteSetting('show_pricing');
+  const { isEnabled } = useAllSiteSettings();
+  const on = (key: string, fallback = true) => isEnabled(key, fallback);
   return (
     <>
       <SEOHead
@@ -40,27 +41,27 @@ const Index = () => {
       <div className="min-h-screen">
         <Navbar />
         <ScrollToTop />
-        <OfferTeaser />
+        {on('home_hero') && <OfferTeaser />}
         <main id="main-site">
-          <PromoBanner variant="compact" />
-          <WhyFastMediaSection />
-          <CertificationsSection />
-          <AutomationSection />
-          <DemosSection />
-          <CalculatorShowcase />
-          <ServicesSection />
-          <PromoBanner variant="full" />
-          <ReviewsSection />
-          <TeamSection />
-          {showPricing && <PricingSection />}
-          <FAQSection />
-          <AppointmentPoliciesSection />
-          <ConsultantSection />
-          <ServiceAreaMap />
-          <BookingSection />
+          {on('home_promo') && <PromoBanner variant="compact" />}
+          {on('home_why') && <WhyFastMediaSection />}
+          {on('home_certifications') && <CertificationsSection />}
+          {on('home_automation') && <AutomationSection />}
+          {on('home_demos') && <DemosSection />}
+          {on('home_calculator') && <CalculatorShowcase />}
+          {on('home_services') && <ServicesSection />}
+          {on('home_promo') && <PromoBanner variant="full" />}
+          {on('home_reviews') && <ReviewsSection />}
+          {on('home_team') && <TeamSection />}
+          {on('show_pricing', false) && <PricingSection />}
+          {on('home_faq') && <FAQSection />}
+          {on('home_policies') && <AppointmentPoliciesSection />}
+          {on('home_consultant') && <ConsultantSection />}
+          {on('home_service_area') && <ServiceAreaMap />}
+          {on('home_booking') && <BookingSection />}
         </main>
         <Footer />
-        <StickyCTABar />
+        {on('home_sticky_cta') && <StickyCTABar />}
       </div>
     </>
   );
