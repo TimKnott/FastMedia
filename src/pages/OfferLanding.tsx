@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   ArrowRight, CheckCircle2, ShieldCheck, Smartphone, Languages, Gauge, Search,
   Bot, CalendarCheck, CreditCard, LineChart, Lock, Sparkles, Star, Quote,
@@ -250,6 +251,18 @@ const OfferLanding = () => {
   const { language } = useLanguage();
   const lang: Lang = language === 'en' ? 'en' : 'cs';
   const t = copy[lang];
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.slice(1);
+    const timer = window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [hash]);
+
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -359,7 +372,8 @@ const OfferLanding = () => {
       </section>
 
       {/* CASE STUDIES */}
-      <section className="container mx-auto px-4 py-16 md:py-24">
+      <section id="case-studies" className="container mx-auto px-4 py-16 md:py-24 scroll-mt-24">
+
         <div className="max-w-3xl mx-auto text-center mb-14">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">{t.casesTitle}</h2>
           <p className="text-lg text-muted-foreground">{t.casesSub}</p>

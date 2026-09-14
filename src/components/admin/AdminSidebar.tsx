@@ -104,7 +104,7 @@ const contentItems: MenuItem[] = [
 
 const publicPageItems: MenuItem[] = [
   { titleKey: 'Offer page', url: '/offer', icon: TicketPercent, minRole: 'editor' },
-  { titleKey: 'Case studies', url: '/showcase', icon: Eye, minRole: 'editor' },
+  { titleKey: 'Case studies', url: '/offer#case-studies', icon: Eye, minRole: 'editor' },
   { titleKey: 'Grant wizard form', url: '/grant-wizard', icon: FileText, minRole: 'editor' },
   { titleKey: 'Grant eligibility', url: '/grant-eligibility', icon: FileCheck2, minRole: 'editor' },
   { titleKey: 'Grant hubs map', url: '/grant-hubs', icon: Map, minRole: 'editor' },
