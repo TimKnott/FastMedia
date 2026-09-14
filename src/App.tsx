@@ -84,6 +84,7 @@ const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
 const AdminEmailDashboard = lazy(() => import("./pages/admin/AdminEmailDashboard"));
+const AdminInboxPage = lazy(() => import("./pages/admin/AdminInbox"));
 const AdminEmailDeliverability = lazy(() => import("./pages/admin/AdminEmailDeliverability"));
 const AdminLeadEmails = lazy(() => import("./pages/admin/AdminLeadEmails"));
 const AdminHR = lazy(() => import("./pages/admin/AdminHR"));
@@ -291,6 +292,7 @@ const App = () => (
               <Route path="coupons" element={<AdminCoupons />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
+              <Route path="inbox" element={<ProtectedRoute minRole="admin"><AdminInboxPage /></ProtectedRoute>} />
               <Route path="email-queue" element={<ProtectedRoute minRole="admin"><AdminEmailQueue /></ProtectedRoute>} />
               <Route path="email-deliverability" element={<ProtectedRoute minRole="admin"><AdminEmailDeliverability /></ProtectedRoute>} />
               <Route path="email-dashboard" element={<ProtectedRoute minRole="admin"><AdminEmailDashboard /></ProtectedRoute>} />

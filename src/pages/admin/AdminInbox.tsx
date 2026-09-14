@@ -12,6 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Inbox, Clock, Mail, Sparkles, RefreshCw, Reply, Send, Archive, Check } from 'lucide-react';
 import { format } from 'date-fns';
+import EmailBody from '@/components/admin/EmailBody';
 
 type InboundRow = {
   id: string;
@@ -170,6 +171,12 @@ export const AdminInbox = () => {
             Every message arriving at <strong className="text-foreground">support@fastmedia.pro</strong> appears here.
             Replies are sent from that same Google Workspace mailbox, so the customer sees a normal email from you.
             {unread > 0 && <> <strong className="text-foreground">{unread} unread.</strong></>}
+            <div className="mt-1 text-xs">
+              Copies are pulled from Google Workspace every hour.{' '}
+              {rows.length > 0
+                ? <>Newest message here: <strong className="text-foreground">{format(new Date(rows[0].created_at), 'dd.MM.yyyy HH:mm')}</strong> ({rows.length} stored).</>
+                : 'No copies stored yet.'}
+            </div>
           </div>
           <Button size="sm" variant="outline" onClick={syncGoogle} disabled={syncing} className="flex-shrink-0">
             <RefreshCw className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
@@ -259,7 +266,7 @@ export const AdminInbox = () => {
               </div>
               <div className="border-t pt-4">
                 <h4 className="font-semibold mb-2">Message</h4>
-                <pre className="whitespace-pre-wrap bg-muted/40 p-3 rounded text-xs">{selected.body_plain || '(empty)'}</pre>
+                <EmailBody html={selected.body_html} text={selected.body_plain} />
               </div>
               {selected.ai_reply && (
                 <div className="border-t pt-4">
