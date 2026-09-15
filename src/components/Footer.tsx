@@ -56,6 +56,11 @@ const Footer = () => {
               className="text-sm text-background/60 leading-relaxed"
               multiline
             />
+            <p className="mt-4 text-xs text-background/50 leading-relaxed">
+              Timothy Knott — Founder · IČO 17308551
+              <br />
+              Louny 440 01, Ústí nad Labem Region, Czech Republic
+            </p>
           </div>
 
           {/* Site Navigation */}
