@@ -70,6 +70,21 @@ Deno.serve(async (req) => {
       .maybeSingle();
     resolvedCustomerId = (sub as { stripe_customer_id?: string } | null)?.stripe_customer_id ?? undefined;
 
+    // Payments may not be configured yet in this environment. Return a clear,
+    // friendly message instead of a raw 500 server error.
+    const keyName = env === "live" ? "STRIPE_LIVE_API_KEY" : "STRIPE_SANDBOX_API_KEY";
+    if (!Deno.env.get(keyName)) {
+      console.warn("[payments-customer-portal] payments not configured", { env });
+      return new Response(
+        JSON.stringify({
+          error:
+            "The billing portal isn't available yet. Please email support@fastmedia.pro and we'll help with your subscription.",
+          code: "payments_not_configured",
+        }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const stripe = createStripeClient(env);
 
     // Fallback: look up Stripe customer by the authenticated user's verified email only.

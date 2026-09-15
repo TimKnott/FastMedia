@@ -74,8 +74,8 @@ const AdminLandingPage = () => {
   const builtIn = (field: { key: string; defaultCs?: string; defaultEn?: string }, lang: Lang) => {
     const own = lang === 'cs' ? field.defaultCs : field.defaultEn;
     if (own) return own;
-    const dict = (translations as unknown as Record<string, Record<string, string>>)[lang];
-    return dict?.[field.key] ?? '';
+    const entry = (translations as unknown as Record<string, Record<string, string>>)[field.key];
+    return entry?.[lang] ?? '';
   };
 
   const customCount = (section: HomeSectionDef) =>
