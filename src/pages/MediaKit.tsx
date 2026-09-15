@@ -82,7 +82,7 @@ const copy = {
       { icon: Languages, label: 'Languages', value: 'Czech (default) and British English' },
       { icon: Globe, label: 'Coverage', value: 'Czechia with worldwide delivery' },
       { icon: Clock, label: 'Delivery', value: 'Fast launches, typically in weeks' },
-      { icon: MapPin, label: 'Base', value: 'Czech Republic, operating online' },
+      { icon: MapPin, label: 'Base', value: 'Louny 440 01, Ústí nad Labem Region, Czech Republic' },
     ],
     portfolioBadge: 'Portfolio',
     portfolioTitle: 'Selected work',
