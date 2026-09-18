@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import SEOHead from '@/components/SEOHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import CourseRichText from '@/components/CourseRichText';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePublishedCourses, courseField, courseLearn } from '@/hooks/useCourses';
 
