@@ -1,6 +1,8 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
-import { sendTemplateEmail } from '../_shared/transactional-email-templates/send-email.ts'
+import { renderTemplateEmail, sendTemplateEmail } from '../_shared/transactional-email-templates/send-email.ts'
+import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.ts'
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
