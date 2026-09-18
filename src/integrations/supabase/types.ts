@@ -605,6 +605,87 @@ export type Database = {
         }
         Relationships: []
       }
+      courses: {
+        Row: {
+          category: string
+          cover_image: string | null
+          created_at: string
+          duration_label_cs: string
+          duration_label_en: string
+          embed_html: string | null
+          embed_url: string | null
+          id: string
+          intro_cs: string
+          intro_en: string
+          is_free: boolean
+          is_published: boolean
+          learn_cs: string[]
+          learn_en: string[]
+          level_label_cs: string
+          level_label_en: string
+          price_czk: number
+          slug: string
+          sort_order: number
+          subtitle_cs: string
+          subtitle_en: string
+          title_cs: string
+          title_en: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          cover_image?: string | null
+          created_at?: string
+          duration_label_cs?: string
+          duration_label_en?: string
+          embed_html?: string | null
+          embed_url?: string | null
+          id?: string
+          intro_cs?: string
+          intro_en?: string
+          is_free?: boolean
+          is_published?: boolean
+          learn_cs?: string[]
+          learn_en?: string[]
+          level_label_cs?: string
+          level_label_en?: string
+          price_czk?: number
+          slug: string
+          sort_order?: number
+          subtitle_cs?: string
+          subtitle_en?: string
+          title_cs?: string
+          title_en?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          cover_image?: string | null
+          created_at?: string
+          duration_label_cs?: string
+          duration_label_en?: string
+          embed_html?: string | null
+          embed_url?: string | null
+          id?: string
+          intro_cs?: string
+          intro_en?: string
+          is_free?: boolean
+          is_published?: boolean
+          learn_cs?: string[]
+          learn_en?: string[]
+          level_label_cs?: string
+          level_label_en?: string
+          price_czk?: number
+          slug?: string
+          sort_order?: number
+          subtitle_cs?: string
+          subtitle_en?: string
+          title_cs?: string
+          title_en?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       custom_demos: {
         Row: {
           calculator_prompts: Json
