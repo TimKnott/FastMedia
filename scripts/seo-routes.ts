@@ -146,6 +146,20 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
+    path: "/courses",
+    title: "Free Website & EU Grant Courses | FastMedia.Pro",
+    description:
+      "Free online courses on planning and building a website and on the EU creative voucher system that funds up to 85% of eligible costs for Czech businesses.",
+    ogImage: OG_IMG,
+    changefreq: "weekly",
+    priority: "0.8",
+    h1: "Learn to plan a website - and fund it with European grants",
+    contentBlocks: [
+      "FastMedia Academy publishes short, practical courses for Czech business owners: how to plan a website, what to brief a designer, how to measure results, and how the EU creative voucher system works in practice.",
+      "The grant course explains eligibility, the 85% support rate capped at 150,000 CZK, the required documents and how to describe a project so assessors approve it. Every course is currently free.",
+    ],
+  },
+  {
     path: "/grant-eligibility",
     title: "Creative Voucher Eligibility Rules Explained | FastMedia.Pro",
     description:
