@@ -50,6 +50,7 @@ const MediaKit = lazy(() => import("./pages/MediaKit"));
 const Courses = lazy(() => import("./pages/Courses"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
+const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 
 // Admin pages (lazy)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
@@ -83,6 +84,7 @@ const AdminVbout = lazy(() => import("./pages/admin/AdminVbout"));
 const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 const AdminCourses = lazy(() => import("./pages/admin/AdminCourses"));
+const AdminCaseStudies = lazy(() => import("./pages/admin/AdminCaseStudies"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
@@ -195,6 +197,7 @@ const App = () => (
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:slug" element={<CourseDetail />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />
+            <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/demo/plumbing" element={<PlumbingDemo />} />
@@ -297,6 +300,7 @@ const App = () => (
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
               <Route path="coupons" element={<AdminCoupons />} />
               <Route path="courses" element={<AdminCourses />} />
+              <Route path="case-studies" element={<AdminCaseStudies />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
               <Route path="inbox" element={<ProtectedRoute minRole="admin"><AdminInboxPage /></ProtectedRoute>} />

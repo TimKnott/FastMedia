@@ -150,7 +150,7 @@ const Navbar = () => {
     ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
     { href: '#faq', label: t('nav.faq') },
     { href: '/offer', label: t('nav.offer'), isRoute: true },
-    { href: '/offer#case-studies', label: isEnglish ? 'Case studies' : 'Případové studie', isRoute: true },
+    { href: '/case-studies', label: isEnglish ? 'Case studies' : 'Případové studie', isRoute: true },
     { href: '/courses', label: isEnglish ? 'Courses' : 'Kurzy', isRoute: true },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
@@ -295,7 +295,7 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-1 flex-wrap pb-2 -mt-1">
           {[
             { to: '/offer', label: isEnglish ? 'Offer' : 'Nabídka' },
-            { to: '/offer#case-studies', label: isEnglish ? 'Case studies' : 'Případové studie' },
+            { to: '/case-studies', label: isEnglish ? 'Case studies' : 'Případové studie' },
             { to: '/grant-wizard', label: isEnglish ? 'Grant wizard' : 'Žádost o grant' },
             { to: '/grant-eligibility', label: isEnglish ? 'Grant rules' : 'Podmínky grantu' },
             { to: '/eugrants', label: isEnglish ? 'Grant hubs map' : 'Mapa krajů' },
