@@ -183,7 +183,7 @@ const App = () => (
             <Route path="/grants" element={<GrantGuide />} />
             <Route path="/grant-wizard" element={<GrantWizard />} />
             <Route path="/grant-eligibility" element={<GrantEligibility />} />
-            <Route path="/grant-hubs" element={<GrantHubs />} />
+            <Route path="/eugrants" element={<GrantHubs />} />
             <Route path="/grant-process" element={<GrantProcess />} />
             <Route path="/grant-application" element={<GrantApplication />} />
             <Route path="/grant-portal" element={<GrantPortal />} />

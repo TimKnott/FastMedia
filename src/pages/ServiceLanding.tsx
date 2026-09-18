@@ -158,7 +158,7 @@ const ServiceLanding = () => {
                   <Link to="/grant-eligibility">{t.grantRules}</Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link to="/grant-hubs">{t.grantHubs} <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/eugrants">{t.grantHubs} <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
               </div>
             </CardContent>

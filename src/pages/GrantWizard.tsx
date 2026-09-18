@@ -755,7 +755,7 @@ const GrantWizard = () => {
                 {t.rules}
               </Button>
             </Link>
-            <Link to="/grant-hubs">
+            <Link to="/eugrants">
               <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent border-launch-border text-launch-foreground hover:bg-launch-foreground/10">
                 {t.hubsLink}
               </Button>
@@ -1058,7 +1058,7 @@ const GrantWizard = () => {
                           <a href={region.hubUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary inline-flex items-center gap-1 mt-1">
                             {region.hubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')} <ExternalLink className="w-3 h-3" />
                           </a>
-                          <Link to="/grant-hubs" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
+                          <Link to="/eugrants" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
                             {t.hubsLink} <ArrowRight className="w-3 h-3" />
                           </Link>
                           <Link to="/grant-process" className="text-sm text-primary inline-flex items-center gap-1 mt-1 block">
@@ -1200,7 +1200,7 @@ const GrantWizard = () => {
           <div className="mt-8 flex flex-wrap gap-4 text-sm">
             <Link to="/grants" className="text-primary inline-flex items-center gap-1">{t.grantsLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/grant-eligibility" className="text-primary inline-flex items-center gap-1">{t.rules}<ArrowRight className="w-3 h-3" /></Link>
-            <Link to="/grant-hubs" className="text-primary inline-flex items-center gap-1">{t.hubsLink}<ArrowRight className="w-3 h-3" /></Link>
+            <Link to="/eugrants" className="text-primary inline-flex items-center gap-1">{t.hubsLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/grant-process" className="text-primary inline-flex items-center gap-1">{t.processLink}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/grant-portal" className="text-primary inline-flex items-center gap-1">{lang === 'cs' ? 'Portál žadatele' : 'Applicant portal'}<ArrowRight className="w-3 h-3" /></Link>
             <Link to="/calculator" className="text-primary inline-flex items-center gap-1">{t.calcLink}<ArrowRight className="w-3 h-3" /></Link>
