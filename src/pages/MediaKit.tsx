@@ -35,7 +35,7 @@ const copy = {
       { icon: Languages, label: 'Jazyky', value: 'Čeština (výchozí) a britská angličtina' },
       { icon: Globe, label: 'Působnost', value: 'ČR a dodávky do celého světa' },
       { icon: Clock, label: 'Dodání', value: 'Rychlé spuštění, typicky v týdnech' },
-      { icon: MapPin, label: 'Sídlo služeb', value: 'Česká republika, online provoz' },
+      { icon: MapPin, label: 'Sídlo služeb', value: 'Louny 440 01, Ústecký kraj, Česká republika' },
     ],
     portfolioBadge: 'Portfolio',
     portfolioTitle: 'Ukázky naší práce',
