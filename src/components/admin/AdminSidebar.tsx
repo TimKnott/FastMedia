@@ -80,6 +80,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
   { titleKey: 'Coupons', url: '/admin/coupons', icon: TicketPercent, minRole: 'admin' },
   { titleKey: 'Courses', url: '/admin/courses', icon: GraduationCap, minRole: 'editor' },
+  { titleKey: 'Case Studies', url: '/admin/case-studies', icon: Eye, minRole: 'editor' },
   { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
   { titleKey: 'Email Queue Health', url: '/admin/email-queue', icon: Activity, minRole: 'admin' },
   { titleKey: 'Email Dashboard', url: '/admin/email-dashboard', icon: Inbox, minRole: 'admin' },
@@ -106,7 +107,7 @@ const contentItems: MenuItem[] = [
 
 const publicPageItems: MenuItem[] = [
   { titleKey: 'Offer page', url: '/offer', icon: TicketPercent, minRole: 'editor' },
-  { titleKey: 'Case studies', url: '/offer#case-studies', icon: Eye, minRole: 'editor' },
+  { titleKey: 'Case studies', url: '/case-studies', icon: Eye, minRole: 'editor' },
   { titleKey: 'Grant wizard form', url: '/grant-wizard', icon: FileText, minRole: 'editor' },
   { titleKey: 'Grant eligibility', url: '/grant-eligibility', icon: FileCheck2, minRole: 'editor' },
   { titleKey: 'Grant hubs map', url: '/eugrants', icon: Map, minRole: 'editor' },

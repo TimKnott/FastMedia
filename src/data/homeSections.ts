@@ -189,6 +189,17 @@ export const HOME_SECTIONS: HomeSectionDef[] = [
     ],
   },
   {
+    id: 'case_studies',
+    settingKey: 'home_case_studies',
+    labelEn: 'Case studies',
+    labelCs: 'Případové studie',
+    descEn: 'Thumbnail summary of the case studies, linking to the full page.',
+    descCs: 'Přehled případových studií s náhledy a odkazem na celou stránku.',
+    icon: Award,
+    defaultEnabled: true,
+    fields: [],
+  },
+  {
     id: 'reviews',
     settingKey: 'home_reviews',
     labelEn: 'Reviews',

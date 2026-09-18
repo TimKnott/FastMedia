@@ -22,6 +22,7 @@ import TeamSection from '@/components/TeamSection';
 import AppointmentPoliciesSection from '@/components/AppointmentPoliciesSection';
 import ServiceAreaMap from '@/components/ServiceAreaMap';
 import OfferTeaser from '@/components/OfferTeaser';
+import CaseStudiesSection from '@/components/CaseStudiesSection';
 
 const Index = () => {
   const { language } = useLanguage();
@@ -51,6 +52,7 @@ const Index = () => {
           {on('home_calculator') && <CalculatorShowcase />}
           {on('home_services') && <ServicesSection />}
           {on('home_promo') && <PromoBanner variant="full" />}
+          {on('home_case_studies') && <CaseStudiesSection />}
           {on('home_reviews') && <ReviewsSection />}
           {on('home_team') && <TeamSection />}
           {on('show_pricing', false) && <PricingSection />}

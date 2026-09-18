@@ -146,6 +146,20 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
+    path: "/case-studies",
+    title: "Website Case Studies and Results | FastMedia.Pro",
+    description:
+      "Case studies from FastMedia.Pro website projects: enquiry growth, booking numbers, basket values and mobile load times. Each study opens and downloads as a PDF.",
+    ogImage: OG_IMG,
+    changefreq: "weekly",
+    priority: "0.8",
+    h1: "Case studies: website projects and the results that followed",
+    contentBlocks: [
+      "Each case study covers one project: the business problem, what was built, and the measured outcome - enquiry volume, response time, out-of-hours bookings, basket value and mobile load time.",
+      "Studies span trades, beauty and wellness, e-commerce and construction. Every case study can be opened in the browser as a PDF or downloaded for sharing internally.",
+    ],
+  },
+  {
     path: "/courses",
     title: "Free Website & EU Grant Courses | FastMedia.Pro",
     description:

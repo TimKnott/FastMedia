@@ -279,6 +279,69 @@ export type Database = {
           },
         ]
       }
+      case_studies: {
+        Row: {
+          body_cs: string
+          body_en: string
+          brand: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_published: boolean
+          pdf_path: string | null
+          pdf_url: string | null
+          slug: string
+          sort_order: number
+          stats: Json
+          summary_cs: string
+          summary_en: string
+          tag_cs: string
+          tag_en: string
+          thumbnail_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          body_cs?: string
+          body_en?: string
+          brand: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_published?: boolean
+          pdf_path?: string | null
+          pdf_url?: string | null
+          slug: string
+          sort_order?: number
+          stats?: Json
+          summary_cs?: string
+          summary_en?: string
+          tag_cs?: string
+          tag_en?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body_cs?: string
+          body_en?: string
+          brand?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_published?: boolean
+          pdf_path?: string | null
+          pdf_url?: string | null
+          slug?: string
+          sort_order?: number
+          stats?: Json
+          summary_cs?: string
+          summary_en?: string
+          tag_cs?: string
+          tag_en?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_projects: {
         Row: {
           agreement_ack_ip: string | null
