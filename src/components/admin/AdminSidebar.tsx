@@ -80,6 +80,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.accounting', url: '/admin/accounting', icon: Receipt, minRole: 'admin' },
   { titleKey: 'Coupons', url: '/admin/coupons', icon: TicketPercent, minRole: 'admin' },
   { titleKey: 'Courses', url: '/admin/courses', icon: GraduationCap, minRole: 'editor' },
+  { titleKey: 'Case Studies', url: '/admin/case-studies', icon: Eye, minRole: 'editor' },
   { titleKey: 'admin.emails', url: '/admin/emails', icon: Mail, minRole: 'admin' },
   { titleKey: 'Email Queue Health', url: '/admin/email-queue', icon: Activity, minRole: 'admin' },
   { titleKey: 'Email Dashboard', url: '/admin/email-dashboard', icon: Inbox, minRole: 'admin' },
