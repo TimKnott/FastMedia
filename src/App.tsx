@@ -47,6 +47,8 @@ const GrantApplication = lazy(() => import("./pages/GrantApplication"));
 const GrantPortal = lazy(() => import("./pages/GrantPortal"));
 const AdminGrantFollowUp = lazy(() => import("./pages/admin/AdminGrantFollowUp"));
 const MediaKit = lazy(() => import("./pages/MediaKit"));
+const Courses = lazy(() => import("./pages/Courses"));
+const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 
 // Admin pages (lazy)
@@ -80,6 +82,7 @@ const AdminSEOHealth = lazy(() => import("./pages/admin/AdminSEOHealth"));
 const AdminVbout = lazy(() => import("./pages/admin/AdminVbout"));
 const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
+const AdminCourses = lazy(() => import("./pages/admin/AdminCourses"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
@@ -189,6 +192,8 @@ const App = () => (
             <Route path="/grant-application" element={<GrantApplication />} />
             <Route path="/grant-portal" element={<GrantPortal />} />
             <Route path="/media-kit" element={<MediaKit />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:slug" element={<CourseDetail />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
@@ -291,6 +296,7 @@ const App = () => (
               <Route path="vbout-debug" element={<ProtectedRoute minRole="admin"><AdminVboutDebug /></ProtectedRoute>} />
               <Route path="embed-codes" element={<AdminEmbedCodes />} />
               <Route path="coupons" element={<AdminCoupons />} />
+              <Route path="courses" element={<AdminCourses />} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
               <Route path="inbox" element={<ProtectedRoute minRole="admin"><AdminInboxPage /></ProtectedRoute>} />

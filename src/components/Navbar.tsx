@@ -151,6 +151,7 @@ const Navbar = () => {
     { href: '#faq', label: t('nav.faq') },
     { href: '/offer', label: t('nav.offer'), isRoute: true },
     { href: '/offer#case-studies', label: isEnglish ? 'Case studies' : 'Případové studie', isRoute: true },
+    { href: '/courses', label: isEnglish ? 'Courses' : 'Kurzy', isRoute: true },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
     { href: '/calculator', label: t('nav.calculator'), isRoute: true },
@@ -299,6 +300,7 @@ const Navbar = () => {
             { to: '/grant-eligibility', label: isEnglish ? 'Grant rules' : 'Podmínky grantu' },
             { to: '/eugrants', label: isEnglish ? 'Grant hubs map' : 'Mapa krajů' },
             { to: '/calculator', label: isEnglish ? 'Calculator' : 'Kalkulačka' },
+            { to: '/courses', label: isEnglish ? 'Courses' : 'Kurzy' },
             { to: '/blog', label: 'Blog' },
             { to: '/contact', label: isEnglish ? 'Contact' : 'Kontakt' },
           ].map((l) => (
