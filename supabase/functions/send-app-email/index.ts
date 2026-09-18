@@ -1,6 +1,8 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
-import { sendTemplateEmail } from '../_shared/transactional-email-templates/send-email.ts'
+import { renderTemplateEmail, sendTemplateEmail } from '../_shared/transactional-email-templates/send-email.ts'
+import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.ts'
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -117,15 +119,40 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-  const logSend = async (status: string, errorMessage?: string) => {
+  const logSend = async (status: string, errorMessage?: string, metadata?: Record<string, unknown>) => {
     const { error } = await supabase.from('email_send_log').insert({
       message_id: messageId,
       template_name: templateName,
       recipient_email: effectiveRecipient,
       status,
       error_message: errorMessage ?? null,
+      metadata: metadata ?? null,
     })
     if (error) console.error('Failed to write email_send_log', { status, error: error.message })
+  }
+
+  // When the managed sender domain is not verified yet, deliver through the
+  // connected Google Workspace mailbox so notifications still arrive.
+  const tryGmailFallback = async (primaryError: string) => {
+    if (!gmailFallbackAvailable()) return null
+    try {
+      const { html, text, subject } = await renderTemplateEmail(templateName, templateData)
+      const result = await sendViaGmail(effectiveRecipient, subject, html, text)
+      if (!result.sent) {
+        console.error('Gmail fallback failed', { templateName, error: result.error })
+        return null
+      }
+      await logSend('sent', null, {
+        via: 'google_workspace_fallback',
+        gmail_id: result.id ?? null,
+        primary_error: primaryError.slice(0, 300),
+      })
+      console.log('Transactional email sent via Google Workspace fallback', { templateName })
+      return json({ success: true, sent: true, via: 'google_workspace', messageId })
+    } catch (err) {
+      console.error('Gmail fallback threw', err instanceof Error ? err.message : String(err))
+      return null
+    }
   }
 
   try {
@@ -145,8 +172,11 @@ Deno.serve(async (req) => {
     return json({ success: true, sent: true, messageId })
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
+    const fallback = await tryGmailFallback(message)
+    if (fallback) return fallback
     await logSend('failed', message.slice(0, 500))
     console.error('Failed to send transactional email', { templateName, error: message })
     return json({ error: 'Failed to send email', detail: message.slice(0, 500), messageId }, 500)
   }
+
 })

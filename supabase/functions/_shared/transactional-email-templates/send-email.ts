@@ -26,6 +26,25 @@ export interface SendTemplateEmailOptions {
   replyTo?: string
 }
 
+/** Renders a registered template to html/text/subject without sending. */
+export async function renderTemplateEmail(
+  templateName: string,
+  templateData: Record<string, any> = {}
+): Promise<{ html: string; text: string; subject: string; recipient?: string }> {
+  const template = TEMPLATES[templateName]
+  if (!template) {
+    throw new Error(
+      `Template '${templateName}' not found. Available: ${Object.keys(TEMPLATES).join(', ')}`
+    )
+  }
+  const element = React.createElement(template.component, templateData)
+  const html = await renderAsync(element)
+  const text = await renderAsync(element, { plainText: true })
+  const subject =
+    typeof template.subject === 'function' ? template.subject(templateData) : template.subject
+  return { html, text, subject, recipient: template.to }
+}
+
 /**
  * Renders a registered template and sends it through Lovable's managed email
  * API. Suppression, retries, and rate limits are enforced by Lovable
@@ -33,6 +52,7 @@ export interface SendTemplateEmailOptions {
  * ({ sent: false }); any other failure throws — EmailAPIError exposes
  * .code and .status for branching.
  */
+
 export async function sendTemplateEmail(
   templateName: string,
   to: string,
