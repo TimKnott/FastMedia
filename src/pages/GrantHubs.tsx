@@ -65,7 +65,7 @@ const GrantHubs = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t.seoTitle} description={t.seoDesc} pagePath="/grant-hubs" />
+      <SEOHead title={t.seoTitle} description={t.seoDesc} pagePath="/eugrants" />
       <Navbar />
 
       <header className="relative overflow-hidden border-b border-border bg-muted/30">

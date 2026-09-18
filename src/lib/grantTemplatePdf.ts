@@ -58,7 +58,7 @@ const L = {
     ],
     s6: '6. JAK A KAM ZADOST PODAT',
     s6items: [
-      '1. Zaregistrujte se u sveho regionalniho partnera (napr. JIC, ICUK, SIC - viz mapa hubu na fastmedia.pro/grant-hubs).',
+      '1. Zaregistrujte se u sveho regionalniho partnera (napr. JIC, ICUK, SIC - viz mapa hubu na fastmedia.pro/eugrants).',
       '2. Zadost podavejte elektricky pres portal DPMK (dpmk.cz) nebo dle pokynu regionalniho partnera, s overenou identitou (Bank iD / datova schranka).',
       '3. Kontrolujte si terminy aktualni vyzvy - kazde kolo ma vlastni podminky, cile a rozpoctova pravidla.',
       '4. Pred podanim si vzdy prectete aktualni zneni vyzvy na mk.gov.cz.',
@@ -116,7 +116,7 @@ const L = {
     ],
     s6: '6. HOW AND WHERE TO APPLY',
     s6items: [
-      '1. Register with your regional partner (e.g. JIC, ICUK, SIC - see the hub map at fastmedia.pro/grant-hubs).',
+      '1. Register with your regional partner (e.g. JIC, ICUK, SIC - see the hub map at fastmedia.pro/eugrants).',
       '2. Submit the application electronically via the DPMK portal (dpmk.cz) or as instructed by your regional partner, with verified identity (Bank iD / data box).',
       '3. Check the deadlines of the current call - each round has its own conditions, goals and budget rules.',
       '4. Always read the current call text at mk.gov.cz before applying.',

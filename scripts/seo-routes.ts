@@ -117,7 +117,7 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
-    path: "/grant-hubs",
+    path: "/eugrants",
     title: "Creative Voucher Regional Partners in All 14 Czech Regions | FastMedia.Pro",
     description:
       "An interactive map of the regional innovation partners administering Kreativni vouchery in all 14 Czech regions, from ICUK and SIC to JIC, MSIC and TIC Zlin.",

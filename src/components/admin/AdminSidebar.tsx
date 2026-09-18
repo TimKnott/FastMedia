@@ -107,7 +107,7 @@ const publicPageItems: MenuItem[] = [
   { titleKey: 'Case studies', url: '/offer#case-studies', icon: Eye, minRole: 'editor' },
   { titleKey: 'Grant wizard form', url: '/grant-wizard', icon: FileText, minRole: 'editor' },
   { titleKey: 'Grant eligibility', url: '/grant-eligibility', icon: FileCheck2, minRole: 'editor' },
-  { titleKey: 'Grant hubs map', url: '/grant-hubs', icon: Map, minRole: 'editor' },
+  { titleKey: 'Grant hubs map', url: '/eugrants', icon: Map, minRole: 'editor' },
   { titleKey: 'Grant process', url: '/grant-process', icon: FileCheck2, minRole: 'editor' },
   { titleKey: 'Service landing pages', url: '/service/websites', icon: Eye, minRole: 'editor' },
 ];

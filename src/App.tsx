@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
@@ -183,7 +183,8 @@ const App = () => (
             <Route path="/grants" element={<GrantGuide />} />
             <Route path="/grant-wizard" element={<GrantWizard />} />
             <Route path="/grant-eligibility" element={<GrantEligibility />} />
-            <Route path="/grant-hubs" element={<GrantHubs />} />
+            <Route path="/eugrants" element={<GrantHubs />} />
+            <Route path="/grant-hubs" element={<Navigate to="/eugrants" replace />} />
             <Route path="/grant-process" element={<GrantProcess />} />
             <Route path="/grant-application" element={<GrantApplication />} />
             <Route path="/grant-portal" element={<GrantPortal />} />

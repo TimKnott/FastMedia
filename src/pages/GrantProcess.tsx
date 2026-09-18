@@ -181,7 +181,7 @@ const GrantProcess = () => {
                 <Link to="/grant-wizard">{t.wizard} <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="/grant-hubs"><Map className="mr-2 h-4 w-4" /> {t.hubs}</Link>
+                <Link to="/eugrants"><Map className="mr-2 h-4 w-4" /> {t.hubs}</Link>
               </Button>
             </div>
           </motion.div>
