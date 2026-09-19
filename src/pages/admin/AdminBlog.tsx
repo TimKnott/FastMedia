@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Sparkles, Trash2, Eye, EyeOff, Loader2, Pencil, CheckCircle2, XCircle, Volume2, Clock, Headphones, AlertCircle } from 'lucide-react';
+import { ExternalLink, Sparkles, Trash2, Eye, EyeOff, Loader2, Pencil, CheckCircle2, XCircle, Volume2, Clock, Headphones, AlertCircle, Share2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useDbBlogPosts, type DbBlogPost } from '@/hooks/useDbBlogPosts';
 import { blogPosts as staticPosts } from '@/data/blogPosts';
@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import BlogPostEditor from '@/components/admin/BlogPostEditor';
 import BlogAudioPlayer from '@/components/blog/BlogAudioPlayer';
+import SocialShareStudio from '@/components/admin/SocialShareStudio';
 
 const AdminBlog = () => {
   const { t, language } = useLanguage();
@@ -18,6 +19,7 @@ const AdminBlog = () => {
   const [editing, setEditing] = useState<DbBlogPost | null>(null);
   const [actioning, setActioning] = useState<string | null>(null);
   const [previewAudio, setPreviewAudio] = useState<DbBlogPost | null>(null);
+  const [sharing, setSharing] = useState<DbBlogPost | null>(null);
 
   const pending = useMemo(() => posts.filter(p => p.approval_status === 'pending_review'), [posts]);
   const reviewed = useMemo(() => posts.filter(p => p.approval_status !== 'pending_review'), [posts]);
@@ -168,6 +170,9 @@ const AdminBlog = () => {
                 <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setEditing(post)}>
                   <Pencil className="w-3 h-3 mr-1" /> Edit
                 </Button>
+                <Button size="sm" className="h-8 text-xs gradient-accent text-accent-foreground" onClick={() => setSharing(post)}>
+                  <Share2 className="w-3 h-3 mr-1" /> Share to social
+                </Button>
                 {!isPending && (
                   <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => togglePublish(post.id, post.status)}>
                     {post.status === 'published' ? <EyeOff className="w-3 h-3 mr-1" /> : <Eye className="w-3 h-3 mr-1" />}
@@ -261,6 +266,7 @@ const AdminBlog = () => {
       </div>
 
       <BlogPostEditor post={editing} open={!!editing} onClose={() => setEditing(null)} onSaved={reload} />
+      <SocialShareStudio post={sharing} open={!!sharing} onClose={() => setSharing(null)} />
     </div>
   );
 };
