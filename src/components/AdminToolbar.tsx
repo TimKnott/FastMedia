@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Eye, EyeOff, Upload, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   AlertDialog,
   AlertDialogAction,
