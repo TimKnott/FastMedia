@@ -41,15 +41,25 @@ const AdminToolbar = () => {
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex items-center gap-2 bg-card/95 backdrop-blur-lg border border-border rounded-2xl shadow-xl px-4 py-3">
       {/* Preview toggle */}
-      <Button
-        size="sm"
-        variant={isPreview ? 'default' : 'outline'}
-        onClick={() => setPreview(!isPreview)}
-        className="gap-2"
-      >
-        {isPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-        {isPreview ? t('admin.preview_off') : t('admin.preview')}
-      </Button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="sm"
+              variant={isPreview ? 'default' : 'outline'}
+              onClick={() => setPreview(!isPreview)}
+              className="gap-2"
+            >
+              {isPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {isPreview ? 'Show published text' : 'Preview my unpublished edits'}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+            Switch this on to see the site with your saved-but-not-yet-published wording and images.
+            Visitors still see the published version until you press Publish.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       {/* Draft count */}
       {draftCount > 0 && (
