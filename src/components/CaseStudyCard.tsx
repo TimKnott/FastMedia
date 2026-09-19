@@ -37,7 +37,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
         }
         return;
       }
-      const doc = buildCaseStudyPdf(item, language);
+      const doc = await buildCaseStudyPdf(item, language);
       if (download) doc.save(caseStudyPdfFilename(item));
       else window.open(doc.output('bloburl') as unknown as string, '_blank', 'noopener,noreferrer');
     } finally {
