@@ -52,5 +52,5 @@
 - [x] /grant-portal docs upload + DPMK ref
 - [ ] Bank iD login (blocked: needs certified identity provider registration)
 
-- [ ] Publish site so /case-studies + homepage case-study band are live on fastmedia.pro
-- [ ] Blog social share studio (LinkedIn/Facebook/Instagram/TikTok kit)
+- [x] Publish site so /case-studies + homepage case-study band are live on fastmedia.pro
+- [x] Blog social share studio (LinkedIn/Facebook/Instagram/TikTok kit)
