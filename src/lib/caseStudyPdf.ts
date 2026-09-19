@@ -1,17 +1,23 @@
 import jsPDF from 'jspdf';
 import { caseField, statLabel, type CaseStudy } from '@/hooks/useCaseStudies';
+import { useUnicodeFont } from '@/lib/pdfFont';
 
 /**
  * Builds a one-page PDF summary for a case study that has no uploaded file yet,
  * so every case study can always be opened and downloaded.
+ * Uses an embedded Unicode font so Czech diacritics render correctly.
  */
-export const buildCaseStudyPdf = (item: CaseStudy, lang: 'cs' | 'en' | string): jsPDF => {
+export const buildCaseStudyPdf = async (
+  item: CaseStudy,
+  lang: 'cs' | 'en' | string
+): Promise<jsPDF> => {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const font = await useUnicodeFont(doc);
   const margin = 56;
   const width = doc.internal.pageSize.getWidth() - margin * 2;
   let y = margin;
 
-  doc.setFont('helvetica', 'bold');
+  doc.setFont(font, 'bold');
   doc.setFontSize(10);
   doc.text('FastMedia.Pro', margin, y);
   y += 28;
@@ -22,13 +28,13 @@ export const buildCaseStudyPdf = (item: CaseStudy, lang: 'cs' | 'en' | string): 
 
   const tag = caseField(item, 'tag', lang);
   if (tag) {
-    doc.setFont('helvetica', 'normal');
+    doc.setFont(font, 'normal');
     doc.setFontSize(11);
     doc.text(tag, margin, y);
     y += 24;
   }
 
-  doc.setFont('helvetica', 'normal');
+  doc.setFont(font, 'normal');
   doc.setFontSize(12);
   const summary = caseField(item, 'summary', lang);
   if (summary) {
@@ -45,22 +51,22 @@ export const buildCaseStudyPdf = (item: CaseStudy, lang: 'cs' | 'en' | string): 
   }
 
   if (item.stats.length) {
-    doc.setFont('helvetica', 'bold');
+    doc.setFont(font, 'bold');
     doc.setFontSize(13);
     doc.text(lang === 'cs' ? 'Výsledky' : 'Results', margin, y);
     y += 20;
     doc.setFontSize(12);
     item.stats.forEach((stat) => {
-      doc.setFont('helvetica', 'bold');
+      doc.setFont(font, 'bold');
       doc.text(stat.value, margin, y);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont(font, 'normal');
       doc.text(statLabel(stat, lang), margin + 110, y);
       y += 18;
     });
     y += 12;
   }
 
-  doc.setFont('helvetica', 'normal');
+  doc.setFont(font, 'normal');
   doc.setFontSize(9);
   doc.text(
     lang === 'cs'
