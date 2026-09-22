@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useFormAbandonment } from '@/hooks/useVisitorSafeguards';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
@@ -78,6 +79,8 @@ const ContactInner = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', company: '', message: '' });
+  const abandonment = useFormAbandonment('contact-form', lang);
+  abandonment.track(formData);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +100,7 @@ const ContactInner = () => {
       if (error) throw error;
       if ((data as { success?: boolean })?.success !== true) throw new Error('Submission rejected');
 
+      abandonment.complete();
       setIsSubmitted(true);
       toast.success(c.success);
     } catch {
