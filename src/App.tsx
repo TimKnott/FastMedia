@@ -12,6 +12,7 @@ import WhatsAppFloat from "./components/WhatsAppFloat";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import AccessibilityToolbar from "./components/AccessibilityToolbar";
+import ExitIntentOffer from "./components/ExitIntentOffer";
 import { A11yProvider } from "./contexts/A11yContext";
 import SuperAdminInboxBadge from "./components/SuperAdminInboxBadge";
 import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner";
@@ -85,6 +86,7 @@ const AdminEmbedCodes = lazy(() => import("./pages/admin/AdminEmbedCodes"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 const AdminCourses = lazy(() => import("./pages/admin/AdminCourses"));
 const AdminCaseStudies = lazy(() => import("./pages/admin/AdminCaseStudies"));
+const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
@@ -180,6 +182,7 @@ const App = () => (
           <EmbedCodeInjector />
           <CookieConsentBanner />
           <AccessibilityToolbar />
+          <ExitIntentOffer />
           <SuperAdminInboxBadge />
           <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -301,6 +304,7 @@ const App = () => (
               <Route path="coupons" element={<AdminCoupons />} />
               <Route path="courses" element={<AdminCourses />} />
               <Route path="case-studies" element={<AdminCaseStudies />} />
+              <Route path="prospecting" element={<ProtectedRoute minRole="admin"><AdminProspecting /></ProtectedRoute>} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
               <Route path="inbox" element={<ProtectedRoute minRole="admin"><AdminInboxPage /></ProtectedRoute>} />

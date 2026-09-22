@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useFormAbandonment } from '@/hooks/useVisitorSafeguards';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -63,6 +64,8 @@ const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: strin
   const [grantPercent, setGrantPercent] = useState('50');
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const abandonment = useFormAbandonment(source ?? 'offer-form', lang);
+  abandonment.track(form);
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }));
@@ -93,6 +96,7 @@ const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: strin
       });
       if (error) throw error;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
+      abandonment.complete();
       setDone(true);
     } catch (err) {
       toast.error(err instanceof Error && err.message ? err.message : t.errGeneric);
