@@ -54,3 +54,11 @@
 
 - [x] Publish site so /case-studies + homepage case-study band are live on fastmedia.pro
 - [x] Blog social share studio (LinkedIn/Facebook/Instagram/TikTok kit)
+
+## Outbound prospecting agent
+- [x] prospects / outreach_messages / visitor_signals tables with staff-only access
+- [x] outreach-agent function: lead research, 3-step British-English sequence, approve-and-send via Google Workspace, hourly follow-ups, reply + unsubscribe stop
+- [x] visitor-signal function: exit intent, abandoned forms, live alerts to support@
+- [x] /admin/prospecting desk: add/import prospects, pull from enquiries, edit before approving
+- [x] Exit-intent offer + abandoned-form recovery wired into contact and offer forms
+- [ ] Publish so the desk and visitor safeguards are live on fastmedia.pro
