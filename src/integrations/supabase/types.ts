@@ -1493,6 +1493,68 @@ export type Database = {
         }
         Relationships: []
       }
+      outreach_messages: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          body: string
+          created_at: string
+          error_message: string | null
+          id: string
+          language: string
+          prospect_id: string
+          provider_message_id: string | null
+          scheduled_at: string | null
+          sent_at: string | null
+          status: string
+          step: number
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          body: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          language?: string
+          prospect_id: string
+          provider_message_id?: string | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          step?: number
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          body?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          language?: string
+          prospect_id?: string
+          provider_message_id?: string | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          step?: number
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outreach_messages_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_seo: {
         Row: {
           description: string | null
@@ -1800,6 +1862,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      prospects: {
+        Row: {
+          company: string
+          contact_name: string | null
+          created_at: string
+          created_by: string | null
+          email: string
+          fit_score: number
+          id: string
+          language: string
+          last_contacted_at: string | null
+          notes: string | null
+          owner: string | null
+          phone: string | null
+          region: string | null
+          replied_at: string | null
+          research: Json
+          source: string
+          source_id: string | null
+          status: string
+          trade: string | null
+          unsubscribed_at: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          company: string
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          email: string
+          fit_score?: number
+          id?: string
+          language?: string
+          last_contacted_at?: string | null
+          notes?: string | null
+          owner?: string | null
+          phone?: string | null
+          region?: string | null
+          replied_at?: string | null
+          research?: Json
+          source?: string
+          source_id?: string | null
+          status?: string
+          trade?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          company?: string
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          fit_score?: number
+          id?: string
+          language?: string
+          last_contacted_at?: string | null
+          notes?: string | null
+          owner?: string | null
+          phone?: string | null
+          region?: string | null
+          replied_at?: string | null
+          research?: Json
+          source?: string
+          source_id?: string | null
+          status?: string
+          trade?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
       }
       recurring_invoices: {
         Row: {
@@ -2975,6 +3112,60 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      visitor_signals: {
+        Row: {
+          alerted_at: string | null
+          created_at: string
+          email: string | null
+          form_id: string | null
+          id: string
+          kind: string
+          language: string
+          name: string | null
+          page_path: string
+          payload: Json
+          phone: string | null
+          recovered_at: string | null
+          recovery_status: string
+          session_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          alerted_at?: string | null
+          created_at?: string
+          email?: string | null
+          form_id?: string | null
+          id?: string
+          kind: string
+          language?: string
+          name?: string | null
+          page_path?: string
+          payload?: Json
+          phone?: string | null
+          recovered_at?: string | null
+          recovery_status?: string
+          session_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alerted_at?: string | null
+          created_at?: string
+          email?: string | null
+          form_id?: string | null
+          id?: string
+          kind?: string
+          language?: string
+          name?: string | null
+          page_path?: string
+          payload?: Json
+          phone?: string | null
+          recovered_at?: string | null
+          recovery_status?: string
+          session_key?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
