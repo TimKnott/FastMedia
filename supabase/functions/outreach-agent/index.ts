@@ -1,12 +1,17 @@
 // Outbound prospecting + customer communication agent.
 //
 // Actions (admin-gated):
-//   research  - build a prospect profile from their public website + AI analysis
-//   draft     - write a personalised 3-step British-English email sequence
-//   approve   - human approval gate: send the opener, schedule the follow-ups
-//   tick      - cron: reply detection, autonomous follow-ups, abandoned-form recovery
+//   research         - build a prospect profile from their public website + AI analysis
+//   draft            - write a personalised 3-step British-English email sequence
+//   approve          - approve and send the opener; queue follow-ups for their own approval
+//   approve_message  - per-message gate: edit copy/timing, then schedule or send that message
+//   reject_message   - reject a drafted/queued message (never sends)
+//   cancel_message   - cancel an approved-but-unsent message
+//   suppress         - stop all contact with a prospect and suppress their address
+//   simulate_visitor - create an anonymous practice visitor signal (test mode)
+//   tick             - cron: reply detection, due follow-ups, abandoned-form recovery
 //
-// Nothing is ever sent before a human approves the opener for that prospect.
+// Nothing is ever sent without a human approving that exact message.
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts'
 import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.ts'
@@ -18,17 +23,85 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const FOLLOW_UP_DAYS = [4, 9]
 const REPLY_TO = Deno.env.get('OUTREACH_REPLY_TO') ?? 'support@fastmedia.pro'
 const SITE = 'https://www.fastmedia.pro'
 
 type Db = ReturnType<typeof createClient>
+
+interface Actor {
+  id: string | null
+  label: string
+  type: 'staff' | 'system'
+}
+
+interface Settings {
+  test_mode: boolean
+  test_inbox: string | null
+  simulate_visitors: boolean
+  follow_up_days_step2: number
+  follow_up_days_step3: number
+}
+
+const DEFAULT_SETTINGS: Settings = {
+  test_mode: false,
+  test_inbox: REPLY_TO,
+  simulate_visitors: false,
+  follow_up_days_step2: 4,
+  follow_up_days_step3: 9,
+}
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
+
+async function loadSettings(db: Db): Promise<Settings> {
+  const { data } = await db.from('outreach_settings').select('*').eq('id', 1).maybeSingle()
+  if (!data) return DEFAULT_SETTINGS
+  return {
+    test_mode: !!data.test_mode,
+    test_inbox: data.test_inbox || REPLY_TO,
+    simulate_visitors: !!data.simulate_visitors,
+    follow_up_days_step2: Number(data.follow_up_days_step2) || 4,
+    follow_up_days_step3: Number(data.follow_up_days_step3) || 9,
+  }
+}
+
+async function resolveActor(req: Request): Promise<Actor> {
+  const authHeader = req.headers.get('Authorization') ?? ''
+  const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+  const url = Deno.env.get('SUPABASE_URL') ?? ''
+  const anon = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+  const service = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  if (!bearer || !url || !anon || bearer === service) return { id: null, label: 'automation', type: 'system' }
+  try {
+    const client = createClient(url, anon, { global: { headers: { Authorization: `Bearer ${bearer}` } } })
+    const { data } = await client.auth.getUser()
+    if (!data?.user) return { id: null, label: 'automation', type: 'system' }
+    return { id: data.user.id, label: data.user.email ?? data.user.id, type: 'staff' }
+  } catch {
+    return { id: null, label: 'automation', type: 'system' }
+  }
+}
+
+async function logEvent(
+  db: Db,
+  actor: Actor,
+  action: string,
+  opts: { prospectId?: string | null; messageId?: string | null; step?: number | null; details?: Record<string, unknown> },
+) {
+  await db.from('outreach_events').insert({
+    prospect_id: opts.prospectId ?? null,
+    message_id: opts.messageId ?? null,
+    step: opts.step ?? null,
+    action,
+    actor_type: actor.type,
+    actor_id: actor.id,
+    actor_label: actor.label,
+    details: opts.details ?? {},
+  })
+}
 
 function htmlFromText(body: string, footer: string) {
   const paragraphs = body
@@ -101,7 +174,7 @@ const SEQUENCE_SCHEMA = {
   },
 }
 
-async function runResearch(db: Db, prospectId: string) {
+async function runResearch(db: Db, actor: Actor, prospectId: string) {
   const { data: prospect, error } = await db.from('prospects').select('*').eq('id', prospectId).single()
   if (error || !prospect) throw new Error('prospect_not_found')
 
@@ -144,13 +217,15 @@ async function runResearch(db: Db, prospectId: string) {
     })
     .eq('id', prospectId)
 
+  await logEvent(db, actor, 'researched', { prospectId, details: { fit_score: fit } })
   return { prospect_id: prospectId, research: { ...result, fit_score: fit } }
 }
 
-async function runDraft(db: Db, prospectId: string) {
+async function runDraft(db: Db, actor: Actor, prospectId: string) {
   const { data: prospect, error } = await db.from('prospects').select('*').eq('id', prospectId).single()
   if (error || !prospect) throw new Error('prospect_not_found')
 
+  const settings = await loadSettings(db)
   const research = (prospect.research ?? {}) as Record<string, unknown>
   const result = await generateJson<{ messages: Array<{ step: number; subject: string; body: string }> }>(
     [
@@ -184,8 +259,11 @@ async function runDraft(db: Db, prospectId: string) {
   const messages = (result.messages ?? []).slice(0, 3)
   if (messages.length === 0) throw new Error('ai_returned_no_messages')
 
+  const dayOffsets = [0, settings.follow_up_days_step2, settings.follow_up_days_step3]
   for (const [index, message] of messages.entries()) {
     const step = index + 1
+    const proposed =
+      step === 1 ? null : new Date(Date.now() + (dayOffsets[index] ?? 14) * 86400000).toISOString()
     await db.from('outreach_messages').upsert(
       {
         prospect_id: prospectId,
@@ -194,70 +272,125 @@ async function runDraft(db: Db, prospectId: string) {
         body: String(message.body ?? '').slice(0, 6000),
         language: 'en',
         status: 'draft',
+        proposed_at: proposed,
         scheduled_at: null,
         error_message: null,
+        rejected_at: null,
+        rejected_by: null,
+        rejection_reason: null,
+        cancelled_at: null,
+        cancelled_by: null,
       },
       { onConflict: 'prospect_id,step' },
     )
   }
 
   await db.from('prospects').update({ status: 'drafted' }).eq('id', prospectId)
+  await logEvent(db, actor, 'drafted', { prospectId, details: { steps: messages.length } })
   return { prospect_id: prospectId, steps: messages.length }
 }
 
-async function sendMessage(db: Db, prospect: Record<string, any>, message: Record<string, any>) {
+async function sendMessage(
+  db: Db,
+  actor: Actor,
+  prospect: Record<string, any>,
+  message: Record<string, any>,
+  settings: Settings,
+) {
   if (!gmailFallbackAvailable()) {
     await db
       .from('outreach_messages')
       .update({ status: 'failed', error_message: 'google_mail_not_connected' })
       .eq('id', message.id)
+    await logEvent(db, actor, 'send_failed', {
+      prospectId: prospect.id,
+      messageId: message.id,
+      step: message.step,
+      details: { reason: 'google_mail_not_connected' },
+    })
     return { sent: false, reason: 'google_mail_not_connected' }
   }
 
-  const { data: suppressed } = await db
-    .from('suppressed_emails')
-    .select('id')
-    .eq('email', String(prospect.email).toLowerCase())
-    .maybeSingle()
-  if (suppressed) {
-    await db.from('outreach_messages').update({ status: 'skipped', error_message: 'suppressed' }).eq('id', message.id)
-    await db.from('prospects').update({ status: 'unsubscribed', unsubscribed_at: new Date().toISOString() }).eq('id', prospect.id)
-    return { sent: false, reason: 'suppressed' }
+  const testMode = settings.test_mode
+  const recipient = testMode ? settings.test_inbox || REPLY_TO : prospect.email
+
+  if (!testMode) {
+    const { data: suppressed } = await db
+      .from('suppressed_emails')
+      .select('id')
+      .eq('email', String(prospect.email).toLowerCase())
+      .maybeSingle()
+    if (suppressed) {
+      await db.from('outreach_messages').update({ status: 'skipped', error_message: 'suppressed' }).eq('id', message.id)
+      await db
+        .from('prospects')
+        .update({ status: 'unsubscribed', unsubscribed_at: new Date().toISOString() })
+        .eq('id', prospect.id)
+      await logEvent(db, actor, 'skipped_suppressed', {
+        prospectId: prospect.id,
+        messageId: message.id,
+        step: message.step,
+      })
+      return { sent: false, reason: 'suppressed' }
+    }
   }
 
-  const html = htmlFromText(message.body, footerFor(message.language ?? 'en'))
-  const result = await sendViaGmail(prospect.email, message.subject, html, message.body)
+  const subject = testMode ? `[TEST → ${prospect.email}] ${message.subject}` : message.subject
+  const notice = testMode
+    ? `\n\n---\nTest mode: this message was routed to the test inbox instead of ${prospect.email}.`
+    : ''
+  const bodyText = `${message.body}${notice}`
+  const html = htmlFromText(bodyText, footerFor(message.language ?? 'en'))
+  const result = await sendViaGmail(recipient, subject, html, bodyText)
   const now = new Date().toISOString()
 
   await db
     .from('outreach_messages')
     .update(
       result.sent
-        ? { status: 'sent', sent_at: now, provider_message_id: result.id ?? null, error_message: null }
-        : { status: 'failed', error_message: result.error ?? 'send_failed' },
+        ? {
+            status: 'sent',
+            sent_at: now,
+            provider_message_id: result.id ?? null,
+            error_message: null,
+            test_mode: testMode,
+            delivered_to: recipient,
+          }
+        : { status: 'failed', error_message: result.error ?? 'send_failed', test_mode: testMode },
     )
     .eq('id', message.id)
 
   await db.from('email_send_log').insert({
     message_id: result.id ?? null,
     template_name: `outreach-step-${message.step}`,
-    recipient_email: prospect.email,
+    recipient_email: recipient,
     status: result.sent ? 'sent' : 'failed',
     error_message: result.sent ? null : result.error ?? null,
-    metadata: { via: 'google_workspace', prospect_id: prospect.id, step: message.step },
+    metadata: { via: 'google_workspace', prospect_id: prospect.id, step: message.step, test_mode: testMode },
   })
 
-  if (result.sent) {
+  if (result.sent && !testMode) {
     await db.from('prospects').update({ last_contacted_at: now }).eq('id', prospect.id)
   }
+
+  await logEvent(db, actor, result.sent ? 'sent' : 'send_failed', {
+    prospectId: prospect.id,
+    messageId: message.id,
+    step: message.step,
+    details: { recipient, test_mode: testMode, ...(result.sent ? {} : { reason: result.error ?? 'send_failed' }) },
+  })
+
   return { sent: result.sent, reason: result.error }
 }
 
-async function runApprove(db: Db, prospectId: string, approvedBy: string | null) {
+/** Approves + sends the opener, then queues the follow-ups for their own approval. */
+async function runApprove(db: Db, actor: Actor, prospectId: string) {
   const { data: prospect, error } = await db.from('prospects').select('*').eq('id', prospectId).single()
   if (error || !prospect) throw new Error('prospect_not_found')
   if (prospect.unsubscribed_at) throw new Error('prospect_unsubscribed')
+  if (prospect.status === 'suppressed') throw new Error('prospect_suppressed')
 
+  const settings = await loadSettings(db)
   const { data: messages } = await db
     .from('outreach_messages')
     .select('*')
@@ -270,31 +403,216 @@ async function runApprove(db: Db, prospectId: string, approvedBy: string | null)
   const now = new Date()
   await db
     .from('outreach_messages')
-    .update({ status: 'approved', approved_by: approvedBy, approved_at: now.toISOString() })
+    .update({ status: 'approved', approved_by: actor.id, approved_at: now.toISOString() })
     .eq('id', opener.id)
+  await logEvent(db, actor, 'approved', { prospectId, messageId: opener.id, step: 1 })
 
-  const send = await sendMessage(db, prospect, { ...opener, status: 'approved' })
+  const send = await sendMessage(db, actor, prospect, { ...opener, status: 'approved' }, settings)
 
-  // Follow-ups become autonomous only once the opener is approved.
+  // Follow-ups wait for their own approval — nothing sends automatically.
+  const dayOffsets = [settings.follow_up_days_step2, settings.follow_up_days_step3]
   for (const [index, followUp] of steps.filter((m) => m.step > 1).entries()) {
-    const due = new Date(now.getTime() + (FOLLOW_UP_DAYS[index] ?? 14) * 86400000)
+    const proposed = new Date(now.getTime() + (dayOffsets[index] ?? 14) * 86400000)
     await db
       .from('outreach_messages')
       .update({
-        status: 'scheduled',
-        scheduled_at: due.toISOString(),
-        approved_by: approvedBy,
-        approved_at: now.toISOString(),
+        status: 'pending_approval',
+        proposed_at: proposed.toISOString(),
+        scheduled_at: null,
         error_message: null,
       })
       .eq('id', followUp.id)
+    await logEvent(db, actor, 'queued_for_approval', {
+      prospectId,
+      messageId: followUp.id,
+      step: followUp.step,
+      details: { proposed_at: proposed.toISOString() },
+    })
   }
 
   await db.from('prospects').update({ status: send.sent ? 'sequencing' : 'approved' }).eq('id', prospectId)
-  return { prospect_id: prospectId, opener_sent: send.sent, reason: send.reason ?? null, scheduled: Math.max(0, steps.length - 1) }
+  return {
+    prospect_id: prospectId,
+    opener_sent: send.sent,
+    reason: send.reason ?? null,
+    awaiting_approval: Math.max(0, steps.length - 1),
+    test_mode: settings.test_mode,
+  }
 }
 
-async function detectReplies(db: Db) {
+/** Per-message gate: edit copy/timing, then schedule it or send it now. */
+async function approveMessage(
+  db: Db,
+  actor: Actor,
+  args: { messageId: string; subject?: string; body?: string; scheduledAt?: string | null; sendNow?: boolean },
+) {
+  const { data: message, error } = await db.from('outreach_messages').select('*').eq('id', args.messageId).single()
+  if (error || !message) throw new Error('message_not_found')
+  if (['sent', 'rejected'].includes(message.status)) throw new Error(`message_already_${message.status}`)
+
+  const { data: prospect } = await db.from('prospects').select('*').eq('id', message.prospect_id).single()
+  if (!prospect) throw new Error('prospect_not_found')
+  if (prospect.unsubscribed_at || prospect.status === 'suppressed') throw new Error('prospect_not_contactable')
+
+  const settings = await loadSettings(db)
+  const now = new Date().toISOString()
+  const edits: Record<string, unknown> = {}
+  if (typeof args.subject === 'string' && args.subject.trim() && args.subject !== message.subject) {
+    edits.subject = args.subject.trim().slice(0, 200)
+  }
+  if (typeof args.body === 'string' && args.body.trim() && args.body !== message.body) {
+    edits.body = args.body.trim().slice(0, 6000)
+  }
+  if (Object.keys(edits).length > 0) {
+    await db
+      .from('outreach_messages')
+      .update({ ...edits, edited_by: actor.id, edited_at: now })
+      .eq('id', message.id)
+    await logEvent(db, actor, 'edited', {
+      prospectId: prospect.id,
+      messageId: message.id,
+      step: message.step,
+      details: { fields: Object.keys(edits) },
+    })
+  }
+
+  const merged = { ...message, ...edits }
+
+  if (args.sendNow) {
+    await db
+      .from('outreach_messages')
+      .update({ status: 'approved', approved_by: actor.id, approved_at: now })
+      .eq('id', message.id)
+    await logEvent(db, actor, 'approved', {
+      prospectId: prospect.id,
+      messageId: message.id,
+      step: message.step,
+      details: { send_now: true },
+    })
+    const result = await sendMessage(db, actor, prospect, { ...merged, status: 'approved' }, settings)
+    if (result.sent && prospect.status !== 'sequencing') {
+      await db.from('prospects').update({ status: 'sequencing' }).eq('id', prospect.id)
+    }
+    return { message_id: message.id, sent: result.sent, reason: result.reason ?? null, test_mode: settings.test_mode }
+  }
+
+  const when = args.scheduledAt || message.proposed_at || new Date(Date.now() + 86400000).toISOString()
+  await db
+    .from('outreach_messages')
+    .update({
+      status: 'scheduled',
+      scheduled_at: when,
+      proposed_at: when,
+      approved_by: actor.id,
+      approved_at: now,
+      error_message: null,
+    })
+    .eq('id', message.id)
+  await logEvent(db, actor, 'approved', {
+    prospectId: prospect.id,
+    messageId: message.id,
+    step: message.step,
+    details: { scheduled_at: when },
+  })
+  if (prospect.status === 'drafted' || prospect.status === 'new') {
+    await db.from('prospects').update({ status: 'approved' }).eq('id', prospect.id)
+  }
+  return { message_id: message.id, scheduled_at: when, test_mode: settings.test_mode }
+}
+
+async function rejectMessage(db: Db, actor: Actor, messageId: string, reason: string | null) {
+  const { data: message, error } = await db.from('outreach_messages').select('*').eq('id', messageId).single()
+  if (error || !message) throw new Error('message_not_found')
+  if (message.status === 'sent') throw new Error('message_already_sent')
+  await db
+    .from('outreach_messages')
+    .update({
+      status: 'rejected',
+      rejected_by: actor.id,
+      rejected_at: new Date().toISOString(),
+      rejection_reason: reason,
+      scheduled_at: null,
+    })
+    .eq('id', messageId)
+  await logEvent(db, actor, 'rejected', {
+    prospectId: message.prospect_id,
+    messageId,
+    step: message.step,
+    details: { reason },
+  })
+  return { message_id: messageId, status: 'rejected' }
+}
+
+async function cancelMessage(db: Db, actor: Actor, messageId: string) {
+  const { data: message, error } = await db.from('outreach_messages').select('*').eq('id', messageId).single()
+  if (error || !message) throw new Error('message_not_found')
+  if (message.status === 'sent') throw new Error('message_already_sent')
+  await db
+    .from('outreach_messages')
+    .update({ status: 'cancelled', cancelled_by: actor.id, cancelled_at: new Date().toISOString(), scheduled_at: null })
+    .eq('id', messageId)
+  await logEvent(db, actor, 'cancelled', { prospectId: message.prospect_id, messageId, step: message.step })
+  return { message_id: messageId, status: 'cancelled' }
+}
+
+async function suppressProspect(db: Db, actor: Actor, prospectId: string, reason: string | null) {
+  const { data: prospect, error } = await db.from('prospects').select('*').eq('id', prospectId).single()
+  if (error || !prospect) throw new Error('prospect_not_found')
+
+  await db
+    .from('outreach_messages')
+    .update({ status: 'cancelled', cancelled_by: actor.id, cancelled_at: new Date().toISOString(), scheduled_at: null })
+    .eq('prospect_id', prospectId)
+    .in('status', ['draft', 'pending_approval', 'approved', 'scheduled'])
+
+  await db
+    .from('prospects')
+    .update({ status: 'suppressed', unsubscribed_at: new Date().toISOString() })
+    .eq('id', prospectId)
+
+  const email = String(prospect.email).toLowerCase()
+  const { data: existing } = await db.from('suppressed_emails').select('id').eq('email', email).maybeSingle()
+  if (!existing) {
+    await db.from('suppressed_emails').insert({
+      email,
+      reason: 'unsubscribe',
+      metadata: { source: 'prospecting_desk', note: reason ?? 'suppressed by staff' },
+    })
+  }
+
+  await logEvent(db, actor, 'suppressed', { prospectId, details: { reason } })
+  return { prospect_id: prospectId, status: 'suppressed' }
+}
+
+async function simulateVisitor(
+  db: Db,
+  actor: Actor,
+  args: { kind?: string; pagePath?: string; language?: string; formId?: string | null },
+) {
+  const kind = ['exit_intent', 'form_abandoned', 'high_value'].includes(args.kind ?? '')
+    ? (args.kind as string)
+    : 'form_abandoned'
+  const row = {
+    session_key: `sim-${crypto.randomUUID()}`,
+    kind,
+    page_path: args.pagePath || '/calculator',
+    form_id: args.formId ?? 'simulation',
+    language: args.language === 'cs' ? 'cs' : 'en',
+    // Simulations never collect real contact details.
+    name: null,
+    email: null,
+    phone: null,
+    payload: { simulated: true, qualification: kind === 'high_value' ? 'qualified' : 'partial' },
+    recovery_status: 'skipped',
+    simulated: true,
+  }
+  const { data, error } = await db.from('visitor_signals').insert(row).select('id').single()
+  if (error) throw new Error(error.message)
+  await logEvent(db, actor, 'simulated_visitor', { details: { kind, page_path: row.page_path } })
+  return { id: data.id, kind, simulated: true }
+}
+
+async function detectReplies(db: Db, actor: Actor) {
   const { data: active } = await db
     .from('prospects')
     .select('id, email')
@@ -323,26 +641,36 @@ async function detectReplies(db: Db) {
       .eq('id', prospect.id)
     await db
       .from('outreach_messages')
-      .update({ status: 'cancelled' })
+      .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
       .eq('prospect_id', prospect.id)
-      .eq('status', 'scheduled')
+      .in('status', ['pending_approval', 'approved', 'scheduled'])
     if (stop) {
-      await db.from('suppressed_emails').insert({
-        email: prospect.email.toLowerCase(),
-        reason: 'unsubscribe',
-        metadata: { source: 'outreach_reply' },
-      })
+      const { data: existing } = await db
+        .from('suppressed_emails')
+        .select('id')
+        .eq('email', prospect.email.toLowerCase())
+        .maybeSingle()
+      if (!existing) {
+        await db.from('suppressed_emails').insert({
+          email: prospect.email.toLowerCase(),
+          reason: 'unsubscribe',
+          metadata: { source: 'outreach_reply' },
+        })
+      }
     }
+    await logEvent(db, actor, stop ? 'unsubscribed' : 'replied', { prospectId: prospect.id })
     replied += 1
   }
   return replied
 }
 
-async function sendDueFollowUps(db: Db) {
+/** Only messages a human individually approved and scheduled are sent here. */
+async function sendDueFollowUps(db: Db, actor: Actor, settings: Settings) {
   const { data: due } = await db
     .from('outreach_messages')
     .select('*')
     .eq('status', 'scheduled')
+    .not('approved_at', 'is', null)
     .lte('scheduled_at', new Date().toISOString())
     .order('scheduled_at')
     .limit(25)
@@ -351,22 +679,36 @@ async function sendDueFollowUps(db: Db) {
   for (const message of due ?? []) {
     const { data: prospect } = await db.from('prospects').select('*').eq('id', message.prospect_id).single()
     if (!prospect) continue
-    if (prospect.replied_at || prospect.unsubscribed_at || !['sequencing', 'approved'].includes(prospect.status)) {
-      await db.from('outreach_messages').update({ status: 'cancelled' }).eq('id', message.id)
+    if (
+      prospect.replied_at ||
+      prospect.unsubscribed_at ||
+      !['sequencing', 'approved'].includes(prospect.status)
+    ) {
+      await db
+        .from('outreach_messages')
+        .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
+        .eq('id', message.id)
+      await logEvent(db, actor, 'cancelled', {
+        prospectId: prospect.id,
+        messageId: message.id,
+        step: message.step,
+        details: { reason: 'prospect_no_longer_contactable' },
+      })
       continue
     }
-    const result = await sendMessage(db, prospect, message)
+    const result = await sendMessage(db, actor, prospect, message, settings)
     if (result.sent) sent += 1
   }
   return sent
 }
 
-async function recoverAbandonedForms(db: Db) {
+async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
   const cutoff = new Date(Date.now() - 45 * 60000).toISOString()
   const { data: pending } = await db
     .from('visitor_signals')
     .select('*')
     .eq('recovery_status', 'pending')
+    .eq('simulated', false)
     .not('email', 'is', null)
     .lte('created_at', cutoff)
     .limit(20)
@@ -380,7 +722,9 @@ async function recoverAbandonedForms(db: Db) {
       : `Hello${signal.name ? ` ${signal.name}` : ''},\n\nI noticed you started a form on our site and did not finish it. If it is easier, reply to this email and I will finish it for you.\n\nInstant price guide: ${SITE}/calculator\nRecent work: ${SITE}/case-studies\n\nKind regards,\nTim Knott, FastMedia.Pro`
 
     if (!gmailFallbackAvailable()) break
-    const result = await sendViaGmail(signal.email, subject, htmlFromText(body, footerFor(signal.language)), body)
+    const recipient = settings.test_mode ? settings.test_inbox || REPLY_TO : signal.email
+    const finalSubject = settings.test_mode ? `[TEST → ${signal.email}] ${subject}` : subject
+    const result = await sendViaGmail(recipient, finalSubject, htmlFromText(body, footerFor(signal.language)), body)
     await db
       .from('visitor_signals')
       .update({
@@ -388,7 +732,12 @@ async function recoverAbandonedForms(db: Db) {
         recovered_at: result.sent ? new Date().toISOString() : null,
       })
       .eq('id', signal.id)
-    if (result.sent) recovered += 1
+    if (result.sent) {
+      recovered += 1
+      await logEvent(db, actor, 'form_recovery_sent', {
+        details: { recipient, page_path: signal.page_path, test_mode: settings.test_mode },
+      })
+    }
   }
   return recovered
 }
@@ -398,30 +747,72 @@ Deno.serve(async (req) => {
   if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders)
 
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+  const actor = await resolveActor(req)
 
   try {
     const body = await req.json().catch(() => ({}))
     const action = typeof body?.action === 'string' ? body.action : 'tick'
     const prospectId = typeof body?.prospect_id === 'string' ? body.prospect_id : null
-    const approvedBy = typeof body?.approved_by === 'string' ? body.approved_by : null
+    const messageId = typeof body?.message_id === 'string' ? body.message_id : null
 
     if (action === 'research') {
       if (!prospectId) return json({ error: 'prospect_id_required' }, 400)
-      return json(await runResearch(db, prospectId))
+      return json(await runResearch(db, actor, prospectId))
     }
     if (action === 'draft') {
       if (!prospectId) return json({ error: 'prospect_id_required' }, 400)
-      return json(await runDraft(db, prospectId))
+      return json(await runDraft(db, actor, prospectId))
     }
     if (action === 'approve') {
       if (!prospectId) return json({ error: 'prospect_id_required' }, 400)
-      return json(await runApprove(db, prospectId, approvedBy))
+      return json(await runApprove(db, actor, prospectId))
+    }
+    if (action === 'approve_message') {
+      if (!messageId) return json({ error: 'message_id_required' }, 400)
+      return json(
+        await approveMessage(db, actor, {
+          messageId,
+          subject: typeof body?.subject === 'string' ? body.subject : undefined,
+          body: typeof body?.body === 'string' ? body.body : undefined,
+          scheduledAt: typeof body?.scheduled_at === 'string' ? body.scheduled_at : null,
+          sendNow: body?.send_now === true,
+        }),
+      )
+    }
+    if (action === 'reject_message') {
+      if (!messageId) return json({ error: 'message_id_required' }, 400)
+      return json(await rejectMessage(db, actor, messageId, typeof body?.reason === 'string' ? body.reason : null))
+    }
+    if (action === 'cancel_message') {
+      if (!messageId) return json({ error: 'message_id_required' }, 400)
+      return json(await cancelMessage(db, actor, messageId))
+    }
+    if (action === 'suppress') {
+      if (!prospectId) return json({ error: 'prospect_id_required' }, 400)
+      return json(await suppressProspect(db, actor, prospectId, typeof body?.reason === 'string' ? body.reason : null))
+    }
+    if (action === 'simulate_visitor') {
+      return json(
+        await simulateVisitor(db, actor, {
+          kind: typeof body?.kind === 'string' ? body.kind : undefined,
+          pagePath: typeof body?.page_path === 'string' ? body.page_path : undefined,
+          language: typeof body?.language === 'string' ? body.language : undefined,
+          formId: typeof body?.form_id === 'string' ? body.form_id : null,
+        }),
+      )
     }
     if (action === 'tick') {
-      const replies = await detectReplies(db)
-      const followUps = await sendDueFollowUps(db)
-      const recovered = await recoverAbandonedForms(db)
-      return json({ ok: true, replies, follow_ups_sent: followUps, forms_recovered: recovered })
+      const settings = await loadSettings(db)
+      const replies = await detectReplies(db, actor)
+      const followUps = await sendDueFollowUps(db, actor, settings)
+      const recovered = await recoverAbandonedForms(db, actor, settings)
+      return json({
+        ok: true,
+        replies,
+        follow_ups_sent: followUps,
+        forms_recovered: recovered,
+        test_mode: settings.test_mode,
+      })
     }
     return json({ error: 'unknown_action' }, 400)
   } catch (error) {

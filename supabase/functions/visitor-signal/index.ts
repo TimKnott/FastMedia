@@ -27,24 +27,38 @@ Deno.serve(async (req) => {
       })
     }
 
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    )
+
+    // Simulation mode: qualify visitors without storing any real contact details.
+    const { data: settings } = await supabase
+      .from('outreach_settings')
+      .select('simulate_visitors, test_mode')
+      .eq('id', 1)
+      .maybeSingle()
+    const simulate = !!settings?.simulate_visitors
+
     const email = str(raw?.email, 200)
     const record = {
       kind,
       page_path: str(raw?.page_path, 300) ?? '/',
       form_id: str(raw?.form_id, 80),
-      name: str(raw?.name, 160),
-      email: email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? email.toLowerCase() : null,
-      phone: str(raw?.phone, 60),
+      name: simulate ? null : str(raw?.name, 160),
+      email: !simulate && email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? email.toLowerCase() : null,
+      phone: simulate ? null : str(raw?.phone, 60),
       language: str(raw?.language, 5) === 'en' ? 'en' : 'cs',
       session_key: str(raw?.session_key, 120),
-      payload: typeof raw?.payload === 'object' && raw?.payload !== null ? raw.payload : {},
-      recovery_status: 'pending',
+      payload: simulate
+        ? { simulated: true, qualification: kind === 'high_value' ? 'qualified' : 'partial', had_contact_details: !!email }
+        : typeof raw?.payload === 'object' && raw?.payload !== null
+          ? raw.payload
+          : {},
+      recovery_status: simulate ? 'skipped' : 'pending',
+      simulated: simulate,
     }
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-    )
 
     // One row per session + form, so repeated exit attempts do not spam the list.
     let signalId: string | null = null
@@ -74,8 +88,9 @@ Deno.serve(async (req) => {
     // Live alert for visitors that already identified themselves or hit a
     // high-value page while abandoning.
     const highValue =
-      kind === 'high_value' ||
-      (!!record.email && /calculator|offer|grant|package|quote|contact/i.test(record.page_path))
+      !simulate &&
+      (kind === 'high_value' ||
+        (!!record.email && /calculator|offer|grant|package|quote|contact/i.test(record.page_path)))
 
     if (highValue && gmailFallbackAvailable()) {
       const lines = [

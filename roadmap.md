@@ -62,3 +62,7 @@
 - [x] /admin/prospecting desk: add/import prospects, pull from enquiries, edit before approving
 - [x] Exit-intent offer + abandoned-form recovery wired into contact and offer forms
 - [ ] Publish so the desk and visitor safeguards are live on fastmedia.pro
+- [ ] Approval gate on every follow-up, with editable timing and copy before sending
+- [ ] Sortable lead review queue: source, fit signals, personalisation notes, approval status, suppression
+- [ ] Audit trail of who approved/edited/rejected/cancelled each outbound message and when
+- [ ] Test mode: approved emails routed to a test inbox, simulated visitor qualification with no real contact details

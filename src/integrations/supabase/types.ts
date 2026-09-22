@@ -1493,56 +1493,140 @@ export type Database = {
         }
         Relationships: []
       }
+      outreach_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_label: string | null
+          actor_type: string
+          created_at: string
+          details: Json
+          id: string
+          message_id: string | null
+          prospect_id: string | null
+          step: number | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_label?: string | null
+          actor_type?: string
+          created_at?: string
+          details?: Json
+          id?: string
+          message_id?: string | null
+          prospect_id?: string | null
+          step?: number | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_label?: string | null
+          actor_type?: string
+          created_at?: string
+          details?: Json
+          id?: string
+          message_id?: string | null
+          prospect_id?: string | null
+          step?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outreach_events_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "outreach_events_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       outreach_messages: {
         Row: {
           approved_at: string | null
           approved_by: string | null
           body: string
+          cancelled_at: string | null
+          cancelled_by: string | null
           created_at: string
+          delivered_to: string | null
+          edited_at: string | null
+          edited_by: string | null
           error_message: string | null
           id: string
           language: string
+          proposed_at: string | null
           prospect_id: string
           provider_message_id: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_reason: string | null
           scheduled_at: string | null
           sent_at: string | null
           status: string
           step: number
           subject: string
+          test_mode: boolean
           updated_at: string
         }
         Insert: {
           approved_at?: string | null
           approved_by?: string | null
           body: string
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           created_at?: string
+          delivered_to?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
           error_message?: string | null
           id?: string
           language?: string
+          proposed_at?: string | null
           prospect_id: string
           provider_message_id?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
           scheduled_at?: string | null
           sent_at?: string | null
           status?: string
           step?: number
           subject: string
+          test_mode?: boolean
           updated_at?: string
         }
         Update: {
           approved_at?: string | null
           approved_by?: string | null
           body?: string
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           created_at?: string
+          delivered_to?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
           error_message?: string | null
           id?: string
           language?: string
+          proposed_at?: string | null
           prospect_id?: string
           provider_message_id?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
           scheduled_at?: string | null
           sent_at?: string | null
           status?: string
           step?: number
           subject?: string
+          test_mode?: boolean
           updated_at?: string
         }
         Relationships: [
@@ -1554,6 +1638,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      outreach_settings: {
+        Row: {
+          follow_up_days_step2: number
+          follow_up_days_step3: number
+          id: number
+          simulate_visitors: boolean
+          test_inbox: string | null
+          test_mode: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          follow_up_days_step2?: number
+          follow_up_days_step3?: number
+          id?: number
+          simulate_visitors?: boolean
+          test_inbox?: string | null
+          test_mode?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          follow_up_days_step2?: number
+          follow_up_days_step3?: number
+          id?: number
+          simulate_visitors?: boolean
+          test_inbox?: string | null
+          test_mode?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       page_seo: {
         Row: {
@@ -3131,6 +3248,7 @@ export type Database = {
           recovered_at: string | null
           recovery_status: string
           session_key: string | null
+          simulated: boolean
           updated_at: string
         }
         Insert: {
@@ -3148,6 +3266,7 @@ export type Database = {
           recovered_at?: string | null
           recovery_status?: string
           session_key?: string | null
+          simulated?: boolean
           updated_at?: string
         }
         Update: {
@@ -3165,6 +3284,7 @@ export type Database = {
           recovered_at?: string | null
           recovery_status?: string
           session_key?: string | null
+          simulated?: boolean
           updated_at?: string
         }
         Relationships: []

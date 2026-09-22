@@ -42,10 +42,40 @@ export interface OutreachMessage {
   body: string;
   language: string;
   status: string;
+  proposed_at: string | null;
   scheduled_at: string | null;
   sent_at: string | null;
   error_message: string | null;
+  rejection_reason: string | null;
+  approved_at: string | null;
+  edited_at: string | null;
+  rejected_at: string | null;
+  cancelled_at: string | null;
+  test_mode: boolean;
+  delivered_to: string | null;
   created_at: string;
+}
+
+export interface OutreachEvent {
+  id: string;
+  prospect_id: string | null;
+  message_id: string | null;
+  step: number | null;
+  action: string;
+  actor_type: string;
+  actor_label: string | null;
+  details: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface OutreachSettings {
+  id: number;
+  test_mode: boolean;
+  test_inbox: string | null;
+  simulate_visitors: boolean;
+  follow_up_days_step2: number;
+  follow_up_days_step3: number;
+  updated_at: string;
 }
 
 export interface VisitorSignal {
@@ -61,6 +91,7 @@ export interface VisitorSignal {
   recovery_status: string;
   recovered_at: string | null;
   alerted_at: string | null;
+  simulated: boolean;
   created_at: string;
 }
 
@@ -112,3 +143,29 @@ export const useVisitorSignals = () =>
       return (data ?? []) as VisitorSignal[];
     },
   });
+
+export const useOutreachEvents = () =>
+  useQuery({
+    queryKey: ['outreach-events'],
+    queryFn: async (): Promise<OutreachEvent[]> => {
+      const { data, error } = await client
+        .from('outreach_events')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(300);
+      if (error) throw error;
+      return (data ?? []) as OutreachEvent[];
+    },
+  });
+
+export const useOutreachSettings = () =>
+  useQuery({
+    queryKey: ['outreach-settings'],
+    queryFn: async (): Promise<OutreachSettings | null> => {
+      const { data, error } = await client.from('outreach_settings').select('*').eq('id', 1).maybeSingle();
+      if (error) throw error;
+      return (data ?? null) as OutreachSettings | null;
+    },
+  });
+
+export const outreachSettingsTable = () => client.from('outreach_settings');
