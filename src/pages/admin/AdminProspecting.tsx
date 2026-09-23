@@ -37,6 +37,7 @@ import {
   CalendarClock,
   FlaskConical,
   History,
+  Linkedin,
   Loader2,
   Plus,
   Search,
@@ -91,6 +92,24 @@ const callAgent = async (body: Record<string, unknown>) => {
   return data as Record<string, unknown>;
 };
 
+/** Calls the GetSales bridge (LinkedIn sequences) and surfaces its plain-language errors. */
+const callGetSales = async (body: Record<string, unknown>) => {
+  const { data, error } = await supabase.functions.invoke('getsales-push', { body });
+  if (error) {
+    const details = (error as any)?.context ? await (error as any).context.text() : error.message;
+    let message = details || error.message;
+    try {
+      const parsed = JSON.parse(details);
+      if (parsed?.error) message = parsed.error;
+    } catch {
+      /* keep the raw text */
+    }
+    throw new Error(message);
+  }
+  if ((data as any)?.error) throw new Error(String((data as any).error));
+  return data as Record<string, unknown>;
+};
+
 const toLocalInput = (iso: string | null) => {
   const date = iso ? new Date(iso) : new Date(Date.now() + 86400000);
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -114,6 +133,13 @@ const AdminProspecting = () => {
   const [bulk, setBulk] = useState('');
   const [reviewing, setReviewing] = useState<Prospect | null>(null);
   const [draftEdits, setDraftEdits] = useState<Record<string, { subject: string; body: string; when: string }>>({});
+  const [gsStatus, setGsStatus] = useState<{ connected: boolean; message: string } | null>(null);
+  const [gsLists, setGsLists] = useState<{ id: string; name: string }[]>([]);
+  const [gsMap, setGsMap] = useState<{
+    mapped: { ours: string; theirs: string; note?: string }[];
+    unmapped: { ours: string; why: string }[];
+  } | null>(null);
+  const [gsLinkedIn, setGsLinkedIn] = useState<Record<string, string>>({});
 
   const refresh = () => {
     ['prospects', 'outreach-messages', 'visitor-signals', 'outreach-events', 'outreach-settings'].forEach((key) =>
@@ -406,6 +432,78 @@ const AdminProspecting = () => {
     toast({ title: 'Saved' });
   };
 
+  // ---- GetSales (LinkedIn) ----
+  const checkGetSales = async () => {
+    setBusy('gs-ping');
+    try {
+      const result = await callGetSales({ action: 'ping' });
+      setGsStatus({ connected: !!result.connected, message: String(result.message ?? '') });
+      if (result.connected) {
+        const lists = await callGetSales({ action: 'lists' });
+        setGsLists((lists.lists as { id: string; name: string }[]) ?? []);
+      }
+    } catch (error) {
+      setGsStatus({ connected: false, message: String(error).replace('Error: ', '').slice(0, 260) });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const loadFieldMap = async () => {
+    setBusy('gs-map');
+    try {
+      const result = await callGetSales({ action: 'field_map' });
+      setGsMap(result as any);
+    } catch (error) {
+      toast({ title: 'Could not load the field list', description: String(error).slice(0, 220), variant: 'destructive' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const pushToLinkedIn = async (prospect: Prospect, dryRun = false) => {
+    setBusy(`gs-${prospect.id}`);
+    try {
+      const result = await callGetSales({
+        action: 'push',
+        prospect_id: prospect.id,
+        dry_run: dryRun,
+        linkedin_url: gsLinkedIn[prospect.id] || undefined,
+      });
+      refresh();
+      const unmapped = (result.unmapped as string[]) ?? [];
+      toast({
+        title: dryRun ? 'Preview only — nothing was sent' : 'Sent to GetSales',
+        description: unmapped.length ? `Worth knowing: ${unmapped.join(' · ')}`.slice(0, 300) : 'The contact is in your GetSales list.',
+      });
+    } catch (error) {
+      toast({
+        title: 'GetSales sync failed',
+        description: String(error).replace('Error: ', '').slice(0, 260),
+        variant: 'destructive',
+      });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const retryFailedSyncs = async () => {
+    setBusy('gs-retry');
+    try {
+      const result = await callGetSales({ action: 'retry_failed' });
+      refresh();
+      const stillFailing = (result.still_failing as unknown[]) ?? [];
+      toast({
+        title: `Retried ${result.attempted} lead${result.attempted === 1 ? '' : 's'}`,
+        description: `${result.recovered} now synced${stillFailing.length ? `, ${stillFailing.length} still failing` : ''}.`,
+      });
+    } catch (error) {
+      toast({ title: 'Retry failed', description: String(error).slice(0, 220), variant: 'destructive' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const simulateVisitor = async (kind: string) => {
     setBusy(`sim-${kind}`);
     try {
@@ -487,6 +585,7 @@ const AdminProspecting = () => {
           <TabsTrigger value="visitors">Visitor safeguards ({signals.length})</TabsTrigger>
           <TabsTrigger value="audit">Audit trail</TabsTrigger>
           <TabsTrigger value="test">Test mode</TabsTrigger>
+          <TabsTrigger value="linkedin">LinkedIn (GetSales)</TabsTrigger>
           <TabsTrigger value="import">Paste a list</TabsTrigger>
         </TabsList>
 
@@ -565,6 +664,26 @@ const AdminProspecting = () => {
                           </ul>
                         )}
                         {prospect.notes && <p className="mt-1 text-xs italic break-words">Note: {prospect.notes}</p>}
+                        <Input
+                          className="mt-2 h-8 text-xs"
+                          placeholder="LinkedIn profile address (optional)"
+                          defaultValue={prospect.linkedin_url ?? ''}
+                          onChange={(e) => setGsLinkedIn((prev) => ({ ...prev, [prospect.id]: e.target.value.trim() }))}
+                        />
+                        {prospect.getsales_sync_status === 'synced' && (
+                          <p className="mt-1 text-xs text-emerald-500">
+                            In GetSales
+                            {prospect.getsales_synced_at
+                              ? ` since ${new Date(prospect.getsales_synced_at).toLocaleDateString()}`
+                              : ''}
+                          </p>
+                        )}
+                        {prospect.getsales_sync_status === 'failed' && (
+                          <p className="mt-1 text-xs text-destructive break-words">
+                            GetSales sync failed ({prospect.getsales_sync_attempts ?? 1} attempt
+                            {(prospect.getsales_sync_attempts ?? 1) === 1 ? '' : 's'}): {prospect.getsales_sync_error}
+                          </p>
+                        )}
                       </div>
                       <div className="lg:col-span-2 space-y-1">
                         <Badge className={STATUS_TONE[prospect.status] ?? ''}>{prospect.status.replace('_', ' ')}</Badge>
@@ -613,6 +732,24 @@ const AdminProspecting = () => {
                         <Button size="sm" onClick={() => openReview(prospect)} disabled={steps.length === 0}>
                           <Send className="w-4 h-4 mr-2" />
                           Review &amp; approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => pushToLinkedIn(prospect)}
+                          disabled={busy === `gs-${prospect.id}` || !settings?.getsales_enabled}
+                          title={
+                            settings?.getsales_enabled
+                              ? 'Add this contact to your GetSales list so the LinkedIn sequence picks them up'
+                              : 'Switch GetSales on in the LinkedIn tab first'
+                          }
+                        >
+                          {busy === `gs-${prospect.id}` ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <Linkedin className="w-4 h-4 mr-2" />
+                          )}
+                          {prospect.getsales_lead_id ? 'Re-send to LinkedIn' : 'Send to LinkedIn sequence'}
                         </Button>
                         <Button size="sm" variant="ghost" onClick={() => setStatus(prospect, 'lost')}>
                           Not a fit
@@ -933,6 +1070,137 @@ const AdminProspecting = () => {
                     onBlur={(e) => saveSettings({ follow_up_days_step3: Math.max(1, Number(e.target.value) || 9) })}
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="linkedin" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Linkedin className="w-4 h-4" />
+                GetSales LinkedIn sequences
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <p className="text-sm text-muted-foreground">
+                Approved leads can be added to a GetSales list. Whichever LinkedIn sequence watches that list picks them up
+                automatically, and their replies come back into your lead review queue.
+              </p>
+
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-medium text-foreground">Use GetSales for LinkedIn</p>
+                  <p className="text-sm text-muted-foreground">Turn this off to hide the LinkedIn buttons on your leads.</p>
+                </div>
+                <Switch
+                  checked={!!settings?.getsales_enabled}
+                  onCheckedChange={(v) => saveSettings({ getsales_enabled: v })}
+                />
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 border-t border-border pt-4">
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Your GetSales address</Label>
+                  <Input
+                    defaultValue={settings?.getsales_base_url ?? ''}
+                    placeholder="https://yourteam.getsales.io"
+                    onBlur={(e) => {
+                      const value = e.target.value.trim().replace(/\/+$/, '');
+                      if (value && value !== settings?.getsales_base_url) saveSettings({ getsales_base_url: value });
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">List that feeds your sequence</Label>
+                  {gsLists.length > 0 ? (
+                    <select
+                      className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                      defaultValue={settings?.getsales_list_id ?? ''}
+                      onChange={(e) => saveSettings({ getsales_list_id: e.target.value })}
+                    >
+                      <option value="">Choose a list…</option>
+                      {gsLists.map((list) => (
+                        <option key={list.id} value={list.id}>
+                          {list.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input
+                      defaultValue={settings?.getsales_list_id ?? ''}
+                      placeholder="Press Check connection to load your lists"
+                      onBlur={(e) => {
+                        const value = e.target.value.trim();
+                        if (value && value !== settings?.getsales_list_id) saveSettings({ getsales_list_id: value });
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 border-t border-border pt-4">
+                <Button variant="outline" size="sm" onClick={checkGetSales} disabled={busy === 'gs-ping'}>
+                  {busy === 'gs-ping' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+                  Check connection
+                </Button>
+                <Button variant="outline" size="sm" onClick={loadFieldMap} disabled={busy === 'gs-map'}>
+                  Show what gets sent
+                </Button>
+                <Button variant="outline" size="sm" onClick={retryFailedSyncs} disabled={busy === 'gs-retry'}>
+                  {busy === 'gs-retry' && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Retry failed leads
+                </Button>
+              </div>
+
+              {gsStatus && (
+                <p className={`text-sm ${gsStatus.connected ? 'text-emerald-500' : 'text-destructive'}`}>
+                  {gsStatus.connected ? 'Connected' : 'Not connected'} — {gsStatus.message}
+                </p>
+              )}
+
+              {gsMap && (
+                <div className="border-t border-border pt-4 space-y-3 text-sm">
+                  <div>
+                    <p className="font-medium text-foreground">Sent to GetSales</p>
+                    <ul className="mt-1 space-y-1 text-muted-foreground">
+                      {gsMap.mapped.map((row) => (
+                        <li key={row.ours}>
+                          {row.ours} → {row.theirs}
+                          {row.note ? ` (${row.note})` : ''}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {gsMap.unmapped.length > 0 && (
+                    <div>
+                      <p className="font-medium text-foreground">Stays here only</p>
+                      <ul className="mt-1 space-y-1 text-muted-foreground">
+                        {gsMap.unmapped.map((row) => (
+                          <li key={row.ours}>
+                            {row.ours} — {row.why}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="border-t border-border pt-4">
+                <p className="font-medium text-foreground text-sm">Replies and new contacts</p>
+                <p className="text-sm text-muted-foreground">
+                  In GetSales, under Settings → Webhooks, point “Contact replied”, “Contact exported” and “Email bounced”
+                  at the address below. Replies stop any pending follow-ups automatically and new GetSales contacts appear
+                  in your lead review queue.
+                </p>
+                <code className="mt-2 block break-all rounded-md bg-muted px-3 py-2 text-xs">
+                  {`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/getsales-webhook?secret=YOUR-WEBHOOK-SECRET`}
+                </code>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Ask me for the secret when you set the webhook up — it is kept out of this screen on purpose.
+                </p>
               </div>
             </CardContent>
           </Card>

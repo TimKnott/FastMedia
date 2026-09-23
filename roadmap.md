@@ -66,3 +66,11 @@
 - [x] Sortable lead review queue: source, fit signals, personalisation notes, approval status, suppression
 - [x] Audit trail of who approved/edited/rejected/cancelled each outbound message and when
 - [x] Test mode: approved emails routed to a test inbox, simulated visitor qualification with no real contact details
+
+## GetSales LinkedIn integration
+- [x] Push approved prospects into GetSales LinkedIn sequences using the saved API key
+- [x] GetSales webhook: LinkedIn replies + newly added contacts routed into the lead review queue
+- [ ] Ad Alchemy tracking snippet — deferred at the user's request
+- [x] Test the GetSales LinkedIn sync with a sample lead and verify records
+- [x] Map LinkedIn lead fields to our prospect fields and flag unmapped values
+- [x] Clear error states + retry handling for failed GetSales syncs

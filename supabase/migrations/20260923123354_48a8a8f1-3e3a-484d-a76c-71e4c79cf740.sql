@@ -1,0 +1,3 @@
+DELETE FROM public.outreach_events WHERE prospect_id IN (SELECT id FROM public.prospects WHERE email IN ('getsales-test@example.invalid','gs-new-lead@example.invalid'));
+DELETE FROM public.outreach_messages WHERE prospect_id IN (SELECT id FROM public.prospects WHERE email IN ('getsales-test@example.invalid','gs-new-lead@example.invalid'));
+DELETE FROM public.prospects WHERE email IN ('getsales-test@example.invalid','gs-new-lead@example.invalid');

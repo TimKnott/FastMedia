@@ -32,6 +32,13 @@ export interface Prospect {
   unsubscribed_at: string | null;
   created_at: string;
   updated_at: string;
+  linkedin_url: string | null;
+  getsales_lead_id: string | null;
+  getsales_synced_at: string | null;
+  getsales_sync_status: string;
+  getsales_sync_error: string | null;
+  getsales_sync_attempts: number;
+  getsales_last_attempt_at: string | null;
 }
 
 export interface OutreachMessage {
@@ -75,6 +82,11 @@ export interface OutreachSettings {
   simulate_visitors: boolean;
   follow_up_days_step2: number;
   follow_up_days_step3: number;
+  getsales_enabled: boolean;
+  getsales_base_url: string | null;
+  getsales_list_id: string | null;
+  getsales_sender_id: string | null;
+  getsales_automation_id: string | null;
   updated_at: string;
 }
 
