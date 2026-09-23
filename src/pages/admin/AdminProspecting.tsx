@@ -1195,6 +1195,12 @@ const AdminProspecting = () => {
                   at the address below. Replies stop any pending follow-ups automatically and new GetSales contacts appear
                   in your lead review queue.
                 </p>
+                <code className="mt-2 block break-all rounded-md bg-muted px-3 py-2 text-xs">
+                  {`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/getsales-webhook?secret=YOUR-WEBHOOK-SECRET`}
+                </code>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Ask me for the secret when you set the webhook up — it is kept out of this screen on purpose.
+                </p>
               </div>
             </CardContent>
           </Card>
