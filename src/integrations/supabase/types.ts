@@ -1643,6 +1643,11 @@ export type Database = {
         Row: {
           follow_up_days_step2: number
           follow_up_days_step3: number
+          getsales_automation_id: string | null
+          getsales_base_url: string | null
+          getsales_enabled: boolean
+          getsales_list_id: string | null
+          getsales_sender_id: string | null
           id: number
           simulate_visitors: boolean
           test_inbox: string | null
@@ -1653,6 +1658,11 @@ export type Database = {
         Insert: {
           follow_up_days_step2?: number
           follow_up_days_step3?: number
+          getsales_automation_id?: string | null
+          getsales_base_url?: string | null
+          getsales_enabled?: boolean
+          getsales_list_id?: string | null
+          getsales_sender_id?: string | null
           id?: number
           simulate_visitors?: boolean
           test_inbox?: string | null
@@ -1663,6 +1673,11 @@ export type Database = {
         Update: {
           follow_up_days_step2?: number
           follow_up_days_step3?: number
+          getsales_automation_id?: string | null
+          getsales_base_url?: string | null
+          getsales_enabled?: boolean
+          getsales_list_id?: string | null
+          getsales_sender_id?: string | null
           id?: number
           simulate_visitors?: boolean
           test_inbox?: string | null
@@ -1988,9 +2003,16 @@ export type Database = {
           created_by: string | null
           email: string
           fit_score: number
+          getsales_last_attempt_at: string | null
+          getsales_lead_id: string | null
+          getsales_sync_attempts: number
+          getsales_sync_error: string | null
+          getsales_sync_status: string
+          getsales_synced_at: string | null
           id: string
           language: string
           last_contacted_at: string | null
+          linkedin_url: string | null
           notes: string | null
           owner: string | null
           phone: string | null
@@ -2012,9 +2034,16 @@ export type Database = {
           created_by?: string | null
           email: string
           fit_score?: number
+          getsales_last_attempt_at?: string | null
+          getsales_lead_id?: string | null
+          getsales_sync_attempts?: number
+          getsales_sync_error?: string | null
+          getsales_sync_status?: string
+          getsales_synced_at?: string | null
           id?: string
           language?: string
           last_contacted_at?: string | null
+          linkedin_url?: string | null
           notes?: string | null
           owner?: string | null
           phone?: string | null
@@ -2036,9 +2065,16 @@ export type Database = {
           created_by?: string | null
           email?: string
           fit_score?: number
+          getsales_last_attempt_at?: string | null
+          getsales_lead_id?: string | null
+          getsales_sync_attempts?: number
+          getsales_sync_error?: string | null
+          getsales_sync_status?: string
+          getsales_synced_at?: string | null
           id?: string
           language?: string
           last_contacted_at?: string | null
+          linkedin_url?: string | null
           notes?: string | null
           owner?: string | null
           phone?: string | null
