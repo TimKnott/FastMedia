@@ -663,6 +663,26 @@ const AdminProspecting = () => {
                           </ul>
                         )}
                         {prospect.notes && <p className="mt-1 text-xs italic break-words">Note: {prospect.notes}</p>}
+                        <Input
+                          className="mt-2 h-8 text-xs"
+                          placeholder="LinkedIn profile address (optional)"
+                          defaultValue={prospect.linkedin_url ?? ''}
+                          onChange={(e) => setGsLinkedIn((prev) => ({ ...prev, [prospect.id]: e.target.value.trim() }))}
+                        />
+                        {prospect.getsales_sync_status === 'synced' && (
+                          <p className="mt-1 text-xs text-emerald-500">
+                            In GetSales
+                            {prospect.getsales_synced_at
+                              ? ` since ${new Date(prospect.getsales_synced_at).toLocaleDateString()}`
+                              : ''}
+                          </p>
+                        )}
+                        {prospect.getsales_sync_status === 'failed' && (
+                          <p className="mt-1 text-xs text-destructive break-words">
+                            GetSales sync failed ({prospect.getsales_sync_attempts ?? 1} attempt
+                            {(prospect.getsales_sync_attempts ?? 1) === 1 ? '' : 's'}): {prospect.getsales_sync_error}
+                          </p>
+                        )}
                       </div>
                       <div className="lg:col-span-2 space-y-1">
                         <Badge className={STATUS_TONE[prospect.status] ?? ''}>{prospect.status.replace('_', ' ')}</Badge>
