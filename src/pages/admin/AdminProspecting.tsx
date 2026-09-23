@@ -91,6 +91,24 @@ const callAgent = async (body: Record<string, unknown>) => {
   return data as Record<string, unknown>;
 };
 
+/** Calls the GetSales bridge (LinkedIn sequences) and surfaces its plain-language errors. */
+const callGetSales = async (body: Record<string, unknown>) => {
+  const { data, error } = await supabase.functions.invoke('getsales-push', { body });
+  if (error) {
+    const details = (error as any)?.context ? await (error as any).context.text() : error.message;
+    let message = details || error.message;
+    try {
+      const parsed = JSON.parse(details);
+      if (parsed?.error) message = parsed.error;
+    } catch {
+      /* keep the raw text */
+    }
+    throw new Error(message);
+  }
+  if ((data as any)?.error) throw new Error(String((data as any).error));
+  return data as Record<string, unknown>;
+};
+
 const toLocalInput = (iso: string | null) => {
   const date = iso ? new Date(iso) : new Date(Date.now() + 86400000);
   const pad = (n: number) => String(n).padStart(2, '0');
