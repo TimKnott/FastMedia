@@ -431,6 +431,78 @@ const AdminProspecting = () => {
     toast({ title: 'Saved' });
   };
 
+  // ---- GetSales (LinkedIn) ----
+  const checkGetSales = async () => {
+    setBusy('gs-ping');
+    try {
+      const result = await callGetSales({ action: 'ping' });
+      setGsStatus({ connected: !!result.connected, message: String(result.message ?? '') });
+      if (result.connected) {
+        const lists = await callGetSales({ action: 'lists' });
+        setGsLists((lists.lists as { id: string; name: string }[]) ?? []);
+      }
+    } catch (error) {
+      setGsStatus({ connected: false, message: String(error).replace('Error: ', '').slice(0, 260) });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const loadFieldMap = async () => {
+    setBusy('gs-map');
+    try {
+      const result = await callGetSales({ action: 'field_map' });
+      setGsMap(result as any);
+    } catch (error) {
+      toast({ title: 'Could not load the field list', description: String(error).slice(0, 220), variant: 'destructive' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const pushToLinkedIn = async (prospect: Prospect, dryRun = false) => {
+    setBusy(`gs-${prospect.id}`);
+    try {
+      const result = await callGetSales({
+        action: 'push',
+        prospect_id: prospect.id,
+        dry_run: dryRun,
+        linkedin_url: gsLinkedIn[prospect.id] || undefined,
+      });
+      refresh();
+      const unmapped = (result.unmapped as string[]) ?? [];
+      toast({
+        title: dryRun ? 'Preview only — nothing was sent' : 'Sent to GetSales',
+        description: unmapped.length ? `Worth knowing: ${unmapped.join(' · ')}`.slice(0, 300) : 'The contact is in your GetSales list.',
+      });
+    } catch (error) {
+      toast({
+        title: 'GetSales sync failed',
+        description: String(error).replace('Error: ', '').slice(0, 260),
+        variant: 'destructive',
+      });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const retryFailedSyncs = async () => {
+    setBusy('gs-retry');
+    try {
+      const result = await callGetSales({ action: 'retry_failed' });
+      refresh();
+      const stillFailing = (result.still_failing as unknown[]) ?? [];
+      toast({
+        title: `Retried ${result.attempted} lead${result.attempted === 1 ? '' : 's'}`,
+        description: `${result.recovered} now synced${stillFailing.length ? `, ${stillFailing.length} still failing` : ''}.`,
+      });
+    } catch (error) {
+      toast({ title: 'Retry failed', description: String(error).slice(0, 220), variant: 'destructive' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const simulateVisitor = async (kind: string) => {
     setBusy(`sim-${kind}`);
     try {
