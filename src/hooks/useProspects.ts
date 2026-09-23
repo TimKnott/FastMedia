@@ -82,6 +82,11 @@ export interface OutreachSettings {
   simulate_visitors: boolean;
   follow_up_days_step2: number;
   follow_up_days_step3: number;
+  getsales_enabled: boolean;
+  getsales_base_url: string | null;
+  getsales_list_id: string | null;
+  getsales_sender_id: string | null;
+  getsales_automation_id: string | null;
   updated_at: string;
 }
 
