@@ -712,6 +712,24 @@ const AdminProspecting = () => {
                           <Send className="w-4 h-4 mr-2" />
                           Review &amp; approve
                         </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => pushToLinkedIn(prospect)}
+                          disabled={busy === `gs-${prospect.id}` || !settings?.getsales_enabled}
+                          title={
+                            settings?.getsales_enabled
+                              ? 'Add this contact to your GetSales list so the LinkedIn sequence picks them up'
+                              : 'Switch GetSales on in the LinkedIn tab first'
+                          }
+                        >
+                          {busy === `gs-${prospect.id}` ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <Linkedin className="w-4 h-4 mr-2" />
+                          )}
+                          {prospect.getsales_lead_id ? 'Re-send to LinkedIn' : 'Send to LinkedIn sequence'}
+                        </Button>
                         <Button size="sm" variant="ghost" onClick={() => setStatus(prospect, 'lost')}>
                           Not a fit
                         </Button>
