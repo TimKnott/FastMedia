@@ -1075,6 +1075,131 @@ const AdminProspecting = () => {
           </Card>
         </TabsContent>
 
+        <TabsContent value="linkedin" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Linkedin className="w-4 h-4" />
+                GetSales LinkedIn sequences
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <p className="text-sm text-muted-foreground">
+                Approved leads can be added to a GetSales list. Whichever LinkedIn sequence watches that list picks them up
+                automatically, and their replies come back into your lead review queue.
+              </p>
+
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-medium text-foreground">Use GetSales for LinkedIn</p>
+                  <p className="text-sm text-muted-foreground">Turn this off to hide the LinkedIn buttons on your leads.</p>
+                </div>
+                <Switch
+                  checked={!!settings?.getsales_enabled}
+                  onCheckedChange={(v) => saveSettings({ getsales_enabled: v })}
+                />
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 border-t border-border pt-4">
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Your GetSales address</Label>
+                  <Input
+                    defaultValue={settings?.getsales_base_url ?? ''}
+                    placeholder="https://yourteam.getsales.io"
+                    onBlur={(e) => {
+                      const value = e.target.value.trim().replace(/\/+$/, '');
+                      if (value && value !== settings?.getsales_base_url) saveSettings({ getsales_base_url: value });
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">List that feeds your sequence</Label>
+                  {gsLists.length > 0 ? (
+                    <select
+                      className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                      defaultValue={settings?.getsales_list_id ?? ''}
+                      onChange={(e) => saveSettings({ getsales_list_id: e.target.value })}
+                    >
+                      <option value="">Choose a list…</option>
+                      {gsLists.map((list) => (
+                        <option key={list.id} value={list.id}>
+                          {list.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input
+                      defaultValue={settings?.getsales_list_id ?? ''}
+                      placeholder="Press Check connection to load your lists"
+                      onBlur={(e) => {
+                        const value = e.target.value.trim();
+                        if (value && value !== settings?.getsales_list_id) saveSettings({ getsales_list_id: value });
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 border-t border-border pt-4">
+                <Button variant="outline" size="sm" onClick={checkGetSales} disabled={busy === 'gs-ping'}>
+                  {busy === 'gs-ping' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+                  Check connection
+                </Button>
+                <Button variant="outline" size="sm" onClick={loadFieldMap} disabled={busy === 'gs-map'}>
+                  Show what gets sent
+                </Button>
+                <Button variant="outline" size="sm" onClick={retryFailedSyncs} disabled={busy === 'gs-retry'}>
+                  {busy === 'gs-retry' && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Retry failed leads
+                </Button>
+              </div>
+
+              {gsStatus && (
+                <p className={`text-sm ${gsStatus.connected ? 'text-emerald-500' : 'text-destructive'}`}>
+                  {gsStatus.connected ? 'Connected' : 'Not connected'} — {gsStatus.message}
+                </p>
+              )}
+
+              {gsMap && (
+                <div className="border-t border-border pt-4 space-y-3 text-sm">
+                  <div>
+                    <p className="font-medium text-foreground">Sent to GetSales</p>
+                    <ul className="mt-1 space-y-1 text-muted-foreground">
+                      {gsMap.mapped.map((row) => (
+                        <li key={row.ours}>
+                          {row.ours} → {row.theirs}
+                          {row.note ? ` (${row.note})` : ''}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {gsMap.unmapped.length > 0 && (
+                    <div>
+                      <p className="font-medium text-foreground">Stays here only</p>
+                      <ul className="mt-1 space-y-1 text-muted-foreground">
+                        {gsMap.unmapped.map((row) => (
+                          <li key={row.ours}>
+                            {row.ours} — {row.why}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="border-t border-border pt-4">
+                <p className="font-medium text-foreground text-sm">Replies and new contacts</p>
+                <p className="text-sm text-muted-foreground">
+                  In GetSales, under Settings → Webhooks, point “Contact replied”, “Contact exported” and “Email bounced”
+                  at the address below. Replies stop any pending follow-ups automatically and new GetSales contacts appear
+                  in your lead review queue.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="import" className="space-y-3">
           <p className="text-sm text-muted-foreground">One company per line: company, email, website, contact name.</p>
           <Textarea
