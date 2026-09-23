@@ -132,6 +132,13 @@ const AdminProspecting = () => {
   const [bulk, setBulk] = useState('');
   const [reviewing, setReviewing] = useState<Prospect | null>(null);
   const [draftEdits, setDraftEdits] = useState<Record<string, { subject: string; body: string; when: string }>>({});
+  const [gsStatus, setGsStatus] = useState<{ connected: boolean; message: string } | null>(null);
+  const [gsLists, setGsLists] = useState<{ id: string; name: string }[]>([]);
+  const [gsMap, setGsMap] = useState<{
+    mapped: { ours: string; theirs: string; note?: string }[];
+    unmapped: { ours: string; why: string }[];
+  } | null>(null);
+  const [gsLinkedIn, setGsLinkedIn] = useState<Record<string, string>>({});
 
   const refresh = () => {
     ['prospects', 'outreach-messages', 'visitor-signals', 'outreach-events', 'outreach-settings'].forEach((key) =>
