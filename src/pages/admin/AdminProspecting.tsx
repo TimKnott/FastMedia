@@ -37,6 +37,7 @@ import {
   CalendarClock,
   FlaskConical,
   History,
+  Linkedin,
   Loader2,
   Plus,
   Search,
