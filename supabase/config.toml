@@ -40,3 +40,12 @@ verify_jwt = false
 
 [functions.geo-competitor]
 verify_jwt = false
+
+[functions.flowlu-admin]
+verify_jwt = false
+
+[functions.flowlu-webhook]
+verify_jwt = false
+
+[functions.language-version]
+verify_jwt = false

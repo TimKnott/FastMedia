@@ -1021,6 +1021,75 @@ export type Database = {
         }
         Relationships: []
       }
+      flowlu_settings: {
+        Row: {
+          auto_sync_calls: boolean
+          auto_sync_leads: boolean
+          id: number
+          last_sync_at: string | null
+          last_test_at: string | null
+          last_test_message: string | null
+          last_test_ok: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          auto_sync_calls?: boolean
+          auto_sync_leads?: boolean
+          id?: number
+          last_sync_at?: string | null
+          last_test_at?: string | null
+          last_test_message?: string | null
+          last_test_ok?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          auto_sync_calls?: boolean
+          auto_sync_leads?: boolean
+          id?: number
+          last_sync_at?: string | null
+          last_test_at?: string | null
+          last_test_message?: string | null
+          last_test_ok?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flowlu_sync_log: {
+        Row: {
+          created_at: string
+          direction: string
+          entity_id: string
+          entity_type: string
+          error: string | null
+          flowlu_id: string | null
+          id: string
+          payload: Json
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          direction?: string
+          entity_id: string
+          entity_type: string
+          error?: string | null
+          flowlu_id?: string | null
+          id?: string
+          payload?: Json
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          entity_id?: string
+          entity_type?: string
+          error?: string | null
+          flowlu_id?: string | null
+          id?: string
+          payload?: Json
+          status?: string
+        }
+        Relationships: []
+      }
       geo_ai_observations: {
         Row: {
           cited: boolean
@@ -1621,6 +1690,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      language_versions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          content: Json
+          created_at: string
+          id: string
+          language_code: string
+          language_name: string
+          meta_description: string
+          published_at: string | null
+          reviewer_notes: string | null
+          slug: string
+          source_path: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content?: Json
+          created_at?: string
+          id?: string
+          language_code: string
+          language_name: string
+          meta_description?: string
+          published_at?: string | null
+          reviewer_notes?: string | null
+          slug: string
+          source_path: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content?: Json
+          created_at?: string
+          id?: string
+          language_code?: string
+          language_name?: string
+          meta_description?: string
+          published_at?: string | null
+          reviewer_notes?: string | null
+          slug?: string
+          source_path?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       lead_activities: {
         Row: {
