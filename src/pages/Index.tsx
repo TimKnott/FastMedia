@@ -23,6 +23,7 @@ import AppointmentPoliciesSection from '@/components/AppointmentPoliciesSection'
 import ServiceAreaMap from '@/components/ServiceAreaMap';
 import OfferTeaser from '@/components/OfferTeaser';
 import CaseStudiesSection from '@/components/CaseStudiesSection';
+import HomeDirectAnswer from '@/components/HomeDirectAnswer';
 
 const Index = () => {
   const { language } = useLanguage();
@@ -45,6 +46,7 @@ const Index = () => {
         {on('home_hero') && <OfferTeaser />}
         <main id="main-site">
           {on('home_promo') && <PromoBanner variant="compact" />}
+          <HomeDirectAnswer />
           {on('home_why') && <WhyFastMediaSection />}
           {on('home_certifications') && <CertificationsSection />}
           {on('home_automation') && <AutomationSection />}
