@@ -16,6 +16,7 @@ const sb = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') 
 function account() {
   let a = (Deno.env.get('FLOWLU_ACCOUNT') ?? '').trim().toLowerCase();
   a = a.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/\.flowlu\.(com|ru|eu)$/, '');
+  a = a.split(/\s+/)[0]; // "fastmedia crm" -> "fastmedia"
   return a;
 }
 const KEY = () => (Deno.env.get('FLOWLU_API_KEY') ?? '').trim();
