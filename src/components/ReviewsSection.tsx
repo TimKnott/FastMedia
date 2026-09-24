@@ -7,8 +7,6 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 const partnerLogos = [
-  { name: 'Google', label: 'Google Partner' },
-  { name: 'Shopify', label: 'Shopify Partner' },
   { name: 'Supabase', label: 'Supabase' },
   { name: 'Vercel', label: 'Vercel' },
 ];
@@ -21,9 +19,9 @@ const learnMore = {
     de: 'Kundenfeedback und Partnerschaften mit Technologieführern stärken das Vertrauen der Besucher und erhöhen Ihre Konversionsrate.',
   },
   benefits: {
-    cs: ['Zvyšuje konverze o 15–35%', 'Buduje důvěru pomocí sociálního důkazu', 'Ukazuje reálné výsledky klientů'],
-    en: ['Increases conversions by 15–35%', 'Builds trust through social proof', 'Shows real client results'],
-    de: ['Steigert Konversionen um 15–35%', 'Baut Vertrauen durch sozialen Beweis auf', 'Zeigt echte Kundenergebnisse'],
+    cs: ['Pomáhá návštěvníkům rozhodnout se', 'Buduje důvěru pomocí sociálního důkazu', 'Ukazuje reálné výsledky klientů'],
+    en: ['Helps visitors decide', 'Builds trust through social proof', 'Shows real client results'],
+    de: ['Hilft Besuchern bei der Entscheidung', 'Baut Vertrauen durch sozialen Beweis auf', 'Zeigt echte Kundenergebnisse'],
   },
 };
 

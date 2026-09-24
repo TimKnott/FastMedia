@@ -11,13 +11,13 @@ const badges = [
   },
   {
     icon: Award,
-    label: { cs: 'Google Partner', en: 'Google Partner', de: 'Google Partner' },
-    desc: { cs: 'Certifikovaný partner Google Ads', en: 'Certified Google Ads Partner', de: 'Zertifizierter Google Ads Partner' },
+    label: { cs: 'Technické SEO', en: 'Technical SEO', de: 'Technisches SEO' },
+    desc: { cs: 'Sitemap, strukturovaná data a indexovatelný obsah', en: 'Sitemap, structured data and indexable content', de: 'Sitemap, strukturierte Daten und indexierbare Inhalte' },
   },
   {
     icon: FileCheck,
-    label: { cs: 'WCAG 2.1 AA', en: 'WCAG 2.1 AA', de: 'WCAG 2.1 AA' },
-    desc: { cs: 'Přístupnost pro všechny uživatele', en: 'Accessibility for all users', de: 'Barrierefreiheit für alle Nutzer' },
+    label: { cs: 'Přístupnost', en: 'Accessibility', de: 'Barrierefreiheit' },
+    desc: { cs: 'Navrženo s ohledem na kritéria WCAG 2.1 AA', en: 'Built with WCAG 2.1 AA criteria in mind', de: 'Unter Berücksichtigung der WCAG 2.1 AA-Kriterien gebaut' },
   },
   {
     icon: Sparkles,
@@ -27,16 +27,16 @@ const badges = [
 ];
 
 const learnMore = {
-  title: { cs: 'Certifikace a licence', en: 'Certifications & Licenses', de: 'Zertifizierungen & Lizenzen' },
+  title: { cs: 'Standardy, podle kterých stavíme', en: 'Standards we build to', de: 'Standards, nach denen wir bauen' },
   explanation: {
-    cs: 'Naše certifikace prokazují, že dodržujeme nejvyšší standardy kvality, bezpečnosti a přístupnosti. Každý web, který vytvoříme, splňuje tyto normy.',
-    en: 'Our certifications prove we follow the highest standards of quality, security, and accessibility. Every website we build meets these standards.',
-    de: 'Unsere Zertifizierungen beweisen, dass wir die höchsten Standards für Qualität, Sicherheit und Barrierefreiheit einhalten.',
+    cs: 'Toto jsou standardy, ke kterým se při stavbě webů hlásíme. Nejde o certifikace třetích stran.',
+    en: 'These are the standards we build towards. They are not third-party certifications.',
+    de: 'Dies sind die Standards, an denen wir uns orientieren. Es handelt sich nicht um Zertifizierungen Dritter.',
   },
   benefits: {
-    cs: ['Buduje důvěru a profesionalitu', 'Prokazuje dodržování standardů', 'Odlišuje od konkurence'],
-    en: ['Builds trust and professionalism', 'Proves compliance with standards', 'Differentiates from competition'],
-    de: ['Baut Vertrauen und Professionalität auf', 'Beweist Einhaltung von Standards', 'Hebt sich von der Konkurrenz ab'],
+    cs: ['Bezpečné připojení (SSL)', 'Zpracování dat dle GDPR', 'Rychlé načítání stránek'],
+    en: ['Secure connection (SSL)', 'GDPR-aware data handling', 'Fast-loading pages'],
+    de: ['Sichere Verbindung (SSL)', 'DSGVO-konforme Datenverarbeitung', 'Schnell ladende Seiten'],
   },
 };
 
@@ -45,14 +45,14 @@ const CertificationsSection = () => {
   const lang = language as 'cs' | 'en' | 'de';
 
   const sectionTitle = {
-    cs: 'Důvěryhodnost potvrzená certifikacemi',
-    en: 'Trust Backed by Certifications',
-    de: 'Vertrauen durch Zertifizierungen',
+    cs: 'Standardy, podle kterých stavíme',
+    en: 'Standards We Build To',
+    de: 'Standards, nach denen wir bauen',
   };
   const sectionSubtitle = {
-    cs: 'Každý web splňuje mezinárodní standardy bezpečnosti, přístupnosti a výkonu.',
-    en: 'Every website meets international standards for security, accessibility, and performance.',
-    de: 'Jede Website erfüllt internationale Standards für Sicherheit, Barrierefreiheit und Leistung.',
+    cs: 'Každý web stavíme s ohledem na bezpečnost, přístupnost a výkon.',
+    en: 'Every website is built with security, accessibility and performance in mind.',
+    de: 'Jede Website wird mit Blick auf Sicherheit, Barrierefreiheit und Leistung gebaut.',
   };
 
   return (
