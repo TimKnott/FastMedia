@@ -87,21 +87,27 @@ async function translateToEnglish(text: string): Promise<string | null> {
           {
             role: 'system',
             content:
-              'You translate customer emails into English. Detect the language of the message. ' +
+              'You translate customer emails into English. Reply only with a JSON object. Detect the language of the message. ' +
               'If it is already English, return {"english": false}. Otherwise return {"english": true, "translation": "<full faithful English translation>"}. ' +
               'Keep names, numbers, dates, links and formatting (line breaks) intact. Never add commentary.',
           },
-          { role: 'user', content: source },
+          { role: 'user', content: `Translate this email (answer in json):\n\n${source}` },
         ],
       }),
     })
-    if (!r.ok) return null
+    if (!r.ok) {
+      console.error('translate failed', r.status, (await r.text()).slice(0, 300))
+      return null
+    }
     const body = await r.json()
     const content = body?.choices?.[0]?.message?.content ?? '{}'
-    const parsed = JSON.parse(content)
-    if (!parsed.english || !parsed.translation) return null
+    const parsed = JSON.parse(content.replace(/^```(json)?|```$/g, '').trim())
+    // Already English: keep the original so it isn't re-checked every sync.
+    if (parsed.english === false) return source
+    if (!parsed.translation) return null
     return String(parsed.translation)
-  } catch {
+  } catch (e) {
+    console.error('translate error', String(e))
     return null
   }
 }
