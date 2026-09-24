@@ -34,6 +34,7 @@ import {
   FileCheck2,
   GraduationCap,
   Phone,
+  Sparkles,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -103,6 +104,7 @@ const contentItems: MenuItem[] = [
   { titleKey: 'admin.seo', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
   { titleKey: 'SEO Insights', url: '/admin/seo-insights', icon: TrendingUp, minRole: 'admin' },
   { titleKey: 'SEO Health Monitor', url: '/admin/seo-health', icon: Activity, minRole: 'admin' },
+  { titleKey: 'AI Search Visibility', url: '/admin/geo', icon: Sparkles, minRole: 'admin' },
   { titleKey: 'admin.sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
   { titleKey: 'admin.versions', url: '/admin/content-history', icon: History, minRole: 'admin' },
   { titleKey: 'Legal Documents', url: '/admin/legal', icon: Scale, minRole: 'admin' },

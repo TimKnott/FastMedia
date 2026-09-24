@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { usePageSeo } from '@/hooks/usePageSeo';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { usePublishedSchema } from '@/hooks/usePublishedSchema';
 
 interface SEOHeadProps {
   title: string;
@@ -31,6 +32,7 @@ const SEOHead = ({
   const { language } = useLanguage();
   const isEnglish = language === 'en';
   const seo = usePageSeo(pagePath ?? '');
+  const { data: schemaBlocks } = usePublishedSchema(pagePath);
 
   // DB values override props when available
   const effectiveTitle = (pagePath && seo?.title) || title;
@@ -79,6 +81,9 @@ const SEOHead = ({
       <meta name="twitter:title" content={effectiveOgTitle || fullTitle} />
       <meta name="twitter:description" content={effectiveOgDescription || effectiveDescription} />
       {effectiveOgImage && <meta name="twitter:image" content={effectiveOgImage} />}
+      {(schemaBlocks ?? []).map((b, i) => (
+        <script key={`geo-ld-${i}`} type="application/ld+json">{JSON.stringify(b)}</script>
+      ))}
     </Helmet>
   );
 };
