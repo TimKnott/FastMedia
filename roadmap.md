@@ -26,3 +26,9 @@
 - [x] Switch EU grant course visible
 - [x] Language version generator admin page (drafts, publish after approval)
 - [x] Publish + sitemap; tracking of clicks/rankings (Search Console)
+
+## Sep 24 batch 2
+- [ ] Sync real inbox, verify English translation + Original toggle
+- [ ] Grant pages in every EU language (drafts via Language versions, bulk) + GEO plan entries + schema
+- [ ] Voice agent: Twilio number (needs Twilio credentials), daily scan, Flowlu (blocked on key)
+- [ ] Publish homepage/SEO content
