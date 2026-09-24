@@ -758,20 +758,6 @@ async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
 
 // ---- Lead discovery -------------------------------------------------------
 
-const DISCOVERY_SCHEMA = {
-  type: 'object',
-  additionalProperties: false,
-  required: ['company', 'contact_name', 'email', 'phone', 'trade', 'summary'],
-  properties: {
-    company: { type: 'string' },
-    contact_name: { type: 'string' },
-    email: { type: 'string' },
-    phone: { type: 'string' },
-    trade: { type: 'string' },
-    summary: { type: 'string' },
-  },
-}
-
 const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
 const JUNK_EMAIL_RE = /example\.|sentry|wixpress|@2x|\.png$|\.jpg$|\.jpeg$|\.gif$|\.webp$|u003e|noreply@|no-reply@/i
 
@@ -898,9 +884,9 @@ async function runDiscovery(db: Db, actor: Actor, trade: string, region: string,
   }
 
   await logEvent(db, actor, 'discovered', {
-    details: { trade, region, urls_checked: urls.length, candidates: found.length, inserted, duplicates },
+    details: { trade, region, candidates: candidates.length, verified: found.length, inserted, duplicates },
   })
-  return { trade, region, urls_checked: urls.length, candidates: found.length, inserted, duplicates }
+  return { trade, region, candidates: candidates.length, verified: found.length, inserted, duplicates }
 }
 
 /** Weekly cron: rotate through the configured trade/region pairs, one pair per run. */
