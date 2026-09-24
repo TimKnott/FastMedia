@@ -78,6 +78,7 @@ const EVENT_LABEL: Record<string, string> = {
   unsubscribed: 'unsubscribe detected',
   simulated_visitor: 'simulated a visitor',
   form_recovery_sent: 'sent a form recovery email',
+  discovered: 'ran a lead search',
 };
 
 type SortKey = 'company' | 'source' | 'fit_score' | 'status' | 'created_at';
