@@ -94,6 +94,10 @@ export default function AdminLanguageVersions() {
     if (status === 'published') patch.published_at = new Date().toISOString();
     const { error } = await supabase.from('language_versions' as never).update(patch as never).eq('id', v.id);
     if (error) return toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
+    if (status === 'published') {
+      // Tell Bing, Seznam, Yandex etc. straight away (IndexNow).
+      supabase.functions.invoke('search-visibility-agent', { body: { urls: [`https://www.fastmedia.pro/l/${v.language_code}/${v.slug}`] } }).catch(() => {});
+    }
     toast({ title: `Marked ${status}` });
     qc.invalidateQueries({ queryKey: ['language_versions'] });
     setView(null);

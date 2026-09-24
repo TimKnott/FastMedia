@@ -17,17 +17,17 @@ const WhyFastMediaSection = () => {
         en: ['Chatbot answers common questions instantly', 'Works nights, weekends, and holidays', 'Reduces repetitive calls and emails'],
         de: ['Chatbot beantwortet häufige Fragen sofort', 'Funktioniert nachts, an Wochenenden und Feiertagen', 'Reduziert wiederkehrende Anrufe und E-Mails'],
       },
-      stats: { cs: 'Až 70 % dotazů vyřízeno automaticky', en: 'Up to 70% of questions answered automatically', de: 'Bis zu 70 % der Fragen automatisch beantwortet' },
+      stats: { cs: 'Časté dotazy vyřízené i mimo pracovní dobu', en: 'Common questions handled outside working hours', de: 'Häufige Fragen auch außerhalb der Geschäftszeiten beantwortet' },
     },
     {
       icon: Inbox,
       title: { cs: 'Všechny zprávy na jednom místě', en: 'All Messages in One Place', de: 'Alle Nachrichten an einem Ort' },
       bullets: {
-        cs: ['Chat na webu, Facebook, Instagram, WhatsApp, e-mail', 'Vše v jedné schránce uvnitř systému', 'Ušetříte 5–10 hodin týdně'],
-        en: ['Website chat, Facebook, Instagram, WhatsApp, Email', 'All collected into one inbox', 'Save 5–10 hours per week'],
-        de: ['Website-Chat, Facebook, Instagram, WhatsApp, E-Mail', 'Alles in einem Posteingang gesammelt', 'Sparen Sie 5–10 Stunden pro Woche'],
+        cs: ['Chat na webu, Facebook, Instagram, WhatsApp, e-mail', 'Vše v jedné schránce uvnitř systému', 'Méně času stráveného přepínáním aplikací'],
+        en: ['Website chat, Facebook, Instagram, WhatsApp, Email', 'All collected into one inbox', 'Less time spent switching between apps'],
+        de: ['Website-Chat, Facebook, Instagram, WhatsApp, E-Mail', 'Alles in einem Posteingang gesammelt', 'Weniger Zeit mit App-Wechseln'],
       },
-      stats: { cs: 'Firmy přijdou až o 30 % zpráv, když platformy nejsou propojené', en: 'Businesses miss up to 30% of messages when platforms are separated', de: 'Unternehmen verpassen bis zu 30 % der Nachrichten bei getrennten Plattformen' },
+      stats: { cs: 'Méně přehlédnutých zpráv díky jedné schránce', en: 'Fewer missed messages with one shared inbox', de: 'Weniger verpasste Nachrichten dank eines Posteingangs' },
     },
     {
       icon: CalendarCheck,
@@ -37,7 +37,7 @@ const WhyFastMediaSection = () => {
         en: ['Customers book when it suits them', 'Automatic confirmations reduce no-shows', 'Services, consultations, site visits, events'],
         de: ['Kunden buchen, wenn es ihnen passt', 'Automatische Bestätigungen reduzieren Nichterscheinen', 'Dienstleistungen, Beratungen, Besichtigungen, Veranstaltungen'],
       },
-      stats: { cs: 'Konverze rezervací stoupá o 25–40 %', en: 'Booking conversion increases by 25–40%', de: 'Buchungskonversion steigt um 25–40 %' },
+      stats: { cs: 'Zákazníci si rezervují sami, kdykoli', en: 'Customers book themselves, any time', de: 'Kunden buchen selbst, jederzeit' },
     },
     {
       icon: Search,
@@ -47,7 +47,7 @@ const WhyFastMediaSection = () => {
         en: ['SEO-ready structure and fast loading', 'Clear service pages', 'Location targeting for your area'],
         de: ['SEO-bereite Struktur und schnelles Laden', 'Klare Serviceseiten', 'Standort-Targeting für Ihr Gebiet'],
       },
-      stats: { cs: '75 % uživatelů hodnotí důvěryhodnost podle kvality webu', en: '75% of users judge credibility by website quality', de: '75 % der Nutzer beurteilen Glaubwürdigkeit nach Website-Qualität' },
+      stats: { cs: 'Obsah čitelný pro Google i AI vyhledávače', en: 'Content readable by Google and AI search engines', de: 'Inhalte lesbar für Google und KI-Suchmaschinen' },
     },
     {
       icon: Target,
@@ -57,7 +57,7 @@ const WhyFastMediaSection = () => {
         en: ['Clear calls to action', 'Trust sections and social proof placement', 'Friction removed from customer journey'],
         de: ['Klare Handlungsaufforderungen', 'Vertrauensbereiche und Social Proof', 'Reibungspunkte aus der Customer Journey entfernt'],
       },
-      stats: { cs: 'Konverzní layout překonává generický design 2–3×', en: 'Conversion-focused layouts outperform generic designs by 2–3×', de: 'Konversionsorientierte Layouts übertreffen generische Designs um das 2–3-fache' },
+      stats: { cs: 'Výsledky se liší podle oboru, lokality a nabídky', en: 'Results vary by industry, location and offer', de: 'Ergebnisse variieren je nach Branche, Standort und Angebot' },
     },
   ];
 
