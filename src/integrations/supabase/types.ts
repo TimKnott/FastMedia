@@ -1490,6 +1490,7 @@ export type Database = {
       inbound_emails: {
         Row: {
           ai_reply: string | null
+          body_en: string | null
           body_html: string | null
           body_plain: string | null
           created_at: string
@@ -1504,6 +1505,7 @@ export type Database = {
         }
         Insert: {
           ai_reply?: string | null
+          body_en?: string | null
           body_html?: string | null
           body_plain?: string | null
           created_at?: string
@@ -1518,6 +1520,7 @@ export type Database = {
         }
         Update: {
           ai_reply?: string | null
+          body_en?: string | null
           body_html?: string | null
           body_plain?: string | null
           created_at?: string
