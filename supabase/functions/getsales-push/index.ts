@@ -280,7 +280,9 @@ Deno.serve(async (req) => {
         getsales_sync_attempts: attempts + upsert.attempts,
         getsales_sync_status: 'synced',
         getsales_sync_error: null,
-        status: 'sequencing',
+        // Only move the status forward when the prospect has no later review
+        // state — never pull a decided lead back into active outreach.
+        ...(TERMINAL_STATUSES.includes(String(prospect.status)) ? {} : { status: 'sequencing' }),
       })
       .eq('id', prospect.id)
 
@@ -355,7 +357,11 @@ Deno.serve(async (req) => {
         .from('prospects')
         .select('*')
         .eq('getsales_sync_status', 'failed')
-        .not('status', 'in', '("suppressed","unsubscribed")')
+        .not(
+          'status',
+          'in',
+          '("suppressed","unsubscribed","replied","won","lost")',
+        )
         .limit(25)
       const results: Record<string, unknown>[] = []
       for (const prospect of failed ?? []) {
