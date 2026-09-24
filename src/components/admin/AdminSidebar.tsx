@@ -58,14 +58,14 @@ import { toast } from 'sonner';
 
 type AppRole = 'super_admin' | 'admin' | 'moderator' | 'editor' | 'user';
 
-interface MenuItem {
+export interface MenuItem {
   titleKey: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
   minRole: AppRole;
 }
 
-const mainItems: MenuItem[] = [
+export const mainItems: MenuItem[] = [
   { titleKey: 'admin.dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
   { titleKey: 'admin.leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
   { titleKey: 'Enquiries Inbox', url: '/admin/enquiries', icon: Inbox, minRole: 'admin' },
@@ -98,7 +98,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'Showcase', url: '/admin/showcase', icon: Eye, minRole: 'admin' },
 ];
 
-const contentItems: MenuItem[] = [
+export const contentItems: MenuItem[] = [
   { titleKey: 'admin.homepage', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
   { titleKey: 'admin.demo_pages', url: '/admin/demos', icon: Palette, minRole: 'editor' },
   { titleKey: 'admin.blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
@@ -113,7 +113,7 @@ const contentItems: MenuItem[] = [
   { titleKey: 'Legal Documents', url: '/admin/legal', icon: Scale, minRole: 'admin' },
 ];
 
-const publicPageItems: MenuItem[] = [
+export const publicPageItems: MenuItem[] = [
   { titleKey: 'Offer page', url: '/offer', icon: TicketPercent, minRole: 'editor' },
   { titleKey: 'Case studies', url: '/case-studies', icon: Eye, minRole: 'editor' },
   { titleKey: 'Grant wizard form', url: '/grant-wizard', icon: FileText, minRole: 'editor' },
@@ -126,13 +126,13 @@ const publicPageItems: MenuItem[] = [
   { titleKey: 'Service landing pages', url: '/service/websites', icon: Eye, minRole: 'editor' },
 ];
 
-const adminItems: MenuItem[] = [
+export const adminItems: MenuItem[] = [
   { titleKey: 'admin.users', url: '/admin/users', icon: Users, minRole: 'admin' },
   { titleKey: 'admin.roles', url: '/admin/roles', icon: ShieldCheck, minRole: 'super_admin' },
   { titleKey: 'admin.audit_logs', url: '/admin/audit-logs', icon: ScrollText, minRole: 'admin' },
 ];
 
-const settingsItems: MenuItem[] = [
+export const settingsItems: MenuItem[] = [
   { titleKey: 'admin.embed_codes', url: '/admin/embed-codes', icon: Code2, minRole: 'super_admin' },
   { titleKey: 'admin.integrations', url: '/admin/integrations', icon: Plug, minRole: 'admin' },
   { titleKey: 'admin.export', url: '/admin/export', icon: Download, minRole: 'admin' },
