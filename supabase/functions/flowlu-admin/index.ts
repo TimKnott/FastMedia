@@ -39,7 +39,7 @@ async function flowlu(path: string, params: Record<string, string> = {}, method:
   let body: any = null;
   try { body = JSON.parse(text); } catch { /* html */ }
   if (!res.ok || body?.error) {
-    throw new Error(`Flowlu ${res.status}: ${body?.error?.message ?? body?.error ?? text.slice(0, 160)}`);
+    throw new Error(`Flowlu ${res.status}: ${body?.error?.message ?? (body?.error ? JSON.stringify(body.error).slice(0, 200) : text.slice(0, 160))}`);
   }
   return body?.response ?? body;
 }
