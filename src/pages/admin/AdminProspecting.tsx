@@ -92,6 +92,16 @@ const callAgent = async (body: Record<string, unknown>) => {
   return data as Record<string, unknown>;
 };
 
+/** Keeps one row per email so a single upsert batch never hits the same email twice. */
+const uniqueByEmail = <T extends { email: string }>(rows: T[]): T[] => {
+  const seen = new Map<string, T>();
+  for (const row of rows) {
+    const key = row.email.trim().toLowerCase();
+    if (!seen.has(key)) seen.set(key, { ...row, email: key });
+  }
+  return [...seen.values()];
+};
+
 /** Shows the full GetSales webhook address (with secret) on demand, with a copy button. */
 const WebhookAddress = () => {
   const [url, setUrl] = useState<string | null>(null);
@@ -283,13 +293,15 @@ const AdminProspecting = () => {
     }
     setBusy('bulk');
     const { error } = await prospectsTable().upsert(
-      rows.map((cells) => ({
-        company: cells[0],
-        email: cells[1].toLowerCase(),
-        website: cells[2] || null,
-        contact_name: cells[3] || null,
-        source: 'import',
-      })),
+      uniqueByEmail(
+        rows.map((cells) => ({
+          company: cells[0],
+          email: cells[1].trim().toLowerCase(),
+          website: cells[2] || null,
+          contact_name: cells[3] || null,
+          source: 'import',
+        })),
+      ),
       { onConflict: 'email' },
     );
     setBusy(null);
@@ -324,7 +336,7 @@ const AdminProspecting = () => {
       toast({ title: 'No enquiries to import' });
       return;
     }
-    const { error } = await prospectsTable().upsert(rows, { onConflict: 'email', ignoreDuplicates: true });
+    const { error } = await prospectsTable().upsert(uniqueByEmail(rows), { onConflict: 'email', ignoreDuplicates: true });
     setBusy(null);
     if (error) {
       toast({ title: 'Import failed', description: error.message, variant: 'destructive' });
