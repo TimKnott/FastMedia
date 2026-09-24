@@ -26,19 +26,23 @@ export interface RouteSeo {
 const BRAND = "FastMedia.Pro";
 const OG_IMG = "https://www.fastmedia.pro/pwa-512x512.png";
 
-const orgJsonLd = {
+export const orgJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: BRAND,
-  url: "https://www.fastmedia.pro",
+  "@type": "ProfessionalService",
+  "@id": "https://www.fastmedia.pro/#organization",
+  name: "FastMedia.Pro",
+  url: "https://www.fastmedia.pro/",
   logo: "https://www.fastmedia.pro/favicon.jpeg",
-  contactPoint: {
-    "@type": "ContactPoint",
-    telephone: "+420797864432",
-    email: "support@fastmedia.pro",
-    contactType: "sales",
-    availableLanguage: ["en"],
-  },
+  image: "https://www.fastmedia.pro/pwa-512x512.png",
+  email: "support@fastmedia.pro",
+  telephone: "+420797864432",
+  founder: { "@type": "Person", name: "Timothy Knott" },
+  taxID: "17308551",
+  identifier: { "@type": "PropertyValue", propertyID: "IČO", value: "17308551" },
+  address: { "@type": "PostalAddress", addressLocality: "Louny", postalCode: "440 01", addressRegion: "Ústecký kraj", addressCountry: "CZ" },
+  areaServed: [{ "@type": "Country", name: "Czech Republic" }, { "@type": "Place", name: "European Union" }],
+  knowsLanguage: ["bg","hr","cs","da","nl","en","et","fi","fr","de","el","hu","ga","it","lv","lt","mt","pl","pt","ro","sk","sl","es","sv"],
+  contactPoint: { "@type": "ContactPoint", telephone: "+420797864432", email: "support@fastmedia.pro", contactType: "sales", availableLanguage: ["cs", "en"] },
 };
 
 const STATIC_ROUTES: RouteSeo[] = [
