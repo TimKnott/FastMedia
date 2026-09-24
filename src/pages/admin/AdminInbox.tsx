@@ -272,7 +272,7 @@ export const AdminInbox = () => {
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">Message</h4>
-                  {isTranslated && (
+                  {isTranslated(selected) && (
                     <div className="flex gap-1">
                       <Button size="sm" variant={showOriginal ? 'ghost' : 'secondary'} onClick={() => setShowOriginal(false)}>
                         English
@@ -283,7 +283,7 @@ export const AdminInbox = () => {
                     </div>
                   )}
                 </div>
-                {isTranslated && !showOriginal ? (
+                {isTranslated(selected) && !showOriginal ? (
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Translated to English automatically.</p>
                     <pre className="whitespace-pre-wrap bg-muted/40 border p-3 rounded text-sm font-sans">{selected.body_en}</pre>
