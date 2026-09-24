@@ -140,7 +140,7 @@ Deno.serve(async (req) => {
       } catch (e) {
         const msg = (e as Error).message;
         await sb.from('flowlu_settings').update({ last_test_at: new Date().toISOString(), last_test_ok: false, last_test_message: msg }).eq('id', 1);
-        return json({ ok: false, message: msg, v: 2, acct_len: account().length });
+        return json({ ok: false, message: msg });
       }
     }
     if (action === 'webhook_url') {

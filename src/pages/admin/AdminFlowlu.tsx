@@ -85,7 +85,7 @@ export default function AdminFlowlu() {
             <label className="flex items-center gap-2 text-sm"><Switch checked={settings?.auto_sync_leads ?? true} onCheckedChange={(v) => toggle('auto_sync_leads', v)} />Send leads & enquiries</label>
             <label className="flex items-center gap-2 text-sm"><Switch checked={settings?.auto_sync_calls ?? true} onCheckedChange={(v) => toggle('auto_sync_calls', v)} />Send voice calls</label>
           </div>
-          <p className="text-xs text-muted-foreground">Automatic sync runs every 15 minutes. Last sync: {settings?.last_sync_at ? new Date(settings.last_sync_at).toLocaleString('en-GB') : 'never'}</p>
+          <p className="text-xs text-muted-foreground">New leads, enquiries and finished calls are sent instantly, with an hourly catch-up. Last sync: {settings?.last_sync_at ? new Date(settings.last_sync_at).toLocaleString('en-GB') : 'never'}</p>
         </CardContent>
       </Card>
 
