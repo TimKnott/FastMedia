@@ -976,6 +976,15 @@ Deno.serve(async (req) => {
         }),
       )
     }
+    if (action === 'discover') {
+      const trade = typeof body?.trade === 'string' ? body.trade.trim().slice(0, 80) : ''
+      const region = typeof body?.region === 'string' ? body.region.trim().slice(0, 80) : ''
+      if (!trade || !region) return json({ error: 'trade_and_region_required' }, 400)
+      return json(await runDiscovery(db, actor, trade, region))
+    }
+    if (action === 'discover_weekly') {
+      return json(await runWeeklyDiscovery(db, actor))
+    }
     if (action === 'tick') {
       const settings = await loadSettings(db)
       const replies = await detectReplies(db, actor)
