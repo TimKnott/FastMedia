@@ -287,6 +287,12 @@ Deno.serve(async (req) => {
   }
 
   try {
+    if (action === 'webhook_url') {
+      const secret = Deno.env.get('GETSALES_WEBHOOK_SECRET') ?? ''
+      const url = `${Deno.env.get('SUPABASE_URL')}/functions/v1/getsales-webhook?secret=${encodeURIComponent(secret)}`
+      return json({ url, configured: Boolean(secret) })
+    }
+
     if (action === 'ping') {
       const result = await getSales(base, '/leads/api/lists?limit=1', {}, 2)
       return json({
