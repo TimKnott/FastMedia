@@ -506,7 +506,7 @@ function ItemCard({ it, onAct, onRefresh }: { it: Item; onAct: (it: Item, s: str
   const publishMeta = async () => {
     const title = edit.match(/title[^:]*:\s*(.+)/i)?.[1]?.trim(); const description = edit.match(/description[^:]*:\s*(.+)/i)?.[1]?.trim();
     if (!it.target_path || !title || !description) return toast({ title: 'Could not read a title and description line from the draft', variant: 'destructive' });
-    const { error } = await t('page_seo').upsert({ page_path: it.target_path, title: title.replace(/^\*+|\*+$/g, ''), description: description.replace(/^\*+|\*+$/g, '') }, { onConflict: 'page_path' });
+    const { error } = await t('page_seo').upsert({ page_path: it.target_path, language: it.language, title: title.replace(/^\*+|\*+$/g, ''), description: description.replace(/^\*+|\*+$/g, '') }, { onConflict: 'page_path,language' });
     if (error) return toast({ title: 'Could not publish', description: error.message, variant: 'destructive' });
     await onAct(it, 'published', 'published metadata to page SEO');
   };
