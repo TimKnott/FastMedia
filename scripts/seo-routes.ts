@@ -51,6 +51,11 @@ const STATIC_ROUTES: RouteSeo[] = [
     changefreq: "weekly",
     priority: "1.0",
     jsonLd: orgJsonLd,
+    h1: "Bespoke websites, calculators and booking forms, with free EU creative grant help",
+    contentBlocks: [
+      "FastMedia.Pro builds bespoke websites, interactive price calculators, booking forms and API/CRM integrations for businesses in the Czech Republic and across the EU, in any of the 24 official EU languages.",
+      "We help Czech businesses prepare for the EU creative grant (Kreativni vouchery), which can cover up to 85% of eligible bespoke work, capped at 150,000 CZK, with a free course, a business plan template and AI prompts that work in any language. FastMedia.Pro is not the grant agency.",
+    ],
   },
   {
     path: "/blog",
