@@ -9,6 +9,8 @@
 //   cancel_message   - cancel an approved-but-unsent message
 //   suppress         - stop all contact with a prospect and suppress their address
 //   simulate_visitor - create an anonymous practice visitor signal (test mode)
+//   discover         - find real businesses for a trade + region and queue them for review
+//   discover_weekly  - cron: rotate through the configured trades/regions and discover leads
 //   tick             - cron: reply detection, due follow-ups, abandoned-form recovery
 //
 // Nothing is ever sent without a human approving that exact message.
@@ -40,6 +42,10 @@ interface Settings {
   simulate_visitors: boolean
   follow_up_days_step2: number
   follow_up_days_step3: number
+  discovery_enabled: boolean
+  discovery_trades: string[]
+  discovery_regions: string[]
+  discovery_cursor: number
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -48,6 +54,10 @@ const DEFAULT_SETTINGS: Settings = {
   simulate_visitors: false,
   follow_up_days_step2: 4,
   follow_up_days_step3: 9,
+  discovery_enabled: true,
+  discovery_trades: ['plumber', 'electrician', 'hair salon', 'dental clinic', 'restaurant', 'carpenter', 'fitness studio', 'accountant'],
+  discovery_regions: ['Praha', 'Brno', 'Ostrava', 'Plzeň', 'Ústí nad Labem', 'Liberec', 'Olomouc', 'České Budějovice'],
+  discovery_cursor: 0,
 }
 
 const json = (body: unknown, status = 200) =>
@@ -65,6 +75,10 @@ async function loadSettings(db: Db): Promise<Settings> {
     simulate_visitors: !!data.simulate_visitors,
     follow_up_days_step2: Number(data.follow_up_days_step2) || 4,
     follow_up_days_step3: Number(data.follow_up_days_step3) || 9,
+    discovery_enabled: data.discovery_enabled !== false,
+    discovery_trades: Array.isArray(data.discovery_trades) && data.discovery_trades.length > 0 ? data.discovery_trades : DEFAULT_SETTINGS.discovery_trades,
+    discovery_regions: Array.isArray(data.discovery_regions) && data.discovery_regions.length > 0 ? data.discovery_regions : DEFAULT_SETTINGS.discovery_regions,
+    discovery_cursor: Number(data.discovery_cursor) || 0,
   }
 }
 
@@ -742,6 +756,153 @@ async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
   return recovered
 }
 
+// ---- Lead discovery -------------------------------------------------------
+
+const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
+const JUNK_EMAIL_RE = /example\.|sentry|wixpress|@2x|\.png$|\.jpg$|\.jpeg$|\.gif$|\.webp$|u003e|noreply@|no-reply@/i
+
+interface DiscoveredBusiness {
+  company: string
+  contact_name: string
+  email: string
+  phone: string
+  trade: string
+  summary: string
+  website: string
+}
+
+/**
+ * Finds candidate businesses using the AI gateway's built-in web search.
+ * Search engines block datacenter scraping, so the model searches the web
+ * itself and returns only what it actually found.
+ */
+async function searchBusinessesWithAI(trade: string, region: string): Promise<DiscoveredBusiness[]> {
+  const apiKey = Deno.env.get('LOVABLE_API_KEY')
+  if (!apiKey) return []
+  try {
+    const res = await fetch('https://ai.gateway.lovable.dev/v1/responses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Lovable-API-Key': apiKey },
+      body: JSON.stringify({
+        model: 'openai/gpt-6-astra',
+        tools: [{ type: 'web_search' }],
+        reasoning: { effort: 'low' },
+        input: [
+          `Search the web for real, currently operating "${trade}" businesses in or near ${region}, Czech Republic.`,
+          'Find up to 8 of them. For each, report ONLY details that are publicly listed on the business\'s own website or a public directory listing you actually found:',
+          'company (trading name), contact_name (a named person only if published, else ""), email (a published business email, else ""), phone (published phone, else ""), website (their own website address, else the directory page you found them on), summary (one factual sentence, under 200 characters).',
+          'Never guess or invent an email address, phone number or website. If a business has no published email, set email to "".',
+          'Reply with a JSON array only, no commentary: [{"company":"...","contact_name":"...","email":"...","phone":"...","website":"...","summary":"..."}]',
+        ].join('\n'),
+      }),
+    })
+    if (!res.ok) return []
+    const data = await res.json()
+    const text = (data.output ?? [])
+      .filter((item: { type?: string }) => item.type === 'message')
+      .flatMap((item: { content?: Array<{ type?: string; text?: string }> }) => item.content ?? [])
+      .filter((part: { type?: string }) => part.type === 'output_text')
+      .map((part: { text?: string }) => part.text ?? '')
+      .join('')
+    const match = text.match(/\[[\s\S]*\]/)
+    if (!match) return []
+    const parsed = JSON.parse(match[0])
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .map((row: Record<string, unknown>) => ({
+        company: String(row.company ?? '').trim(),
+        contact_name: String(row.contact_name ?? '').trim(),
+        email: String(row.email ?? '').toLowerCase().trim(),
+        phone: String(row.phone ?? '').trim(),
+        trade,
+        summary: String(row.summary ?? '').trim(),
+        website: String(row.website ?? '').trim(),
+      }))
+      .filter((b: DiscoveredBusiness) => b.company.length > 1)
+  } catch {
+    return []
+  }
+}
+
+/** Confirms an email really appears on the business's own website before we keep it. */
+async function verifyEmailOnSite(website: string, email: string): Promise<boolean> {
+  if (!website || !email) return false
+  const text = await fetchSiteText(website)
+  if (!text) return false
+  const emails = (text.match(EMAIL_RE) ?? []).map((e) => e.toLowerCase())
+  return emails.includes(email)
+}
+
+/** Finds real businesses for a trade + region and queues the new ones for review. */
+async function runDiscovery(db: Db, actor: Actor, trade: string, region: string, maxInsert = 5) {
+  const candidates = await searchBusinessesWithAI(trade, region)
+
+  const found: DiscoveredBusiness[] = []
+  for (const business of candidates) {
+    if (found.length >= maxInsert * 2) break
+    if (!business.email || JUNK_EMAIL_RE.test(business.email)) continue
+    // Keep the email only when it is verifiably published on the business's own site.
+    const verified = await verifyEmailOnSite(business.website, business.email)
+    if (!verified) continue
+    found.push({
+      company: business.company.slice(0, 120),
+      contact_name: business.contact_name.slice(0, 120),
+      email: business.email,
+      phone: business.phone.slice(0, 40),
+      trade: business.trade.slice(0, 80),
+      summary: business.summary.slice(0, 300),
+      website: business.website.slice(0, 200),
+    })
+  }
+
+  let inserted = 0
+  let duplicates = 0
+  for (const business of found) {
+    const { data: existing } = await db.from('prospects').select('id').eq('email', business.email).maybeSingle()
+    const { data: suppressed } = await db.from('suppressed_emails').select('id').eq('email', business.email).maybeSingle()
+    if (existing || suppressed) {
+      duplicates += 1
+      continue
+    }
+    const { error } = await db.from('prospects').insert({
+      company: business.company,
+      contact_name: business.contact_name || null,
+      email: business.email,
+      phone: business.phone || null,
+      website: business.website,
+      region,
+      trade: business.trade,
+      language: 'cs',
+      source: 'discovery',
+      discovered_query: `${trade} — ${region}`,
+      notes: business.summary || null,
+      status: 'new',
+    })
+    if (error) duplicates += 1
+    else inserted += 1
+    if (inserted >= maxInsert) break
+  }
+
+  await logEvent(db, actor, 'discovered', {
+    details: { trade, region, candidates: candidates.length, verified: found.length, inserted, duplicates },
+  })
+  return { trade, region, candidates: candidates.length, verified: found.length, inserted, duplicates }
+}
+
+/** Weekly cron: rotate through the configured trade/region pairs, one pair per run. */
+async function runWeeklyDiscovery(db: Db, actor: Actor) {
+  const settings = await loadSettings(db)
+  if (!settings.discovery_enabled) return { skipped: true, reason: 'discovery_disabled' }
+  const trades = settings.discovery_trades
+  const regions = settings.discovery_regions
+  const cursor = settings.discovery_cursor
+  const trade = trades[cursor % trades.length]
+  const region = regions[Math.floor(cursor / trades.length) % regions.length]
+  const result = await runDiscovery(db, actor, trade, region, 5)
+  await db.from('outreach_settings').update({ discovery_cursor: cursor + 1 }).eq('id', 1)
+  return result
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
   if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders)
@@ -800,6 +961,15 @@ Deno.serve(async (req) => {
           formId: typeof body?.form_id === 'string' ? body.form_id : null,
         }),
       )
+    }
+    if (action === 'discover') {
+      const trade = typeof body?.trade === 'string' ? body.trade.trim().slice(0, 80) : ''
+      const region = typeof body?.region === 'string' ? body.region.trim().slice(0, 80) : ''
+      if (!trade || !region) return json({ error: 'trade_and_region_required' }, 400)
+      return json(await runDiscovery(db, actor, trade, region))
+    }
+    if (action === 'discover_weekly') {
+      return json(await runWeeklyDiscovery(db, actor))
     }
     if (action === 'tick') {
       const settings = await loadSettings(db)

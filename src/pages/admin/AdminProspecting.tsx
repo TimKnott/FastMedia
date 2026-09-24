@@ -78,6 +78,7 @@ const EVENT_LABEL: Record<string, string> = {
   unsubscribed: 'unsubscribe detected',
   simulated_visitor: 'simulated a visitor',
   form_recovery_sent: 'sent a form recovery email',
+  discovered: 'ran a lead search',
 };
 
 type SortKey = 'company' | 'source' | 'fit_score' | 'status' | 'created_at';
@@ -189,6 +190,9 @@ const AdminProspecting = () => {
     unmapped: { ours: string; why: string }[];
   } | null>(null);
   const [gsLinkedIn, setGsLinkedIn] = useState<Record<string, string>>({});
+  const [findOpen, setFindOpen] = useState(false);
+  const [findForm, setFindForm] = useState({ trade: '', region: '' });
+  const [findResult, setFindResult] = useState<string | null>(null);
 
   const refresh = () => {
     ['prospects', 'outreach-messages', 'visitor-signals', 'outreach-events', 'outreach-settings'].forEach((key) =>
@@ -457,6 +461,26 @@ const AdminProspecting = () => {
     }
   };
 
+  const findLeads = async () => {
+    if (!findForm.trade.trim() || !findForm.region.trim()) {
+      toast({ title: 'Enter a trade and a region', variant: 'destructive' });
+      return;
+    }
+    setBusy('discover');
+    setFindResult(null);
+    try {
+      const result = await callAgent({ action: 'discover', trade: findForm.trade.trim(), region: findForm.region.trim() });
+      refresh();
+      setFindResult(
+        `Found ${result.candidates} businesses, verified published contact details for ${result.verified} — ${result.inserted} new in your queue, ${result.duplicates} already known.`,
+      );
+    } catch (error) {
+      toast({ title: 'The search did not finish', description: String(error).slice(0, 220), variant: 'destructive' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const runTick = async () => {
     setBusy('tick');
     try {
@@ -598,6 +622,10 @@ const AdminProspecting = () => {
               Test mode → {settings?.test_inbox ?? 'test inbox'}
             </Badge>
           )}
+          <Button variant="outline" onClick={() => setFindOpen(true)}>
+            <Search className="w-4 h-4 mr-2" />
+            Find leads
+          </Button>
           <Button variant="outline" onClick={importFromEnquiries} disabled={busy === 'enquiries'}>
             {busy === 'enquiries' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Users className="w-4 h-4 mr-2" />}
             Pull in enquiries
@@ -613,9 +641,15 @@ const AdminProspecting = () => {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-5">
         {[
           { label: 'Prospects', value: prospects.length },
+          {
+            label: 'Found this week',
+            value: prospects.filter(
+              (p) => p.source === 'discovery' && new Date(p.created_at).getTime() > Date.now() - 7 * 86400000,
+            ).length,
+          },
           { label: 'Messages awaiting approval', value: pendingMessages.length },
           { label: 'Sequences running', value: running.length },
           { label: 'Replies', value: prospects.filter((p) => p.status === 'replied').length },
@@ -1130,6 +1164,54 @@ const AdminProspecting = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                Automatic lead discovery
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-medium text-foreground">Weekly lead search</p>
+                  <p className="text-sm text-muted-foreground">
+                    Every Monday the agent searches the next trade and region pair from the lists below and adds new
+                    businesses to your review queue. It never emails anyone by itself.
+                  </p>
+                </div>
+                <Switch
+                  checked={settings?.discovery_enabled !== false}
+                  onCheckedChange={(v) => saveSettings({ discovery_enabled: v })}
+                />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 border-t border-border pt-4">
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Trades to search (one per line)</Label>
+                  <Textarea
+                    rows={6}
+                    defaultValue={(settings?.discovery_trades ?? []).join('\n')}
+                    onBlur={(e) => {
+                      const list = e.target.value.split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 50);
+                      if (list.length) saveSettings({ discovery_trades: list });
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Regions to search (one per line)</Label>
+                  <Textarea
+                    rows={6}
+                    defaultValue={(settings?.discovery_regions ?? []).join('\n')}
+                    onBlur={(e) => {
+                      const list = e.target.value.split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 50);
+                      if (list.length) saveSettings({ discovery_regions: list });
+                    }}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="linkedin" className="space-y-4">
@@ -1275,6 +1357,44 @@ const AdminProspecting = () => {
           </Button>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={findOpen} onOpenChange={setFindOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Find new leads</DialogTitle>
+            <DialogDescription>
+              The agent searches the public web for real businesses matching a trade and region, reads their websites for
+              published contact details, and drops the new ones into your review queue. Nothing is emailed — you approve
+              every message yourself.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Trade or business type</Label>
+              <Input
+                placeholder="e.g. plumber, hair salon, dental clinic"
+                value={findForm.trade}
+                onChange={(e) => setFindForm({ ...findForm, trade: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Region or town</Label>
+              <Input
+                placeholder="e.g. Ústí nad Labem, Praha, Brno"
+                value={findForm.region}
+                onChange={(e) => setFindForm({ ...findForm, region: e.target.value })}
+              />
+            </div>
+            {findResult && <p className="text-sm text-muted-foreground">{findResult}</p>}
+          </div>
+          <DialogFooter>
+            <Button onClick={findLeads} disabled={busy === 'discover'}>
+              {busy === 'discover' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
+              {busy === 'discover' ? 'Searching — this takes a minute…' : 'Search for leads'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent>

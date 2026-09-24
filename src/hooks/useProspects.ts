@@ -87,6 +87,10 @@ export interface OutreachSettings {
   getsales_list_id: string | null;
   getsales_sender_id: string | null;
   getsales_automation_id: string | null;
+  discovery_enabled: boolean;
+  discovery_trades: string[];
+  discovery_regions: string[];
+  discovery_cursor: number;
   updated_at: string;
 }
 
