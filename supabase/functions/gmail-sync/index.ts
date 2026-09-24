@@ -192,7 +192,25 @@ Deno.serve(async (req) => {
       imported++
     }
 
-    return json({ imported, scanned: ids.length, skipped: ids.length - todo.length })
+    // Backfill English translations for older messages that predate this feature.
+    let translated = 0
+    const { data: untranslated } = await admin
+      .from('inbound_emails')
+      .select('id, body_plain, body_html')
+      .is('body_en', null)
+      .order('created_at', { ascending: false })
+      .limit(10)
+    for (const row of untranslated ?? []) {
+      const source = row.body_plain || (row.body_html ? stripHtml(row.body_html) : '')
+      if (!source) continue
+      const en = await translateToEnglish(source)
+      if (en) {
+        await admin.from('inbound_emails').update({ body_en: en }).eq('id', row.id)
+        translated++
+      }
+    }
+
+    return json({ imported, scanned: ids.length, skipped: ids.length - todo.length, translated })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('gmail-sync error:', message)
