@@ -100,7 +100,9 @@ export const useFormAbandonment = (formId: string, language = 'cs') => {
 
   const complete = useCallback(() => {
     submitted.current = true;
-  }, []);
+    // Clear any abandonment already logged (e.g. from a tab switch) so no recovery email goes out.
+    void recordVisitorSignal({ kind: 'form_abandoned', form_id: formId, language, payload: { completed: true } });
+  }, [formId, language]);
 
   useEffect(() => {
     const flush = () => {

@@ -60,20 +60,40 @@ Deno.serve(async (req) => {
     }
 
 
+    const completed = raw?.completed === true || raw?.payload?.completed === true
+
     // One row per session + form, so repeated exit attempts do not spam the list.
     let signalId: string | null = null
     if (record.session_key) {
       const { data: existing } = await supabase
         .from('visitor_signals')
-        .select('id')
+        .select('id, recovery_status')
         .eq('session_key', record.session_key)
         .eq('kind', kind)
         .eq('form_id', record.form_id ?? '')
         .maybeSingle()
       if (existing?.id) {
-        await supabase.from('visitor_signals').update(record).eq('id', existing.id)
+        if (completed) {
+          await supabase
+            .from('visitor_signals')
+            .update({ recovery_status: 'converted', recovered_at: new Date().toISOString() })
+            .eq('id', existing.id)
+          return new Response(JSON.stringify({ ok: true, id: existing.id, converted: true }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+        // Never re-arm a row that was already emailed, converted or skipped.
+        const update = existing.recovery_status === 'pending'
+          ? record
+          : { ...record, recovery_status: existing.recovery_status }
+        await supabase.from('visitor_signals').update(update).eq('id', existing.id)
         signalId = existing.id
       }
+    }
+    if (completed && !signalId) {
+      return new Response(JSON.stringify({ ok: true, converted: false }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
     if (!signalId) {
       const { data, error } = await supabase
