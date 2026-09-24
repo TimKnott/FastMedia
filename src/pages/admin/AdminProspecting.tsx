@@ -190,7 +190,9 @@ const AdminProspecting = () => {
     unmapped: { ours: string; why: string }[];
   } | null>(null);
   const [gsLinkedIn, setGsLinkedIn] = useState<Record<string, string>>({});
-  const [findOpen, setFindOpen] = useState(false);
+  const [findOpen, setFindOpen] = useState(
+    () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('find') === '1',
+  );
   const [findForm, setFindForm] = useState({ trade: '', region: '' });
   const [findResult, setFindResult] = useState<string | null>(null);
 

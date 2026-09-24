@@ -91,6 +91,7 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.hr', url: '/admin/hr', icon: UserCog, minRole: 'admin' },
   { titleKey: 'admin.client_projects', url: '/admin/client-projects', icon: FolderKanban, minRole: 'editor' },
   { titleKey: 'Prospecting desk', url: '/admin/prospecting', icon: Send, minRole: 'admin' },
+  { titleKey: 'Find leads', url: '/admin/prospecting?find=1', icon: Search, minRole: 'admin' },
   { titleKey: 'Voice agent', url: '/admin/voice-agent', icon: Phone, minRole: 'admin' },
   { titleKey: 'Flowlu CRM', url: '/admin/flowlu', icon: Phone, minRole: 'admin' },
   { titleKey: 'Language versions', url: '/admin/language-versions', icon: Map, minRole: 'admin' },
