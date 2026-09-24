@@ -14,3 +14,7 @@
 
 ## Deferred
 - [ ] Ad Alchemy tracking snippet (deferred at user request)
+
+## AI Search Visibility (GEO)
+- [x] Workspace at /admin/geo: audit, facts, claims, plan, competitors, generator, schema, checklist, approvals, AI tracker, exports
+- [ ] Owner to confirm business facts (blocks verified drafts)
