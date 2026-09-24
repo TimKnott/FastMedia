@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Shield, Award, BadgeCheck, FileCheck, Sparkles } from 'lucide-react';
+import { Shield, Award, FileCheck, Sparkles } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 const badges = [
@@ -15,11 +15,6 @@ const badges = [
     desc: { cs: 'Certifikovaný partner Google Ads', en: 'Certified Google Ads Partner', de: 'Zertifizierter Google Ads Partner' },
   },
   {
-    icon: BadgeCheck,
-    label: { cs: 'ISO 27001', en: 'ISO 27001', de: 'ISO 27001' },
-    desc: { cs: 'Mezinárodní standard bezpečnosti', en: 'International security standard', de: 'Internationaler Sicherheitsstandard' },
-  },
-  {
     icon: FileCheck,
     label: { cs: 'WCAG 2.1 AA', en: 'WCAG 2.1 AA', de: 'WCAG 2.1 AA' },
     desc: { cs: 'Přístupnost pro všechny uživatele', en: 'Accessibility for all users', de: 'Barrierefreiheit für alle Nutzer' },
@@ -27,7 +22,7 @@ const badges = [
   {
     icon: Sparkles,
     label: { cs: 'Core Web Vitals', en: 'Core Web Vitals', de: 'Core Web Vitals' },
-    desc: { cs: 'Optimalizovaný výkon stránek', en: 'Optimized page performance', de: 'Optimierte Seitenleistung' },
+    desc: { cs: 'Optimalizovaný výkon stránek', en: 'Optimised page performance', de: 'Optimierte Seitenleistung' },
   },
 ];
 
