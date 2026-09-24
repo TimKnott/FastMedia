@@ -109,7 +109,7 @@ const Footer = () => {
               {t('footer.terms')}
               <LearnMoreModal
                 title={isEnglish ? 'Accessibility & Compliance' : 'Přístupnost a soulad s předpisy'}
-                explanation={isEnglish ? 'FastMedia.Pro builds with WCAG 2.1 AA accessibility criteria in mind, GDPR compliance and transparent data handling.' : 'FastMedia.Pro dbá na přístupnost podle WCAG 2.1 AA, soulad s GDPR a transparentní zpracování údajů.'}
+                explanation={isEnglish ? 'FastMedia.Pro builds with WCAG 2.1 AA accessibility criteria in mind, GDPR compliance and transparent data handling.' : 'FastMedia.Pro staví weby s ohledem na kritéria přístupnosti WCAG 2.1 AA, soulad s GDPR a transparentní zpracování údajů.'}
                 benefits={isEnglish ? ['WCAG 2.1 AA accessible', 'GDPR-compliant data handling', 'Czech and British English'] : ['Přístupnost WCAG 2.1 AA', 'Zpracování údajů v souladu s GDPR', 'Čeština a britská angličtina']}
               />
             </h4>
