@@ -92,6 +92,45 @@ const callAgent = async (body: Record<string, unknown>) => {
   return data as Record<string, unknown>;
 };
 
+/** Shows the full GetSales webhook address (with secret) on demand, with a copy button. */
+const WebhookAddress = () => {
+  const [url, setUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const reveal = async () => {
+    setLoading(true);
+    try {
+      const data = await callGetSales({ action: 'webhook_url' });
+      setUrl(data?.url ?? null);
+    } catch (e: any) {
+      toast({ title: 'Could not load the webhook address', description: e.message, variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (!url) {
+    return (
+      <Button size="sm" variant="outline" className="mt-2" onClick={reveal} disabled={loading}>
+        {loading ? 'Loading…' : 'Show webhook address'}
+      </Button>
+    );
+  }
+  return (
+    <div className="mt-2 flex items-start gap-2">
+      <code className="block flex-1 break-all rounded-md bg-muted px-3 py-2 text-xs">{url}</code>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() => {
+          navigator.clipboard.writeText(url);
+          toast({ title: 'Webhook address copied' });
+        }}
+      >
+        Copy
+      </Button>
+    </div>
+  );
+};
+
 /** Calls the GetSales bridge (LinkedIn sequences) and surfaces its plain-language errors. */
 const callGetSales = async (body: Record<string, unknown>) => {
   const { data, error } = await supabase.functions.invoke('getsales-push', { body });
@@ -1195,11 +1234,9 @@ const AdminProspecting = () => {
                   at the address below. Replies stop any pending follow-ups automatically and new GetSales contacts appear
                   in your lead review queue.
                 </p>
-                <code className="mt-2 block break-all rounded-md bg-muted px-3 py-2 text-xs">
-                  {`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/getsales-webhook?secret=YOUR-WEBHOOK-SECRET`}
-                </code>
+                <WebhookAddress />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Ask me for the secret when you set the webhook up — it is kept out of this screen on purpose.
+                  This address contains your private webhook secret — only paste it into GetSales.
                 </p>
               </div>
             </CardContent>
