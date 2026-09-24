@@ -46,3 +46,6 @@ verify_jwt = false
 
 [functions.flowlu-webhook]
 verify_jwt = false
+
+[functions.language-version]
+verify_jwt = false
