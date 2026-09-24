@@ -205,6 +205,31 @@ async function main() {
   }
   console.log(`[prerender] generating ${routes.length} routes`);
 
+  // Approved (published) schema blocks from the AI Search Visibility workspace.
+  // Never fails the build: if the backend is unreachable, pages build without them.
+  try {
+    const url = process.env.VITE_SUPABASE_URL;
+    const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    if (url && key) {
+      const res = await fetch(`${url}/rest/v1/geo_schema_blocks?status=eq.published&select=page_path,json_ld`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (res.ok) {
+        const blocks = (await res.json()) as { page_path: string; json_ld: unknown }[];
+        for (const b of blocks) {
+          const r = routes.find((x) => x.path === b.page_path);
+          if (!r) continue;
+          const existing = r.jsonLd ? (Array.isArray(r.jsonLd) ? r.jsonLd : [r.jsonLd]) : [];
+          (r as { jsonLd?: unknown }).jsonLd = [...existing, b.json_ld];
+        }
+        console.log(`[prerender] added ${blocks.length} published schema blocks`);
+      }
+    }
+  } catch (e) {
+    console.warn("[prerender] schema blocks unavailable:", (e as Error).message);
+  }
+
   for (const route of routes) {
     const head = buildHead(route);
     const body = buildCrawlBody(route, routes);
