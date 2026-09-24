@@ -32,3 +32,12 @@
 - [x] Grant pages in every EU language (drafts via Language versions, bulk) + GEO plan entries + schema
 - [ ] Voice agent: Twilio number — BLOCKED waiting for number (needs Twilio credentials), daily scan, Flowlu (blocked on key)
 - [x] Publish homepage/SEO content
+
+## Sep 24 batch 3 — AI search readiness (all EU languages)
+- [x] Remove/qualify unproven claims (stats, Google Partner, WCAG, demo ratings, reviews hidden)
+- [x] Real business details in structured data (IČO, Louny, 24 languages)
+- [x] Language writer uses local search wording per language
+- [x] Language sitemap with hreflang + IndexNow + weekly visibility agent (Mon 05:15 UTC)
+- [ ] Google Search Console property verification — BLOCKED: needs user go-ahead
+- [ ] Bing Webmaster Tools, Google Business Profile, LinkedIn/directories — BLOCKED: user must do outside site
+- [ ] Case study figures/testimonials evidence — BLOCKED: user must confirm real vs sample
