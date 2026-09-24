@@ -31,3 +31,12 @@ project_id = "aivnnjsrupmubcjsgulb"
     verify_jwt = false
   [functions.flowlu-sync]
     verify_jwt = false
+
+[functions.geo-audit]
+verify_jwt = false
+
+[functions.geo-generate]
+verify_jwt = false
+
+[functions.geo-competitor]
+verify_jwt = false
