@@ -20,9 +20,9 @@
 - [ ] Owner to confirm business facts (blocks verified drafts)
 
 ## Sep 24 batch
-- [ ] Flowlu CRM sync admin page (leads + calls), real connection test, webhook
-- [ ] Grant content pages: EU creative grant, free courses, business plan prompts, language versions — linked from GEO
-- [ ] Rewrite homepage + grant pages for AI search (direct answers, schema), EU-language GEO entry — publish directly
-- [ ] Switch EU grant course visible
-- [ ] Language version generator admin page (drafts, publish after approval)
-- [ ] Publish + sitemap; tracking of clicks/rankings (Search Console)
+- [ ] Flowlu CRM sync admin page (leads + calls), real connection test, webhook — BLOCKED: Flowlu rejects API key
+- [x] Grant content pages: EU creative grant, free courses, business plan prompts, language versions — linked from GEO
+- [x] Rewrite homepage + grant pages for AI search (direct answers, schema), EU-language GEO entry — publish directly
+- [x] Switch EU grant course visible
+- [x] Language version generator admin page (drafts, publish after approval)
+- [x] Publish + sitemap; tracking of clicks/rankings (Search Console)
