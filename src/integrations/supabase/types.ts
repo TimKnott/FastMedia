@@ -1691,6 +1691,60 @@ export type Database = {
           },
         ]
       }
+      language_versions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          content: Json
+          created_at: string
+          id: string
+          language_code: string
+          language_name: string
+          meta_description: string
+          published_at: string | null
+          reviewer_notes: string | null
+          slug: string
+          source_path: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content?: Json
+          created_at?: string
+          id?: string
+          language_code: string
+          language_name: string
+          meta_description?: string
+          published_at?: string | null
+          reviewer_notes?: string | null
+          slug: string
+          source_path: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content?: Json
+          created_at?: string
+          id?: string
+          language_code?: string
+          language_name?: string
+          meta_description?: string
+          published_at?: string | null
+          reviewer_notes?: string | null
+          slug?: string
+          source_path?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lead_activities: {
         Row: {
           activity_type: string
