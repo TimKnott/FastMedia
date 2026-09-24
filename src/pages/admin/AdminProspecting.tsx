@@ -622,6 +622,10 @@ const AdminProspecting = () => {
               Test mode → {settings?.test_inbox ?? 'test inbox'}
             </Badge>
           )}
+          <Button variant="outline" onClick={() => setFindOpen(true)}>
+            <Search className="w-4 h-4 mr-2" />
+            Find leads
+          </Button>
           <Button variant="outline" onClick={importFromEnquiries} disabled={busy === 'enquiries'}>
             {busy === 'enquiries' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Users className="w-4 h-4 mr-2" />}
             Pull in enquiries
@@ -637,9 +641,15 @@ const AdminProspecting = () => {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-5">
         {[
           { label: 'Prospects', value: prospects.length },
+          {
+            label: 'Found this week',
+            value: prospects.filter(
+              (p) => p.source === 'discovery' && new Date(p.created_at).getTime() > Date.now() - 7 * 86400000,
+            ).length,
+          },
           { label: 'Messages awaiting approval', value: pendingMessages.length },
           { label: 'Sequences running', value: running.length },
           { label: 'Replies', value: prospects.filter((p) => p.status === 'replied').length },
