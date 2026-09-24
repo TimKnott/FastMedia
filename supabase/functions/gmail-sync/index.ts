@@ -171,13 +171,17 @@ Deno.serve(async (req) => {
       const { text, html } = extractBodies(msg.payload)
       const receivedAt = msg.internalDate ? new Date(Number(msg.internalDate)).toISOString() : new Date().toISOString()
 
+      const plain = text || (html ? stripHtml(html) : '') || msg.snippet || null
+      const bodyEn = plain ? await translateToEnglish(plain) : null
+
       const { error } = await admin.from('inbound_emails').insert({
         mailgun_event_id: `gmail:${id}`,
         from_address: header(headers, 'From').slice(0, 320) || 'unknown',
         to_address: header(headers, 'To').slice(0, 320) || 'support@fastmedia.pro',
         subject: header(headers, 'Subject') || null,
-        body_plain: text || msg.snippet || null,
+        body_plain: plain,
         body_html: html || null,
+        body_en: bodyEn,
         status: 'received',
         created_at: receivedAt,
       })
