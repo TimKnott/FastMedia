@@ -25,3 +25,9 @@ project_id = "aivnnjsrupmubcjsgulb"
     verify_jwt = false
   [functions.getsales-push]
     verify_jwt = false
+  [functions.voice-webhook]
+    verify_jwt = false
+  [functions.voice-daily-scan]
+    verify_jwt = false
+  [functions.flowlu-sync]
+    verify_jwt = false

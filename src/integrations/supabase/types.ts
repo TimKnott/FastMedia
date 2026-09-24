@@ -3325,6 +3325,215 @@ export type Database = {
         }
         Relationships: []
       }
+      voice_call_turns: {
+        Row: {
+          call_id: string
+          created_at: string
+          id: string
+          role: string
+          text: string
+        }
+        Insert: {
+          call_id: string
+          created_at?: string
+          id?: string
+          role: string
+          text: string
+        }
+        Update: {
+          call_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_call_turns_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "voice_calls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voice_calls: {
+        Row: {
+          campaign_id: string | null
+          created_at: string
+          direction: string
+          duration_seconds: number | null
+          ended_at: string | null
+          flowlu_synced: boolean
+          forwarded: boolean
+          from_number: string | null
+          id: string
+          language: string | null
+          outcome: string | null
+          prospect_id: string | null
+          recording_url: string | null
+          started_at: string
+          status: string
+          summary: string | null
+          to_number: string | null
+          twilio_call_sid: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          created_at?: string
+          direction: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          flowlu_synced?: boolean
+          forwarded?: boolean
+          from_number?: string | null
+          id?: string
+          language?: string | null
+          outcome?: string | null
+          prospect_id?: string | null
+          recording_url?: string | null
+          started_at?: string
+          status?: string
+          summary?: string | null
+          to_number?: string | null
+          twilio_call_sid?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          created_at?: string
+          direction?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          flowlu_synced?: boolean
+          forwarded?: boolean
+          from_number?: string | null
+          id?: string
+          language?: string | null
+          outcome?: string | null
+          prospect_id?: string | null
+          recording_url?: string | null
+          started_at?: string
+          status?: string
+          summary?: string | null
+          to_number?: string | null
+          twilio_call_sid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_calls_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "voice_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voice_calls_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voice_campaigns: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          script: string
+          status: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          script: string
+          status?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          script?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      voice_scan_reports: {
+        Row: {
+          emailed: boolean
+          id: string
+          issues: Json
+          pages_checked: number
+          ran_at: string
+          summary: string | null
+        }
+        Insert: {
+          emailed?: boolean
+          id?: string
+          issues?: Json
+          pages_checked?: number
+          ran_at?: string
+          summary?: string | null
+        }
+        Update: {
+          emailed?: boolean
+          id?: string
+          issues?: Json
+          pages_checked?: number
+          ran_at?: string
+          summary?: string | null
+        }
+        Relationships: []
+      }
+      voice_settings: {
+        Row: {
+          elevenlabs_voice_id: string | null
+          enabled: boolean
+          flowlu_enabled: boolean
+          forward_to_number: string | null
+          id: number
+          minutes_used: number
+          monthly_minute_cap: number
+          twilio_number: string | null
+          updated_at: string
+          usage_month: string
+        }
+        Insert: {
+          elevenlabs_voice_id?: string | null
+          enabled?: boolean
+          flowlu_enabled?: boolean
+          forward_to_number?: string | null
+          id?: number
+          minutes_used?: number
+          monthly_minute_cap?: number
+          twilio_number?: string | null
+          updated_at?: string
+          usage_month?: string
+        }
+        Update: {
+          elevenlabs_voice_id?: string | null
+          enabled?: boolean
+          flowlu_enabled?: boolean
+          forward_to_number?: string | null
+          id?: number
+          minutes_used?: number
+          monthly_minute_cap?: number
+          twilio_number?: string | null
+          updated_at?: string
+          usage_month?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
