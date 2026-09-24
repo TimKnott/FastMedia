@@ -110,7 +110,7 @@ const WebhookAddress = () => {
     setLoading(true);
     try {
       const data = await callGetSales({ action: 'webhook_url' });
-      setUrl(data?.url ?? null);
+      setUrl(((data as { url?: string } | null)?.url) ?? null);
     } catch (e: any) {
       toast({ title: 'Could not load the webhook address', description: e.message, variant: 'destructive' });
     } finally {
