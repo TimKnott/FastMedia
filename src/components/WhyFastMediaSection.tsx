@@ -86,7 +86,7 @@ const WhyFastMediaSection = () => {
             defaultValue={language === 'cs' 
               ? 'Většina webů vypadá dobře, ale dělá velmi málo. Naše weby jsou navrženy podle toho, jak zákazníci skutečně hledají, procházejí a rozhodují se.'
               : language === 'en'
-              ? 'Most websites look good but do very little. Our websites are built after analyzing how real customers search, scroll, hesitate, and decide.'
+              ? 'Most websites look good but do very little. Our websites are built after analysing how real customers search, scroll, hesitate, and decide.'
               : 'Die meisten Websites sehen gut aus, leisten aber sehr wenig. Unsere Websites basieren auf der Analyse, wie echte Kunden suchen, scrollen und entscheiden.'}
             value={getContent('whyfastmedia.subtitle', '') || undefined}
             onSave={invalidate}

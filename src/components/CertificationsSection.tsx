@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Shield, Award, BadgeCheck, FileCheck, Sparkles } from 'lucide-react';
+import { Shield, Award, FileCheck, Sparkles } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 const badges = [
@@ -22,7 +22,7 @@ const badges = [
   {
     icon: Sparkles,
     label: { cs: 'Core Web Vitals', en: 'Core Web Vitals', de: 'Core Web Vitals' },
-    desc: { cs: 'Optimalizovaný výkon stránek', en: 'Optimized page performance', de: 'Optimierte Seitenleistung' },
+    desc: { cs: 'Optimalizovaný výkon stránek', en: 'Optimised page performance', de: 'Optimierte Seitenleistung' },
   },
 ];
 
