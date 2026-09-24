@@ -9,6 +9,8 @@
 //   cancel_message   - cancel an approved-but-unsent message
 //   suppress         - stop all contact with a prospect and suppress their address
 //   simulate_visitor - create an anonymous practice visitor signal (test mode)
+//   discover         - find real businesses for a trade + region and queue them for review
+//   discover_weekly  - cron: rotate through the configured trades/regions and discover leads
 //   tick             - cron: reply detection, due follow-ups, abandoned-form recovery
 //
 // Nothing is ever sent without a human approving that exact message.
@@ -40,6 +42,10 @@ interface Settings {
   simulate_visitors: boolean
   follow_up_days_step2: number
   follow_up_days_step3: number
+  discovery_enabled: boolean
+  discovery_trades: string[]
+  discovery_regions: string[]
+  discovery_cursor: number
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -48,6 +54,10 @@ const DEFAULT_SETTINGS: Settings = {
   simulate_visitors: false,
   follow_up_days_step2: 4,
   follow_up_days_step3: 9,
+  discovery_enabled: true,
+  discovery_trades: ['plumber', 'electrician', 'hair salon', 'dental clinic', 'restaurant', 'carpenter', 'fitness studio', 'accountant'],
+  discovery_regions: ['Praha', 'Brno', 'Ostrava', 'Plzeň', 'Ústí nad Labem', 'Liberec', 'Olomouc', 'České Budějovice'],
+  discovery_cursor: 0,
 }
 
 const json = (body: unknown, status = 200) =>
@@ -65,6 +75,10 @@ async function loadSettings(db: Db): Promise<Settings> {
     simulate_visitors: !!data.simulate_visitors,
     follow_up_days_step2: Number(data.follow_up_days_step2) || 4,
     follow_up_days_step3: Number(data.follow_up_days_step3) || 9,
+    discovery_enabled: data.discovery_enabled !== false,
+    discovery_trades: Array.isArray(data.discovery_trades) && data.discovery_trades.length > 0 ? data.discovery_trades : DEFAULT_SETTINGS.discovery_trades,
+    discovery_regions: Array.isArray(data.discovery_regions) && data.discovery_regions.length > 0 ? data.discovery_regions : DEFAULT_SETTINGS.discovery_regions,
+    discovery_cursor: Number(data.discovery_cursor) || 0,
   }
 }
 
