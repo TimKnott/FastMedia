@@ -1164,6 +1164,54 @@ const AdminProspecting = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                Automatic lead discovery
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-medium text-foreground">Weekly lead search</p>
+                  <p className="text-sm text-muted-foreground">
+                    Every Monday the agent searches the next trade and region pair from the lists below and adds new
+                    businesses to your review queue. It never emails anyone by itself.
+                  </p>
+                </div>
+                <Switch
+                  checked={settings?.discovery_enabled !== false}
+                  onCheckedChange={(v) => saveSettings({ discovery_enabled: v })}
+                />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 border-t border-border pt-4">
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Trades to search (one per line)</Label>
+                  <Textarea
+                    rows={6}
+                    defaultValue={(settings?.discovery_trades ?? []).join('\n')}
+                    onBlur={(e) => {
+                      const list = e.target.value.split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 50);
+                      if (list.length) saveSettings({ discovery_trades: list });
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Regions to search (one per line)</Label>
+                  <Textarea
+                    rows={6}
+                    defaultValue={(settings?.discovery_regions ?? []).join('\n')}
+                    onBlur={(e) => {
+                      const list = e.target.value.split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 50);
+                      if (list.length) saveSettings({ discovery_regions: list });
+                    }}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="linkedin" className="space-y-4">
@@ -1309,6 +1357,44 @@ const AdminProspecting = () => {
           </Button>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={findOpen} onOpenChange={setFindOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Find new leads</DialogTitle>
+            <DialogDescription>
+              The agent searches the public web for real businesses matching a trade and region, reads their websites for
+              published contact details, and drops the new ones into your review queue. Nothing is emailed — you approve
+              every message yourself.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Trade or business type</Label>
+              <Input
+                placeholder="e.g. plumber, hair salon, dental clinic"
+                value={findForm.trade}
+                onChange={(e) => setFindForm({ ...findForm, trade: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Region or town</Label>
+              <Input
+                placeholder="e.g. Ústí nad Labem, Praha, Brno"
+                value={findForm.region}
+                onChange={(e) => setFindForm({ ...findForm, region: e.target.value })}
+              />
+            </div>
+            {findResult && <p className="text-sm text-muted-foreground">{findResult}</p>}
+          </div>
+          <DialogFooter>
+            <Button onClick={findLeads} disabled={busy === 'discover'}>
+              {busy === 'discover' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
+              {busy === 'discover' ? 'Searching — this takes a minute…' : 'Search for leads'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent>
