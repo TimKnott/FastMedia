@@ -1021,6 +1021,434 @@ export type Database = {
         }
         Relationships: []
       }
+      geo_ai_observations: {
+        Row: {
+          cited: boolean
+          country: string
+          created_at: string
+          device: string
+          id: string
+          language: string
+          mentioned: boolean
+          observed_on: string
+          platform: string
+          query: string
+          quote: string | null
+          recorded_by: string | null
+          screenshot_url: string | null
+          source_url: string | null
+        }
+        Insert: {
+          cited?: boolean
+          country: string
+          created_at?: string
+          device: string
+          id?: string
+          language: string
+          mentioned?: boolean
+          observed_on: string
+          platform: string
+          query: string
+          quote?: string | null
+          recorded_by?: string | null
+          screenshot_url?: string | null
+          source_url?: string | null
+        }
+        Update: {
+          cited?: boolean
+          country?: string
+          created_at?: string
+          device?: string
+          id?: string
+          language?: string
+          mentioned?: boolean
+          observed_on?: string
+          platform?: string
+          query?: string
+          quote?: string | null
+          recorded_by?: string | null
+          screenshot_url?: string | null
+          source_url?: string | null
+        }
+        Relationships: []
+      }
+      geo_audit_runs: {
+        Row: {
+          finished_at: string | null
+          id: string
+          pages: number
+          started_at: string
+          status: string
+          summary: Json
+        }
+        Insert: {
+          finished_at?: string | null
+          id?: string
+          pages?: number
+          started_at?: string
+          status?: string
+          summary?: Json
+        }
+        Update: {
+          finished_at?: string | null
+          id?: string
+          pages?: number
+          started_at?: string
+          status?: string
+          summary?: Json
+        }
+        Relationships: []
+      }
+      geo_business_facts: {
+        Row: {
+          fact_key: string
+          id: string
+          label: string
+          sort_order: number
+          source: string
+          updated_at: string
+          value: string
+          verified: boolean
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          fact_key: string
+          id?: string
+          label: string
+          sort_order?: number
+          source?: string
+          updated_at?: string
+          value?: string
+          verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          fact_key?: string
+          id?: string
+          label?: string
+          sort_order?: number
+          source?: string
+          updated_at?: string
+          value?: string
+          verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
+      geo_claims: {
+        Row: {
+          claim: string
+          claim_type: string
+          created_at: string
+          id: string
+          note: string | null
+          path: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          claim: string
+          claim_type: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          path: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          claim?: string
+          claim_type?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          path?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      geo_competitors: {
+        Row: {
+          analysed_at: string | null
+          created_at: string
+          id: string
+          name: string | null
+          notes: string | null
+          report: Json | null
+          url: string
+        }
+        Insert: {
+          analysed_at?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          notes?: string | null
+          report?: Json | null
+          url: string
+        }
+        Update: {
+          analysed_at?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          notes?: string | null
+          report?: Json | null
+          url?: string
+        }
+        Relationships: []
+      }
+      geo_content_plan: {
+        Row: {
+          audience: string | null
+          created_at: string
+          h1: string | null
+          id: string
+          internal_links: Json
+          needs_approval: boolean
+          outline: Json
+          page_type: string
+          primary_question: string | null
+          required_facts: Json
+          schema_types: string[]
+          search_intent: string | null
+          status: string
+          title: string
+          url: string | null
+        }
+        Insert: {
+          audience?: string | null
+          created_at?: string
+          h1?: string | null
+          id?: string
+          internal_links?: Json
+          needs_approval?: boolean
+          outline?: Json
+          page_type: string
+          primary_question?: string | null
+          required_facts?: Json
+          schema_types?: string[]
+          search_intent?: string | null
+          status?: string
+          title: string
+          url?: string | null
+        }
+        Update: {
+          audience?: string | null
+          created_at?: string
+          h1?: string | null
+          id?: string
+          internal_links?: Json
+          needs_approval?: boolean
+          outline?: Json
+          page_type?: string
+          primary_question?: string | null
+          required_facts?: Json
+          schema_types?: string[]
+          search_intent?: string | null
+          status?: string
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      geo_generated_items: {
+        Row: {
+          after_content: string | null
+          before_content: string | null
+          created_at: string
+          created_by: string | null
+          facts: Json
+          history: Json
+          id: string
+          json_ld: Json | null
+          kind: string
+          language: string
+          missing_info: Json
+          recommendations: Json
+          status: string
+          target_path: string | null
+          title: string | null
+          unverified: boolean
+          updated_at: string
+        }
+        Insert: {
+          after_content?: string | null
+          before_content?: string | null
+          created_at?: string
+          created_by?: string | null
+          facts?: Json
+          history?: Json
+          id?: string
+          json_ld?: Json | null
+          kind: string
+          language?: string
+          missing_info?: Json
+          recommendations?: Json
+          status?: string
+          target_path?: string | null
+          title?: string | null
+          unverified?: boolean
+          updated_at?: string
+        }
+        Update: {
+          after_content?: string | null
+          before_content?: string | null
+          created_at?: string
+          created_by?: string | null
+          facts?: Json
+          history?: Json
+          id?: string
+          json_ld?: Json | null
+          kind?: string
+          language?: string
+          missing_info?: Json
+          recommendations?: Json
+          status?: string
+          target_path?: string | null
+          title?: string | null
+          unverified?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      geo_locked_pages: {
+        Row: {
+          created_at: string
+          id: string
+          path: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          path: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          path?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
+      geo_page_audits: {
+        Row: {
+          content_hash: string | null
+          created_at: string
+          description: string | null
+          h1: string | null
+          headings: Json
+          http_status: number | null
+          id: string
+          internal_links: number
+          issues: Json
+          path: string
+          run_id: string | null
+          schema_types: string[]
+          scores: Json
+          text_excerpt: string | null
+          title: string | null
+          url: string
+          word_count: number | null
+        }
+        Insert: {
+          content_hash?: string | null
+          created_at?: string
+          description?: string | null
+          h1?: string | null
+          headings?: Json
+          http_status?: number | null
+          id?: string
+          internal_links?: number
+          issues?: Json
+          path: string
+          run_id?: string | null
+          schema_types?: string[]
+          scores?: Json
+          text_excerpt?: string | null
+          title?: string | null
+          url: string
+          word_count?: number | null
+        }
+        Update: {
+          content_hash?: string | null
+          created_at?: string
+          description?: string | null
+          h1?: string | null
+          headings?: Json
+          http_status?: number | null
+          id?: string
+          internal_links?: number
+          issues?: Json
+          path?: string
+          run_id?: string | null
+          schema_types?: string[]
+          scores?: Json
+          text_excerpt?: string | null
+          title?: string | null
+          url?: string
+          word_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "geo_page_audits_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "geo_audit_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      geo_schema_blocks: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          id: string
+          json_ld: Json
+          page_path: string
+          schema_type: string
+          status: string
+          updated_at: string
+          validated: boolean
+          validation_notes: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          json_ld: Json
+          page_path: string
+          schema_type: string
+          status?: string
+          updated_at?: string
+          validated?: boolean
+          validation_notes?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          json_ld?: Json
+          page_path?: string
+          schema_type?: string
+          status?: string
+          updated_at?: string
+          validated?: boolean
+          validation_notes?: string | null
+        }
+        Relationships: []
+      }
       grant_documents: {
         Row: {
           created_at: string
