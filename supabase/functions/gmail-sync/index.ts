@@ -59,6 +59,53 @@ function header(headers: Array<{ name: string; value: string }>, name: string): 
   return headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? ''
 }
 
+function stripHtml(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+// Translate the message into English via the Lovable AI gateway.
+// Returns null when the message is already English or translation fails.
+async function translateToEnglish(text: string): Promise<string | null> {
+  const source = text.slice(0, 6000).trim()
+  if (source.length < 20) return null
+  try {
+    const r = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'openai/gpt-6-astra',
+        reasoning_effort: 'low',
+        response_format: { type: 'json_object' },
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You translate customer emails into English. Detect the language of the message. ' +
+              'If it is already English, return {"english": false}. Otherwise return {"english": true, "translation": "<full faithful English translation>"}. ' +
+              'Keep names, numbers, dates, links and formatting (line breaks) intact. Never add commentary.',
+          },
+          { role: 'user', content: source },
+        ],
+      }),
+    })
+    if (!r.ok) return null
+    const body = await r.json()
+    const content = body?.choices?.[0]?.message?.content ?? '{}'
+    const parsed = JSON.parse(content)
+    if (!parsed.english || !parsed.translation) return null
+    return String(parsed.translation)
+  } catch {
+    return null
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
