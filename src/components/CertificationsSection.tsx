@@ -15,11 +15,6 @@ const badges = [
     desc: { cs: 'Certifikovaný partner Google Ads', en: 'Certified Google Ads Partner', de: 'Zertifizierter Google Ads Partner' },
   },
   {
-    icon: BadgeCheck,
-    label: { cs: 'ISO 27001', en: 'ISO 27001', de: 'ISO 27001' },
-    desc: { cs: 'Mezinárodní standard bezpečnosti', en: 'International security standard', de: 'Internationaler Sicherheitsstandard' },
-  },
-  {
     icon: FileCheck,
     label: { cs: 'WCAG 2.1 AA', en: 'WCAG 2.1 AA', de: 'WCAG 2.1 AA' },
     desc: { cs: 'Přístupnost pro všechny uživatele', en: 'Accessibility for all users', de: 'Barrierefreiheit für alle Nutzer' },
