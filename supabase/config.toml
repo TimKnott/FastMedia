@@ -49,3 +49,9 @@ verify_jwt = false
 
 [functions.language-version]
 verify_jwt = false
+
+[functions.language-sitemap]
+verify_jwt = false
+
+[functions.search-visibility-agent]
+verify_jwt = false

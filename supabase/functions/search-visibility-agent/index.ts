@@ -101,6 +101,6 @@ Deno.serve(async (req) => {
   const urls = await sitemapUrls();
   const [indexnow, google, health] = [await indexNow(urls), await googleSitemaps(), await healthCheck(urls)];
   const report = { ran_at: new Date().toISOString(), urls_notified: urls.length, indexnow, google, health };
-  await sb.from('geo_audit_runs').insert({ status: 'visibility_agent', summary: report } as never).then(() => {}, () => {});
+  await sb.from('geo_audit_runs').insert({ status: 'visibility_agent', pages: urls.length, finished_at: new Date().toISOString(), summary: report } as never).then(() => {}, () => {});
   return json(report);
 });
