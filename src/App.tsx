@@ -87,6 +87,7 @@ const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 const AdminCourses = lazy(() => import("./pages/admin/AdminCourses"));
 const AdminCaseStudies = lazy(() => import("./pages/admin/AdminCaseStudies"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
+const AdminVoiceAgent = lazy(() => import("./pages/admin/AdminVoiceAgent"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
@@ -305,6 +306,7 @@ const App = () => (
               <Route path="courses" element={<AdminCourses />} />
               <Route path="case-studies" element={<AdminCaseStudies />} />
               <Route path="prospecting" element={<ProtectedRoute minRole="admin"><AdminProspecting /></ProtectedRoute>} />
+              <Route path="voice-agent" element={<ProtectedRoute minRole="admin"><AdminVoiceAgent /></ProtectedRoute>} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
               <Route path="inbox" element={<ProtectedRoute minRole="admin"><AdminInboxPage /></ProtectedRoute>} />
