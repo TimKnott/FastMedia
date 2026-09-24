@@ -34,7 +34,8 @@ import {
   FileCheck2,
   GraduationCap,
   Phone,
-, Sparkles } from 'lucide-react';
+  Sparkles,
+} from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
   Sidebar,
