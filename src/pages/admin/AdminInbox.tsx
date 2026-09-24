@@ -21,6 +21,7 @@ type InboundRow = {
   subject: string | null;
   body_plain: string | null;
   body_html: string | null;
+  body_en: string | null;
   ai_reply: string | null;
   status: string;
   error_message: string | null;
@@ -58,6 +59,7 @@ export const AdminInbox = () => {
   const [replySubject, setReplySubject] = useState('');
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
+  const [showOriginal, setShowOriginal] = useState(false);
 
   const { data: rows = [], isLoading, refetch } = useQuery({
     queryKey: ['inbound-emails'],
@@ -104,6 +106,7 @@ export const AdminInbox = () => {
 
   const openMessage = (row: InboundRow) => {
     setSelected(row);
+    setShowOriginal(false);
     if (row.status === 'received') setStatus(row, 'read', true);
   };
 
@@ -265,8 +268,27 @@ export const AdminInbox = () => {
                 <span>Status:</span><span><Badge className={statusColors[selected.status] ?? 'bg-muted'} variant="secondary">{selected.status}</Badge></span>
               </div>
               <div className="border-t pt-4">
-                <h4 className="font-semibold mb-2">Message</h4>
-                <EmailBody html={selected.body_html} text={selected.body_plain} />
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">Message</h4>
+                  {selected.body_en && (
+                    <div className="flex gap-1">
+                      <Button size="sm" variant={showOriginal ? 'ghost' : 'secondary'} onClick={() => setShowOriginal(false)}>
+                        English
+                      </Button>
+                      <Button size="sm" variant={showOriginal ? 'secondary' : 'ghost'} onClick={() => setShowOriginal(true)}>
+                        Original
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                {selected.body_en && !showOriginal ? (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-2">Translated to English automatically.</p>
+                    <pre className="whitespace-pre-wrap bg-muted/40 border p-3 rounded text-sm font-sans">{selected.body_en}</pre>
+                  </div>
+                ) : (
+                  <EmailBody html={selected.body_html} text={selected.body_plain} />
+                )}
               </div>
               {selected.ai_reply && (
                 <div className="border-t pt-4">

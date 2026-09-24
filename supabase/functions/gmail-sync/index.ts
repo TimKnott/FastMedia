@@ -59,6 +59,53 @@ function header(headers: Array<{ name: string; value: string }>, name: string): 
   return headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? ''
 }
 
+function stripHtml(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+// Translate the message into English via the Lovable AI gateway.
+// Returns null when the message is already English or translation fails.
+async function translateToEnglish(text: string): Promise<string | null> {
+  const source = text.slice(0, 6000).trim()
+  if (source.length < 20) return null
+  try {
+    const r = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'openai/gpt-6-astra',
+        reasoning_effort: 'low',
+        response_format: { type: 'json_object' },
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You translate customer emails into English. Detect the language of the message. ' +
+              'If it is already English, return {"english": false}. Otherwise return {"english": true, "translation": "<full faithful English translation>"}. ' +
+              'Keep names, numbers, dates, links and formatting (line breaks) intact. Never add commentary.',
+          },
+          { role: 'user', content: source },
+        ],
+      }),
+    })
+    if (!r.ok) return null
+    const body = await r.json()
+    const content = body?.choices?.[0]?.message?.content ?? '{}'
+    const parsed = JSON.parse(content)
+    if (!parsed.english || !parsed.translation) return null
+    return String(parsed.translation)
+  } catch {
+    return null
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
@@ -124,13 +171,17 @@ Deno.serve(async (req) => {
       const { text, html } = extractBodies(msg.payload)
       const receivedAt = msg.internalDate ? new Date(Number(msg.internalDate)).toISOString() : new Date().toISOString()
 
+      const plain = text || (html ? stripHtml(html) : '') || msg.snippet || null
+      const bodyEn = plain ? await translateToEnglish(plain) : null
+
       const { error } = await admin.from('inbound_emails').insert({
         mailgun_event_id: `gmail:${id}`,
         from_address: header(headers, 'From').slice(0, 320) || 'unknown',
         to_address: header(headers, 'To').slice(0, 320) || 'support@fastmedia.pro',
         subject: header(headers, 'Subject') || null,
-        body_plain: text || msg.snippet || null,
+        body_plain: plain,
         body_html: html || null,
+        body_en: bodyEn,
         status: 'received',
         created_at: receivedAt,
       })
@@ -141,7 +192,25 @@ Deno.serve(async (req) => {
       imported++
     }
 
-    return json({ imported, scanned: ids.length, skipped: ids.length - todo.length })
+    // Backfill English translations for older messages that predate this feature.
+    let translated = 0
+    const { data: untranslated } = await admin
+      .from('inbound_emails')
+      .select('id, body_plain, body_html')
+      .is('body_en', null)
+      .order('created_at', { ascending: false })
+      .limit(10)
+    for (const row of untranslated ?? []) {
+      const source = row.body_plain || (row.body_html ? stripHtml(row.body_html) : '')
+      if (!source) continue
+      const en = await translateToEnglish(source)
+      if (en) {
+        await admin.from('inbound_emails').update({ body_en: en }).eq('id', row.id)
+        translated++
+      }
+    }
+
+    return json({ imported, scanned: ids.length, skipped: ids.length - todo.length, translated })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('gmail-sync error:', message)
