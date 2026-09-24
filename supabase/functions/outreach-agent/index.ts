@@ -756,6 +756,167 @@ async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
   return recovered
 }
 
+// ---- Lead discovery -------------------------------------------------------
+
+const DISCOVERY_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['company', 'contact_name', 'email', 'phone', 'trade', 'summary'],
+  properties: {
+    company: { type: 'string' },
+    contact_name: { type: 'string' },
+    email: { type: 'string' },
+    phone: { type: 'string' },
+    trade: { type: 'string' },
+    summary: { type: 'string' },
+  },
+}
+
+const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
+const JUNK_EMAIL_RE = /example\.|sentry|wixpress|@2x|\.png$|\.jpg$|\.jpeg$|\.gif$|\.webp$|u003e|noreply@|no-reply@/i
+const SKIP_HOST_RE = /duckduckgo|facebook|instagram|linkedin|youtube|tiktok|wikipedia|firmy\.cz|seznam\.cz|google\.|bing\.|maps\.|zbozi\.cz|heureka|bazos/i
+
+/** Public web search via DuckDuckGo's HTML endpoint — no API key needed. */
+async function searchWeb(query: string): Promise<string[]> {
+  try {
+    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36' },
+      signal: AbortSignal.timeout(12000),
+    })
+    if (!res.ok) return []
+    const html = await res.text()
+    const urls: string[] = []
+    const re = /uddg=([^&"]+)/g
+    let match: RegExpExecArray | null
+    while ((match = re.exec(html)) && urls.length < 12) {
+      try {
+        const url = decodeURIComponent(match[1])
+        if (/^https?:\/\//i.test(url) && !SKIP_HOST_RE.test(url)) urls.push(url)
+      } catch {
+        /* skip malformed */
+      }
+    }
+    return [...new Set(urls)]
+  } catch {
+    return []
+  }
+}
+
+interface DiscoveredBusiness {
+  company: string
+  contact_name: string
+  email: string
+  phone: string
+  trade: string
+  summary: string
+  website: string
+}
+
+/** Finds real businesses for a trade + region and queues the new ones for review. */
+async function runDiscovery(db: Db, actor: Actor, trade: string, region: string, maxInsert = 5) {
+  const queries = [
+    `${trade} ${region} kontakt email`,
+    `${trade} ${region} "@" kontakt`,
+    `${trade} ${region} Czech Republic contact`,
+  ]
+  const urlLists = await Promise.all(queries.map(searchWeb))
+  const urls = [...new Set(urlLists.flat())].slice(0, 10)
+
+  const found: DiscoveredBusiness[] = []
+  for (const url of urls) {
+    if (found.length >= maxInsert * 2) break
+    const text = await fetchSiteText(url)
+    if (!text || text.length < 200) continue
+    const emails = [...new Set((text.match(EMAIL_RE) ?? []).map((e) => e.toLowerCase()))].filter(
+      (e) => !JUNK_EMAIL_RE.test(e),
+    )
+    if (emails.length === 0) continue
+    try {
+      const info = await generateJson<Record<string, string>>(
+        [
+          `Website address: ${url}`,
+          `Email addresses visible on the page: ${emails.join(', ')}`,
+          `Expected trade: ${trade} in ${region}, Czech Republic`,
+          '',
+          `Page text (truncated):\n${text.slice(0, 3000)}`,
+        ].join('\n'),
+        {
+          instructions: [
+            'Extract the business behind this website for a lead list.',
+            'company: the trading name. contact_name: a named person only if one is visibly published, otherwise an empty string.',
+            'email: pick the best general business contact address from the list supplied; never invent one. phone: published phone or empty string.',
+            'trade: their line of business in a few words. summary: one factual sentence about the business, under 200 characters.',
+            'Use only what is on the page. If the page is clearly not a single business (a directory, marketplace or news site), return empty strings for company and email.',
+          ].join(' '),
+          schema: DISCOVERY_SCHEMA,
+          schemaName: 'discovered_business',
+        },
+      )
+      const email = String(info.email ?? '').toLowerCase().trim()
+      const company = String(info.company ?? '').trim()
+      if (!email || !company || JUNK_EMAIL_RE.test(email) || !emails.includes(email)) continue
+      found.push({
+        company: company.slice(0, 120),
+        contact_name: String(info.contact_name ?? '').slice(0, 120),
+        email,
+        phone: String(info.phone ?? '').slice(0, 40),
+        trade: String(info.trade ?? trade).slice(0, 80),
+        summary: String(info.summary ?? '').slice(0, 300),
+        website: url.slice(0, 200),
+      })
+    } catch {
+      /* skip unparseable candidates */
+    }
+  }
+
+  let inserted = 0
+  let duplicates = 0
+  for (const business of found) {
+    const { data: existing } = await db.from('prospects').select('id').eq('email', business.email).maybeSingle()
+    const { data: suppressed } = await db.from('suppressed_emails').select('id').eq('email', business.email).maybeSingle()
+    if (existing || suppressed) {
+      duplicates += 1
+      continue
+    }
+    const { error } = await db.from('prospects').insert({
+      company: business.company,
+      contact_name: business.contact_name || null,
+      email: business.email,
+      phone: business.phone || null,
+      website: business.website,
+      region,
+      trade: business.trade,
+      language: 'cs',
+      source: 'discovery',
+      discovered_query: `${trade} — ${region}`,
+      notes: business.summary || null,
+      status: 'new',
+    })
+    if (error) duplicates += 1
+    else inserted += 1
+    if (inserted >= maxInsert) break
+  }
+
+  await logEvent(db, actor, 'discovered', {
+    details: { trade, region, urls_checked: urls.length, candidates: found.length, inserted, duplicates },
+  })
+  return { trade, region, urls_checked: urls.length, candidates: found.length, inserted, duplicates }
+}
+
+/** Weekly cron: rotate through the configured trade/region pairs, one pair per run. */
+async function runWeeklyDiscovery(db: Db, actor: Actor) {
+  const settings = await loadSettings(db)
+  if (!settings.discovery_enabled) return { skipped: true, reason: 'discovery_disabled' }
+  const trades = settings.discovery_trades
+  const regions = settings.discovery_regions
+  const cursor = settings.discovery_cursor
+  const trade = trades[cursor % trades.length]
+  const region = regions[Math.floor(cursor / trades.length) % regions.length]
+  const result = await runDiscovery(db, actor, trade, region, 5)
+  await db.from('outreach_settings').update({ discovery_cursor: cursor + 1 }).eq('id', 1)
+  return result
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
   if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders)
