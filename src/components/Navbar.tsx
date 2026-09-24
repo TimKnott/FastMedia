@@ -299,6 +299,8 @@ const Navbar = () => {
             { to: '/grant-wizard', label: isEnglish ? 'Grant wizard' : 'Žádost o grant' },
             { to: '/grant-eligibility', label: isEnglish ? 'Grant rules' : 'Podmínky grantu' },
             { to: '/eugrants', label: isEnglish ? 'Grant hubs map' : 'Mapa krajů' },
+            { to: '/eu-creative-grant', label: isEnglish ? 'EU creative grant' : 'Kreativní vouchery' },
+            { to: '/eu-language-websites', label: isEnglish ? 'EU language websites' : 'Weby v jazycích EU' },
             { to: '/calculator', label: isEnglish ? 'Calculator' : 'Kalkulačka' },
             { to: '/courses', label: isEnglish ? 'Courses' : 'Kurzy' },
             { to: '/blog', label: 'Blog' },

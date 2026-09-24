@@ -42,6 +42,10 @@ const OfferLanding = lazy(() => import("./pages/OfferLanding"));
 const GrantGuide = lazy(() => import("./pages/GrantGuide"));
 const GrantWizard = lazy(() => import("./pages/GrantWizard"));
 const GrantEligibility = lazy(() => import("./pages/GrantEligibility"));
+const GrantContentPage = lazy(() => import("./pages/GrantContentPage"));
+const AdminFlowlu = lazy(() => import("./pages/admin/AdminFlowlu"));
+const AdminLanguageVersions = lazy(() => import("./pages/admin/AdminLanguageVersions"));
+const LanguageVersionPage = lazy(() => import("./pages/LanguageVersionPage"));
 const GrantHubs = lazy(() => import("./pages/GrantHubs"));
 const GrantProcess = lazy(() => import("./pages/GrantProcess"));
 const GrantApplication = lazy(() => import("./pages/GrantApplication"));
@@ -193,6 +197,10 @@ const App = () => (
             <Route path="/grants" element={<GrantGuide />} />
             <Route path="/grant-wizard" element={<GrantWizard />} />
             <Route path="/grant-eligibility" element={<GrantEligibility />} />
+            <Route path="/eu-creative-grant" element={<GrantContentPage />} />
+            <Route path="/grant-business-plan" element={<GrantContentPage />} />
+            <Route path="/eu-language-websites" element={<GrantContentPage />} />
+            <Route path="/l/:lang/*" element={<LanguageVersionPage />} />
             <Route path="/eugrants" element={<GrantHubs />} />
             <Route path="/grant-hubs" element={<Navigate to="/eugrants" replace />} />
             <Route path="/grant-process" element={<GrantProcess />} />
@@ -309,6 +317,8 @@ const App = () => (
               <Route path="case-studies" element={<AdminCaseStudies />} />
               <Route path="prospecting" element={<ProtectedRoute minRole="admin"><AdminProspecting /></ProtectedRoute>} />
               <Route path="voice-agent" element={<ProtectedRoute minRole="admin"><AdminVoiceAgent /></ProtectedRoute>} />
+              <Route path="flowlu" element={<ProtectedRoute minRole="admin"><AdminFlowlu /></ProtectedRoute>} />
+              <Route path="language-versions" element={<ProtectedRoute minRole="admin"><AdminLanguageVersions /></ProtectedRoute>} />
               <Route path="accounting" element={<AdminAccounting />} />
               <Route path="emails" element={<AdminEmails />} />
               <Route path="inbox" element={<ProtectedRoute minRole="admin"><AdminInboxPage /></ProtectedRoute>} />

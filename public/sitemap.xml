@@ -156,6 +156,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.fastmedia.pro/eu-creative-grant</loc>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fastmedia.pro/grant-business-plan</loc>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fastmedia.pro/eu-language-websites</loc>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.fastmedia.pro/grant-eligibility</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

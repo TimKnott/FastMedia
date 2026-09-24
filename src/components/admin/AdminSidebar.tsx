@@ -92,6 +92,8 @@ const mainItems: MenuItem[] = [
   { titleKey: 'admin.client_projects', url: '/admin/client-projects', icon: FolderKanban, minRole: 'editor' },
   { titleKey: 'Prospecting desk', url: '/admin/prospecting', icon: Send, minRole: 'admin' },
   { titleKey: 'Voice agent', url: '/admin/voice-agent', icon: Phone, minRole: 'admin' },
+  { titleKey: 'Flowlu CRM', url: '/admin/flowlu', icon: Phone, minRole: 'admin' },
+  { titleKey: 'Language versions', url: '/admin/language-versions', icon: Map, minRole: 'admin' },
   { titleKey: 'Showcase', url: '/admin/showcase', icon: Eye, minRole: 'admin' },
 ];
 
@@ -116,6 +118,9 @@ const publicPageItems: MenuItem[] = [
   { titleKey: 'Grant wizard form', url: '/grant-wizard', icon: FileText, minRole: 'editor' },
   { titleKey: 'Grant eligibility', url: '/grant-eligibility', icon: FileCheck2, minRole: 'editor' },
   { titleKey: 'Grant hubs map', url: '/eugrants', icon: Map, minRole: 'editor' },
+  { titleKey: 'EU creative grant', url: '/eu-creative-grant', icon: Map, minRole: 'editor' },
+  { titleKey: 'Grant business plan', url: '/grant-business-plan', icon: Map, minRole: 'editor' },
+  { titleKey: 'EU language websites', url: '/eu-language-websites', icon: Map, minRole: 'editor' },
   { titleKey: 'Grant process', url: '/grant-process', icon: FileCheck2, minRole: 'editor' },
   { titleKey: 'Service landing pages', url: '/service/websites', icon: Eye, minRole: 'editor' },
 ];
