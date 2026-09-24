@@ -774,33 +774,6 @@ const DISCOVERY_SCHEMA = {
 
 const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
 const JUNK_EMAIL_RE = /example\.|sentry|wixpress|@2x|\.png$|\.jpg$|\.jpeg$|\.gif$|\.webp$|u003e|noreply@|no-reply@/i
-const SKIP_HOST_RE = /duckduckgo|facebook|instagram|linkedin|youtube|tiktok|wikipedia|firmy\.cz|seznam\.cz|google\.|bing\.|maps\.|zbozi\.cz|heureka|bazos/i
-
-/** Public web search via DuckDuckGo's HTML endpoint — no API key needed. */
-async function searchWeb(query: string): Promise<string[]> {
-  try {
-    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36' },
-      signal: AbortSignal.timeout(12000),
-    })
-    if (!res.ok) return []
-    const html = await res.text()
-    const urls: string[] = []
-    const re = /uddg=([^&"]+)/g
-    let match: RegExpExecArray | null
-    while ((match = re.exec(html)) && urls.length < 12) {
-      try {
-        const url = decodeURIComponent(match[1])
-        if (/^https?:\/\//i.test(url) && !SKIP_HOST_RE.test(url)) urls.push(url)
-      } catch {
-        /* skip malformed */
-      }
-    }
-    return [...new Set(urls)]
-  } catch {
-    return []
-  }
-}
 
 interface DiscoveredBusiness {
   company: string
@@ -812,61 +785,88 @@ interface DiscoveredBusiness {
   website: string
 }
 
+/**
+ * Finds candidate businesses using the AI gateway's built-in web search.
+ * Search engines block datacenter scraping, so the model searches the web
+ * itself and returns only what it actually found.
+ */
+async function searchBusinessesWithAI(trade: string, region: string): Promise<DiscoveredBusiness[]> {
+  const apiKey = Deno.env.get('LOVABLE_API_KEY')
+  if (!apiKey) return []
+  try {
+    const res = await fetch('https://ai.gateway.lovable.dev/v1/responses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Lovable-API-Key': apiKey },
+      body: JSON.stringify({
+        model: 'openai/gpt-6-astra',
+        tools: [{ type: 'web_search' }],
+        reasoning: { effort: 'low' },
+        input: [
+          `Search the web for real, currently operating "${trade}" businesses in or near ${region}, Czech Republic.`,
+          'Find up to 8 of them. For each, report ONLY details that are publicly listed on the business\'s own website or a public directory listing you actually found:',
+          'company (trading name), contact_name (a named person only if published, else ""), email (a published business email, else ""), phone (published phone, else ""), website (their own website address, else the directory page you found them on), summary (one factual sentence, under 200 characters).',
+          'Never guess or invent an email address, phone number or website. If a business has no published email, set email to "".',
+          'Reply with a JSON array only, no commentary: [{"company":"...","contact_name":"...","email":"...","phone":"...","website":"...","summary":"..."}]',
+        ].join('\n'),
+      }),
+    })
+    if (!res.ok) return []
+    const data = await res.json()
+    const text = (data.output ?? [])
+      .filter((item: { type?: string }) => item.type === 'message')
+      .flatMap((item: { content?: Array<{ type?: string; text?: string }> }) => item.content ?? [])
+      .filter((part: { type?: string }) => part.type === 'output_text')
+      .map((part: { text?: string }) => part.text ?? '')
+      .join('')
+    const match = text.match(/\[[\s\S]*\]/)
+    if (!match) return []
+    const parsed = JSON.parse(match[0])
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .map((row: Record<string, unknown>) => ({
+        company: String(row.company ?? '').trim(),
+        contact_name: String(row.contact_name ?? '').trim(),
+        email: String(row.email ?? '').toLowerCase().trim(),
+        phone: String(row.phone ?? '').trim(),
+        trade,
+        summary: String(row.summary ?? '').trim(),
+        website: String(row.website ?? '').trim(),
+      }))
+      .filter((b: DiscoveredBusiness) => b.company.length > 1)
+  } catch {
+    return []
+  }
+}
+
+/** Confirms an email really appears on the business's own website before we keep it. */
+async function verifyEmailOnSite(website: string, email: string): Promise<boolean> {
+  if (!website || !email) return false
+  const text = await fetchSiteText(website)
+  if (!text) return false
+  const emails = (text.match(EMAIL_RE) ?? []).map((e) => e.toLowerCase())
+  return emails.includes(email)
+}
+
 /** Finds real businesses for a trade + region and queues the new ones for review. */
 async function runDiscovery(db: Db, actor: Actor, trade: string, region: string, maxInsert = 5) {
-  const queries = [
-    `${trade} ${region} kontakt email`,
-    `${trade} ${region} "@" kontakt`,
-    `${trade} ${region} Czech Republic contact`,
-  ]
-  const urlLists = await Promise.all(queries.map(searchWeb))
-  const urls = [...new Set(urlLists.flat())].slice(0, 10)
+  const candidates = await searchBusinessesWithAI(trade, region)
 
   const found: DiscoveredBusiness[] = []
-  for (const url of urls) {
+  for (const business of candidates) {
     if (found.length >= maxInsert * 2) break
-    const text = await fetchSiteText(url)
-    if (!text || text.length < 200) continue
-    const emails = [...new Set((text.match(EMAIL_RE) ?? []).map((e) => e.toLowerCase()))].filter(
-      (e) => !JUNK_EMAIL_RE.test(e),
-    )
-    if (emails.length === 0) continue
-    try {
-      const info = await generateJson<Record<string, string>>(
-        [
-          `Website address: ${url}`,
-          `Email addresses visible on the page: ${emails.join(', ')}`,
-          `Expected trade: ${trade} in ${region}, Czech Republic`,
-          '',
-          `Page text (truncated):\n${text.slice(0, 3000)}`,
-        ].join('\n'),
-        {
-          instructions: [
-            'Extract the business behind this website for a lead list.',
-            'company: the trading name. contact_name: a named person only if one is visibly published, otherwise an empty string.',
-            'email: pick the best general business contact address from the list supplied; never invent one. phone: published phone or empty string.',
-            'trade: their line of business in a few words. summary: one factual sentence about the business, under 200 characters.',
-            'Use only what is on the page. If the page is clearly not a single business (a directory, marketplace or news site), return empty strings for company and email.',
-          ].join(' '),
-          schema: DISCOVERY_SCHEMA,
-          schemaName: 'discovered_business',
-        },
-      )
-      const email = String(info.email ?? '').toLowerCase().trim()
-      const company = String(info.company ?? '').trim()
-      if (!email || !company || JUNK_EMAIL_RE.test(email) || !emails.includes(email)) continue
-      found.push({
-        company: company.slice(0, 120),
-        contact_name: String(info.contact_name ?? '').slice(0, 120),
-        email,
-        phone: String(info.phone ?? '').slice(0, 40),
-        trade: String(info.trade ?? trade).slice(0, 80),
-        summary: String(info.summary ?? '').slice(0, 300),
-        website: url.slice(0, 200),
-      })
-    } catch {
-      /* skip unparseable candidates */
-    }
+    if (!business.email || JUNK_EMAIL_RE.test(business.email)) continue
+    // Keep the email only when it is verifiably published on the business's own site.
+    const verified = await verifyEmailOnSite(business.website, business.email)
+    if (!verified) continue
+    found.push({
+      company: business.company.slice(0, 120),
+      contact_name: business.contact_name.slice(0, 120),
+      email: business.email,
+      phone: business.phone.slice(0, 40),
+      trade: business.trade.slice(0, 80),
+      summary: business.summary.slice(0, 300),
+      website: business.website.slice(0, 200),
+    })
   }
 
   let inserted = 0
