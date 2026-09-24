@@ -28,7 +28,7 @@
 - [x] Publish + sitemap; tracking of clicks/rankings (Search Console)
 
 ## Sep 24 batch 2
-- [ ] Sync real inbox, verify English translation + Original toggle
-- [ ] Grant pages in every EU language (drafts via Language versions, bulk) + GEO plan entries + schema
-- [ ] Voice agent: Twilio number (needs Twilio credentials), daily scan, Flowlu (blocked on key)
-- [ ] Publish homepage/SEO content
+- [x] Sync real inbox, verify English translation + Original toggle
+- [x] Grant pages in every EU language (drafts via Language versions, bulk) + GEO plan entries + schema
+- [ ] Voice agent: Twilio number — BLOCKED waiting for number (needs Twilio credentials), daily scan, Flowlu (blocked on key)
+- [x] Publish homepage/SEO content
