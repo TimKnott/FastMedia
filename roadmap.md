@@ -41,3 +41,12 @@
 - [ ] Google Search Console property verification — BLOCKED: needs user go-ahead
 - [ ] Bing Webmaster Tools, Google Business Profile, LinkedIn/directories — BLOCKED: user must do outside site
 - [ ] Case study figures/testimonials evidence — BLOCKED: user must confirm real vs sample
+
+## Sep 24 batch 4
+- [ ] Twilio number → voice agent (needs Twilio connection from user)
+- [ ] Flowlu key re-entry (current key rejected)
+- [ ] Weekly discovery dashboard by language/source
+- [ ] Remaining EU language pages EN/CS + hreflang/schema
+- [ ] Google Search Console: verify www.fastmedia.pro, submit sitemap (meta tag added, needs publish)
+- [ ] LinkedIn outreach sequences for approved leads
+- [x] Back-office tool search + "Find leads" menu link
