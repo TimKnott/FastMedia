@@ -60,6 +60,8 @@ export const AdminInbox = () => {
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
+  const isTranslated = (e: { body_en: string | null; body_plain?: string | null } | null) =>
+    !!e?.body_en && e.body_en.trim() !== (e.body_plain ?? '').trim().slice(0, 6000).trim();
 
   const { data: rows = [], isLoading, refetch } = useQuery({
     queryKey: ['inbound-emails'],
