@@ -788,11 +788,17 @@ const AdminProspecting = () => {
                           size="sm"
                           variant="outline"
                           onClick={() => pushToLinkedIn(prospect)}
-                          disabled={busy === `gs-${prospect.id}` || !settings?.getsales_enabled}
+                          disabled={
+                            busy === `gs-${prospect.id}` ||
+                            !settings?.getsales_enabled ||
+                            ['replied', 'won', 'lost', 'unsubscribed', 'suppressed'].includes(prospect.status)
+                          }
                           title={
-                            settings?.getsales_enabled
-                              ? 'Add this contact to your GetSales list so the LinkedIn sequence picks them up'
-                              : 'Switch GetSales on in the LinkedIn tab first'
+                            !settings?.getsales_enabled
+                              ? 'Switch GetSales on in the LinkedIn tab first'
+                              : ['replied', 'won', 'lost', 'unsubscribed', 'suppressed'].includes(prospect.status)
+                                ? `This lead is marked "${prospect.status.replace('_', ' ')}" — clear that status first if you really want to push it again`
+                                : 'Add this contact to your GetSales list so the LinkedIn sequence picks them up'
                           }
                         >
                           {busy === `gs-${prospect.id}` ? (
