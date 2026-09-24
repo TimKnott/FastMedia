@@ -60,6 +60,8 @@ export const AdminInbox = () => {
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
+  const isTranslated = (e: { body_en: string | null; body_plain?: string | null } | null) =>
+    !!e?.body_en && e.body_en.trim() !== (e.body_plain ?? '').trim().slice(0, 6000).trim();
 
   const { data: rows = [], isLoading, refetch } = useQuery({
     queryKey: ['inbound-emails'],
@@ -270,7 +272,7 @@ export const AdminInbox = () => {
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">Message</h4>
-                  {selected.body_en && (
+                  {isTranslated(selected) && (
                     <div className="flex gap-1">
                       <Button size="sm" variant={showOriginal ? 'ghost' : 'secondary'} onClick={() => setShowOriginal(false)}>
                         English
@@ -281,7 +283,7 @@ export const AdminInbox = () => {
                     </div>
                   )}
                 </div>
-                {selected.body_en && !showOriginal ? (
+                {isTranslated(selected) && !showOriginal ? (
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Translated to English automatically.</p>
                     <pre className="whitespace-pre-wrap bg-muted/40 border p-3 rounded text-sm font-sans">{selected.body_en}</pre>

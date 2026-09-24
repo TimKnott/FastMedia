@@ -65,6 +65,28 @@ export default function AdminLanguageVersions() {
     } finally { setBusy(false); }
   };
 
+  // Drafts every EU language (except English/Czech, already on the site) that doesn't exist yet for this page.
+  const [bulk, setBulk] = useState('');
+  const generateAll = async () => {
+    const have = new Set(versions.filter((v) => v.source_path === path).map((v) => v.language_code));
+    const todo = LANGS.filter(([c]) => c !== 'en' && c !== 'cs' && !have.has(c));
+    let done = 0, failed = 0;
+    const queue = [...todo];
+    const worker = async () => {
+      while (queue.length) {
+        const [c] = queue.shift()!;
+        const { data, error } = await supabase.functions.invoke('language-version', { body: { language_code: c, source_path: path } });
+        if (error || data?.error) failed++; else done++;
+        setBulk(`${done + failed}/${todo.length}`);
+        qc.invalidateQueries({ queryKey: ['language_versions'] });
+      }
+    };
+    setBulk(`0/${todo.length}`);
+    await Promise.all([worker(), worker()]);
+    setBulk('');
+    toast({ title: 'Language drafts finished', description: `${done} created${failed ? `, ${failed} failed — try those again` : ''}. Review and publish each one.` });
+  };
+
   const setStatus = async (v: Version, status: string) => {
     const { data: u } = await supabase.auth.getUser();
     const patch: Record<string, unknown> = { status, reviewer_notes: notes || v.reviewer_notes };
@@ -101,7 +123,10 @@ export default function AdminLanguageVersions() {
             <Input list="lv-pages" value={path} onChange={(e) => setPath(e.target.value)} placeholder="/eu-creative-grant" />
             <datalist id="lv-pages">{PAGES.map((p) => <option key={p} value={p} />)}</datalist>
           </div>
-          <Button onClick={generate} disabled={busy}>{busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Writing…</> : 'Create draft'}</Button>
+          <div className="flex gap-2">
+            <Button onClick={generate} disabled={busy || !!bulk}>{busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Writing…</> : 'Create draft'}</Button>
+            <Button variant="outline" onClick={generateAll} disabled={busy || !!bulk}>{bulk ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{bulk}</> : 'All EU languages'}</Button>
+          </div>
         </CardContent>
       </Card>
 
