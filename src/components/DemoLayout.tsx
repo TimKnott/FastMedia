@@ -242,12 +242,10 @@ const DemoLayout = ({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org',
-          '@type': 'LocalBusiness',
-          name: tradeName,
+          '@type': 'WebPage',
+          name: `${tradeName} — website demo by FastMedia.Pro`,
           description: heroSubtitle[language],
           url: `https://fastmedia.pro/demo/${tradeId}`,
-          address: { '@type': 'PostalAddress', addressLocality: 'Praha', addressCountry: 'CZ' },
-          aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '250' },
         }) }}
       />
       {/* Back to FastMedia Banner */}

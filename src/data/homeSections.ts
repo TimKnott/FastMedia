@@ -207,7 +207,7 @@ export const HOME_SECTIONS: HomeSectionDef[] = [
     descEn: 'Customer testimonials.',
     descCs: 'Reference zákazníků.',
     icon: Star,
-    defaultEnabled: true,
+    defaultEnabled: false,
     fields: [
       f('reviews.title', 'Heading', 'Titulek'),
       f('reviews.subtitle', 'Sub-heading', 'Podtitulek', true),
