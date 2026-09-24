@@ -190,6 +190,9 @@ const AdminProspecting = () => {
     unmapped: { ours: string; why: string }[];
   } | null>(null);
   const [gsLinkedIn, setGsLinkedIn] = useState<Record<string, string>>({});
+  const [findOpen, setFindOpen] = useState(false);
+  const [findForm, setFindForm] = useState({ trade: '', region: '' });
+  const [findResult, setFindResult] = useState<string | null>(null);
 
   const refresh = () => {
     ['prospects', 'outreach-messages', 'visitor-signals', 'outreach-events', 'outreach-settings'].forEach((key) =>
@@ -453,6 +456,26 @@ const AdminProspecting = () => {
       toast({ title: 'Suppressed', description: 'Nothing further will be sent to this address.' });
     } catch (error) {
       toast({ title: 'Could not suppress', description: String(error).slice(0, 220), variant: 'destructive' });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const findLeads = async () => {
+    if (!findForm.trade.trim() || !findForm.region.trim()) {
+      toast({ title: 'Enter a trade and a region', variant: 'destructive' });
+      return;
+    }
+    setBusy('discover');
+    setFindResult(null);
+    try {
+      const result = await callAgent({ action: 'discover', trade: findForm.trade.trim(), region: findForm.region.trim() });
+      refresh();
+      setFindResult(
+        `Checked ${result.urls_checked} websites, found ${result.candidates} businesses with contact details — ${result.inserted} new in your queue, ${result.duplicates} already known.`,
+      );
+    } catch (error) {
+      toast({ title: 'The search did not finish', description: String(error).slice(0, 220), variant: 'destructive' });
     } finally {
       setBusy(null);
     }
