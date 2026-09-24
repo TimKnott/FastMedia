@@ -2195,6 +2195,10 @@ export type Database = {
       }
       outreach_settings: {
         Row: {
+          discovery_cursor: number
+          discovery_enabled: boolean
+          discovery_regions: string[]
+          discovery_trades: string[]
           follow_up_days_step2: number
           follow_up_days_step3: number
           getsales_automation_id: string | null
@@ -2210,6 +2214,10 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
+          discovery_cursor?: number
+          discovery_enabled?: boolean
+          discovery_regions?: string[]
+          discovery_trades?: string[]
           follow_up_days_step2?: number
           follow_up_days_step3?: number
           getsales_automation_id?: string | null
@@ -2225,6 +2233,10 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
+          discovery_cursor?: number
+          discovery_enabled?: boolean
+          discovery_regions?: string[]
+          discovery_trades?: string[]
           follow_up_days_step2?: number
           follow_up_days_step3?: number
           getsales_automation_id?: string | null
@@ -2555,6 +2567,7 @@ export type Database = {
           contact_name: string | null
           created_at: string
           created_by: string | null
+          discovered_query: string | null
           email: string
           fit_score: number
           getsales_last_attempt_at: string | null
@@ -2586,6 +2599,7 @@ export type Database = {
           contact_name?: string | null
           created_at?: string
           created_by?: string | null
+          discovered_query?: string | null
           email: string
           fit_score?: number
           getsales_last_attempt_at?: string | null
@@ -2617,6 +2631,7 @@ export type Database = {
           contact_name?: string | null
           created_at?: string
           created_by?: string | null
+          discovered_query?: string | null
           email?: string
           fit_score?: number
           getsales_last_attempt_at?: string | null
