@@ -472,7 +472,7 @@ const AdminProspecting = () => {
       const result = await callAgent({ action: 'discover', trade: findForm.trade.trim(), region: findForm.region.trim() });
       refresh();
       setFindResult(
-        `Checked ${result.urls_checked} websites, found ${result.candidates} businesses with contact details — ${result.inserted} new in your queue, ${result.duplicates} already known.`,
+        `Found ${result.candidates} businesses, verified published contact details for ${result.verified} — ${result.inserted} new in your queue, ${result.duplicates} already known.`,
       );
     } catch (error) {
       toast({ title: 'The search did not finish', description: String(error).slice(0, 220), variant: 'destructive' });
