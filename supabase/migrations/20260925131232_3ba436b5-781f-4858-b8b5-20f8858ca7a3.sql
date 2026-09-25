@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Published case study files are readable" ON storage.objects;

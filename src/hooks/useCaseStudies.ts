@@ -74,10 +74,14 @@ export const statLabel = (stat: CaseStudyStat, lang: Lang): string =>
 /** Resolves a downloadable URL for a case study PDF (signed for stored files). */
 export const resolvePdfUrl = async (item: CaseStudy): Promise<string | null> => {
   if (item.pdf_path) {
+    // Staff can sign directly; visitors get a link via the backend (published studies only).
     const { data } = await supabase.storage
       .from('case-studies')
       .createSignedUrl(item.pdf_path, 60 * 60);
     if (data?.signedUrl) return data.signedUrl;
+    const res = await supabase.functions.invoke('case-study-file', { body: { id: item.id } });
+    const url = (res.data as { url?: string | null } | null)?.url;
+    if (url) return url;
   }
   return item.pdf_url || null;
 };
