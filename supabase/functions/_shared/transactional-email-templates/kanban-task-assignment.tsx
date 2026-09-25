@@ -39,7 +39,7 @@ const KanbanTaskAssignmentEmail = ({
           {scheduledAt && <Text style={detailRow}><strong>Scheduled:</strong> {scheduledAt}</Text>}
           {notes && <Text style={detailRow}><strong>Notes:</strong> {notes}</Text>}
         </Section>
-        <Button style={button} href="https://fastmedia.pro/admin/bookings">
+        <Button style={button} href="https://www.fastmedia.pro/admin/bookings">
           View in Admin Dashboard
         </Button>
         <Text style={footer}>— {SITE_NAME} Task System</Text>

@@ -408,7 +408,7 @@ This is a working draft — no payment is due until you have approved the final 
             name: `${body.name.trim()} — ${body.trade}`,
             client_name: body.name.trim(),
             client_email: body.email.trim().toLowerCase(),
-            staging_url: "https://fastmedia.pro?lang=en",
+            staging_url: "https://www.fastmedia.pro?lang=en",
             status: "in_review",
             currency: "CZK",
             dev_fee: Number(body.quoteOneTime) || 0,
@@ -452,10 +452,10 @@ This is a working draft — no payment is due until you have approved the final 
 
           const safeSlug = (project.slug || "").replace(/[^a-z0-9-]/gi, "").toLowerCase();
           const clientPortalUrl = safeSlug
-            ? `https://fastmedia.pro/portal/${safeSlug}/${portalToken}`
-            : `https://fastmedia.pro/portal/${portalToken}`;
+            ? `https://www.fastmedia.pro/portal/${safeSlug}/${portalToken}`
+            : `https://www.fastmedia.pro/portal/${portalToken}`;
           // CORRECT admin route — App.tsx mounts AdminClientProjectDetail at /admin/client-projects/:id
-          const adminProjectUrl = `https://fastmedia.pro/admin/client-projects/${project.id}`;
+          const adminProjectUrl = `https://www.fastmedia.pro/admin/client-projects/${project.id}`;
 
           await supabaseAdmin.from("project_audit_log").insert({
             project_id: project.id,

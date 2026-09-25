@@ -11,7 +11,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-const SITE = 'https://fastmedia.pro';
+const SITE = 'https://www.fastmedia.pro';
 
 interface Kit {
   linkedin: { caption: string; hashtags: string[] };

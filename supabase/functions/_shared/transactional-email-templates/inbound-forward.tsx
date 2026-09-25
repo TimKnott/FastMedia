@@ -43,7 +43,7 @@ const InboundForwardEmail = ({
             <Text style={bodyText}>{aiReply}</Text>
           </>
         ) : null}
-        <Button style={button} href="https://fastmedia.pro/admin/emails">
+        <Button style={button} href="https://www.fastmedia.pro/admin/emails">
           Open Inbox
         </Button>
         <Text style={footer}>— {SITE_NAME} Inbox Forwarder</Text>

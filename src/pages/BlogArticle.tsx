@@ -192,8 +192,8 @@ const BlogArticle = () => {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://fastmedia.pro/' },
-            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://fastmedia.pro/blog' },
+            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://www.fastmedia.pro/' },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.fastmedia.pro/blog' },
             { '@type': 'ListItem', position: 3, name: post.title[language] },
           ],
         }) }}
@@ -205,7 +205,7 @@ const BlogArticle = () => {
           '@type': 'BlogPosting',
           mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://fastmedia.pro/blog/${post.slug}`,
+            '@id': `https://www.fastmedia.pro/blog/${post.slug}`,
           },
           headline: post.title[language],
           description: post.excerpt[language],
@@ -226,10 +226,10 @@ const BlogArticle = () => {
           publisher: {
             '@type': 'Organization',
             name: 'FastMedia.Pro',
-            url: 'https://fastmedia.pro',
+            url: 'https://www.fastmedia.pro',
             logo: {
               '@type': 'ImageObject',
-              url: 'https://fastmedia.pro/favicon.jpeg',
+              url: 'https://www.fastmedia.pro/favicon.jpeg',
             },
           },
           speakable: {

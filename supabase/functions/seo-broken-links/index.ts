@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-const UA = 'FastMediaSEOBot/1.0 (+https://fastmedia.pro)';
+const UA = 'FastMediaSEOBot/1.0 (+https://www.fastmedia.pro)';
 const MAX_PAGES = 25;
 const MAX_LINKS = 200;
 

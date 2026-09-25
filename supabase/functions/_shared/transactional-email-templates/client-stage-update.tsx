@@ -128,7 +128,7 @@ export const template = {
   previewData: {
     recipientName: 'Alex',
     projectName: 'Acme Plumbing website',
-    portalUrl: 'https://fastmedia.pro/portal/acme',
+    portalUrl: 'https://www.fastmedia.pro/portal/acme',
     stage: 'draft_created',
     audience: 'client',
   },

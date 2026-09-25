@@ -194,7 +194,7 @@ const AdminSEOInsights = () => {
           <CardHeader><CardTitle>No properties yet</CardTitle><CardDescription>Add a Google Search Console property to begin.</CardDescription></CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Site URL</Label><Input placeholder="https://fastmedia.pro/" value={newUrl} onChange={e => setNewUrl(e.target.value)} /></div>
+              <div><Label>Site URL</Label><Input placeholder="https://www.fastmedia.pro/" value={newUrl} onChange={e => setNewUrl(e.target.value)} /></div>
               <div><Label>Display name</Label><Input placeholder="FastMedia.pro" value={newName} onChange={e => setNewName(e.target.value)} /></div>
             </div>
             <Button onClick={() => addProperty.mutate()} disabled={!newUrl}><Plus className="w-4 h-4 mr-1" /> Add property</Button>
@@ -509,7 +509,7 @@ const AdminSEOInsights = () => {
               <CardHeader><CardTitle>Add property</CardTitle><CardDescription>Use the exact site URL as registered in Google Search Console (with trailing slash).</CardDescription></CardHeader>
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
-                  <div><Label>Site URL</Label><Input placeholder="https://fastmedia.pro/" value={newUrl} onChange={e => setNewUrl(e.target.value)} /></div>
+                  <div><Label>Site URL</Label><Input placeholder="https://www.fastmedia.pro/" value={newUrl} onChange={e => setNewUrl(e.target.value)} /></div>
                   <div><Label>Display name</Label><Input placeholder="FastMedia.pro" value={newName} onChange={e => setNewName(e.target.value)} /></div>
                 </div>
                 <Button onClick={() => addProperty.mutate()} disabled={!newUrl}><Plus className="w-4 h-4 mr-1" />Add</Button>

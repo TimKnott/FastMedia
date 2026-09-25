@@ -39,7 +39,7 @@ const LeadNotificationEmail = ({
             <Text style={detailRow}><strong>Special Request:</strong> {specialRequest}</Text>
           )}
         </Section>
-        <Button style={button} href="https://fastmedia.pro/admin/leads">
+        <Button style={button} href="https://www.fastmedia.pro/admin/leads">
           View in Admin Dashboard
         </Button>
         <Text style={footer}>— {SITE_NAME} Notification System</Text>

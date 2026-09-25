@@ -635,7 +635,7 @@ const CalculatorPage = () => {
       links.forEach((lnk, i) => {
         const label = lnk.label;
         doc.setTextColor(...NAVY_SOFT);
-        doc.textWithLink(label, lx, ly, { url: `https://fastmedia.pro/legal/${lnk.slug}` });
+        doc.textWithLink(label, lx, ly, { url: `https://www.fastmedia.pro/legal/${lnk.slug}` });
         const w = doc.getTextWidth(label);
         lx += w;
         if (i < links.length - 1) {

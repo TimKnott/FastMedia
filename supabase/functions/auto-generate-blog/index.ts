@@ -9,7 +9,7 @@ const corsHeaders = {
 };
 
 const NOTIFY_TO = 'support@fastmedia.pro';
-const SITE_URL = 'https://fastmedia.pro';
+const SITE_URL = 'https://www.fastmedia.pro';
 
 const TOPIC_POOL = [
   // Core SEO / web

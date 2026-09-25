@@ -41,7 +41,7 @@ const AdminBookingNotification = ({
           {assignedTo && <Text style={detailRow}><strong>Assigned to:</strong> {assignedTo}</Text>}
           {notes && <Text style={detailRow}><strong>Notes:</strong> {notes}</Text>}
         </Section>
-        <Button style={button} href="https://fastmedia.pro/admin/bookings">
+        <Button style={button} href="https://www.fastmedia.pro/admin/bookings">
           Open booking in admin
         </Button>
         <Text style={footer}>— {SITE_NAME} Notification System</Text>

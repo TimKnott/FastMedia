@@ -230,8 +230,8 @@ Deno.serve(async (req) => {
 
         const safeSlug = (project.slug || '').replace(/[^a-z0-9-]/gi, '').toLowerCase()
         const portalUrl = safeSlug
-          ? `https://fastmedia.pro/portal/${safeSlug}/${token}`
-          : `https://fastmedia.pro/portal/${token}`
+          ? `https://www.fastmedia.pro/portal/${safeSlug}/${token}`
+          : `https://www.fastmedia.pro/portal/${token}`
 
         const idempotencyKey = `resend-draft-${projectId}-${Date.now()}`
         console.log('[portal-access:resend_draft] dispatching', {
@@ -368,8 +368,8 @@ Deno.serve(async (req) => {
 
         const safeSlug = (project.slug || '').replace(/[^a-z0-9-]/gi, '').toLowerCase()
         const newPortalUrl = safeSlug
-          ? `https://fastmedia.pro/portal/${safeSlug}/${newToken}`
-          : `https://fastmedia.pro/portal/${newToken}`
+          ? `https://www.fastmedia.pro/portal/${safeSlug}/${newToken}`
+          : `https://www.fastmedia.pro/portal/${newToken}`
 
         // Email the new link
         const idempotencyKey = `rotate-token-${projectId}-${Date.now()}`

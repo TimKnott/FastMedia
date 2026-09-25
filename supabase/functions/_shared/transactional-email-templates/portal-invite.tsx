@@ -100,7 +100,7 @@ export const template = {
   previewData: {
     recipientName: 'Alex',
     projectName: 'Acme Plumbing website',
-    portalUrl: 'https://fastmedia.pro/portal/abc123',
+    portalUrl: 'https://www.fastmedia.pro/portal/abc123',
   },
 } satisfies TemplateEntry
 

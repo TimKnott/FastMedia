@@ -48,7 +48,7 @@ serve(async (req) => {
           `Quote: ${quoteOneTime} CZK`,
           specialRequest ? `Special Request: ${specialRequest}` : "",
           ``,
-          `View in admin: https://fastmedia.pro/admin/leads`,
+          `View in admin: https://www.fastmedia.pro/admin/leads`,
         ]
           .filter(Boolean)
           .join("\n");
@@ -65,14 +65,14 @@ serve(async (req) => {
           `Service: ${service}`,
           `Scheduled: ${scheduledAt}`,
           ``,
-          `View in admin: https://fastmedia.pro/admin/bookings`,
+          `View in admin: https://www.fastmedia.pro/admin/bookings`,
         ].join("\n");
         break;
       }
       case "new_subscriber": {
         const { subscriberEmail } = data;
         subject = `📬 New Newsletter Subscriber`;
-        body = `New subscriber: ${subscriberEmail}\n\nView in admin: https://fastmedia.pro/admin/newsletter`;
+        body = `New subscriber: ${subscriberEmail}\n\nView in admin: https://www.fastmedia.pro/admin/newsletter`;
         break;
       }
       default: {

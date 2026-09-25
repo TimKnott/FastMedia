@@ -203,7 +203,7 @@ const AdminCoupons = () => {
       `Hi,\n\nHere is your exclusive discount code for FastMedia.Pro:\n\n` +
         `   ${c.code}   (${valueLabel} off)\n\n` +
         (c.campaign_name ? `Campaign: ${c.campaign_name}\n` : '') +
-        `Use it on the website calculator before checkout: https://fastmedia.pro/calculator\n\n` +
+        `Use it on the website calculator before checkout: https://www.fastmedia.pro/calculator\n\n` +
         (c.valid_until ? `Valid until ${new Date(c.valid_until).toLocaleDateString()}.\n\n` : '') +
         `— FastMedia.Pro`,
     );

@@ -232,8 +232,8 @@ const DemoLayout = ({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://fastmedia.pro/' },
-            { '@type': 'ListItem', position: 2, name: language === 'cs' ? 'Ukázky' : language === 'de' ? 'Demos' : 'Demos', item: 'https://fastmedia.pro/#demos' },
+            { '@type': 'ListItem', position: 1, name: 'FastMedia.Pro', item: 'https://www.fastmedia.pro/' },
+            { '@type': 'ListItem', position: 2, name: language === 'cs' ? 'Ukázky' : language === 'de' ? 'Demos' : 'Demos', item: 'https://www.fastmedia.pro/#demos' },
             { '@type': 'ListItem', position: 3, name: tradeName },
           ],
         }) }}
@@ -245,7 +245,7 @@ const DemoLayout = ({
           '@type': 'WebPage',
           name: `${tradeName} — website demo by FastMedia.Pro`,
           description: heroSubtitle[language],
-          url: `https://fastmedia.pro/demo/${tradeId}`,
+          url: `https://www.fastmedia.pro/demo/${tradeId}`,
         }) }}
       />
       {/* Back to FastMedia Banner */}

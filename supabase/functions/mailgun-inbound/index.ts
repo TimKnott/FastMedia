@@ -106,8 +106,8 @@ async function generateAiReply(opts: {
 
 GUIDELINES:
 - Be concise (120–180 words), warm, professional, and concrete.
-- If pricing comes up: mention starter packages from CZK 4,990 and that detailed quotes are tailored on the AI calculator at https://fastmedia.pro/calculator.
-- For booking/consultation requests: invite them to book a free consultation at https://fastmedia.pro/inquiry or via WhatsApp +44 7926 400060.
+- If pricing comes up: mention starter packages from CZK 4,990 and that detailed quotes are tailored on the AI calculator at https://www.fastmedia.pro/calculator.
+- For booking/consultation requests: invite them to book a free consultation at https://www.fastmedia.pro/inquiry or via WhatsApp +44 7926 400060.
 - For technical/support issues: acknowledge, ask for one specific clarifying detail, promise human follow-up within 1 working day.
 - For partnership/press: thank them and forward to support@fastmedia.pro for human handling.
 - NEVER invent prices, dates, contracts, or commitments not listed above.

@@ -105,7 +105,7 @@ const SocialShareStudio = ({ post, open, onClose }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [previewSrc, setPreviewSrc] = useState<string>('');
 
-  const url = post ? `https://fastmedia.pro/blog/${post.slug}` : 'https://fastmedia.pro';
+  const url = post ? `https://www.fastmedia.pro/blog/${post.slug}` : 'https://www.fastmedia.pro';
 
   const generate = useCallback(async () => {
     if (!post) return;
