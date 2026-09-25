@@ -27,6 +27,7 @@ import NotFound from "./pages/NotFound";
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const ConsultantTereza = lazy(() => import("./pages/ConsultantTereza"));
+const About = lazy(() => import("./pages/About"));
 const CalculatorPage = lazy(() => import("./pages/CalculatorPage"));
 const Install = lazy(() => import("./pages/Install"));
 const Inquiry = lazy(() => import("./pages/Inquiry"));
@@ -267,6 +268,7 @@ const App = () => (
             <Route path="/install" element={<Install />} />
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
             <Route path="/quote-request" element={<QuoteRequest />} />
 
             <Route path="/feature/:featureId" element={<FeatureDetail />} />

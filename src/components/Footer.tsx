@@ -28,6 +28,7 @@ const Footer = () => {
     { href: '/consultant/tereza', label: t('nav.consultant') },
     { href: '/calculator', label: t('nav.calculator') },
     { href: '/inquiry', label: t('nav.inquiry') },
+    { href: '/about', label: isEnglish ? 'About' : 'O nás' },
     { href: '/contact', label: isEnglish ? 'Contact' : 'Kontakt' },
     { href: '/quote-request', label: isEnglish ? 'Request a quote' : 'Nezávazná nabídka' },
     { href: '/grant-wizard', label: t('nav.grant') },
