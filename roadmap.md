@@ -60,3 +60,11 @@
 - [ ] Request indexing (homepage, grant pages) — must be done by hand in Search Console URL Inspection
 - [ ] Real case-study evidence — needs client-approved figures from user
 - [ ] Sitemap/canonical URLs use fastmedia.pro but live site redirects to www — align
+
+## Sep 25 batch 2
+- [x] Switch all addresses to www + resubmit sitemap; reminder email scheduled 2 Oct
+- [x] FR/ES/IT EU grant + business-plan pages published (language sitemap, hreflang)
+- [x] Industry pages: /websites-for/plumbers, /electricians, /small-service-businesses
+- [ ] Full Czech site on its own URL (/cs/...) — awaiting user confirmation (large change)
+- [ ] Hair salon through LinkedIn → Flowlu — BLOCKED: Flowlu key + GetSales sequence
+- [ ] GetSales LinkedIn sequence from SEO Experts list — BLOCKED: GetSales has no API for creating sequences; user must create in GetSales
