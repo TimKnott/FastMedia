@@ -89,6 +89,15 @@ const STATIC_ROUTES: RouteSeo[] = [
     priority: "0.8",
   },
   {
+    path: "/about",
+    title: "About FastMedia.Pro — Timothy Knott, Louny, Czech Republic",
+    description:
+      "FastMedia.Pro is run by Timothy Knott (IČO 17308551) from Louny, Czech Republic, serving businesses across the Czech Republic and the EU.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.7",
+  },
+  {
     path: "/contact",
     title: "Contact FastMedia.Pro — Talk to Our Web Team",
     description:
