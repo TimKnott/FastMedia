@@ -61,7 +61,7 @@ async function buildDigest(supabase: any, prop: any) {
     </div>
     <h3>Issues this week (${critical.length} critical, ${warnings.length} warnings)</h3>
     <table style="width:100%;border-collapse:collapse;font-size:14px;">${issuesHtml || '<tr><td style="padding:12px;color:#27ae60;">✓ No new issues. Nice work.</td></tr>'}</table>
-    <p style="margin-top:32px;font-size:12px;color:#999;">View full dashboard: <a href="https://fastmedia.pro/admin/seo-insights">fastmedia.pro/admin/seo-insights</a></p>
+    <p style="margin-top:32px;font-size:12px;color:#999;">View full dashboard: <a href="https://www.fastmedia.pro/admin/seo-insights">fastmedia.pro/admin/seo-insights</a></p>
   </div>`;
   return { html, subject: `[SEO] ${critical.length}🔴 ${warnings.length}🟡 — ${prop.display_name}` };
 }
@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
           const { data: crits } = await supabase.from('seo_issues').select('*').eq('property_id', prop.id).eq('severity', 'critical').eq('status', 'open').gte('created_at', since);
           if (!crits?.length) { sent.push({ id: prop.id, skipped: 'no crit' }); continue; }
           const list = crits.slice(0, 10).map((c: any) => `<li><strong>${escapeHtml(c.title)}</strong><br><small>${escapeHtml(c.suggested_fix ?? '')}</small></li>`).join('');
-          const html = `<div style="font-family:Inter,Arial,sans-serif;"><h2 style="color:#c0392b;">🔴 ${crits.length} critical SEO issue${crits.length > 1 ? 's' : ''} — ${escapeHtml(prop.display_name)}</h2><ul>${list}</ul><p><a href="https://fastmedia.pro/admin/seo-insights">Open dashboard</a></p></div>`;
+          const html = `<div style="font-family:Inter,Arial,sans-serif;"><h2 style="color:#c0392b;">🔴 ${crits.length} critical SEO issue${crits.length > 1 ? 's' : ''} — ${escapeHtml(prop.display_name)}</h2><ul>${list}</ul><p><a href="https://www.fastmedia.pro/admin/seo-insights">Open dashboard</a></p></div>`;
           await sendEmail(to, `[SEO CRITICAL] ${crits.length} issue${crits.length > 1 ? 's' : ''} — ${prop.display_name}`, html);
           await supabase.from('seo_alerts_log').insert({ property_id: prop.id, alert_type: 'critical', severity: 'critical', subject: `${crits.length} critical issues`, recipient: to, metadata: { count: crits.length } });
           sent.push({ id: prop.id, ok: true, count: crits.length });

@@ -40,7 +40,7 @@ const BookingConfirmationEmail = ({
         <Text style={text}>
           If you need to reschedule or cancel, please contact us as soon as possible.
         </Text>
-        <Button style={button} href="https://fastmedia.pro">
+        <Button style={button} href="https://www.fastmedia.pro">
           Visit {SITE_NAME}
         </Button>
         <Text style={footer}>Best regards, The {SITE_NAME} Team</Text>

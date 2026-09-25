@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const origin = req.headers.get("origin") ?? "https://fastmedia.pro";
+    const origin = req.headers.get("origin") ?? "https://www.fastmedia.pro";
     const portal = await stripe.billingPortal.sessions.create({
       customer: resolvedCustomerId,
       return_url: return_url || `${origin}/account`,

@@ -17,11 +17,11 @@ const About = () => {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
-    url: 'https://fastmedia.pro/about',
+    url: 'https://www.fastmedia.pro/about',
     mainEntity: {
       '@type': 'ProfessionalService',
       name: 'FastMedia.Pro',
-      url: 'https://fastmedia.pro',
+      url: 'https://www.fastmedia.pro',
       email: 'support@fastmedia.pro',
       telephone: '+420797864432',
       founder: { '@type': 'Person', name: 'Timothy Knott', jobTitle: 'Founder' },

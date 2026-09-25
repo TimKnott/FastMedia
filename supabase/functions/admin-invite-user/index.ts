@@ -12,7 +12,7 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const ANON = Deno.env.get('SUPABASE_ANON_KEY')!
-const SITE_URL = 'https://fastmedia.pro'
+const SITE_URL = 'https://www.fastmedia.pro'
 
 const ALLOWED_ROLES = ['admin', 'editor', 'moderator', 'user'] as const
 type AllowedRole = typeof ALLOWED_ROLES[number]

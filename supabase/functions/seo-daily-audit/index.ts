@@ -417,7 +417,7 @@ Deno.serve(async (req) => {
               </tr></thead>
               <tbody>${rows}</tbody>
             </table>
-            <p style="margin-top:24px;font-size:13px;">View full dashboard: <a href="https://fastmedia.pro/admin/seo-health">fastmedia.pro/admin/seo-health</a></p>
+            <p style="margin-top:24px;font-size:13px;">View full dashboard: <a href="https://www.fastmedia.pro/admin/seo-health">fastmedia.pro/admin/seo-health</a></p>
           </div>`;
         const form = new FormData();
         form.append("from", `FastMedia SEO Monitor <seo@${domain}>`);

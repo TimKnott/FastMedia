@@ -14,7 +14,7 @@ const DemoShareBar = ({ tradeName, tradeId, gradientClass }: DemoShareBarProps) 
   const { language } = useLanguage();
   const [copied, setCopied] = useState(false);
 
-  const pageUrl = `https://fastmedia.pro/demo/${tradeId}`;
+  const pageUrl = `https://www.fastmedia.pro/demo/${tradeId}`;
   const shareText = language === 'cs'
     ? `Podívejte se na tento web pro ${tradeName}!`
     : language === 'de'

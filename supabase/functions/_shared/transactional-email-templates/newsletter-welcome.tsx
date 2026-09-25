@@ -28,7 +28,7 @@ const NewsletterWelcomeEmail = ({ email }: NewsletterWelcomeProps) => (
           We help tradespeople and small businesses build professional websites that
           generate real leads. Stay tuned for valuable content.
         </Text>
-        <Button style={button} href="https://fastmedia.pro/blog">
+        <Button style={button} href="https://www.fastmedia.pro/blog">
           Read Our Blog
         </Button>
         <Text style={footer}>

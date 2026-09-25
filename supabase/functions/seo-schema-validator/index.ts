@@ -8,7 +8,7 @@ const cors = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const SITE_ORIGIN = 'https://fastmedia.pro';
+const SITE_ORIGIN = 'https://www.fastmedia.pro';
 
 interface SchemaResult {
   url: string;

@@ -32,7 +32,7 @@ const AdminNewsletterNotification = ({
             <Text style={detailRow}><strong>Total subscribers:</strong> {totalSubscribers}</Text>
           )}
         </Section>
-        <Button style={button} href="https://fastmedia.pro/admin/newsletter">
+        <Button style={button} href="https://www.fastmedia.pro/admin/newsletter">
           View subscribers
         </Button>
         <Text style={footer}>— {SITE_NAME} Notification System</Text>
