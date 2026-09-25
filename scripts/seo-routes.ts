@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { calculatorFeatures } from "../src/data/calculatorFeatures.ts";
 import { getFeatureDetail } from "../src/data/featureDetails.ts";
 import { serviceLandings } from "../src/data/serviceLandings.ts";
+import { industryLandings } from "../src/data/industryLandings.ts";
 
 export interface RouteSeo {
   path: string;
@@ -429,9 +430,26 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     },
   }));
 
+  const industryRoutes: RouteSeo[] = industryLandings.map((i) => ({
+    path: `/websites-for/${i.slug}`,
+    title: i.seoTitle,
+    description: i.seoDescription,
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.8",
+    h1: i.en.headline,
+    contentBlocks: [i.en.intro, `Features: ${i.en.features.join("; ")}.`, ...i.en.faq.map((f) => `${f.q} ${f.a}`)],
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: i.en.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+    },
+  }));
+
   const routes: RouteSeo[] = [
     ...STATIC_ROUTES,
     ...serviceRoutes,
+    ...industryRoutes,
     ...DEMO_TRADES.map(demoRoute),
     ...featureRoutes,
   ];
