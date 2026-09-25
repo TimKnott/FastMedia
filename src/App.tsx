@@ -56,6 +56,7 @@ const MediaKit = lazy(() => import("./pages/MediaKit"));
 const Courses = lazy(() => import("./pages/Courses"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
+const IndustryLanding = lazy(() => import("./pages/IndustryLanding"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 
 // Admin pages (lazy)
@@ -211,6 +212,7 @@ const App = () => (
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:slug" element={<CourseDetail />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />
+            <Route path="/websites-for/:slug" element={<IndustryLanding />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
