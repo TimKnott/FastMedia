@@ -50,3 +50,13 @@
 - [ ] Google Search Console: verify www.fastmedia.pro, submit sitemap (meta tag added, needs publish)
 - [ ] LinkedIn outreach sequences for approved leads
 - [x] Back-office tool search + "Find leads" menu link
+
+## Sep 25 batch
+- [x] /about page (legal entity, Louny address, team, areas served, case studies labelled illustrative)
+- [x] DE/PL/SK EU grant pages published (hreflang via language sitemap)
+- [x] Critical case-study download finding fixed (signed links via backend)
+- [x] Search Console: www.fastmedia.pro verified, added, sitemap submitted
+- [ ] Google Business Profile — needs user to connect GBP + complete Google's postcard/video verification
+- [ ] Request indexing (homepage, grant pages) — must be done by hand in Search Console URL Inspection
+- [ ] Real case-study evidence — needs client-approved figures from user
+- [ ] Sitemap/canonical URLs use fastmedia.pro but live site redirects to www — align
