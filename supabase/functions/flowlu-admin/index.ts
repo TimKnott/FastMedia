@@ -464,7 +464,7 @@ Deno.serve(async (req) => {
       const results: { id: number; ok: boolean; error?: string }[] = [];
       for (const id of ids) {
         try {
-          const r = await fetch(req.url, { method: 'POST', headers: { Authorization: req.headers.get('Authorization') ?? '', 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'draft_sequence', lead_id: id }) });
+          const r = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/flowlu-admin`, { method: 'POST', headers: { Authorization: req.headers.get('Authorization') ?? '', 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'draft_sequence', lead_id: id }) });
           results.push({ id, ok: r.ok, ...(r.ok ? {} : { error: (await r.text()).slice(0, 200) }) });
         } catch (e) { results.push({ id, ok: false, error: (e as Error).message }); }
       }
