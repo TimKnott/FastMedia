@@ -1021,6 +1021,102 @@ export type Database = {
         }
         Relationships: []
       }
+      flowlu_lead_replies: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          error: string | null
+          flowlu_lead_id: number
+          flowlu_logged: boolean
+          id: string
+          sent_at: string | null
+          status: string
+          subject: string
+          to_email: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          flowlu_lead_id: number
+          flowlu_logged?: boolean
+          id?: string
+          sent_at?: string | null
+          status?: string
+          subject: string
+          to_email: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          flowlu_lead_id?: number
+          flowlu_logged?: boolean
+          id?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          to_email?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flowlu_leads: {
+        Row: {
+          budget: number | null
+          contact_company: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          first_seen_at: string
+          flowlu_created_at: string | null
+          id: number
+          name: string | null
+          priority: string
+          raw: Json
+          score: number
+          score_reasons: string[]
+          synced_at: string
+        }
+        Insert: {
+          budget?: number | null
+          contact_company?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          first_seen_at?: string
+          flowlu_created_at?: string | null
+          id: number
+          name?: string | null
+          priority?: string
+          raw?: Json
+          score?: number
+          score_reasons?: string[]
+          synced_at?: string
+        }
+        Update: {
+          budget?: number | null
+          contact_company?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          first_seen_at?: string
+          flowlu_created_at?: string | null
+          id?: number
+          name?: string | null
+          priority?: string
+          raw?: Json
+          score?: number
+          score_reasons?: string[]
+          synced_at?: string
+        }
+        Relationships: []
+      }
       flowlu_settings: {
         Row: {
           auto_sync_calls: boolean
