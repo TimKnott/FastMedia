@@ -78,7 +78,7 @@ async function createOpportunity(p: { name: string; email?: string | null; phone
     contact_phone: p.phone ?? '',
     contact_company: p.company ?? '',
     description: p.description.slice(0, 5000),
-    assign_user_id: FLOWLU_OWNER_USER_ID,
+    assignee_id: FLOWLU_OWNER_USER_ID,
   }, 'POST');
   return r?.id ? String(r.id) : null;
 }
