@@ -80,5 +80,5 @@
 - [ ] Guide: connect timknott@fastmedia.pro mailbox in Flowlu (user action)
 - [x] Daily Flowlu lead sync into back office + live "new leads" count
 - [x] Draft/send reply editor on each Flowlu lead card (logged back into Flowlu)
-- [ ] Test send from a real lead card to own inbox, confirm it shows in Flowlu
+- [x] Test send from a real lead card to own inbox, confirm it shows in Flowlu
 - [x] Score + priority per Flowlu lead, shown in Leads hub
