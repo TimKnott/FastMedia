@@ -2312,6 +2312,8 @@ export type Database = {
           discovery_cursor: number
           discovery_enabled: boolean
           discovery_regions: string[]
+          discovery_spend_credits: number
+          discovery_spend_date: string | null
           discovery_trades: string[]
           follow_up_days_step2: number
           follow_up_days_step3: number
@@ -2331,6 +2333,8 @@ export type Database = {
           discovery_cursor?: number
           discovery_enabled?: boolean
           discovery_regions?: string[]
+          discovery_spend_credits?: number
+          discovery_spend_date?: string | null
           discovery_trades?: string[]
           follow_up_days_step2?: number
           follow_up_days_step3?: number
@@ -2350,6 +2354,8 @@ export type Database = {
           discovery_cursor?: number
           discovery_enabled?: boolean
           discovery_regions?: string[]
+          discovery_spend_credits?: number
+          discovery_spend_date?: string | null
           discovery_trades?: string[]
           follow_up_days_step2?: number
           follow_up_days_step3?: number

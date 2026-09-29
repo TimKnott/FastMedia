@@ -86,6 +86,8 @@ async function loadSettings(db: Db): Promise<Settings> {
     discovery_trades: Array.isArray(data.discovery_trades) && data.discovery_trades.length > 0 ? data.discovery_trades : DEFAULT_SETTINGS.discovery_trades,
     discovery_regions: Array.isArray(data.discovery_regions) && data.discovery_regions.length > 0 ? data.discovery_regions : DEFAULT_SETTINGS.discovery_regions,
     discovery_cursor: Number(data.discovery_cursor) || 0,
+    discovery_spend_date: data.discovery_spend_date ?? null,
+    discovery_spend_credits: Number(data.discovery_spend_credits) || 0,
   }
 }
 
