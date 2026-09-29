@@ -420,7 +420,17 @@ Deno.serve(async (req) => {
       const { data: finals } = await sb.from('flowlu_lead_sequences').select('flowlu_lead_id').eq('step', 3).eq('status', 'sent').lte('sent_at', new Date(Date.now() - 7 * 86400000).toISOString());
       const ids = (finals ?? []).map((f: any) => f.flowlu_lead_id);
       if (ids.length) await sb.from('flowlu_leads').update({ pipeline_stage: 'no_reply' }).in('id', ids).eq('pipeline_stage', 'sent');
-      return json({ ok: true, sent, failed, skipped });
+      // Hourly catch-up: write changed scores to Flowlu in small batches.
+      const { data: pend } = await sb.from('flowlu_leads').select('id,score,priority,flowlu_score_synced').order('score', { ascending: false }).limit(1000);
+      let scores = 0;
+      for (const r of (pend ?? []).filter((r: any) => r.flowlu_score_synced !== `${r.score}|${r.priority}`).slice(0, 40)) {
+        try {
+          await flowlu(`module/crm/lead/update/${r.id}`, { cf_34: String(r.score), cf_35: r.priority }, 'POST');
+          await sb.from('flowlu_leads').update({ flowlu_score_synced: `${r.score}|${r.priority}` }).eq('id', r.id);
+          scores++;
+        } catch { /* retry next hour */ }
+      }
+      return json({ ok: true, sent, failed, skipped, scores });
     }
     if (action === 'set_stage') {
       const leadId = Number(body.lead_id); const stage = String(body.stage);
