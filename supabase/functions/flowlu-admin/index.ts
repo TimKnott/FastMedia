@@ -25,18 +25,23 @@ const KEY = () => (Deno.env.get('FLOWLU_API_KEY') ?? '').trim();
 async function flowlu(path: string, params: Record<string, string> = {}, method: 'GET' | 'POST' = 'GET') {
   const base = `https://${account()}.flowlu.com/api/v1/${path}`;
   const qs = new URLSearchParams({ api_key: KEY() });
-  let res: Response;
-  if (method === 'GET') {
-    for (const [k, v] of Object.entries(params)) qs.set(k, v);
-    res = await fetch(`${base}?${qs}`);
-  } else {
-    res = await fetch(`${base}?${qs}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(params),
-    });
+  let res!: Response;
+  let text = '';
+  for (let attempt = 0; attempt < 4; attempt++) {
+    if (method === 'GET') {
+      for (const [k, v] of Object.entries(params)) qs.set(k, v);
+      res = await fetch(`${base}?${qs}`);
+    } else {
+      res = await fetch(`${base}?${qs}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(params),
+      });
+    }
+    text = await res.text();
+    if (res.status !== 429 && !/Request limit exceeded/.test(text)) break;
+    await new Promise((r) => setTimeout(r, 3000 * (attempt + 1)));
   }
-  const text = await res.text();
   let body: any = null;
   try { body = JSON.parse(text); } catch { /* html */ }
   if (!res.ok || body?.error) {
