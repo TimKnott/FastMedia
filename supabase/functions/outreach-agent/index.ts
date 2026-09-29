@@ -925,9 +925,16 @@ async function runWeeklyDiscovery(db: Db, actor: Actor) {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
-  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders)
-
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+
+  // The daily discovery schedule authenticates with a private job token held in the database.
+  const jobToken = req.headers.get('x-job-token') ?? ''
+  let isDiscoveryJob = false
+  if (jobToken) {
+    const { data: tok } = await db.from('internal_job_tokens').select('token').eq('name', 'prospect_discovery').maybeSingle()
+    isDiscoveryJob = !!tok?.token && tok.token === jobToken
+  }
+  if (!isDiscoveryJob && !(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders)
   const actor = await resolveActor(req)
 
   try {

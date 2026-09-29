@@ -1,0 +1,1 @@
+create policy "No client access to job tokens" on public.internal_job_tokens as restrictive for all to anon, authenticated using (false) with check (false);
