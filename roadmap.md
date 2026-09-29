@@ -68,4 +68,4 @@
 - [ ] Full Czech site on its own URL (/cs/...) — awaiting user confirmation (large change)
 - [ ] Hair salon through LinkedIn → Flowlu — BLOCKED: Flowlu key + GetSales sequence
 - [ ] GetSales LinkedIn sequence from SEO Experts list — BLOCKED: GetSales has no API for creating sequences; user must create in GetSales
-- [ ] Blog narration: replace ElevenLabs with Google voice via Lovable AI
+- [x] Blog narration: replace ElevenLabs with Google voice via Lovable AI
