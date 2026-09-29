@@ -2,28 +2,30 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAllSiteSettings } from '@/hooks/useSiteSettings';
 import Navbar from '@/components/Navbar';
 import WhyFastMediaSection from '@/components/WhyFastMediaSection';
-import AutomationSection from '@/components/AutomationSection';
-import DemosSection from '@/components/DemosSection';
-import ServicesSection from '@/components/ServicesSection';
-import ReviewsSection from '@/components/ReviewsSection';
-import PricingSection from '@/components/PricingSection';
-import FAQSection from '@/components/FAQSection';
-import ConsultantSection from '@/components/ConsultantSection';
-import CalculatorShowcase from '@/components/CalculatorShowcase';
-import BookingSection from '@/components/BookingSection';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import SEOHead from '@/components/SEOHead';
 import HomeJsonLd from '@/components/HomeJsonLd';
 import PromoBanner from '@/components/PromoBanner';
 import StickyCTABar from '@/components/StickyCTABar';
-import CertificationsSection from '@/components/CertificationsSection';
-import TeamSection from '@/components/TeamSection';
-import AppointmentPoliciesSection from '@/components/AppointmentPoliciesSection';
-import ServiceAreaMap from '@/components/ServiceAreaMap';
 import OfferTeaser from '@/components/OfferTeaser';
-import CaseStudiesSection from '@/components/CaseStudiesSection';
 import HomeDirectAnswer from '@/components/HomeDirectAnswer';
+import { lazy } from 'react';
+import LazySection from '@/components/LazySection';
+const AutomationSection = lazy(() => import('@/components/AutomationSection'));
+const DemosSection = lazy(() => import('@/components/DemosSection'));
+const CalculatorShowcase = lazy(() => import('@/components/CalculatorShowcase'));
+const ServicesSection = lazy(() => import('@/components/ServicesSection'));
+const CaseStudiesSection = lazy(() => import('@/components/CaseStudiesSection'));
+const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
+const TeamSection = lazy(() => import('@/components/TeamSection'));
+const PricingSection = lazy(() => import('@/components/PricingSection'));
+const FAQSection = lazy(() => import('@/components/FAQSection'));
+const AppointmentPoliciesSection = lazy(() => import('@/components/AppointmentPoliciesSection'));
+const ConsultantSection = lazy(() => import('@/components/ConsultantSection'));
+const ServiceAreaMap = lazy(() => import('@/components/ServiceAreaMap'));
+const BookingSection = lazy(() => import('@/components/BookingSection'));
+const CertificationsSection = lazy(() => import('@/components/CertificationsSection'));
 
 const Index = () => {
   const { language } = useLanguage();
@@ -48,21 +50,21 @@ const Index = () => {
           {on('home_promo') && <PromoBanner variant="compact" />}
           <HomeDirectAnswer />
           {on('home_why') && <WhyFastMediaSection />}
-          {on('home_certifications') && <CertificationsSection />}
-          {on('home_automation') && <AutomationSection />}
-          {on('home_demos') && <DemosSection />}
-          {on('home_calculator') && <CalculatorShowcase />}
-          {on('home_services') && <ServicesSection />}
+          {on('home_certifications') && <LazySection><CertificationsSection /></LazySection>}
+          {on('home_automation') && <LazySection><AutomationSection /></LazySection>}
+          {on('home_demos') && <LazySection><DemosSection /></LazySection>}
+          {on('home_calculator') && <LazySection><CalculatorShowcase /></LazySection>}
+          {on('home_services') && <LazySection><ServicesSection /></LazySection>}
           {on('home_promo') && <PromoBanner variant="full" />}
-          {on('home_case_studies') && <CaseStudiesSection />}
-          {on('home_reviews') && <ReviewsSection />}
-          {on('home_team') && <TeamSection />}
-          {on('show_pricing', false) && <PricingSection />}
-          {on('home_faq') && <FAQSection />}
-          {on('home_policies') && <AppointmentPoliciesSection />}
-          {on('home_consultant') && <ConsultantSection />}
-          {on('home_service_area') && <ServiceAreaMap />}
-          {on('home_booking') && <BookingSection />}
+          {on('home_case_studies') && <LazySection><CaseStudiesSection /></LazySection>}
+          {on('home_reviews') && <LazySection><ReviewsSection /></LazySection>}
+          {on('home_team') && <LazySection><TeamSection /></LazySection>}
+          {on('show_pricing', false) && <LazySection><PricingSection /></LazySection>}
+          {on('home_faq') && <LazySection><FAQSection /></LazySection>}
+          {on('home_policies') && <LazySection><AppointmentPoliciesSection /></LazySection>}
+          {on('home_consultant') && <LazySection><ConsultantSection /></LazySection>}
+          {on('home_service_area') && <LazySection><ServiceAreaMap /></LazySection>}
+          {on('home_booking') && <LazySection><BookingSection /></LazySection>}
         </main>
         <Footer />
         {on('home_sticky_cta') && <StickyCTABar />}
