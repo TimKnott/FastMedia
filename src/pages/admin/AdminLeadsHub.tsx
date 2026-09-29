@@ -10,7 +10,8 @@ import { useFlowluLeads, FlowluLeadCard, priorityClass, isNewLead, type FlowluLe
 
 interface Row {
   id: string;
-  kind: 'discovered' | 'enquiry';
+  kind: 'discovered' | 'enquiry' | 'flowlu';
+  priority?: string;
   name: string;
   email: string | null;
   website: string | null;
@@ -29,7 +30,8 @@ const AdminLeadsHub = () => {
   const [q, setQ] = useState('');
   const { data: fl = [] } = useFlowluLeads();
   const [openFl, setOpenFl] = useState<FlowluLead | null>(null);
-  const [filter, setFilter] = useState<'all' | 'discovered' | 'enquiry'>('all');
+  const [filter, setFilter] = useState<'all' | 'discovered' | 'enquiry' | 'flowlu'>('all');
+  const [sortBy, setSortBy] = useState<'score' | 'date'>('score');
 
   useEffect(() => {
     (async () => {
@@ -54,10 +56,16 @@ const AdminLeadsHub = () => {
     })();
   }, []);
 
-  const filtered = useMemo(() => rows.filter(r =>
+  const prioOf = (s: number | null) => (s ?? 0) >= 60 ? 'high' : (s ?? 0) >= 35 ? 'medium' : 'low';
+  const allRows = useMemo(() => {
+    const flRows: Row[] = fl.map(l => ({ id: String(l.id), kind: 'flowlu', name: l.contact_company || l.name || `Flowlu #${l.id}`, email: l.contact_email, website: null, source: 'flowlu', status: (l as any).pipeline_stage ?? 'scored', score: l.score, priority: l.priority, created_at: l.flowlu_created_at ?? l.first_seen_at, flowluId: String(l.id) }));
+    const flIds = new Set(flRows.map(r => r.flowluId));
+    return [...rows.filter(r => !r.flowluId || !flIds.has(r.flowluId)).map(r => ({ ...r, priority: r.priority ?? prioOf(r.score) })), ...flRows];
+  }, [rows, fl]);
+  const filtered = useMemo(() => allRows.filter(r =>
     (filter === 'all' || r.kind === filter) &&
     (!q || `${r.name} ${r.email ?? ''} ${r.website ?? ''}`.toLowerCase().includes(q.toLowerCase()))
-  ), [rows, q, filter]);
+  ).sort((a, b) => sortBy === 'score' ? (b.score ?? -1) - (a.score ?? -1) : b.created_at.localeCompare(a.created_at)).slice(0, 500), [allRows, q, filter, sortBy]);
 
   const discovered = rows.filter(r => r.kind === 'discovered');
   const stats = [
@@ -108,9 +116,9 @@ const AdminLeadsHub = () => {
 
       <div className="flex flex-wrap gap-2 items-center">
         <Input placeholder="Search name, email or website…" value={q} onChange={e => setQ(e.target.value)} className="max-w-sm" />
-        {(['all', 'discovered', 'enquiry'] as const).map(f => (
+        {(['all', 'flowlu', 'discovered', 'enquiry'] as const).map(f => (
           <Button key={f} size="sm" variant={filter === f ? 'default' : 'outline'} onClick={() => setFilter(f)}>
-            {f === 'all' ? 'All' : f === 'discovered' ? 'Discovered' : 'Website enquiries'}
+            {f === 'all' ? 'All' : f === 'flowlu' ? 'Flowlu' : f === 'discovered' ? 'Discovered' : 'Website enquiries'}
           </Button>
         ))}
       </div>
@@ -118,19 +126,19 @@ const AdminLeadsHub = () => {
       <Card className="shadow-card"><CardContent className="p-0 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="text-left text-muted-foreground border-b border-border">
-            <tr><th className="p-3">Lead</th><th className="p-3">Type</th><th className="p-3">Status</th><th className="p-3">Score</th><th className="p-3">Added</th><th className="p-3">CRM</th></tr>
+            <tr><th className="p-3 cursor-pointer" onClick={() => setSortBy('score')}>Priority {sortBy === 'score' ? '↓' : ''}</th><th className="p-3">Lead</th><th className="p-3">Type</th><th className="p-3">Status</th><th className="p-3 cursor-pointer" onClick={() => setSortBy('date')}>Added {sortBy === 'date' ? '↓' : ''}</th><th className="p-3">CRM</th></tr>
           </thead>
           <tbody>
             {filtered.map(r => (
-              <tr key={r.kind + r.id} className="border-b border-border/50 hover:bg-muted/40">
+              <tr key={r.kind + r.id} onClick={() => { if (r.kind === 'flowlu') setOpenFl(fl.find(l => String(l.id) === r.id) ?? null); }} className={`border-b border-border/50 hover:bg-muted/40 ${r.kind === 'flowlu' ? 'cursor-pointer' : ''}`}>
+                <td className="p-3"><Badge className={priorityClass(r.priority ?? 'low')}>{r.priority ?? 'low'} · {r.score ?? 0}</Badge></td>
                 <td className="p-3">
                   <div className="font-medium text-foreground">{r.name}</div>
                   <div className="text-xs text-muted-foreground">{r.email}</div>
                   {r.website && <a href={r.website} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline">{r.website}</a>}
                 </td>
-                <td className="p-3"><Badge variant={r.kind === 'discovered' ? 'default' : 'secondary'}>{r.kind === 'discovered' ? 'Discovered' : 'Enquiry'}</Badge></td>
+                <td className="p-3"><Badge variant={r.kind === 'discovered' ? 'default' : 'secondary'}>{r.kind === 'discovered' ? 'Discovered' : r.kind === 'flowlu' ? 'Flowlu' : 'Enquiry'}</Badge></td>
                 <td className="p-3 capitalize">{r.status.replace(/_/g, ' ')}</td>
-                <td className="p-3">{r.score ?? '—'}</td>
                 <td className="p-3 text-muted-foreground">{new Date(r.created_at).toLocaleDateString('en-GB')}</td>
                 <td className="p-3">
                   {r.flowluId ? (
