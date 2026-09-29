@@ -281,8 +281,8 @@ const AdminEmails = () => {
                       {t('emails.none')}
                     </TableCell>
                   </TableRow>
-                ) : paged.map(log => (
-                  <TableRow key={log.id}>
+                 ) : paged.map(log => (
+                   <TableRow key={log.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelected(log)}>
                     <TableCell className="font-mono text-xs">{log.template_name}</TableCell>
                     <TableCell className="text-sm">{log.recipient_email}</TableCell>
                     <TableCell>
@@ -317,9 +317,57 @@ const AdminEmails = () => {
             </div>
           )}
         </CardContent>
-      </Card>
-        </TabsContent>
-      </Tabs>
+       </Card>
+
+       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
+         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+           <DialogHeader>
+             <DialogTitle className="font-mono text-base">{selected?.template_name}</DialogTitle>
+           </DialogHeader>
+           {selected && (
+             <div className="space-y-4 text-sm">
+               <div className="grid grid-cols-[110px_1fr] gap-2 text-muted-foreground">
+                 <span>Recipient:</span><span className="text-foreground break-all">{selected.recipient_email}</span>
+                 <span>Status:</span><span><Badge className={statusColors[selected.status] ?? 'bg-muted'} variant="secondary">{selected.status}</Badge></span>
+                 <span>Sent at:</span><span className="text-foreground">{format(new Date(selected.created_at), 'dd.MM.yyyy HH:mm:ss')}</span>
+                 <span>Message ID:</span><span className="text-foreground font-mono text-xs break-all">{selected.message_id ?? '—'}</span>
+               </div>
+               {selected.error_message && (
+                 <div className="border-t pt-4">
+                   <h4 className="font-semibold mb-2 text-destructive">Error</h4>
+                   <pre className="whitespace-pre-wrap text-xs text-destructive">{selected.error_message}</pre>
+                 </div>
+               )}
+               {selected.metadata && Object.keys(selected.metadata as Record<string, unknown>).length > 0 && (
+                 <div className="border-t pt-4">
+                   <h4 className="font-semibold mb-2">Details</h4>
+                   <pre className="whitespace-pre-wrap bg-muted/40 border p-3 rounded text-xs">{JSON.stringify(selected.metadata, null, 2)}</pre>
+                 </div>
+               )}
+               {(() => {
+                 const trail = rawLogs
+                   .filter(l => (l.message_id ?? l.id) === (selected.message_id ?? selected.id))
+                   .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+                 return trail.length > 1 ? (
+                   <div className="border-t pt-4">
+                     <h4 className="font-semibold mb-2">Delivery trail</h4>
+                     <div className="space-y-1">
+                       {trail.map(l => (
+                         <div key={l.id} className="flex items-center gap-2 text-xs">
+                           <Badge className={statusColors[l.status] ?? 'bg-muted'} variant="secondary">{l.status}</Badge>
+                           <span className="text-muted-foreground">{format(new Date(l.created_at), 'dd.MM.yyyy HH:mm:ss')}</span>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                 ) : null;
+               })()}
+             </div>
+           )}
+         </DialogContent>
+       </Dialog>
+         </TabsContent>
+       </Tabs>
     </div>
   );
 };
