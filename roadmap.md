@@ -75,3 +75,10 @@
 - [x] GetSales flow "FastMedia — SEO Experts outreach" CREATED via API (uuid c076d237-ac7f-460d-81d5-bfb0d395ccb9, draft, Prague business-hours schedule); auto-enrol wired: every pushed lead joins the flow (POST /flows/api/flows/{uuid}/leads/{leadUuid} — verified, enrolled=true); Salon Grácie pushed + enrolled
 - [ ] GetSales (user): connect LinkedIn account (sender profile) + add message steps to the flow + switch it on — steps have no API endpoint
 - [x] Confirm Flowlu account is fastmedia.flowlu.com — verified via flowlu_settings test (906 opportunities)
+
+## Sep 29 Flowlu leads batch
+- [ ] Guide: connect timknott@fastmedia.pro mailbox in Flowlu (user action)
+- [x] Daily Flowlu lead sync into back office + live "new leads" count
+- [x] Draft/send reply editor on each Flowlu lead card (logged back into Flowlu)
+- [x] Test send from a real lead card to own inbox, confirm it shows in Flowlu
+- [x] Score + priority per Flowlu lead, shown in Leads hub
