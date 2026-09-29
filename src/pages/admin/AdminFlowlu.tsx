@@ -33,7 +33,26 @@ export default function AdminFlowlu() {
     queryKey: ['flowlu_log'],
     queryFn: async () => ((await supabase.from('flowlu_sync_log' as never).select('*').order('created_at', { ascending: false }).limit(100)).data ?? []) as any[],
   });
-  const refresh = () => { qc.invalidateQueries({ queryKey: ['flowlu_settings'] }); qc.invalidateQueries({ queryKey: ['flowlu_log'] }); };
+  const { data: mailboxes, isLoading: mailboxesLoading } = useQuery({
+    queryKey: ['flowlu_mailboxes'],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('flowlu-admin', {
+        body: { action: 'raw_get', path: 'module/email/account/list', params: { limit: '10' } },
+      });
+      if (error) {
+        let msg = error.message;
+        try { msg = (await (error as any).context?.json())?.error ?? msg; } catch { /* ignore */ }
+        throw new Error(msg);
+      }
+      return ((data as any)?.items ?? []) as { id: number; name: string; sender_name?: string; active?: number }[];
+    },
+    staleTime: 60_000,
+  });
+  const refresh = () => {
+    qc.invalidateQueries({ queryKey: ['flowlu_settings'] });
+    qc.invalidateQueries({ queryKey: ['flowlu_log'] });
+    qc.invalidateQueries({ queryKey: ['flowlu_mailboxes'] });
+  };
 
   const run = async (action: string) => {
     setBusy(action);
