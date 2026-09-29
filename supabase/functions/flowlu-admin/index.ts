@@ -355,7 +355,7 @@ Deno.serve(async (req) => {
       const changed = rows.filter((r) => syncedMap.get(r.id) !== `${r.score}|${r.priority}` && String(r.raw?.cf_34 ?? '') + '|' + String(r.raw?.cf_35 ?? '') !== `${r.score}|${r.priority}`);
       const already = rows.filter((r) => syncedMap.get(r.id) !== `${r.score}|${r.priority}` && !changed.includes(r));
       for (const r of already) await sb.from('flowlu_leads').update({ flowlu_score_synced: `${r.score}|${r.priority}` }).eq('id', r.id);
-      const cap = Number(body.score_limit) || 150;
+      const cap = Number(body.score_limit) || 20;
       for (const r of changed) {
         if (scoresPushed >= cap) { scoresPending++; continue; }
         try {
