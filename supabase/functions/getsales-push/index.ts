@@ -330,9 +330,31 @@ Deno.serve(async (req) => {
         flows: rows(result.body).map((row) => ({
           id: String(row.uuid ?? row.id ?? ''),
           name: String(row.name ?? 'Untitled flow'),
+          status: String((row as Record<string, unknown>).status ?? ''),
         })),
       })
     }
+
+    if (action === 'flow_detail') {
+      const flowUuid = String(body.flow_uuid ?? '')
+      if (!flowUuid) return json({ error: 'flow_uuid is required' }, 400)
+      const result = await getSales(base, `/flows/api/flows/${encodeURIComponent(flowUuid)}`)
+      return json(result, result.ok ? 200 : 502)
+    }
+
+    if (action === 'raw') {
+      // Admin-only debug passthrough so the desk can probe undocumented
+      // GetSales endpoints. Path must start with a single slash.
+      const method = typeof body.method === 'string' ? body.method.toUpperCase() : 'GET'
+      const rawPath = typeof body.path === 'string' ? body.path : ''
+      if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method)) return json({ error: 'Unsupported method' }, 400)
+      if (!/^\/[A-Za-z0-9\-._~/?=&{}]+$/.test(rawPath)) return json({ error: 'Invalid path' }, 400)
+      const init: RequestInit = { method }
+      if (payload !== undefined && method !== 'GET') init.body = JSON.stringify(payload)
+      const result = await getSales(base, rawPath, init)
+      return json(result, result.ok ? 200 : 502)
+    }
+
 
     if (action === 'push') {
       const prospectId = String(payload.prospect_id ?? '')
