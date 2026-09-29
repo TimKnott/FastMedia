@@ -2,6 +2,7 @@
 // Also serves as the scheduled/auto sync endpoint (service role or cron secret).
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
+import { generateJson } from '../_shared/ai-json.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -99,10 +100,44 @@ async function auditWebsite(url?: string | null): Promise<string[]> {
     if (gen) out.push(`Built with: ${gen}.`);
     const year = [...html.matchAll(/(?:©|&copy;|copyright)\s*(\d{4})/gi)].map((m) => +m[1]).sort().pop();
     if (year) out.push(`Latest copyright year shown: ${year}${year < new Date().getFullYear() - 1 ? ' (looks outdated)' : ''}.`);
+    out.push(/google\.[a-z.]+\/maps|maps\.google|mapy\.cz/i.test(html) ? 'Has an embedded map.' : 'No embedded map.');
+    out.push(/gtag\(|googletagmanager|google-analytics/i.test(html) ? 'Has Google Analytics/Tag Manager.' : 'No analytics tracking found (visits are not measured).');
+    out.push(/tel:/i.test(html) ? 'Has click-to-call phone link.' : 'No click-to-call phone link.');
+    out.push(/facebook\.com|instagram\.com/i.test(html) ? 'Links to social media.' : 'No social media links.');
+    out.push(/cookie/i.test(html) ? 'Mentions cookies/consent.' : 'No cookie consent notice found (GDPR risk).');
+    out.push(/<html[^>]+lang=/i.test(html) ? 'Declares page language.' : 'No page language declared.');
+    const imgs = [...html.matchAll(/<img\b[^>]*>/gi)].map((m) => m[0]);
+    const noAlt = imgs.filter((i) => !/\balt=["'][^"']+/i.test(i)).length;
+    if (imgs.length) out.push(`${imgs.length} images, ${noAlt} without alt text${noAlt ? ' (accessibility/SEO issue)' : ''}.`);
   } catch (e) {
     out.push(`Homepage could not be loaded: ${(e as Error).message.slice(0, 120)}.`);
   }
   return out;
+}
+
+const NEG = /not|no |missing|outdated|too short|could not|risk|without alt text \(/i;
+function scoreAudit(audit: string[]): number {
+  const checks = audit.filter((a) => !/^Homepage status|^Built with|^Latest copyright/.test(a) || /outdated/.test(a));
+  if (!checks.length) return 0;
+  const bad = checks.filter((a) => NEG.test(a) && !/^Uses HTTPS/.test(a)).length;
+  return Math.max(0, Math.round(100 * (1 - bad / checks.length)));
+}
+
+async function buildB2BReport(p: any, audit: string[], score: number): Promise<{ report: string; pitch: string }> {
+  const lang = (p.language ?? 'cs').toLowerCase().startsWith('cs') ? 'Czech' : 'British English';
+  const out = await generateJson<{ report: string; pitch: string }>(
+    `Business: ${p.company}\nContact: ${p.contact_name ?? 'unknown'}\nTrade: ${p.trade}\nTown: ${p.region}\nWebsite: ${p.website ?? 'none'}\nOverall website score: ${score}/100\nObserved automated checks:\n${audit.map((a) => '- ' + a).join('\n')}`,
+    {
+      schemaName: 'b2b_report',
+      schema: { type: 'object', additionalProperties: false, required: ['report', 'pitch'], properties: { report: { type: 'string' }, pitch: { type: 'string' } } },
+      instructions: `You are a senior web consultant at FastMedia.Pro (Timothy Knott, Louny, Czech Republic, www.fastmedia.pro, +420 797 864 432).
+Write two plain-text items (no markdown tables, use simple headings and dashes).
+1) "report": a professional business-to-business website audit in British English for FastMedia's sales team. Sections: EXECUTIVE SUMMARY (score, 2-3 sentences); FINDINGS (each issue: what we observed → why it costs the business customers/bookings/Google visibility → severity High/Medium/Low); WHAT WORKS; RECOMMENDED UPGRADE (concrete deliverables e.g. mobile responsive rebuild, online booking, LocalBusiness schema, Google Business Profile alignment, analytics, GDPR consent); MANUAL CHECKS TO DO (things the salesperson should verify by testing the site on a phone, Google search, PageSpeed Insights, Google Maps listing, reviews); TALKING POINTS.
+2) "pitch": a short, polite, non-pushy first email written in ${lang} addressed to the contact, explaining the 3-4 most important problems in plain language and why an upgrade helps them win more customers, offering a free no-obligation consultation. Include a subject line on the first line as "Subject: ...". Sign as Timothy Knott, FastMedia.Pro.
+STRICT: only use the observed facts given. Never invent statistics, reviews, rankings, prices, grant amounts or claims about the business. If something is unknown, say it needs checking.`,
+    },
+  );
+  return { report: out.report ?? '', pitch: out.pitch ?? '' };
 }
 
 async function alreadySynced(type: string): Promise<Set<string>> {
