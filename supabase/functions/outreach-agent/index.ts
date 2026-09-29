@@ -796,6 +796,7 @@ async function searchBusinessesWithAI(trade: string, region: string): Promise<Di
         ].join('\n'),
       }),
     })
+    if (res.status === 402 || res.status === 403 || res.status === 429) throw new Error(`gateway_${res.status}`)
     if (!res.ok) return []
     const data = await res.json()
     const text = (data.output ?? [])
@@ -819,7 +820,8 @@ async function searchBusinessesWithAI(trade: string, region: string): Promise<Di
         website: String(row.website ?? '').trim(),
       }))
       .filter((b: DiscoveredBusiness) => b.company.length > 1)
-  } catch {
+  } catch (e) {
+    if (e instanceof Error && e.message.startsWith('gateway_')) throw e
     return []
   }
 }
@@ -860,7 +862,13 @@ async function runDiscovery(db: Db, actor: Actor, trade: string, region: string,
   for (const business of found) {
     const { data: existing } = await db.from('prospects').select('id').eq('email', business.email).maybeSingle()
     const { data: suppressed } = await db.from('suppressed_emails').select('id').eq('email', business.email).maybeSingle()
-    if (existing || suppressed) {
+    const host = (() => { try { return new URL(business.website).hostname.replace(/^www\./, '') } catch { return '' } })()
+    const isDirectory = /firmy\.cz|mapy\.cz|google\.|facebook\.com|zlatestranky/i.test(host)
+    const { data: sameSite } = host && !isDirectory
+      ? await db.from('prospects').select('id').ilike('website', `%${host}%`).limit(1).maybeSingle()
+      : { data: null }
+    const { data: sameName } = await db.from('prospects').select('id').ilike('company', business.company).limit(1).maybeSingle()
+    if (existing || suppressed || sameSite || sameName) {
       duplicates += 1
       continue
     }
@@ -895,19 +903,38 @@ async function runWeeklyDiscovery(db: Db, actor: Actor) {
   if (!settings.discovery_enabled) return { skipped: true, reason: 'discovery_disabled' }
   const trades = settings.discovery_trades
   const regions = settings.discovery_regions
-  const cursor = settings.discovery_cursor
-  const trade = trades[cursor % trades.length]
-  const region = regions[Math.floor(cursor / trades.length) % regions.length]
-  const result = await runDiscovery(db, actor, trade, region, 5)
-  await db.from('outreach_settings').update({ discovery_cursor: cursor + 1 }).eq('id', 1)
-  return result
+  // Daily run: 5 trade/region searches, rotating so each day covers new ground.
+  const results = []
+  let cursor = settings.discovery_cursor
+  for (let i = 0; i < 5; i++) {
+    const trade = trades[cursor % trades.length]
+    const region = regions[Math.floor(cursor / trades.length) % regions.length]
+    cursor += 1
+    await db.from('outreach_settings').update({ discovery_cursor: cursor }).eq('id', 1)
+    try {
+      results.push(await runDiscovery(db, actor, trade, region, 5))
+    } catch (e) {
+      const reason = e instanceof Error ? e.message : 'error'
+      await logEvent(db, actor, 'discovery_paused', { details: { reason, trade, region } })
+      results.push({ trade, region, stopped: reason })
+      break
+    }
+  }
+  return { searches: results, inserted: results.reduce((n, r: any) => n + (r.inserted ?? 0), 0) }
 }
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
-  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders)
-
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+
+  // The daily discovery schedule authenticates with a private job token held in the database.
+  const jobToken = req.headers.get('x-job-token') ?? ''
+  let isDiscoveryJob = false
+  if (jobToken) {
+    const { data: tok } = await db.from('internal_job_tokens').select('token').eq('name', 'prospect_discovery').maybeSingle()
+    isDiscoveryJob = !!tok?.token && tok.token === jobToken
+  }
+  if (!isDiscoveryJob && !(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders)
   const actor = await resolveActor(req)
 
   try {
@@ -915,6 +942,7 @@ Deno.serve(async (req) => {
     const action = typeof body?.action === 'string' ? body.action : 'tick'
     const prospectId = typeof body?.prospect_id === 'string' ? body.prospect_id : null
     const messageId = typeof body?.message_id === 'string' ? body.message_id : null
+    if (isDiscoveryJob && action !== 'discover_weekly') return unauthorizedResponse(corsHeaders)
 
     if (action === 'research') {
       if (!prospectId) return json({ error: 'prospect_id_required' }, 400)
