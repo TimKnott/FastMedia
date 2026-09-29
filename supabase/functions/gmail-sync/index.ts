@@ -196,6 +196,17 @@ Deno.serve(async (req) => {
         continue
       }
       imported++
+      // Pipeline response tracking: mark matching Flowlu lead as replied and stop pending follow-ups.
+      try {
+        const fromEmail = (header(headers, 'From').match(/[^\s<>"]+@[^\s<>"]+/)?.[0] ?? '').toLowerCase()
+        if (fromEmail && !fromEmail.endsWith('@fastmedia.pro')) {
+          const { data: hits } = await admin.from('flowlu_leads').select('id,pipeline_stage').ilike('contact_email', fromEmail)
+          for (const h of hits ?? []) {
+            await admin.from('flowlu_leads').update({ last_reply_at: receivedAt, ...(['won', 'lost'].includes(h.pipeline_stage) ? {} : { pipeline_stage: 'replied' }) }).eq('id', h.id)
+            await admin.from('flowlu_lead_sequences').update({ status: 'cancelled', error: 'Stopped: lead replied' }).eq('flowlu_lead_id', h.id).in('status', ['draft', 'approved'])
+          }
+        }
+      } catch (e) { console.error('reply tracking failed:', (e as Error).message) }
     }
 
     // Backfill English translations for older messages that predate this feature.
