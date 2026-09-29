@@ -60,6 +60,7 @@ const OfferTeaser = () => {
     servicesBody: getContent('hero.services_body', base.servicesBody),
   };
   const reduceMotion = useReducedMotion();
+  const lite = reduceMotion || (typeof window !== "undefined" && window.matchMedia("(hover: none), (pointer: coarse), (max-width: 767px)").matches);
   const [scene, setScene] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -203,7 +204,7 @@ const OfferTeaser = () => {
 
                <div className="relative mt-9 hidden h-72 w-full md:block" aria-label={copy.servicesAria}>
                 <motion.div
-                  animate={reduceMotion ? undefined : { rotate: 360 }}
+                  animate={lite ? undefined : { rotate: 360 }}
                   transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
                   className="launch-orbit absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full"
                 />
@@ -214,7 +215,7 @@ const OfferTeaser = () => {
                   <motion.div
                      key={service.en}
                     initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1, y: reduceMotion ? 0 : [0, -6, 0] }}
+                    animate={{ opacity: 1, scale: 1, y: lite ? 0 : [0, -6, 0] }}
                     transition={{ opacity: { delay: 0.18 + index * 0.08 }, scale: { delay: 0.18 + index * 0.08 }, y: { duration: 3 + index * 0.22, repeat: Infinity, ease: 'easeInOut' } }}
                     className={`absolute ${service.position}`}
                   >
@@ -250,11 +251,11 @@ const OfferTeaser = () => {
         aria-hidden="true"
         initial={false}
         animate={scene === 0
-          ? { opacity: 1, x: reduceMotion ? 0 : [0, 7, -5, 0], y: reduceMotion ? 0 : [0, -8, 0], rotate: reduceMotion ? -7 : [-8, -5, -9, -8] }
+          ? { opacity: 1, x: lite ? 0 : [0, 7, -5, 0], y: lite ? 0 : [0, -8, 0], rotate: lite ? -7 : [-8, -5, -9, -8] }
           : { opacity: 0, x: '28vw', y: '-85vh', rotate: 10 }}
         transition={scene === 0
-          ? { duration: 4.2, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut' }
-          : { duration: reduceMotion ? 0.2 : 1.45, ease: [0.55, 0.02, 0.32, 1] }}
+          ? { duration: 4.2, repeat: lite ? 0 : Infinity, ease: 'easeInOut' }
+          : { duration: lite ? 0.2 : 1.45, ease: [0.55, 0.02, 0.32, 1] }}
         className="absolute bottom-[2%] right-[3%] z-[15] w-[48vw] max-w-[580px] min-w-[270px] origin-bottom"
       >
         <motion.div style={{ x: rocketSpringX, y: rocketSpringY }}>
