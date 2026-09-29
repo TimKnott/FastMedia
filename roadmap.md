@@ -72,6 +72,6 @@
 
 ## Sep 29 additions
 - [x] Route notification emails to professional address (OWNER_NOTIFICATION_EMAIL) across 8 edge functions — deployed
-- [ ] Verify professional address with live test email
+- [x] Verified: test notification sent to timknott@fastmedia.pro
 - [ ] GetSales: create & enable LinkedIn sequence from "SEO Experts" list (previously 422 — re-research API docs for flow-creation endpoint)
 - [ ] Confirm Flowlu account is fastmedia.flowlu.com — verified via flowlu_settings test (906 opportunities)
