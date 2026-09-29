@@ -292,8 +292,28 @@ Deno.serve(async (req) => {
       String(prospect.id),
     )
 
-    return { ok: true, lead_id: leadId || null, unmapped: unmappedValues }
+    // Enrol the pushed contact into the configured LinkedIn flow, so approved
+    // leads actually enter the sequence instead of only joining the list.
+    // Non-fatal: a missing or wrong flow id must not fail the push itself.
+    let enrolled = false
+    const flowUuid = String(settings?.getsales_automation_id ?? '').trim()
+    if (flowUuid && leadId) {
+      const enrol = await getSales(base, `/flows/api/flows/${encodeURIComponent(flowUuid)}/leads/${encodeURIComponent(leadId)}`, { method: 'POST' }, 2)
+      enrolled = enrol.ok
+      if (enrol.ok) {
+        await logEvent('getsales_enrolled', { flow_uuid: flowUuid, lead_id: leadId }, String(prospect.id))
+      } else {
+        await logEvent(
+          'getsales_enrol_failed',
+          { flow_uuid: flowUuid, lead_id: leadId, status: enrol.status, message: describeFailure(enrol) },
+          String(prospect.id),
+        )
+      }
+    }
+
+    return { ok: true, lead_id: leadId || null, enrolled, unmapped: unmappedValues }
   }
+
 
   try {
     if (action === 'webhook_url') {
