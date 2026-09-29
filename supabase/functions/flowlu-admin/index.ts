@@ -341,7 +341,7 @@ Deno.serve(async (req) => {
         try {
           const lead = await flowlu(`module/crm/lead/get/${leadId}`);
           const stamp = new Date().toLocaleString('en-GB', { timeZone: 'Europe/Prague' });
-          const entry = `\n\n--- Email sent from FastMedia back office (${stamp}) ---\nTo: ${to}\nSubject: ${subject}\n\n${text}`;
+          const entry = `<p><br></p><p><strong>Email sent from FastMedia back office (${esc(stamp)})</strong><br>To: ${esc(to)}<br>Subject: ${esc(subject)}</p><p>${esc(text).replace(/\n/g, '<br>')}</p>`;
           await flowlu(`module/crm/lead/update/${leadId}`, { description: (String(lead?.description ?? '') + entry).slice(-60000) }, 'POST');
           logged = true;
         } catch (e) { logError = (e as Error).message; }
