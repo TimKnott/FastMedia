@@ -9,6 +9,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
 import AdminToolbar from "@/components/AdminToolbar";
 import WhatsAppFloat from "./components/WhatsAppFloat";
+import AdminQuickBar from "./components/AdminQuickBar";
 import EmbedCodeInjector from "./components/EmbedCodeInjector";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import AccessibilityToolbar from "./components/AccessibilityToolbar";
@@ -94,6 +95,7 @@ const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 const AdminCourses = lazy(() => import("./pages/admin/AdminCourses"));
 const AdminCaseStudies = lazy(() => import("./pages/admin/AdminCaseStudies"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
+const AdminLeadsHub = lazy(() => import("./pages/admin/AdminLeadsHub"));
 const AdminVoiceAgent = lazy(() => import("./pages/admin/AdminVoiceAgent"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
@@ -186,6 +188,7 @@ const App = () => (
           <CursorFX />
           <PaymentTestModeBanner />
           <AdminToolbar />
+          <AdminQuickBar />
           <WhatsAppFloat />
           <EmbedCodeInjector />
           <CookieConsentBanner />
@@ -290,6 +293,7 @@ const App = () => (
             <Route path="/admin" element={<ProtectedRoute minRole="editor"><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="leads" element={<AdminLeads />} />
+              <Route path="leads-hub" element={<ProtectedRoute minRole="admin"><AdminLeadsHub /></ProtectedRoute>} />
               <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
               <Route path="quote-requests" element={<ProtectedRoute minRole="admin"><AdminQuoteRequests /></ProtectedRoute>} />
               <Route path="offer-leads" element={<ProtectedRoute minRole="admin"><AdminOfferLeads /></ProtectedRoute>} />

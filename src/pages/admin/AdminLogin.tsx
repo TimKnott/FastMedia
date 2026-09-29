@@ -54,7 +54,7 @@ const AdminLogin = () => {
       });
       return false;
     }
-    navigate('/admin', { replace: true });
+    navigate('/admin/leads-hub', { replace: true });
     return true;
   };
 
