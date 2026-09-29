@@ -69,3 +69,9 @@
 - [ ] Hair salon through LinkedIn → Flowlu — BLOCKED: Flowlu key + GetSales sequence
 - [ ] GetSales LinkedIn sequence from SEO Experts list — BLOCKED: GetSales has no API for creating sequences; user must create in GetSales
 - [x] Blog narration: replace ElevenLabs with Google voice via Lovable AI
+
+## Sep 29 additions
+- [x] Route notification emails to professional address (OWNER_NOTIFICATION_EMAIL) across 8 edge functions — deployed
+- [ ] Verify professional address with live test email
+- [ ] GetSales: create & enable LinkedIn sequence from "SEO Experts" list (previously 422 — re-research API docs for flow-creation endpoint)
+- [ ] Confirm Flowlu account is fastmedia.flowlu.com — verified via flowlu_settings test (906 opportunities)
