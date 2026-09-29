@@ -942,6 +942,7 @@ Deno.serve(async (req) => {
     const action = typeof body?.action === 'string' ? body.action : 'tick'
     const prospectId = typeof body?.prospect_id === 'string' ? body.prospect_id : null
     const messageId = typeof body?.message_id === 'string' ? body.message_id : null
+    if (isDiscoveryJob && action !== 'discover_weekly') return unauthorizedResponse(corsHeaders)
 
     if (action === 'research') {
       if (!prospectId) return json({ error: 'prospect_id_required' }, 400)
