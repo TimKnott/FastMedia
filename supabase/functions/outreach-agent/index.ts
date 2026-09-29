@@ -46,7 +46,14 @@ interface Settings {
   discovery_trades: string[]
   discovery_regions: string[]
   discovery_cursor: number
+  discovery_spend_date: string | null
+  discovery_spend_credits: number
 }
+
+/** Hard daily cap on AI credits spent by lead discovery (user request: free-tier sized). */
+const DISCOVERY_DAILY_CREDIT_CAP = 5
+/** Conservative estimate of credits used by one web-search discovery call. */
+const DISCOVERY_CREDITS_PER_SEARCH = 1.5
 
 const DEFAULT_SETTINGS: Settings = {
   test_mode: false,
@@ -58,6 +65,8 @@ const DEFAULT_SETTINGS: Settings = {
   discovery_trades: ['plumber', 'electrician', 'hair salon', 'dental clinic', 'restaurant', 'carpenter', 'fitness studio', 'accountant'],
   discovery_regions: ['Praha', 'Brno', 'Ostrava', 'Plzeň', 'Ústí nad Labem', 'Liberec', 'Olomouc', 'České Budějovice'],
   discovery_cursor: 0,
+  discovery_spend_date: null,
+  discovery_spend_credits: 0,
 }
 
 const json = (body: unknown, status = 200) =>
@@ -79,6 +88,8 @@ async function loadSettings(db: Db): Promise<Settings> {
     discovery_trades: Array.isArray(data.discovery_trades) && data.discovery_trades.length > 0 ? data.discovery_trades : DEFAULT_SETTINGS.discovery_trades,
     discovery_regions: Array.isArray(data.discovery_regions) && data.discovery_regions.length > 0 ? data.discovery_regions : DEFAULT_SETTINGS.discovery_regions,
     discovery_cursor: Number(data.discovery_cursor) || 0,
+    discovery_spend_date: data.discovery_spend_date ?? null,
+    discovery_spend_credits: Number(data.discovery_spend_credits) || 0,
   }
 }
 
@@ -903,14 +914,25 @@ async function runWeeklyDiscovery(db: Db, actor: Actor) {
   if (!settings.discovery_enabled) return { skipped: true, reason: 'discovery_disabled' }
   const trades = settings.discovery_trades
   const regions = settings.discovery_regions
-  // Daily run: 5 trade/region searches, rotating so each day covers new ground.
+  // Daily run: trade/region searches, rotating so each day covers new ground.
+  // Stops once the day's estimated AI credit spend reaches DISCOVERY_DAILY_CREDIT_CAP.
+  const today = new Date().toISOString().slice(0, 10)
+  let spentToday = settings.discovery_spend_date === today ? settings.discovery_spend_credits : 0
+  if (spentToday >= DISCOVERY_DAILY_CREDIT_CAP) {
+    return { skipped: true, reason: 'daily_credit_cap_reached', spent_today: spentToday }
+  }
   const results = []
   let cursor = settings.discovery_cursor
-  for (let i = 0; i < 5; i++) {
+  while (spentToday + DISCOVERY_CREDITS_PER_SEARCH <= DISCOVERY_DAILY_CREDIT_CAP) {
     const trade = trades[cursor % trades.length]
     const region = regions[Math.floor(cursor / trades.length) % regions.length]
     cursor += 1
-    await db.from('outreach_settings').update({ discovery_cursor: cursor }).eq('id', 1)
+    spentToday += DISCOVERY_CREDITS_PER_SEARCH
+    await db.from('outreach_settings').update({
+      discovery_cursor: cursor,
+      discovery_spend_date: today,
+      discovery_spend_credits: spentToday,
+    }).eq('id', 1)
     try {
       results.push(await runDiscovery(db, actor, trade, region, 5))
     } catch (e) {
@@ -920,7 +942,12 @@ async function runWeeklyDiscovery(db: Db, actor: Actor) {
       break
     }
   }
-  return { searches: results, inserted: results.reduce((n, r: any) => n + (r.inserted ?? 0), 0) }
+  return {
+    searches: results,
+    inserted: results.reduce((n, r: any) => n + (r.inserted ?? 0), 0),
+    spent_today_credits: spentToday,
+    daily_credit_cap: DISCOVERY_DAILY_CREDIT_CAP,
+  }
 }
 
 Deno.serve(async (req) => {
