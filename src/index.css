@@ -501,3 +501,8 @@ html.a11y-reduced-motion *::after {
   .launch-stars, .launch-flame, .shooting-star,
   .grant-road__lines, .grant-pad-rocket, .grant-pad-trail { animation: none !important; }
 }
+
+/* Mobile performance: blur filters are very expensive on phones. */
+@media (max-width: 767px), (hover: none) {
+  [class*="backdrop-blur"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+}
