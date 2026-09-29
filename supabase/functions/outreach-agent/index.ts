@@ -46,7 +46,14 @@ interface Settings {
   discovery_trades: string[]
   discovery_regions: string[]
   discovery_cursor: number
+  discovery_spend_date: string | null
+  discovery_spend_credits: number
 }
+
+/** Hard daily cap on AI credits spent by lead discovery (user request: free-tier sized). */
+const DISCOVERY_DAILY_CREDIT_CAP = 5
+/** Conservative estimate of credits used by one web-search discovery call. */
+const DISCOVERY_CREDITS_PER_SEARCH = 1.5
 
 const DEFAULT_SETTINGS: Settings = {
   test_mode: false,
