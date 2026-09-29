@@ -182,23 +182,54 @@ Deno.serve(async (req) => {
       const audit = await auditWebsite(p.website);
       const r: any = p.research ?? {};
       const researchLines = Object.entries(r).filter(([, v]) => v && typeof v !== 'object').map(([k, v]) => `${k}: ${v}`);
+      const score = scoreAudit(audit);
+      const b2b = await buildB2BReport(p, audit, score).catch((e) => ({ report: `AI report failed: ${(e as Error).message}\n\n${audit.map((a) => '- ' + a).join('\n')}`, pitch: '' }));
       const description = [
         `FASTMEDIA LEAD REPORT — ${p.company}`,
         `Contact: ${p.contact_name ?? '-'} | ${p.email ?? '-'} | ${p.phone ?? '-'}`,
         `Trade: ${p.trade ?? '-'} | Area: ${p.region ?? '-'} | Language: ${p.language ?? '-'}`,
-        `Website / listing: ${p.website ?? 'none'}`,
+        `Website / listing: ${p.website ?? 'none'} | Website score: ${score}/100`,
         `Found via: ${p.discovered_query ?? p.source}`,
         p.notes ? `Notes: ${p.notes}` : '',
-        '', 'WEBSITE CHECK (automated, observed facts only):', ...audit.map((a) => `- ${a}`),
         researchLines.length ? '\nRESEARCH:\n' + researchLines.join('\n') : '',
-        '', 'NEXT STEP: review report, then approve a personalised first email on the Prospecting desk. Nothing has been sent to this business yet.',
+        '', 'Full B2B website audit → field "Website audit report (B2B)". Ready-to-send message → field "Outreach pitch to client".',
+        'NEXT STEP: review, then approve a personalised first email on the Prospecting desk. Nothing has been sent to this business yet.',
       ].filter((x) => x !== '').join('\n');
-      await sb.from('flowlu_sync_log').delete().eq('entity_type', 'prospect').eq('entity_id', id).eq('direction', 'push');
-      const res = await logResult('prospect', id, () => createOpportunity({
-        name: p.contact_name || p.company, email: p.email, phone: p.phone, company: p.company, source: 'Discovered lead', description,
-      }), { company: p.company });
+
+      // Customer (CRM account): find by name or create as a company.
+      let customerId: string | null = null;
+      try {
+        const found = await flowlu('module/crm/account/list', { 'filter[name]': p.company, limit: '1' });
+        customerId = found?.items?.[0]?.id ? String(found.items[0].id) : null;
+        if (!customerId) {
+          const acc = await flowlu('module/crm/account/create', {
+            type: '1', name: p.company, email: p.email ?? '', phone: p.phone ?? '', web: p.website ?? '',
+            address: p.address ?? p.region ?? '', billing_city: p.region ?? '', billing_country: 'Czech Republic',
+            description: `${p.trade ?? ''} — discovered by FastMedia prospecting (${p.discovered_query ?? p.source}).`,
+          }, 'POST');
+          customerId = acc?.id ? String(acc.id) : null;
+        }
+      } catch (e) { console.error('account', (e as Error).message); }
+
+      const campaign = `${(p.trade ?? 'lead').toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${(p.region ?? '').toString().toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-')}`.replace(/-+$/, '');
+      const fields: Record<string, string> = {
+        name: `${p.company} — website upgrade (${p.trade ?? 'lead'}, ${p.region ?? ''})`.slice(0, 250),
+        contact_name: p.contact_name ?? '', contact_email: p.email ?? '', contact_phone: p.phone ?? '',
+        contact_company: p.company ?? '', contact_web: p.website ?? '', contact_position: p.contact_role ?? 'Owner',
+        description: description.slice(0, 5000), source_id: '10',
+        ...(customerId ? { customer_id: customerId } : {}),
+        cf_25: 'fastmedia-prospecting', cf_26: 'outbound', cf_27: campaign, cf_28: 'website-audit',
+        cf_29: (p.discovered_query ?? '').slice(0, 200), cf_30: p.website ?? 'none', cf_31: String(score),
+        cf_32: b2b.report.slice(0, 20000), cf_33: b2b.pitch.slice(0, 8000),
+      };
+      const { data: prev } = await sb.from('flowlu_sync_log').select('flowlu_id').eq('entity_type', 'prospect').eq('entity_id', id).eq('direction', 'push').maybeSingle();
+      const res = await logResult('prospect', id, async () => {
+        if (prev?.flowlu_id) { await flowlu(`module/crm/lead/update/${prev.flowlu_id}`, fields, 'POST'); return prev.flowlu_id; }
+        const c = await flowlu('module/crm/lead/create', fields, 'POST');
+        return c?.id ? String(c.id) : null;
+      }, { company: p.company });
       const { data: log } = await sb.from('flowlu_sync_log').select('flowlu_id,status,error').eq('entity_type', 'prospect').eq('entity_id', id).maybeSingle();
-      return json({ ...res, flowlu_id: log?.flowlu_id, url: log?.flowlu_id ? `https://${account()}.flowlu.com/crm/lead/view/${log.flowlu_id}` : null, audit, description });
+      return json({ ...res, flowlu_id: log?.flowlu_id, customer_id: customerId, url: log?.flowlu_id ? `https://${account()}.flowlu.com/crm/lead/view/${log.flowlu_id}` : null, score, audit, report: b2b.report, pitch: b2b.pitch });
     }
     if (action === 'raw_get' || action === 'raw_post') {
       return json(await flowlu(String(body.path), body.params ?? {}, action === 'raw_post' ? 'POST' : 'GET'));
