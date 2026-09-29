@@ -308,8 +308,9 @@ Deno.serve(async (req) => {
         all.push(...items);
         if (items.length < 100) break;
       }
-      const { data: existing } = await sb.from('flowlu_leads').select('id');
+      const { data: existing } = await sb.from('flowlu_leads').select('id,flowlu_score_synced');
       const known = new Set((existing ?? []).map((e: any) => Number(e.id)));
+      const syncedMap = new Map((existing ?? []).map((e: any) => [Number(e.id), e.flowlu_score_synced]));
       const rows = all.map((l) => {
         const s = scoreLead(l);
         const created = l.created_date && !String(l.created_date).startsWith('0000') ? new Date(String(l.created_date).replace(' ', 'T') + 'Z').toISOString() : null;
@@ -324,8 +325,22 @@ Deno.serve(async (req) => {
         if (error) throw new Error(error.message);
       }
       const added = rows.filter((r) => !known.has(r.id)).length;
+      // Write score + priority back to Flowlu custom fields (cf_34 / cf_35), only when changed; capped per run.
+      let scoresPushed = 0; let scoresPending = 0;
+      const changed = rows.filter((r) => syncedMap.get(r.id) !== `${r.score}|${r.priority}` && String(r.raw?.cf_34 ?? '') + '|' + String(r.raw?.cf_35 ?? '') !== `${r.score}|${r.priority}`);
+      const already = rows.filter((r) => syncedMap.get(r.id) !== `${r.score}|${r.priority}` && !changed.includes(r));
+      for (const r of already) await sb.from('flowlu_leads').update({ flowlu_score_synced: `${r.score}|${r.priority}` }).eq('id', r.id);
+      const cap = Number(body.score_limit) || 150;
+      for (const r of changed) {
+        if (scoresPushed >= cap) { scoresPending++; continue; }
+        try {
+          await flowlu(`module/crm/lead/update/${r.id}`, { cf_34: String(r.score), cf_35: r.priority }, 'POST');
+          await sb.from('flowlu_leads').update({ flowlu_score_synced: `${r.score}|${r.priority}` }).eq('id', r.id);
+          scoresPushed++;
+        } catch { scoresPending++; }
+      }
       await sb.from('flowlu_settings').update({ last_sync_at: new Date().toISOString() }).eq('id', 1);
-      return json({ ok: true, total: rows.length, new: added });
+      return json({ ok: true, total: rows.length, new: added, scores_pushed: scoresPushed, scores_pending: scoresPending });
     }
     if (action === 'send_reply') {
       const leadId = Number(body.lead_id);
