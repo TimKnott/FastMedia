@@ -3,6 +3,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 import { generateJson } from '../_shared/ai-json.ts';
+import { sendViaGmail } from '../_shared/gmail-fallback.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -65,6 +66,30 @@ async function logResult(entity_type: string, entity_id: string, fn: () => Promi
     );
     return { ok: false, error: (e as Error).message };
   }
+}
+
+// Transparent 0-100 score so the best Flowlu leads stand out.
+function scoreLead(l: any): { score: number; priority: string; reasons: string[] } {
+  let s = 0; const r: string[] = [];
+  if (l.contact_email) { s += 20; r.push('Has email (+20)'); }
+  if (l.contact_phone) { s += 10; r.push('Has phone (+10)'); }
+  if (l.contact_company || l.customer_id) { s += 10; r.push('Linked company (+10)'); }
+  const budget = Number(l.budget) || 0;
+  if (budget > 0) { const b = budget >= 50000 ? 20 : budget >= 15000 ? 12 : 6; s += b; r.push(`Budget ${budget} (+${b})`); }
+  const blob = JSON.stringify(l);
+  const ws = blob.match(/(\d{1,3})\s*\/\s*100/);
+  if (ws && Number(ws[1]) <= 100) {
+    const w = Number(ws[1]); const p = w < 40 ? 20 : w < 60 ? 12 : 4;
+    s += p; r.push(`Website score ${w}/100 — room to improve (+${p})`);
+  } else if (/No own website|no website/i.test(blob)) { s += 15; r.push('No own website (+15)'); }
+  const created = l.created_date ? Date.parse(String(l.created_date).replace(' ', 'T') + 'Z') : NaN;
+  if (!isNaN(created)) {
+    const days = (Date.now() - created) / 86400000;
+    if (days <= 7) { s += 15; r.push('Added this week (+15)'); } else if (days <= 30) { s += 8; r.push('Added this month (+8)'); }
+  }
+  if (String(l.active ?? '1') === '1' && !l.closing_date) { s += 5; r.push('Still open (+5)'); }
+  s = Math.min(100, s);
+  return { score: s, priority: s >= 60 ? 'high' : s >= 35 ? 'medium' : 'low', reasons: r };
 }
 
 // All leads are assigned to Tim Knott (Flowlu user 172245, account admin).
@@ -274,6 +299,57 @@ Deno.serve(async (req) => {
       }, { company: p.company });
       const { data: log } = await sb.from('flowlu_sync_log').select('flowlu_id,status,error').eq('entity_type', 'prospect').eq('entity_id', id).maybeSingle();
       return json({ ...res, flowlu_id: log?.flowlu_id, customer_id: customerId, url: log?.flowlu_id ? `https://${account()}.flowlu.com/crm/lead/view/${log.flowlu_id}` : null, score, audit, report: b2b.report, pitch: b2b.pitch });
+    }
+    if (action === 'pull_leads') {
+      const all: any[] = [];
+      for (let page = 1; page <= 30; page++) {
+        const r = await flowlu('module/crm/lead/list', { page: String(page), limit: '100' });
+        const items = r?.items ?? [];
+        all.push(...items);
+        if (items.length < 100) break;
+      }
+      const { data: existing } = await sb.from('flowlu_leads').select('id');
+      const known = new Set((existing ?? []).map((e: any) => Number(e.id)));
+      const rows = all.map((l) => {
+        const s = scoreLead(l);
+        const created = l.created_date && !String(l.created_date).startsWith('0000') ? new Date(String(l.created_date).replace(' ', 'T') + 'Z').toISOString() : null;
+        return {
+          id: Number(l.id), name: l.name ?? null, contact_name: l.contact_name || null, contact_email: l.contact_email || null,
+          contact_phone: l.contact_phone || null, contact_company: l.contact_company || null, budget: Number(l.budget) || null,
+          flowlu_created_at: created, score: s.score, priority: s.priority, score_reasons: s.reasons, raw: l, synced_at: new Date().toISOString(),
+        };
+      });
+      for (let i = 0; i < rows.length; i += 200) {
+        const { error } = await sb.from('flowlu_leads').upsert(rows.slice(i, i + 200), { onConflict: 'id' });
+        if (error) throw new Error(error.message);
+      }
+      const added = rows.filter((r) => !known.has(r.id)).length;
+      await sb.from('flowlu_settings').update({ last_sync_at: new Date().toISOString() }).eq('id', 1);
+      return json({ ok: true, total: rows.length, new: added });
+    }
+    if (action === 'send_reply') {
+      const leadId = Number(body.lead_id);
+      const to = String(body.to ?? '').trim();
+      const subject = String(body.subject ?? '').trim().slice(0, 250);
+      const text = String(body.body ?? '').trim().slice(0, 20000);
+      if (!leadId || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || !subject || !text) return json({ error: 'Lead, valid recipient, subject and message are required' }, 400);
+      const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}</div>`;
+      const sent = await sendViaGmail(to, subject, html, text);
+      let logged = false; let logError: string | null = null;
+      if (sent.sent) {
+        try {
+          const lead = await flowlu(`module/crm/lead/get/${leadId}`);
+          const stamp = new Date().toLocaleString('en-GB', { timeZone: 'Europe/Prague' });
+          const entry = `\n\n--- Email sent from FastMedia back office (${stamp}) ---\nTo: ${to}\nSubject: ${subject}\n\n${text}`;
+          await flowlu(`module/crm/lead/update/${leadId}`, { description: (String(lead?.description ?? '') + entry).slice(-60000) }, 'POST');
+          logged = true;
+        } catch (e) { logError = (e as Error).message; }
+      }
+      const row = { flowlu_lead_id: leadId, to_email: to, subject, body: text, status: sent.sent ? 'sent' : 'failed', error: sent.error ?? logError, flowlu_logged: logged, sent_at: sent.sent ? new Date().toISOString() : null };
+      if (body.reply_id) await sb.from('flowlu_lead_replies').update(row).eq('id', String(body.reply_id));
+      else await sb.from('flowlu_lead_replies').insert(row);
+      return json({ ok: sent.sent, flowlu_logged: logged, error: sent.error ?? logError, url: `https://${account()}.flowlu.com/crm/lead/view/${leadId}` }, sent.sent ? 200 : 502);
     }
     if (action === 'raw_get' || action === 'raw_post') {
       return json(await flowlu(String(body.path), body.params ?? {}, action === 'raw_post' ? 'POST' : 'GET'));
