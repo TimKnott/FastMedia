@@ -67,6 +67,9 @@ async function logResult(entity_type: string, entity_id: string, fn: () => Promi
   }
 }
 
+// All leads are assigned to Tim Knott (Flowlu user 172245, account admin).
+const FLOWLU_OWNER_USER_ID = 172245;
+
 async function createOpportunity(p: { name: string; email?: string | null; phone?: string | null; company?: string | null; description: string; source: string }) {
   const r = await flowlu('module/crm/lead/create', {
     name: `${p.source}: ${p.name}`.slice(0, 250),
@@ -75,6 +78,7 @@ async function createOpportunity(p: { name: string; email?: string | null; phone
     contact_phone: p.phone ?? '',
     contact_company: p.company ?? '',
     description: p.description.slice(0, 5000),
+    assignee_id: FLOWLU_OWNER_USER_ID,
   }, 'POST');
   return r?.id ? String(r.id) : null;
 }
