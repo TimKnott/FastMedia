@@ -10,7 +10,65 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Sarah
+const TTS_MODEL = 'google/gemini-3.1-flash-tts-preview';
+const VOICE = 'Kore'; // natural Google voice
+
+function splitText(text: string, max = 1400): string[] {
+  const parts: string[] = [];
+  let cur = '';
+  for (const s of text.split(/(?<=[.!?…])\s+/)) {
+    if ((cur + ' ' + s).length > max && cur) { parts.push(cur); cur = s; } else cur = cur ? cur + ' ' + s : s;
+  }
+  if (cur) parts.push(cur);
+  return parts;
+}
+
+function pcmFromWav(buf: Uint8Array): { pcm: Uint8Array; rate: number } {
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  let rate = 24000; let off = 12;
+  while (off + 8 <= buf.length) {
+    const id = String.fromCharCode(...buf.slice(off, off + 4));
+    const size = dv.getUint32(off + 4, true);
+    if (id === 'fmt ') rate = dv.getUint32(off + 12, true);
+    if (id === 'data') return { pcm: buf.slice(off + 8, Math.min(buf.length, off + 8 + size)), rate };
+    off += 8 + size + (size % 2);
+  }
+  return { pcm: buf.slice(44), rate };
+}
+
+function buildWav(pcm: Uint8Array, rate: number): Uint8Array {
+  const out = new Uint8Array(44 + pcm.length); const dv = new DataView(out.buffer);
+  const w = (o: number, t: string) => { for (let i = 0; i < t.length; i++) out[o + i] = t.charCodeAt(i); };
+  w(0, 'RIFF'); dv.setUint32(4, 36 + pcm.length, true); w(8, 'WAVE'); w(12, 'fmt ');
+  dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+  dv.setUint32(24, rate, true); dv.setUint32(28, rate * 2, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+  w(36, 'data'); dv.setUint32(40, pcm.length, true); out.set(pcm, 44);
+  return out;
+}
+
+async function synthesizeWav(text: string): Promise<Uint8Array> {
+  const key = Deno.env.get('LOVABLE_API_KEY')!;
+  const chunks: Uint8Array[] = []; let rate = 24000;
+  for (const part of splitText(text)) {
+    const res = await fetch('https://ai.gateway.lovable.dev/v1/audio/speech', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: TTS_MODEL,
+        contents: [{ role: 'user', parts: [{ text: `Read this article aloud in a warm, natural British English voice: ${part}` }] }],
+        generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } } },
+        stream_format: 'audio',
+      }),
+    });
+    if (!res.ok) throw new Error(`Voice service ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    const w = pcmFromWav(new Uint8Array(await res.arrayBuffer()));
+    rate = w.rate; chunks.push(w.pcm);
+  }
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const pcm = new Uint8Array(total); let o = 0;
+  for (const c of chunks) { pcm.set(c, o); o += c.length; }
+  return buildWav(pcm, rate);
+}
 const MAX_CHARS = 4500;
 
 function buildNarrationFromPost(post: { title?: Record<string, string>; excerpt?: Record<string, string>; content?: Record<string, { sections: Array<{ type: string; text?: string; items?: string[] }> }> }) {
@@ -36,8 +94,7 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const ELEVENLABS_API_KEY = Deno.env.get('ELEVENLABS_API_KEY');
-    if (!ELEVENLABS_API_KEY) throw new Error('ELEVENLABS_API_KEY not configured');
+    if (!Deno.env.get('LOVABLE_API_KEY')) throw new Error('LOVABLE_API_KEY not configured');
 
     // AuthN/AuthZ: only admins, service-role, or the internal CRON_SECRET may
     // trigger TTS generation. This prevents anonymous abuse of the paid
@@ -88,11 +145,11 @@ Deno.serve(async (req) => {
         });
       }
       narration = buildNarrationFromPost(post as any);
-      storagePath = `posts/${post_id}.mp3`;
+      storagePath = `posts/${post_id}.wav`;
       dbPostId = post.id;
     } else if (slug && text) {
       narration = clip(text);
-      storagePath = `static/${slug.replace(/[^a-z0-9-]/gi, '-')}.mp3`;
+      storagePath = `static/${slug.replace(/[^a-z0-9-]/gi, '-')}.wav`;
     } else {
       throw new Error('Provide either post_id or { slug, text }');
     }
@@ -110,26 +167,9 @@ Deno.serve(async (req) => {
       }
     }
 
-    const ttsRes = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream?output_format=mp3_22050_32`,
-      {
-        method: 'POST',
-        headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: narration,
-          model_id: 'eleven_turbo_v2_5',
-          voice_settings: { stability: 0.55, similarity_boost: 0.75, style: 0.2, use_speaker_boost: true, speed: 1.0 },
-        }),
-      },
-    );
-    if (!ttsRes.ok) {
-      const errBody = await ttsRes.text();
-      throw new Error(`ElevenLabs ${ttsRes.status}: ${errBody.slice(0, 200)}`);
-    }
-    const mp3 = new Uint8Array(await ttsRes.arrayBuffer());
-
-    const { error: upErr } = await admin.storage.from('blog-audio').upload(storagePath, mp3, {
-      contentType: 'audio/mpeg', upsert: true, cacheControl: '604800',
+    const wav = await synthesizeWav(narration);
+    const { error: upErr } = await admin.storage.from('blog-audio').upload(storagePath, wav, {
+      contentType: 'audio/wav', upsert: true, cacheControl: '604800',
     });
     if (upErr) throw upErr;
     const { data: pub } = admin.storage.from('blog-audio').getPublicUrl(storagePath);

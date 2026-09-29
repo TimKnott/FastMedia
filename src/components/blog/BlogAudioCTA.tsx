@@ -60,14 +60,17 @@ const BlogAudioCTA = ({ postId, initialAudioUrl, slug, text, readMinutes, title 
       return;
     }
     const sanitized = slug.replace(/[^a-z0-9-]/gi, '-');
-    const candidate = `${SUPABASE_URL}/storage/v1/object/public/blog-audio/static/${sanitized}.mp3`;
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(candidate, { method: 'HEAD' });
-        if (!cancelled && res.ok) {
-          setAudioUrl(candidate);
-          setCached(true);
+        for (const ext of ['wav', 'mp3']) {
+          const candidate = `${SUPABASE_URL}/storage/v1/object/public/blog-audio/static/${sanitized}.${ext}`;
+          const res = await fetch(candidate, { method: 'HEAD' });
+          if (!cancelled && res.ok) {
+            setAudioUrl(candidate);
+            setCached(true);
+            break;
+          }
         }
       } catch {
         /* ignore — no cached audio */
