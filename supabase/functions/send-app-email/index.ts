@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
 
   let effectiveRecipient = template.to || recipientEmail
   if (!privileged && OWNER_NOTIFICATION_TEMPLATES.has(templateName)) {
-    const owner = Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL')
+    const owner = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL')
     if (owner) effectiveRecipient = owner
   }
 

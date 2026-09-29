@@ -128,7 +128,7 @@ Deno.serve(async (req) => {
     return json({ success: true, id: inserted.id, partial: true, emailStatus: 'skipped' })
   }
 
-  const owner = Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL')
+  const owner = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL')
   let emailStatus = 'skipped'
   let emailMessageId: string | null = null
 

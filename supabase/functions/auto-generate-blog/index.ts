@@ -86,7 +86,7 @@ async function sendEmail(subject: string, bodyPlain: string) {
   const url = Deno.env.get('SUPABASE_URL');
   const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!url || !key) return { skipped: true };
-  const to = Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL') || NOTIFY_TO;
+  const to = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL') || NOTIFY_TO;
   try {
     const res = await fetch(`${url}/functions/v1/send-app-email`, {
       method: 'POST',
