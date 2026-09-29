@@ -104,6 +104,7 @@ const OfferTeaser = () => {
 
   return (
     <section
+      ref={sectionRef}
       aria-label={copy.aria}
       className="launch-hero relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground"
     >
@@ -256,8 +257,10 @@ const OfferTeaser = () => {
           : { duration: reduceMotion ? 0.2 : 1.45, ease: [0.55, 0.02, 0.32, 1] }}
         className="absolute bottom-[2%] right-[3%] z-[15] w-[48vw] max-w-[580px] min-w-[270px] origin-bottom"
       >
-        <div className="launch-flame absolute bottom-[7%] left-[12%] h-[18%] w-[28%] -rotate-45" />
-        <img src={launchRocket} alt="" width={1024} height={1024} className="relative h-auto w-full drop-shadow-2xl" />
+        <motion.div style={{ x: rocketSpringX, y: rocketSpringY }}>
+          <div className="launch-flame absolute bottom-[7%] left-[12%] h-[18%] w-[28%] -rotate-45" />
+          <img src={launchRocket} alt="" width={1024} height={1024} className="relative h-auto w-full drop-shadow-2xl" />
+        </motion.div>
       </motion.div>
 
       <div className="absolute bottom-7 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 rounded-full border border-launch-border bg-launch-surface px-3 py-2 backdrop-blur-md">
