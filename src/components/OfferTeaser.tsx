@@ -108,7 +108,7 @@ const OfferTeaser = () => {
       aria-label={copy.aria}
       className="launch-hero relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground"
     >
-      <img
+      <img loading="lazy" decoding="async"
         src={launchSky}
         alt={copy.alt}
         width={1920}
@@ -259,7 +259,7 @@ const OfferTeaser = () => {
       >
         <motion.div style={{ x: rocketSpringX, y: rocketSpringY }}>
           <div className="launch-flame absolute bottom-[7%] left-[12%] h-[18%] w-[28%] -rotate-45" />
-          <img src={launchRocket} alt="" width={1024} height={1024} className="relative h-auto w-full drop-shadow-2xl" />
+          <img loading="lazy" decoding="async" src={launchRocket} alt="" width={1024} height={1024} className="relative h-auto w-full drop-shadow-2xl" />
         </motion.div>
       </motion.div>
 

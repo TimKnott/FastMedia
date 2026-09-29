@@ -60,7 +60,7 @@ export const ClientBrandingEditor = (p: Props) => {
           <Label className="text-xs">Client logo</Label>
           <div className="mt-1 aspect-square w-full rounded-md border border-dashed border-border bg-muted/40 flex items-center justify-center overflow-hidden">
             {p.logoUrl ? (
-              <img src={p.logoUrl} alt="Client logo" className="max-w-full max-h-full object-contain" />
+              <img loading="lazy" decoding="async" src={p.logoUrl} alt="Client logo" className="max-w-full max-h-full object-contain" />
             ) : (
               <span className="text-[11px] text-muted-foreground text-center px-2">No logo yet</span>
             )}

@@ -29,7 +29,7 @@ const BlogFeaturedHero = ({ post }: BlogFeaturedHeroProps) => {
         to={`/blog/${post.slug}`}
         className="group relative block rounded-3xl overflow-hidden aspect-[4/5] sm:aspect-[16/9] lg:aspect-[21/9] min-h-[420px] sm:min-h-[280px] max-w-full"
       >
-        <img
+        <img loading="lazy" decoding="async"
           src={post.image}
           alt={post.title[language]}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"

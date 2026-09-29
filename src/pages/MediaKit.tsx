@@ -131,7 +131,7 @@ const MediaKit = () => {
       <header className="border-b border-border bg-background/80 backdrop-blur sticky top-0 z-40">
         <div className="container mx-auto px-4 lg:px-8 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="FastMedia.Pro" className="w-7 h-7 rounded-md object-cover" />
+            <img loading="lazy" decoding="async" src={logo} alt="FastMedia.Pro" className="w-7 h-7 rounded-md object-cover" />
             <span className="font-display font-bold">
               Fast<span className="text-accent">Media</span>.Pro
             </span>
@@ -276,7 +276,7 @@ const MediaKit = () => {
           </motion.div>
           <motion.div {...fadeUp} className="flex justify-center">
             <div className="rounded-2xl border border-border/60 bg-card p-10 shadow-lg">
-              <img src={logo} alt="FastMedia.Pro logo" className="w-40 h-40 rounded-xl object-cover" />
+              <img loading="lazy" decoding="async" src={logo} alt="FastMedia.Pro logo" className="w-40 h-40 rounded-xl object-cover" />
               <p className="text-center font-display font-bold mt-5 text-lg">
                 Fast<span className="text-accent">Media</span>.Pro
               </p>

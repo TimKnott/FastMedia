@@ -207,7 +207,7 @@ const BlogPostEditor = ({ post, open, onClose, onSaved }: Props) => {
                 <Card>
                   <CardContent className="py-6 space-y-4">
                     {heroUrl && (
-                      <img src={heroUrl} alt="" className="w-full h-48 object-cover rounded-lg" />
+                      <img loading="lazy" decoding="async" src={heroUrl} alt="" className="w-full h-48 object-cover rounded-lg" />
                     )}
                     <h1 className="text-2xl font-display font-bold text-foreground">{title[l]}</h1>
                     <p className="text-muted-foreground italic">{excerpt[l]}</p>

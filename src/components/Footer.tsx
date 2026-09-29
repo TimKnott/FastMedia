@@ -46,7 +46,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src={logo} alt="FastMedia.Pro" className="w-8 h-8 rounded-lg object-cover" />
+              <img loading="lazy" decoding="async" src={logo} alt="FastMedia.Pro" className="w-8 h-8 rounded-lg object-cover" />
               <span className="font-display font-bold text-lg">
                 Fast<span className="text-accent">Media</span>.Pro
               </span>
