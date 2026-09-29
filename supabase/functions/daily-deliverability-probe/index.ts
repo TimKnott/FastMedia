@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
 
   const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
   const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-  const NOTIFICATION_EMAIL = Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL');
+  const NOTIFICATION_EMAIL = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL');
   if (!NOTIFICATION_EMAIL) {
     return new Response(JSON.stringify({ error: 'NOTIFICATION_EMAIL not set' }), {
       status: 500,

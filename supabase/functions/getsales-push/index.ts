@@ -292,8 +292,28 @@ Deno.serve(async (req) => {
       String(prospect.id),
     )
 
-    return { ok: true, lead_id: leadId || null, unmapped: unmappedValues }
+    // Enrol the pushed contact into the configured LinkedIn flow, so approved
+    // leads actually enter the sequence instead of only joining the list.
+    // Non-fatal: a missing or wrong flow id must not fail the push itself.
+    let enrolled = false
+    const flowUuid = String(settings?.getsales_automation_id ?? '').trim()
+    if (flowUuid && leadId) {
+      const enrol = await getSales(base, `/flows/api/flows/${encodeURIComponent(flowUuid)}/leads/${encodeURIComponent(leadId)}`, { method: 'POST' }, 2)
+      enrolled = enrol.ok
+      if (enrol.ok) {
+        await logEvent('getsales_enrolled', { flow_uuid: flowUuid, lead_id: leadId }, String(prospect.id))
+      } else {
+        await logEvent(
+          'getsales_enrol_failed',
+          { flow_uuid: flowUuid, lead_id: leadId, status: enrol.status, message: describeFailure(enrol) },
+          String(prospect.id),
+        )
+      }
+    }
+
+    return { ok: true, lead_id: leadId || null, enrolled, unmapped: unmappedValues }
   }
+
 
   try {
     if (action === 'webhook_url') {
@@ -330,9 +350,33 @@ Deno.serve(async (req) => {
         flows: rows(result.body).map((row) => ({
           id: String(row.uuid ?? row.id ?? ''),
           name: String(row.name ?? 'Untitled flow'),
+          status: String((row as Record<string, unknown>).status ?? ''),
         })),
       })
     }
+
+    if (action === 'flow_detail') {
+      const flowUuid = String(payload.flow_uuid ?? '')
+      if (!flowUuid) return json({ error: 'flow_uuid is required' }, 400)
+      const result = await getSales(base, `/flows/api/flows/${encodeURIComponent(flowUuid)}`)
+      return json(result, result.ok ? 200 : 502)
+    }
+
+    if (action === 'raw') {
+      // Admin-only debug passthrough so the desk can probe undocumented
+      // GetSales endpoints. Path must start with a single slash.
+      const method = typeof payload.method === 'string' ? payload.method.toUpperCase() : 'GET'
+      const rawPath = typeof payload.path === 'string' ? payload.path : ''
+      if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method)) return json({ error: 'Unsupported method' }, 400)
+      if (!/^\/[A-Za-z0-9\-._~/?=&{}]+$/.test(rawPath)) return json({ error: 'Invalid path' }, 400)
+      const init: RequestInit = { method }
+      const rawPayload = payload.payload
+      if (rawPayload !== undefined && method !== 'GET') init.body = JSON.stringify(rawPayload)
+      const result = await getSales(base, rawPath, init)
+      return json(result, result.ok ? 200 : 502)
+    }
+
+
 
     if (action === 'push') {
       const prospectId = String(payload.prospect_id ?? '')

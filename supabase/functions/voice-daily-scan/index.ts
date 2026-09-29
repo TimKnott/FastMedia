@@ -6,7 +6,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 const SITE = 'https://www.fastmedia.pro';
-const ADMIN_EMAIL = Deno.env.get('NOTIFICATION_EMAIL') ?? 'support@fastmedia.pro';
+const ADMIN_EMAIL = Deno.env.get('OWNER_NOTIFICATION_EMAIL') ?? Deno.env.get('NOTIFICATION_EMAIL') ?? 'support@fastmedia.pro';
 
 const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
 
