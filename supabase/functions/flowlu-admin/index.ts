@@ -223,6 +223,31 @@ async function syncAll(limit = 25) {
   return out;
 }
 
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+async function noteInFlowlu(leadId: number, title: string, text: string) {
+  const lead = await flowlu(`module/crm/lead/get/${leadId}`);
+  const stamp = new Date().toLocaleString('en-GB', { timeZone: 'Europe/Prague' });
+  const entry = `<p><br></p><p><strong>${esc(title)} (${esc(stamp)})</strong></p><p>${esc(text).replace(/\n/g, '<br>')}</p>`;
+  await flowlu(`module/crm/lead/update/${leadId}`, { description: (String(lead?.description ?? '') + entry).slice(-60000) }, 'POST');
+}
+
+async function sendLeadEmail(leadId: number, to: string, subject: string, text: string) {
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}</div>`;
+  const sent = await sendViaGmail(to, subject, html, text);
+  let logged = false; let logError: string | null = null;
+  if (sent.sent) {
+    try { await noteInFlowlu(leadId, 'Email sent from FastMedia back office', `To: ${to}\nSubject: ${subject}\n\n${text}`); logged = true; }
+    catch (e) { logError = (e as Error).message; }
+    const { data: l } = await sb.from('flowlu_leads').select('emails_sent,pipeline_stage').eq('id', leadId).maybeSingle();
+    const keep = ['replied', 'won', 'lost'].includes(l?.pipeline_stage ?? '');
+    await sb.from('flowlu_leads').update({ emails_sent: (l?.emails_sent ?? 0) + 1, last_contact_at: new Date().toISOString(), ...(keep ? {} : { pipeline_stage: 'sent' }) }).eq('id', leadId);
+  }
+  return { sent: sent.sent, error: sent.error ?? logError, logged };
+}
+
+const STAGES = ['scored', 'drafted', 'sent', 'replied', 'no_reply', 'won', 'lost'];
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders);
@@ -308,8 +333,9 @@ Deno.serve(async (req) => {
         all.push(...items);
         if (items.length < 100) break;
       }
-      const { data: existing } = await sb.from('flowlu_leads').select('id');
+      const { data: existing } = await sb.from('flowlu_leads').select('id,flowlu_score_synced');
       const known = new Set((existing ?? []).map((e: any) => Number(e.id)));
+      const syncedMap = new Map((existing ?? []).map((e: any) => [Number(e.id), e.flowlu_score_synced]));
       const rows = all.map((l) => {
         const s = scoreLead(l);
         const created = l.created_date && !String(l.created_date).startsWith('0000') ? new Date(String(l.created_date).replace(' ', 'T') + 'Z').toISOString() : null;
@@ -324,8 +350,22 @@ Deno.serve(async (req) => {
         if (error) throw new Error(error.message);
       }
       const added = rows.filter((r) => !known.has(r.id)).length;
+      // Write score + priority back to Flowlu custom fields (cf_34 / cf_35), only when changed; capped per run.
+      let scoresPushed = 0; let scoresPending = 0;
+      const changed = rows.filter((r) => syncedMap.get(r.id) !== `${r.score}|${r.priority}` && String(r.raw?.cf_34 ?? '') + '|' + String(r.raw?.cf_35 ?? '') !== `${r.score}|${r.priority}`);
+      const already = rows.filter((r) => syncedMap.get(r.id) !== `${r.score}|${r.priority}` && !changed.includes(r));
+      for (const r of already) await sb.from('flowlu_leads').update({ flowlu_score_synced: `${r.score}|${r.priority}` }).eq('id', r.id);
+      const cap = Number(body.score_limit) || 20;
+      for (const r of changed) {
+        if (scoresPushed >= cap) { scoresPending++; continue; }
+        try {
+          await flowlu(`module/crm/lead/update/${r.id}`, { cf_34: String(r.score), cf_35: r.priority }, 'POST');
+          await sb.from('flowlu_leads').update({ flowlu_score_synced: `${r.score}|${r.priority}` }).eq('id', r.id);
+          scoresPushed++;
+        } catch { scoresPending++; }
+      }
       await sb.from('flowlu_settings').update({ last_sync_at: new Date().toISOString() }).eq('id', 1);
-      return json({ ok: true, total: rows.length, new: added });
+      return json({ ok: true, total: rows.length, new: added, scores_pushed: scoresPushed, scores_pending: scoresPending });
     }
     if (action === 'send_reply') {
       const leadId = Number(body.lead_id);
@@ -333,23 +373,73 @@ Deno.serve(async (req) => {
       const subject = String(body.subject ?? '').trim().slice(0, 250);
       const text = String(body.body ?? '').trim().slice(0, 20000);
       if (!leadId || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || !subject || !text) return json({ error: 'Lead, valid recipient, subject and message are required' }, 400);
-      const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}</div>`;
-      const sent = await sendViaGmail(to, subject, html, text);
-      let logged = false; let logError: string | null = null;
-      if (sent.sent) {
-        try {
-          const lead = await flowlu(`module/crm/lead/get/${leadId}`);
-          const stamp = new Date().toLocaleString('en-GB', { timeZone: 'Europe/Prague' });
-          const entry = `<p><br></p><p><strong>Email sent from FastMedia back office (${esc(stamp)})</strong><br>To: ${esc(to)}<br>Subject: ${esc(subject)}</p><p>${esc(text).replace(/\n/g, '<br>')}</p>`;
-          await flowlu(`module/crm/lead/update/${leadId}`, { description: (String(lead?.description ?? '') + entry).slice(-60000) }, 'POST');
-          logged = true;
-        } catch (e) { logError = (e as Error).message; }
-      }
-      const row = { flowlu_lead_id: leadId, to_email: to, subject, body: text, status: sent.sent ? 'sent' : 'failed', error: sent.error ?? logError, flowlu_logged: logged, sent_at: sent.sent ? new Date().toISOString() : null };
+      const r = await sendLeadEmail(leadId, to, subject, text);
+      const row = { flowlu_lead_id: leadId, to_email: to, subject, body: text, status: r.sent ? 'sent' : 'failed', error: r.error, flowlu_logged: r.logged, sent_at: r.sent ? new Date().toISOString() : null };
       if (body.reply_id) await sb.from('flowlu_lead_replies').update(row).eq('id', String(body.reply_id));
       else await sb.from('flowlu_lead_replies').insert(row);
-      return json({ ok: sent.sent, flowlu_logged: logged, error: sent.error ?? logError, url: `https://${account()}.flowlu.com/crm/lead/view/${leadId}` }, sent.sent ? 200 : 502);
+      return json({ ok: r.sent, flowlu_logged: r.logged, error: r.error, url: `https://${account()}.flowlu.com/crm/lead/view/${leadId}` }, r.sent ? 200 : 502);
+    }
+    if (action === 'draft_sequence') {
+      const leadId = Number(body.lead_id);
+      const { data: l } = await sb.from('flowlu_leads').select('*').eq('id', leadId).maybeSingle();
+      if (!l) return json({ error: 'Lead not found' }, 404);
+      const raw = l.raw ?? {};
+      const czech = /[ěščřžýáíéůú]/i.test(`${l.name ?? ''} ${l.contact_company ?? ''} ${l.contact_name ?? ''}`) || /\.cz\b/i.test(`${l.contact_email ?? ''} ${raw.cf_30 ?? ''}`);
+      const lang = czech ? 'Czech' : 'British English';
+      const out = await generateJson<{ steps: { subject: string; body: string }[] }>(
+        `Lead: ${l.name}\nCompany: ${l.contact_company ?? 'unknown'}\nContact: ${l.contact_name ?? 'unknown'}\nWebsite: ${raw.cf_30 ?? 'unknown'}\nWebsite score: ${raw.cf_31 ?? 'unknown'}\nAudit report:\n${String(raw.cf_32 ?? '').slice(0, 5000)}\nExisting pitch:\n${String(raw.cf_33 ?? '').slice(0, 2000)}\nNotes:\n${String(raw.description ?? '').replace(/<[^>]+>/g, ' ').slice(0, 1500)}`,
+        {
+          schemaName: 'sequence',
+          schema: { type: 'object', additionalProperties: false, required: ['steps'], properties: { steps: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['subject', 'body'], properties: { subject: { type: 'string' }, body: { type: 'string' } } } } } },
+          instructions: `Write a 3-email B2B sequence in ${lang} from Timothy Knott, FastMedia.Pro (www.fastmedia.pro, +420 797 864 432). Step 1: first email (polite, specific, offers a free no-obligation consultation). Step 2 (day 4): short friendly follow-up adding one useful point. Step 3 (day 10): brief final note, easy to say no. Plain text, no markdown. Only use facts given; never invent statistics, reviews, prices or claims. Return exactly 3 steps.`,
+        },
+      );
+      const steps = (out.steps ?? []).slice(0, 3);
+      if (steps.length === 0) return json({ error: 'AI returned no steps' }, 502);
+      await sb.from('flowlu_lead_sequences').delete().eq('flowlu_lead_id', leadId).in('status', ['draft', 'approved', 'cancelled', 'failed']);
+      const days = [0, 4, 10];
+      const rows = steps.map((s, i) => ({ flowlu_lead_id: leadId, step: i + 1, subject: s.subject.slice(0, 250), body: s.body.slice(0, 20000), due_at: new Date(Date.now() + days[i] * 86400000).toISOString(), status: 'draft' }));
+      const { error } = await sb.from('flowlu_lead_sequences').upsert(rows, { onConflict: 'flowlu_lead_id,step' });
+      if (error) throw new Error(error.message);
+      if (!['sent', 'replied', 'won', 'lost'].includes(l.pipeline_stage)) await sb.from('flowlu_leads').update({ pipeline_stage: 'drafted' }).eq('id', leadId);
+      return json({ ok: true, steps: rows.length });
+    }
+    if (action === 'send_due') {
+      const { data: due } = await sb.from('flowlu_lead_sequences').select('*').eq('status', 'approved').lte('due_at', new Date().toISOString()).order('due_at').limit(25);
+      let sent = 0, failed = 0, skipped = 0;
+      for (const s of due ?? []) {
+        const { data: l } = await sb.from('flowlu_leads').select('contact_email,pipeline_stage').eq('id', s.flowlu_lead_id).maybeSingle();
+        if (!l?.contact_email || ['replied', 'won', 'lost'].includes(l.pipeline_stage)) {
+          await sb.from('flowlu_lead_sequences').update({ status: 'cancelled', error: l?.contact_email ? 'Stopped: lead replied or closed' : 'No email on lead' }).eq('id', s.id); skipped++; continue;
+        }
+        const r = await sendLeadEmail(s.flowlu_lead_id, l.contact_email, s.subject, s.body);
+        await sb.from('flowlu_lead_sequences').update(r.sent ? { status: 'sent', sent_at: new Date().toISOString(), error: null } : { status: 'failed', error: r.error }).eq('id', s.id);
+        if (r.sent) { sent++; await sb.from('flowlu_lead_replies').insert({ flowlu_lead_id: s.flowlu_lead_id, to_email: l.contact_email, subject: s.subject, body: s.body, status: 'sent', flowlu_logged: r.logged, sent_at: new Date().toISOString() }); } else failed++;
+      }
+      // Leads whose final step went out 7+ days ago with no reply → no_reply
+      const { data: finals } = await sb.from('flowlu_lead_sequences').select('flowlu_lead_id').eq('step', 3).eq('status', 'sent').lte('sent_at', new Date(Date.now() - 7 * 86400000).toISOString());
+      const ids = (finals ?? []).map((f: any) => f.flowlu_lead_id);
+      if (ids.length) await sb.from('flowlu_leads').update({ pipeline_stage: 'no_reply' }).in('id', ids).eq('pipeline_stage', 'sent');
+      // Hourly catch-up: write changed scores to Flowlu in small batches.
+      const { data: pend } = await sb.from('flowlu_leads').select('id,score,priority,flowlu_score_synced').order('score', { ascending: false }).limit(1000);
+      let scores = 0;
+      for (const r of (pend ?? []).filter((r: any) => r.flowlu_score_synced !== `${r.score}|${r.priority}`).slice(0, 40)) {
+        try {
+          await flowlu(`module/crm/lead/update/${r.id}`, { cf_34: String(r.score), cf_35: r.priority }, 'POST');
+          await sb.from('flowlu_leads').update({ flowlu_score_synced: `${r.score}|${r.priority}` }).eq('id', r.id);
+          scores++;
+        } catch { /* retry next hour */ }
+      }
+      return json({ ok: true, sent, failed, skipped, scores });
+    }
+    if (action === 'set_stage') {
+      const leadId = Number(body.lead_id); const stage = String(body.stage);
+      if (!leadId || !STAGES.includes(stage)) return json({ error: 'Invalid lead or stage' }, 400);
+      await sb.from('flowlu_leads').update({ pipeline_stage: stage }).eq('id', leadId);
+      if (['won', 'lost', 'replied'].includes(stage)) await sb.from('flowlu_lead_sequences').update({ status: 'cancelled', error: `Stopped: marked ${stage}` }).eq('flowlu_lead_id', leadId).in('status', ['draft', 'approved']);
+      let logged = true;
+      try { await noteInFlowlu(leadId, 'Pipeline stage changed in FastMedia back office', `New stage: ${stage.replace('_', ' ')}`); } catch { logged = false; }
+      return json({ ok: true, flowlu_logged: logged });
     }
     if (action === 'raw_get' || action === 'raw_post') {
       return json(await flowlu(String(body.path), body.params ?? {}, action === 'raw_post' ? 'POST' : 'GET'));

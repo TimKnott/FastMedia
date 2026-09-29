@@ -1066,6 +1066,48 @@ export type Database = {
         }
         Relationships: []
       }
+      flowlu_lead_sequences: {
+        Row: {
+          body: string
+          created_at: string
+          due_at: string
+          error: string | null
+          flowlu_lead_id: number
+          id: string
+          sent_at: string | null
+          status: string
+          step: number
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          due_at: string
+          error?: string | null
+          flowlu_lead_id: number
+          id?: string
+          sent_at?: string | null
+          status?: string
+          step: number
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          due_at?: string
+          error?: string | null
+          flowlu_lead_id?: number
+          id?: string
+          sent_at?: string | null
+          status?: string
+          step?: number
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       flowlu_leads: {
         Row: {
           budget: number | null
@@ -1073,10 +1115,15 @@ export type Database = {
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
+          emails_sent: number
           first_seen_at: string
           flowlu_created_at: string | null
+          flowlu_score_synced: string | null
           id: number
+          last_contact_at: string | null
+          last_reply_at: string | null
           name: string | null
+          pipeline_stage: string
           priority: string
           raw: Json
           score: number
@@ -1089,10 +1136,15 @@ export type Database = {
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
+          emails_sent?: number
           first_seen_at?: string
           flowlu_created_at?: string | null
+          flowlu_score_synced?: string | null
           id: number
+          last_contact_at?: string | null
+          last_reply_at?: string | null
           name?: string | null
+          pipeline_stage?: string
           priority?: string
           raw?: Json
           score?: number
@@ -1105,10 +1157,15 @@ export type Database = {
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
+          emails_sent?: number
           first_seen_at?: string
           flowlu_created_at?: string | null
+          flowlu_score_synced?: string | null
           id?: number
+          last_contact_at?: string | null
+          last_reply_at?: string | null
           name?: string | null
+          pipeline_stage?: string
           priority?: string
           raw?: Json
           score?: number
