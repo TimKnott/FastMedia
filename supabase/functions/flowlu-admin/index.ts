@@ -200,6 +200,9 @@ Deno.serve(async (req) => {
       const { data: log } = await sb.from('flowlu_sync_log').select('flowlu_id,status,error').eq('entity_type', 'prospect').eq('entity_id', id).maybeSingle();
       return json({ ...res, flowlu_id: log?.flowlu_id, url: log?.flowlu_id ? `https://${account()}.flowlu.com/crm/lead/view/${log.flowlu_id}` : null, audit, description });
     }
+    if (action === 'raw_get') {
+      return json(await flowlu(String(body.path), body.params ?? {}));
+    }
     if (action === 'webhook_url') {
       return json({ url: `${SUPABASE_URL}/functions/v1/flowlu-webhook?token=${Deno.env.get('FLOWLU_WEBHOOK_SECRET') ?? ''}` });
     }
