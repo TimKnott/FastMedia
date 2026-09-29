@@ -79,11 +79,24 @@ function SequencePanel({ lead }: { lead: FlowluLead }) {
     if (error) return toast({ title: 'Not saved', description: error.message, variant: 'destructive' });
     refetch(); toast({ title: status === 'approved' ? 'Approved — sends at the due time' : status === 'draft' ? 'Moved back to draft' : 'Saved' });
   };
+  const testSend = async (id: string) => {
+    try { const r = await invoke({ action: 'send_test_step', step_id: id }); toast({ title: 'Test sent to your inbox', description: `${r.to}${r.flowlu_logged ? ' · noted in Flowlu' : ''}. The lead did not receive it.` }); }
+    catch (e) { toast({ title: 'Test failed', description: (e as Error).message, variant: 'destructive' }); }
+  };
+  const approveAll = async () => {
+    if (!confirm(`Approve all draft steps for ${lead.contact_email}? They send on their due dates (day 0, 4, 10) and stop if the lead replies.`)) return;
+    try { const r = await invoke({ action: 'approve_all', lead_id: lead.id }); refetch(); toast({ title: `${r.approved} step(s) approved`, description: 'Step 1 goes out within the hour.' }); }
+    catch (e) { toast({ title: 'Could not approve', description: (e as Error).message, variant: 'destructive' }); }
+  };
+  const hasDrafts = steps.some((s) => s.status === 'draft');
   return (
     <div className="space-y-3 rounded-lg border border-border p-4">
       <div className="flex items-center justify-between gap-2">
         <h3 className="font-semibold">Email sequence</h3>
-        <Button size="sm" variant="outline" onClick={draft} disabled={busy}>{busy ? 'Drafting…' : steps.length ? 'Redraft' : 'Draft sequence'}</Button>
+        <div className="flex gap-2">
+          {hasDrafts && <Button size="sm" onClick={approveAll} disabled={!lead.contact_email}>Approve all & send</Button>}
+          <Button size="sm" variant="outline" onClick={draft} disabled={busy}>{busy ? 'Drafting…' : steps.length ? 'Redraft' : 'Draft sequence'}</Button>
+        </div>
       </div>
       {!lead.contact_email && <p className="text-xs text-destructive">This lead has no email address, so steps can't be sent.</p>}
       {steps.map((s) => (
@@ -95,12 +108,13 @@ function SequencePanel({ lead }: { lead: FlowluLead }) {
             <div className="flex flex-wrap items-center gap-2">
               <Input type="datetime-local" className="w-auto" value={edits[s.id].due_at} onChange={(e) => setEdits({ ...edits, [s.id]: { ...edits[s.id], due_at: e.target.value } })} />
               <Button size="sm" variant="outline" onClick={() => save(s.id)}>Save</Button>
+              <Button size="sm" variant="ghost" onClick={() => testSend(s.id)}>Send test to me</Button>
               {s.status === 'draft' ? <Button size="sm" onClick={() => save(s.id, 'approved')} disabled={!lead.contact_email}>Approve to send</Button> : <Button size="sm" variant="outline" onClick={() => save(s.id, 'draft')}>Unapprove</Button>}
             </div>
           </> : <p className="text-sm"><span className="font-medium">{s.subject}</span>{s.sent_at && <span className="text-muted-foreground"> · sent {new Date(s.sent_at).toLocaleString('en-GB')}</span>}</p>}
         </div>
       ))}
-      <p className="text-xs text-muted-foreground">Nothing sends until you approve a step. Approved steps go out from timknott@fastmedia.pro at their due time (checked hourly). If the lead replies, the remaining steps stop.</p>
+      <p className="text-xs text-muted-foreground">"Send test to me" goes only to timknott@fastmedia.pro. Nothing reaches the lead until you approve. Approved steps go out at their due time (checked hourly) and stop if the lead replies or is closed in Flowlu.</p>
     </div>
   );
 }

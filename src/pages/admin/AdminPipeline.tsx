@@ -51,6 +51,24 @@ export default function AdminPipeline() {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<FlowluLead | null>(null);
   const [showAllScored, setShowAllScored] = useState(false);
+  const [picked, setPicked] = useState<Set<number>>(new Set());
+  const [drafting, setDrafting] = useState(false);
+  const togglePick = (id: number) => setPicked((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const draftPicked = async () => {
+    const ids = [...picked];
+    setDrafting(true);
+    let ok = 0, bad = 0;
+    try {
+      for (let i = 0; i < ids.length; i += 10) {
+        const r = await invoke({ action: 'draft_many', lead_ids: ids.slice(i, i + 10) });
+        (r.results ?? []).forEach((x: { ok: boolean }) => (x.ok ? ok++ : bad++));
+      }
+      toast({ title: `Drafted ${ok} sequence(s)${bad ? `, ${bad} failed` : ''}`, description: 'Open each lead to review, test and approve.' });
+      setPicked(new Set());
+      qc.invalidateQueries({ queryKey: ['flowlu_leads_db'] }); qc.invalidateQueries({ queryKey: ['flowlu_seq_all'] });
+    } catch (e) { toast({ title: 'Drafting failed', description: (e as Error).message, variant: 'destructive' }); }
+    finally { setDrafting(false); }
+  };
 
   const byLead = useMemo(() => {
     const m = new Map<number, Step[]>();
@@ -77,6 +95,7 @@ export default function AdminPipeline() {
         <Input className="max-w-xs" placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} />
         {['all', 'high', 'medium', 'low'].map((p) => <Button key={p} size="sm" variant={prio === p ? 'default' : 'outline'} className="capitalize" onClick={() => setPrio(p)}>{p}</Button>)}
         <Button size="sm" variant={overdueOnly ? 'default' : 'outline'} onClick={() => setOverdueOnly(!overdueOnly)}>Needs action now</Button>
+        {picked.size > 0 && <Button size="sm" onClick={draftPicked} disabled={drafting}>{drafting ? 'Drafting…' : `Draft sequences for ${picked.size} selected`}</Button>}
       </div>
       {isLoading && <p className="text-muted-foreground text-sm">Loading…</p>}
       <div className="flex gap-4 overflow-x-auto pb-4">
@@ -89,7 +108,10 @@ export default function AdminPipeline() {
               {shown.map(({ l, next }) => (
                 <Card key={l.id} className="shadow-card cursor-pointer hover:bg-muted/40" onClick={() => setOpen(l)}>
                   <CardContent className="p-3 space-y-2 text-sm">
-                    <div className="flex items-center gap-2"><Badge className={priorityClass(l.priority)}>{l.priority} · {l.score}</Badge><span className="text-xs text-muted-foreground">#{l.id}</span></div>
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" aria-label="Select lead" className="accent-primary" checked={picked.has(l.id)} onClick={(e) => e.stopPropagation()} onChange={() => togglePick(l.id)} />
+                      <Badge className={priorityClass(l.priority)}>{l.priority} · {l.score}</Badge><span className="text-xs text-muted-foreground">#{l.id}</span>
+                    </div>
                     <div className="font-medium text-foreground truncate">{l.contact_company || l.name || `Lead #${l.id}`}</div>
                     <div className="text-xs text-muted-foreground">
                       {l.emails_sent ?? 0} sent{l.last_contact_at ? ` · last ${new Date(l.last_contact_at).toLocaleDateString('en-GB')}` : ''}{l.last_reply_at ? ` · replied ${new Date(l.last_reply_at).toLocaleDateString('en-GB')}` : ''}

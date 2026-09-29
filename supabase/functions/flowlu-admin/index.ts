@@ -350,6 +350,15 @@ Deno.serve(async (req) => {
         if (error) throw new Error(error.message);
       }
       const added = rows.filter((r) => !known.has(r.id)).length;
+      // Status back-sync: closed in Flowlu → Won (1) / Lost (2) here; stop pending steps.
+      let statusSynced = 0;
+      for (const [code, stage] of [['1', 'won'], ['2', 'lost']] as const) {
+        const ids = rows.filter((r) => String(r.raw?.closing_status_id ?? '0') === code).map((r) => r.id);
+        if (!ids.length) continue;
+        const { data: upd } = await sb.from('flowlu_leads').update({ pipeline_stage: stage }).in('id', ids).neq('pipeline_stage', stage).select('id');
+        statusSynced += upd?.length ?? 0;
+        await sb.from('flowlu_lead_sequences').update({ status: 'cancelled', error: `Stopped: closed as ${stage} in Flowlu` }).in('flowlu_lead_id', ids).in('status', ['draft', 'approved']);
+      }
       // Write score + priority back to Flowlu custom fields (cf_34 / cf_35), only when changed; capped per run.
       let scoresPushed = 0; let scoresPending = 0;
       const changed = rows.filter((r) => syncedMap.get(r.id) !== `${r.score}|${r.priority}` && String(r.raw?.cf_34 ?? '') + '|' + String(r.raw?.cf_35 ?? '') !== `${r.score}|${r.priority}`);
@@ -365,7 +374,7 @@ Deno.serve(async (req) => {
         } catch { scoresPending++; }
       }
       await sb.from('flowlu_settings').update({ last_sync_at: new Date().toISOString() }).eq('id', 1);
-      return json({ ok: true, total: rows.length, new: added, scores_pushed: scoresPushed, scores_pending: scoresPending });
+      return json({ ok: true, total: rows.length, new: added, status_synced: statusSynced, scores_pushed: scoresPushed, scores_pending: scoresPending });
     }
     if (action === 'send_reply') {
       const leadId = Number(body.lead_id);
@@ -431,6 +440,35 @@ Deno.serve(async (req) => {
         } catch { /* retry next hour */ }
       }
       return json({ ok: true, sent, failed, skipped, scores });
+    }
+    if (action === 'send_test_step') {
+      // Sends a sequence step to the owner's own inbox only; lead counters/stage untouched.
+      const { data: s } = await sb.from('flowlu_lead_sequences').select('*').eq('id', String(body.step_id ?? '')).maybeSingle();
+      if (!s) return json({ error: 'Step not found' }, 404);
+      const to = 'timknott@fastmedia.pro';
+      const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(s.body).replace(/\n/g, '<br>')}</div>`;
+      const r = await sendViaGmail(to, `[TEST] ${s.subject}`, html, s.body);
+      let logged = false;
+      if (r.sent) { try { await noteInFlowlu(s.flowlu_lead_id, `TEST copy of step ${s.step} sent to ${to} (not to the lead)`, `Subject: ${s.subject}\n\n${s.body}`); logged = true; } catch { /* ignore */ } }
+      return json({ ok: r.sent, to, flowlu_logged: logged, error: r.error ?? null }, r.sent ? 200 : 502);
+    }
+    if (action === 'approve_all') {
+      const leadId = Number(body.lead_id);
+      const { data: l } = await sb.from('flowlu_leads').select('contact_email').eq('id', leadId).maybeSingle();
+      if (!l?.contact_email) return json({ error: 'This lead has no email address' }, 400);
+      const { data: upd } = await sb.from('flowlu_lead_sequences').update({ status: 'approved' }).eq('flowlu_lead_id', leadId).eq('status', 'draft').select('id');
+      return json({ ok: true, approved: upd?.length ?? 0 });
+    }
+    if (action === 'draft_many') {
+      const ids = (Array.isArray(body.lead_ids) ? body.lead_ids : []).map(Number).filter(Boolean).slice(0, 10);
+      const results: { id: number; ok: boolean; error?: string }[] = [];
+      for (const id of ids) {
+        try {
+          const r = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/flowlu-admin`, { method: 'POST', headers: { Authorization: req.headers.get('Authorization') ?? '', 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'draft_sequence', lead_id: id }) });
+          results.push({ id, ok: r.ok, ...(r.ok ? {} : { error: (await r.text()).slice(0, 200) }) });
+        } catch (e) { results.push({ id, ok: false, error: (e as Error).message }); }
+      }
+      return json({ ok: true, results });
     }
     if (action === 'set_stage') {
       const leadId = Number(body.lead_id); const stage = String(body.stage);
