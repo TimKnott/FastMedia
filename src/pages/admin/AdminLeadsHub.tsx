@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
+import { useFlowluLeads, FlowluLeadCard, priorityClass, isNewLead, type FlowluLead } from './AdminFlowluLeads';
 
 interface Row {
   id: string;
@@ -26,6 +27,8 @@ const AdminLeadsHub = () => {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
+  const { data: fl = [] } = useFlowluLeads();
+  const [openFl, setOpenFl] = useState<FlowluLead | null>(null);
   const [filter, setFilter] = useState<'all' | 'discovered' | 'enquiry'>('all');
 
   useEffect(() => {
@@ -62,6 +65,8 @@ const AdminLeadsHub = () => {
     { label: 'Sent to Flowlu', value: discovered.filter(r => r.flowluId).length, icon: CheckCircle2 },
     { label: 'Awaiting approval', value: discovered.filter(r => !['approved', 'sent', 'replied', 'suppressed'].includes(r.status)).length, icon: Clock },
     { label: 'Website enquiries', value: rows.length - discovered.length, icon: Inbox },
+    { label: 'New Flowlu leads (7 days)', value: fl.filter(isNewLead).length, icon: Target },
+    { label: 'High-priority Flowlu leads', value: fl.filter(l => l.priority === 'high').length, icon: CheckCircle2 },
   ];
 
   return (
@@ -78,7 +83,7 @@ const AdminLeadsHub = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map(s => (
           <Card key={s.label} className="shadow-card"><CardContent className="p-5 flex items-center justify-between">
             <div><p className="text-sm text-muted-foreground">{s.label}</p><p className="text-3xl font-display font-bold">{loading ? '…' : s.value}</p></div>
@@ -86,6 +91,20 @@ const AdminLeadsHub = () => {
           </CardContent></Card>
         ))}
       </div>
+
+      <Card className="shadow-card"><CardContent className="p-5 space-y-3">
+        <div className="flex items-center justify-between"><h2 className="font-display font-semibold">Top Flowlu leads</h2><Link to="/admin/flowlu-leads" className="text-sm text-primary hover:underline">See all {fl.length}</Link></div>
+        <div className="grid gap-2 md:grid-cols-2">
+          {fl.slice(0, 8).map(l => (
+            <button key={l.id} onClick={() => setOpenFl(l)} className="text-left rounded-md border border-border p-3 hover:bg-muted/40 flex items-center gap-3">
+              <Badge className={priorityClass(l.priority)}>{l.priority} · {l.score}</Badge>
+              <span className="flex-1 truncate font-medium">{l.contact_company || l.name}</span>
+              <span className="text-xs text-muted-foreground">#{l.id}</span>
+            </button>
+          ))}
+        </div>
+      </CardContent></Card>
+      <FlowluLeadCard lead={openFl} onClose={() => setOpenFl(null)} />
 
       <div className="flex flex-wrap gap-2 items-center">
         <Input placeholder="Search name, email or website…" value={q} onChange={e => setQ(e.target.value)} className="max-w-sm" />

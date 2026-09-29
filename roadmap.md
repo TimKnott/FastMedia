@@ -78,7 +78,7 @@
 
 ## Sep 29 Flowlu leads batch
 - [ ] Guide: connect timknott@fastmedia.pro mailbox in Flowlu (user action)
-- [ ] Daily Flowlu lead sync into back office + live "new leads" count
-- [ ] Draft/send reply editor on each Flowlu lead card (logged back into Flowlu)
+- [x] Daily Flowlu lead sync into back office + live "new leads" count
+- [x] Draft/send reply editor on each Flowlu lead card (logged back into Flowlu)
 - [ ] Test send from a real lead card to own inbox, confirm it shows in Flowlu
-- [ ] Score + priority per Flowlu lead, shown in Leads hub
+- [x] Score + priority per Flowlu lead, shown in Leads hub
