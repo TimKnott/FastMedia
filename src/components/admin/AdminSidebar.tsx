@@ -35,6 +35,7 @@ import {
   GraduationCap,
   Phone,
   Sparkles,
+  Target,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -66,8 +67,9 @@ export interface MenuItem {
 }
 
 export const mainItems: MenuItem[] = [
+  { titleKey: 'Leads hub', url: '/admin/leads-hub', icon: Target, minRole: 'admin' },
   { titleKey: 'admin.dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
-  { titleKey: 'admin.leads', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
+  { titleKey: 'Website enquiries', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
   { titleKey: 'Enquiries Inbox', url: '/admin/enquiries', icon: Inbox, minRole: 'admin' },
   { titleKey: 'Quote Requests', url: '/admin/quote-requests', icon: FileText, minRole: 'admin' },
   { titleKey: 'Offer Enquiries', url: '/admin/offer-leads', icon: FileText, minRole: 'admin' },

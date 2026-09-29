@@ -54,7 +54,7 @@ const AdminLogin = () => {
       });
       return false;
     }
-    navigate('/admin', { replace: true });
+    navigate(hasMinimumRole(highest as any, 'admin') ? '/admin/leads-hub' : '/admin', { replace: true });
     return true;
   };
 

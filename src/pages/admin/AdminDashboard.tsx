@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, CalendarCheck, ScrollText, TrendingUp, Mail, Flame } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,22 +17,24 @@ interface DashboardStats {
   hotLeads: number;
   bookings: number;
   auditLogs: number;
+  discovered: number;
 }
 
 const AdminDashboard = () => {
   const { t } = useLanguage();
-  const [stats, setStats] = useState<DashboardStats>({ users: 0, subscribers: 0, leads: 0, hotLeads: 0, bookings: 0, auditLogs: 0 });
+  const [stats, setStats] = useState<DashboardStats>({ users: 0, subscribers: 0, leads: 0, hotLeads: 0, bookings: 0, auditLogs: 0, discovered: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [subscribersRes, rolesRes, leadsRes, hotLeadsRes, bookingsRes, auditRes] = await Promise.all([
+      const [subscribersRes, rolesRes, leadsRes, hotLeadsRes, bookingsRes, auditRes, prospectsRes] = await Promise.all([
         supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }),
         supabase.from('user_roles').select('id', { count: 'exact', head: true }),
         supabase.from('leads').select('id', { count: 'exact', head: true }),
         supabase.from('leads').select('id', { count: 'exact', head: true }).in('classification', ['hot', 'high_priority']),
         supabase.from('bookings').select('id', { count: 'exact', head: true }),
         supabase.from('audit_logs').select('id', { count: 'exact', head: true }),
+        supabase.from('prospects').select('id', { count: 'exact', head: true }),
       ]);
 
       setStats({
@@ -41,6 +44,7 @@ const AdminDashboard = () => {
         hotLeads: hotLeadsRes.count ?? 0,
         bookings: bookingsRes.count ?? 0,
         auditLogs: auditRes.count ?? 0,
+        discovered: prospectsRes.count ?? 0,
       });
       setLoading(false);
     };
@@ -49,6 +53,7 @@ const AdminDashboard = () => {
   }, []);
 
   const cards = [
+    { label: 'Discovered leads — open Leads hub', value: stats.discovered, icon: TrendingUp, href: '/admin/leads-hub' },
     { label: t('admin.total_leads'), value: stats.leads, icon: TrendingUp },
     { label: t('admin.hot_priority'), value: stats.hotLeads, icon: Flame },
     { label: t('bookings.title'), value: stats.bookings, icon: CalendarCheck },
@@ -78,8 +83,9 @@ const AdminDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.4 }}
           >
-            <Card className="shadow-card">
-              <CardContent className="p-5">
+            <Card className={`shadow-card ${(card as any).href ? 'border-primary ring-1 ring-primary/40' : ''}`}>
+              <CardContent className="p-5 relative">
+                {(card as any).href && <Link to={(card as any).href} className="absolute inset-0" aria-label={card.label} />}
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">{card.label}</p>
