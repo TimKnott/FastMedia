@@ -17,9 +17,10 @@ export interface FlowluLead {
   contact_phone: string | null; contact_company: string | null; budget: number | null;
   flowlu_created_at: string | null; first_seen_at: string; score: number; priority: string;
   score_reasons: string[]; raw: Record<string, any>;
+  pipeline_stage?: string; emails_sent?: number; last_contact_at?: string | null; last_reply_at?: string | null;
 }
 
-async function invoke(body: Record<string, unknown>) {
+export async function invoke(body: Record<string, unknown>) {
   const { data, error } = await supabase.functions.invoke('flowlu-admin', { body });
   if (error) {
     let msg = error.message;
@@ -54,6 +55,55 @@ export function useFlowluLeads() {
 
 const label = (k: string) => k.replace(/^cf_/, 'Custom: ').replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 const isEmpty = (v: unknown) => v === null || v === undefined || v === '' || v === '0' || String(v).startsWith('0000-00-00') || (Array.isArray(v) && v.length === 0);
+
+function SequencePanel({ lead }: { lead: FlowluLead }) {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const { data: steps = [], refetch } = useQuery({
+    queryKey: ['flowlu_seq', lead.id],
+    queryFn: async () => ((await supabase.from('flowlu_lead_sequences' as never).select('*').eq('flowlu_lead_id', lead.id).order('step')).data ?? []) as any[],
+  });
+  const [edits, setEdits] = useState<Record<string, { subject: string; body: string; due_at: string }>>({});
+  useEffect(() => { setEdits(Object.fromEntries(steps.map((s) => [s.id, { subject: s.subject, body: s.body, due_at: s.due_at.slice(0, 16) }]))); }, [steps]);
+  const draft = async () => {
+    if (steps.some((s) => s.status === 'sent') && !confirm('Some steps were already sent. Redraft the unsent ones?')) return;
+    setBusy(true);
+    try { await invoke({ action: 'draft_sequence', lead_id: lead.id }); refetch(); qc.invalidateQueries({ queryKey: ['flowlu_leads_db'] }); toast({ title: 'Sequence drafted', description: 'Review each step, then approve it.' }); }
+    catch (e) { toast({ title: 'Could not draft', description: (e as Error).message, variant: 'destructive' }); }
+    finally { setBusy(false); }
+  };
+  const save = async (id: string, status?: string) => {
+    const e = edits[id];
+    const { error } = await supabase.from('flowlu_lead_sequences' as never).update({ subject: e.subject, body: e.body, due_at: new Date(e.due_at).toISOString(), ...(status ? { status } : {}) } as never).eq('id', id);
+    if (error) return toast({ title: 'Not saved', description: error.message, variant: 'destructive' });
+    refetch(); toast({ title: status === 'approved' ? 'Approved — sends at the due time' : status === 'draft' ? 'Moved back to draft' : 'Saved' });
+  };
+  return (
+    <div className="space-y-3 rounded-lg border border-border p-4">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="font-semibold">Email sequence</h3>
+        <Button size="sm" variant="outline" onClick={draft} disabled={busy}>{busy ? 'Drafting…' : steps.length ? 'Redraft' : 'Draft sequence'}</Button>
+      </div>
+      {!lead.contact_email && <p className="text-xs text-destructive">This lead has no email address, so steps can't be sent.</p>}
+      {steps.map((s) => (
+        <div key={s.id} className="space-y-2 border-t border-border pt-2">
+          <div className="flex items-center gap-2 text-sm"><Badge variant="secondary">Step {s.step}</Badge><Badge className={s.status === 'sent' ? 'bg-accent/15 text-accent' : s.status === 'approved' ? 'bg-primary/15 text-primary' : s.status === 'draft' ? 'bg-muted text-muted-foreground' : 'bg-destructive/15 text-destructive'}>{s.status}</Badge>{s.error && <span className="text-xs text-muted-foreground">{s.error}</span>}</div>
+          {edits[s.id] && (s.status === 'draft' || s.status === 'approved') ? <>
+            <Input value={edits[s.id].subject} onChange={(e) => setEdits({ ...edits, [s.id]: { ...edits[s.id], subject: e.target.value } })} />
+            <Textarea rows={5} value={edits[s.id].body} onChange={(e) => setEdits({ ...edits, [s.id]: { ...edits[s.id], body: e.target.value } })} />
+            <div className="flex flex-wrap items-center gap-2">
+              <Input type="datetime-local" className="w-auto" value={edits[s.id].due_at} onChange={(e) => setEdits({ ...edits, [s.id]: { ...edits[s.id], due_at: e.target.value } })} />
+              <Button size="sm" variant="outline" onClick={() => save(s.id)}>Save</Button>
+              {s.status === 'draft' ? <Button size="sm" onClick={() => save(s.id, 'approved')} disabled={!lead.contact_email}>Approve to send</Button> : <Button size="sm" variant="outline" onClick={() => save(s.id, 'draft')}>Unapprove</Button>}
+            </div>
+          </> : <p className="text-sm"><span className="font-medium">{s.subject}</span>{s.sent_at && <span className="text-muted-foreground"> · sent {new Date(s.sent_at).toLocaleString('en-GB')}</span>}</p>}
+        </div>
+      ))}
+      <p className="text-xs text-muted-foreground">Nothing sends until you approve a step. Approved steps go out from timknott@fastmedia.pro at their due time (checked hourly). If the lead replies, the remaining steps stop.</p>
+    </div>
+  );
+}
 
 function ReplyEditor({ lead }: { lead: FlowluLead }) {
   const { toast } = useToast();
@@ -138,6 +188,7 @@ export function FlowluLeadCard({ lead, onClose }: { lead: FlowluLead | null; onC
             {lead.score_reasons?.length > 0 && (
               <div className="text-sm"><span className="font-semibold">Why this score: </span>{lead.score_reasons.join(' · ')}</div>
             )}
+            <SequencePanel lead={lead} />
             <ReplyEditor lead={lead} />
             <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
               {short.map(([k, v]) => (
