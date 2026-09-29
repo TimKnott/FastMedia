@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Mail, CheckCircle, XCircle, AlertTriangle, Clock, ChevronLeft, ChevronRight, BarChart3, Inbox, Send } from 'lucide-react';
@@ -37,6 +38,7 @@ const AdminEmails = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [chartGranularity, setChartGranularity] = useState<ChartGranularity>('daily');
   const [page, setPage] = useState(0);
+  const [selected, setSelected] = useState<(typeof rawLogs extends (infer T)[] ? T : never) | null>(null);
 
   const rangeStart = useMemo(() => {
     const now = new Date();
