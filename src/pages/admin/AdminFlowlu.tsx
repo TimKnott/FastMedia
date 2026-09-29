@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { RefreshCw, PlugZap, Copy, CheckCircle2, AlertTriangle, Link2 } from 'lucide-react';
+import { RefreshCw, PlugZap, Copy, CheckCircle2, AlertTriangle, Link2, Mail } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,26 @@ export default function AdminFlowlu() {
     queryKey: ['flowlu_log'],
     queryFn: async () => ((await supabase.from('flowlu_sync_log' as never).select('*').order('created_at', { ascending: false }).limit(100)).data ?? []) as any[],
   });
-  const refresh = () => { qc.invalidateQueries({ queryKey: ['flowlu_settings'] }); qc.invalidateQueries({ queryKey: ['flowlu_log'] }); };
+  const { data: mailboxes, isLoading: mailboxesLoading } = useQuery({
+    queryKey: ['flowlu_mailboxes'],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('flowlu-admin', {
+        body: { action: 'raw_get', path: 'module/email/account/list', params: { limit: '10' } },
+      });
+      if (error) {
+        let msg = error.message;
+        try { msg = (await (error as any).context?.json())?.error ?? msg; } catch { /* ignore */ }
+        throw new Error(msg);
+      }
+      return ((data as any)?.items ?? []) as { id: number; name: string; sender_name?: string; active?: number }[];
+    },
+    staleTime: 60_000,
+  });
+  const refresh = () => {
+    qc.invalidateQueries({ queryKey: ['flowlu_settings'] });
+    qc.invalidateQueries({ queryKey: ['flowlu_log'] });
+    qc.invalidateQueries({ queryKey: ['flowlu_mailboxes'] });
+  };
 
   const run = async (action: string) => {
     setBusy(action);
@@ -99,6 +118,27 @@ export default function AdminFlowlu() {
             <Input readOnly value={hookUrl} className="flex-1" />
             <Button variant="outline" onClick={() => { navigator.clipboard.writeText(hookUrl); toast({ title: 'Copied' }); }}><Copy className="h-4 w-4" /></Button>
           </>) : <Button variant="outline" onClick={() => run('webhook_url')}>Show webhook address</Button>}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Mail className="h-5 w-5" />Mailboxes</CardTitle>
+          <CardDescription>Email accounts connected inside Flowlu. Connect timknott@fastmedia.pro in Flowlu (Email module → Connect an Account → Gmail) to send and receive from there — this API cannot connect it for you.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {mailboxesLoading && <p className="text-muted-foreground">Checking…</p>}
+          {!mailboxesLoading && (mailboxes ?? []).length === 0 && (
+            <p className="text-muted-foreground">No mailbox connected in Flowlu yet.</p>
+          )}
+          {(mailboxes ?? []).map((m) => (
+            <div key={m.id} className="flex flex-wrap items-center gap-3 rounded-md border border-border p-2 text-sm">
+              {m.active ? <Badge className="bg-accent/15 text-accent"><CheckCircle2 className="mr-1 h-3 w-3" />Active</Badge> : <Badge className="bg-muted text-muted-foreground"><AlertTriangle className="mr-1 h-3 w-3" />Inactive</Badge>}
+              <span className="font-medium">{m.name}</span>
+              {m.sender_name && <span className="text-muted-foreground">Sender: {m.sender_name}</span>}
+            </div>
+          ))}
+          <p className="text-xs text-muted-foreground">Read straight from Flowlu. If a mailbox shows Inactive, re-connect it in Flowlu under Email → three-dots menu.</p>
         </CardContent>
       </Card>
 
