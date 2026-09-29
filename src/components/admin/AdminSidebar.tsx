@@ -69,6 +69,7 @@ export interface MenuItem {
 export const mainItems: MenuItem[] = [
   { titleKey: 'Leads hub', url: '/admin/leads-hub', icon: Target, minRole: 'admin' },
   { titleKey: 'Flowlu leads', url: '/admin/flowlu-leads', icon: Target, minRole: 'admin' },
+  { titleKey: 'Pipeline', url: '/admin/pipeline', icon: TrendingUp, minRole: 'admin' },
   { titleKey: 'admin.dashboard', url: '/admin', icon: LayoutDashboard, minRole: 'editor' },
   { titleKey: 'Website enquiries', url: '/admin/leads', icon: TrendingUp, minRole: 'editor' },
   { titleKey: 'Enquiries Inbox', url: '/admin/enquiries', icon: Inbox, minRole: 'admin' },

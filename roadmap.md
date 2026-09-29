@@ -82,3 +82,10 @@
 - [x] Draft/send reply editor on each Flowlu lead card (logged back into Flowlu)
 - [x] Test send from a real lead card to own inbox, confirm it shows in Flowlu
 - [x] Score + priority per Flowlu lead, shown in Leads hub
+
+## Flowlu pipeline (29 Sep)
+- [x] Priority column on Leads hub incl. Flowlu leads
+- [x] Score/priority written to Flowlu fields
+- [x] Sequence draft/approve/send + reply tracking
+- [x] Pipeline dashboard
+- [ ] User: connect timknott@fastmedia.pro inside Flowlu (Flowlu settings only)

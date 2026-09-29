@@ -97,6 +97,7 @@ const AdminCaseStudies = lazy(() => import("./pages/admin/AdminCaseStudies"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
 const AdminLeadsHub = lazy(() => import("./pages/admin/AdminLeadsHub"));
 const AdminFlowluLeads = lazy(() => import("./pages/admin/AdminFlowluLeads"));
+const AdminPipeline = lazy(() => import("./pages/admin/AdminPipeline"));
 const AdminVoiceAgent = lazy(() => import("./pages/admin/AdminVoiceAgent"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
@@ -296,6 +297,7 @@ const App = () => (
               <Route path="leads" element={<AdminLeads />} />
               <Route path="leads-hub" element={<ProtectedRoute minRole="admin"><AdminLeadsHub /></ProtectedRoute>} />
               <Route path="flowlu-leads" element={<ProtectedRoute minRole="admin"><AdminFlowluLeads /></ProtectedRoute>} />
+              <Route path="pipeline" element={<ProtectedRoute minRole="admin"><AdminPipeline /></ProtectedRoute>} />
               <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
               <Route path="quote-requests" element={<ProtectedRoute minRole="admin"><AdminQuoteRequests /></ProtectedRoute>} />
               <Route path="offer-leads" element={<ProtectedRoute minRole="admin"><AdminOfferLeads /></ProtectedRoute>} />
