@@ -72,6 +72,7 @@ const AdminLeadsHub = () => {
           <p className="text-muted-foreground text-sm">Every lead in one place — discovered businesses and website enquiries.</p>
         </div>
         <div className="flex gap-2">
+          <Button asChild variant="outline"><Link to="/admin/flowlu-leads"><ExternalLink className="w-4 h-4 mr-2" />All Flowlu leads</Link></Button>
           <Button asChild variant="outline"><Link to="/admin/prospecting"><Send className="w-4 h-4 mr-2" />Prospecting desk</Link></Button>
           <Button asChild><Link to="/admin/prospecting?find=1"><Search className="w-4 h-4 mr-2" />Find more leads</Link></Button>
         </div>
