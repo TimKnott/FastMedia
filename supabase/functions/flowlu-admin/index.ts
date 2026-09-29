@@ -73,6 +73,38 @@ async function createOpportunity(p: { name: string; email?: string | null; phone
   return r?.id ? String(r.id) : null;
 }
 
+async function auditWebsite(url?: string | null): Promise<string[]> {
+  const out: string[] = [];
+  if (!url) return ['No website found — only directory listings.'];
+  let host = '';
+  try { host = new URL(url).hostname; } catch { return ['Website address is invalid.']; }
+  if (/firmy\.cz|facebook|instagram|google/.test(host)) out.push(`No own website found — business relies on a third-party listing (${host}).`);
+  const root = `https://${host}/`;
+  const t0 = Date.now();
+  try {
+    const res = await fetch(root, { redirect: 'follow', headers: { 'User-Agent': 'Mozilla/5.0 FastMediaAudit' } });
+    const ms = Date.now() - t0;
+    const html = await res.text();
+    out.push(`Homepage status ${res.status}, loaded in ${ms} ms, ${Math.round(html.length / 1024)} KB HTML.`);
+    out.push(res.url.startsWith('https://') ? 'Uses HTTPS.' : 'Does NOT use HTTPS (browsers show "Not secure").');
+    const title = html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim();
+    out.push(title ? `Page title: "${title.slice(0, 90)}"${title.length < 15 ? ' (too short for search)' : ''}.` : 'Missing page title.');
+    out.push(/<meta[^>]+name=["']description["']/i.test(html) ? 'Has a meta description.' : 'Missing meta description (weak Google snippet).');
+    out.push(/<meta[^>]+name=["']viewport["']/i.test(html) ? 'Has mobile viewport tag.' : 'No mobile viewport tag — likely not mobile-friendly.');
+    out.push(/application\/ld\+json/i.test(html) ? 'Has structured data.' : 'No structured data (no LocalBusiness schema for Google Maps/AI search).');
+    out.push(/<h1[\s>]/i.test(html) ? 'Has an H1 heading.' : 'No H1 heading.');
+    out.push(/reserv|rezerv|booking|objedn/i.test(html) ? 'Mentions booking/ordering.' : 'No online booking found.');
+    out.push(/og:image/i.test(html) ? 'Has social share image.' : 'No social share image (og:image).');
+    const gen = html.match(/<meta[^>]+name=["']generator["'][^>]+content=["']([^"']+)/i)?.[1];
+    if (gen) out.push(`Built with: ${gen}.`);
+    const year = [...html.matchAll(/(?:©|&copy;|copyright)\s*(\d{4})/gi)].map((m) => +m[1]).sort().pop();
+    if (year) out.push(`Latest copyright year shown: ${year}${year < new Date().getFullYear() - 1 ? ' (looks outdated)' : ''}.`);
+  } catch (e) {
+    out.push(`Homepage could not be loaded: ${(e as Error).message.slice(0, 120)}.`);
+  }
+  return out;
+}
+
 async function alreadySynced(type: string): Promise<Set<string>> {
   const { data } = await sb.from('flowlu_sync_log').select('entity_id').eq('entity_type', type).eq('status', 'synced');
   return new Set((data ?? []).map((r) => r.entity_id));
@@ -142,6 +174,31 @@ Deno.serve(async (req) => {
         await sb.from('flowlu_settings').update({ last_test_at: new Date().toISOString(), last_test_ok: false, last_test_message: msg }).eq('id', 1);
         return json({ ok: false, message: msg });
       }
+    }
+    if (action === 'push_prospect') {
+      const id = String(body.prospect_id ?? '');
+      const { data: p } = await sb.from('prospects').select('*').eq('id', id).maybeSingle();
+      if (!p) return json({ error: 'prospect not found' }, 404);
+      const audit = await auditWebsite(p.website);
+      const r: any = p.research ?? {};
+      const researchLines = Object.entries(r).filter(([, v]) => v && typeof v !== 'object').map(([k, v]) => `${k}: ${v}`);
+      const description = [
+        `FASTMEDIA LEAD REPORT — ${p.company}`,
+        `Contact: ${p.contact_name ?? '-'} | ${p.email ?? '-'} | ${p.phone ?? '-'}`,
+        `Trade: ${p.trade ?? '-'} | Area: ${p.region ?? '-'} | Language: ${p.language ?? '-'}`,
+        `Website / listing: ${p.website ?? 'none'}`,
+        `Found via: ${p.discovered_query ?? p.source}`,
+        p.notes ? `Notes: ${p.notes}` : '',
+        '', 'WEBSITE CHECK (automated, observed facts only):', ...audit.map((a) => `- ${a}`),
+        researchLines.length ? '\nRESEARCH:\n' + researchLines.join('\n') : '',
+        '', 'NEXT STEP: review report, then approve a personalised first email on the Prospecting desk. Nothing has been sent to this business yet.',
+      ].filter((x) => x !== '').join('\n');
+      await sb.from('flowlu_sync_log').delete().eq('entity_type', 'prospect').eq('entity_id', id).eq('direction', 'push');
+      const res = await logResult('prospect', id, () => createOpportunity({
+        name: p.contact_name || p.company, email: p.email, phone: p.phone, company: p.company, source: 'Discovered lead', description,
+      }), { company: p.company });
+      const { data: log } = await sb.from('flowlu_sync_log').select('flowlu_id,status,error').eq('entity_type', 'prospect').eq('entity_id', id).maybeSingle();
+      return json({ ...res, flowlu_id: log?.flowlu_id, url: log?.flowlu_id ? `https://${account()}.flowlu.com/crm/lead/view/${log.flowlu_id}` : null, audit, description });
     }
     if (action === 'webhook_url') {
       return json({ url: `${SUPABASE_URL}/functions/v1/flowlu-webhook?token=${Deno.env.get('FLOWLU_WEBHOOK_SECRET') ?? ''}` });
