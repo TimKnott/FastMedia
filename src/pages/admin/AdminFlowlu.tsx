@@ -122,6 +122,27 @@ export default function AdminFlowlu() {
       </Card>
 
       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Mail className="h-5 w-5" />Mailboxes</CardTitle>
+          <CardDescription>Email accounts connected inside Flowlu. Connect timknott@fastmedia.pro in Flowlu (Email module → Connect an Account → Gmail) to send and receive from there — this API cannot connect it for you.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {mailboxesLoading && <p className="text-muted-foreground">Checking…</p>}
+          {!mailboxesLoading && (mailboxes ?? []).length === 0 && (
+            <p className="text-muted-foreground">No mailbox connected in Flowlu yet.</p>
+          )}
+          {(mailboxes ?? []).map((m) => (
+            <div key={m.id} className="flex flex-wrap items-center gap-3 rounded-md border border-border p-2 text-sm">
+              {m.active ? <Badge className="bg-accent/15 text-accent"><CheckCircle2 className="mr-1 h-3 w-3" />Active</Badge> : <Badge className="bg-muted text-muted-foreground"><AlertTriangle className="mr-1 h-3 w-3" />Inactive</Badge>}
+              <span className="font-medium">{m.name}</span>
+              {m.sender_name && <span className="text-muted-foreground">Sender: {m.sender_name}</span>}
+            </div>
+          ))}
+          <p className="text-xs text-muted-foreground">Read straight from Flowlu. If a mailbox shows Inactive, re-connect it in Flowlu under Email → three-dots menu.</p>
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardHeader><CardTitle>Activity</CardTitle><CardDescription>{counts.synced} sent · {counts.failed} failed · {counts.received} received from Flowlu</CardDescription></CardHeader>
         <CardContent className="space-y-2">
           {log.length === 0 && <p className="text-muted-foreground">Nothing yet.</p>}
