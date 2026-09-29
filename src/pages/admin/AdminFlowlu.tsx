@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { RefreshCw, PlugZap, Copy, CheckCircle2, AlertTriangle, Link2 } from 'lucide-react';
+import { RefreshCw, PlugZap, Copy, CheckCircle2, AlertTriangle, Link2, Mail } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
