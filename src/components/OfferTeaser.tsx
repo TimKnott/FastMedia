@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -61,6 +61,38 @@ const OfferTeaser = () => {
   };
   const reduceMotion = useReducedMotion();
   const [scene, setScene] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Mouse-follow offset for the rocket (springy, desktop pointers only)
+  const rocketX = useMotionValue(0);
+  const rocketY = useMotionValue(0);
+  const rocketSpringX = useSpring(rocketX, { stiffness: 60, damping: 14, mass: 0.6 });
+  const rocketSpringY = useSpring(rocketY, { stiffness: 60, damping: 14, mass: 0.6 });
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    const section = sectionRef.current;
+    if (!section || !window.matchMedia('(pointer: fine)').matches) return;
+
+    const handleMove = (event: MouseEvent) => {
+      const rect = section.getBoundingClientRect();
+      const relX = (event.clientX - rect.left) / rect.width - 0.5;
+      const relY = (event.clientY - rect.top) / rect.height - 0.5;
+      rocketX.set(relX * 56);
+      rocketY.set(relY * 40);
+    };
+    const handleLeave = () => {
+      rocketX.set(0);
+      rocketY.set(0);
+    };
+
+    section.addEventListener('mousemove', handleMove);
+    section.addEventListener('mouseleave', handleLeave);
+    return () => {
+      section.removeEventListener('mousemove', handleMove);
+      section.removeEventListener('mouseleave', handleLeave);
+    };
+  }, [reduceMotion, rocketX, rocketY]);
 
   useEffect(() => {
     if (reduceMotion) return;
