@@ -66,6 +66,11 @@
 - [x] FR/ES/IT EU grant + business-plan pages published (language sitemap, hreflang)
 - [x] Industry pages: /websites-for/plumbers, /electricians, /small-service-businesses
 - [ ] Full Czech site on its own URL (/cs/...) — awaiting user confirmation (large change)
+- [x] Blog narration: replace ElevenLabs with Google voice via Lovable AI
+
+## Sep 29 additions
+- [x] Route notification emails to professional address (OWNER_NOTIFICATION_EMAIL) across 8 edge functions — deployed
+- [x] Verified: test notification sent to timknott@fastmedia.pro
 - [ ] Hair salon through LinkedIn → Flowlu — Flowlu OK; GetSales flow cannot START until user connects their LinkedIn account in GetSales (no sender profiles exist)
 - [x] GetSales flow "FastMedia — SEO Experts outreach" CREATED via API (uuid c076d237-ac7f-460d-81d5-bfb0d395ccb9, draft, Prague business-hours schedule); auto-enrol wired: every pushed lead joins the flow (POST /flows/api/flows/{uuid}/leads/{leadUuid} — verified, enrolled=true); Salon Grácie pushed + enrolled
 - [ ] GetSales (user): connect LinkedIn account (sender profile) + add message steps to the flow + switch it on — steps have no API endpoint
