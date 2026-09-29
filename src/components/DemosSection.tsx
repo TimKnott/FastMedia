@@ -56,7 +56,7 @@ const DemosSection = () => {
                 className="group block relative overflow-hidden rounded-2xl shadow-card hover:shadow-lg transition-all duration-300"
               >
                 <div className="absolute inset-0">
-                  <img 
+                  <img loading="lazy" decoding="async" 
                     src={getTradeImage(trade.id)} 
                     alt={t(trade.nameKey)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"

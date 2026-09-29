@@ -415,7 +415,7 @@ export default function GrantApplication() {
 
       {/* Hero */}
       <section className="launch-hero relative isolate overflow-hidden bg-launch text-launch-foreground print:hidden">
-        <img src={launchSky} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-70" />
+        <img loading="lazy" decoding="async" src={launchSky} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-70" />
         <div className="absolute inset-0 launch-stars" aria-hidden />
         <div className="absolute inset-0 launch-hero__shade" aria-hidden />
         <div className="absolute inset-0 launch-hero__vignette" aria-hidden />

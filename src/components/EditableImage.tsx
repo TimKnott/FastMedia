@@ -121,12 +121,12 @@ const EditableImage = ({
 
   // Non-admin: plain image
   if (!isSuperAdmin) {
-    return <img src={displaySrc} alt={alt} className={className} />;
+    return <img loading="lazy" decoding="async" src={displaySrc} alt={alt} className={className} />;
   }
 
   return (
     <div className={cn('relative group/editable-img', containerClassName)}>
-      <img src={displaySrc} alt={alt} className={className} />
+      <img loading="lazy" decoding="async" src={displaySrc} alt={alt} className={className} />
 
       {/* Overlay */}
       <div

@@ -680,7 +680,7 @@ const GrantWizard = () => {
 
       {/* Hero: road to the launch pads */}
       <section className="launch-hero relative isolate overflow-hidden bg-launch text-launch-foreground">
-        <img src={launchSky} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-70" />
+        <img loading="lazy" decoding="async" src={launchSky} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-70" />
         <div className="absolute inset-0 launch-stars" aria-hidden />
         <div className="absolute inset-0 launch-hero__shade" aria-hidden />
         <div className="absolute inset-0 launch-hero__vignette" aria-hidden />
@@ -694,11 +694,11 @@ const GrantWizard = () => {
         {/* Launch pads either side */}
         <div className="absolute bottom-20 left-2 sm:left-8 md:left-16" aria-hidden>
           <span className="block w-1.5 h-16 mx-auto grant-pad-trail rounded-full" />
-          <img src={launchRocket} alt="" className="grant-pad-rocket w-10 sm:w-14 md:w-20 -mt-16 rotate-[-8deg]" />
+          <img loading="lazy" decoding="async" src={launchRocket} alt="" className="grant-pad-rocket w-10 sm:w-14 md:w-20 -mt-16 rotate-[-8deg]" />
         </div>
         <div className="absolute bottom-24 right-2 sm:right-8 md:right-16" aria-hidden>
           <span className="block w-1.5 h-16 mx-auto grant-pad-trail grant-pad-trail--right rounded-full" />
-          <img src={launchRocket} alt="" className="grant-pad-rocket grant-pad-rocket--right w-8 sm:w-12 md:w-16 -mt-16 rotate-[8deg]" />
+          <img loading="lazy" decoding="async" src={launchRocket} alt="" className="grant-pad-rocket grant-pad-rocket--right w-8 sm:w-12 md:w-16 -mt-16 rotate-[8deg]" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10 pt-14 pb-40 md:pt-20 md:pb-52 text-center">

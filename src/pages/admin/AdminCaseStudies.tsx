@@ -102,7 +102,7 @@ const AdminCaseStudies = () => {
             {items.map((item, index) => (
               <Card key={item.id} className="p-4 flex flex-wrap items-center gap-4">
                 {item.thumbnail_url && (
-                  <img src={item.thumbnail_url} alt={item.brand} className="w-24 h-16 object-cover rounded-md" />
+                  <img loading="lazy" decoding="async" src={item.thumbnail_url} alt={item.brand} className="w-24 h-16 object-cover rounded-md" />
                 )}
                 <div className="flex-1 min-w-[200px]">
                   <div className="flex items-center gap-2 flex-wrap">

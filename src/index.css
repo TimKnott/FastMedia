@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -501,4 +500,9 @@ html.a11y-reduced-motion *::after {
   .parallax-slow, .parallax-medium, .parallax-fast { transform: none !important; }
   .launch-stars, .launch-flame, .shooting-star,
   .grant-road__lines, .grant-pad-rocket, .grant-pad-trail { animation: none !important; }
+}
+
+/* Mobile performance: blur filters are very expensive on phones. */
+@media (max-width: 767px), (hover: none) {
+  [class*="backdrop-blur"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 }

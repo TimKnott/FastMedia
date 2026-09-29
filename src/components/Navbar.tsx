@@ -175,7 +175,7 @@ const Navbar = () => {
         <div ref={navBarRef} className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <img src={logo} alt="FastMedia.Pro" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow" />
+            <img loading="lazy" decoding="async" src={logo} alt="FastMedia.Pro" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow" />
             <span className="font-display font-bold text-lg sm:text-xl text-foreground">
               Fast<span className="text-accent">Media</span>.Pro
             </span>

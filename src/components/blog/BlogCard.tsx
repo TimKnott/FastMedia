@@ -32,7 +32,7 @@ const BlogCard = ({ post, layout = 'grid' }: BlogCardProps) => {
           className="flex flex-col sm:flex-row gap-5 p-4 rounded-2xl border border-border bg-card hover:shadow-elegant transition-all duration-300"
         >
           <div className="relative sm:w-64 shrink-0 aspect-video sm:aspect-[4/3] rounded-xl overflow-hidden">
-            <img src={post.image} alt={post.title[language]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img loading="lazy" decoding="async" src={post.image} alt={post.title[language]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             {post.videoUrl && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center shadow-lg">
@@ -72,7 +72,7 @@ const BlogCard = ({ post, layout = 'grid' }: BlogCardProps) => {
         className="flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:shadow-elegant transition-all duration-300 h-full"
       >
         <div className="relative aspect-video overflow-hidden">
-          <img src={post.image} alt={post.title[language]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <img loading="lazy" decoding="async" src={post.image} alt={post.title[language]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           {post.videoUrl && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">

@@ -285,7 +285,7 @@ const OfferLanding = () => {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="" aria-hidden="true" className="w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={HERO_IMG} alt="" aria-hidden="true" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/88 to-primary/50" />
         </div>
         <div className="relative container mx-auto px-4 py-20 md:py-32">

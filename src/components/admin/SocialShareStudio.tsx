@@ -407,7 +407,7 @@ const SocialShareStudio = ({ post, open, onClose }: Props) => {
                   </div>
                   <div className="rounded-xl border border-border bg-muted/30 p-3 flex flex-col items-center gap-2">
                     {previewSrc ? (
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={previewSrc}
                         alt="Share graphic preview"
                         className={p.id === 'tiktok' ? 'max-h-80 rounded-lg' : 'w-full rounded-lg'}

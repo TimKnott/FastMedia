@@ -56,7 +56,7 @@ const CalculatorShowcase = () => {
         >
           <div className="bg-card rounded-3xl shadow-lg overflow-hidden border border-border/50 flex flex-col lg:flex-row">
             <div className="lg:w-1/2 relative group overflow-hidden">
-              <img src={calculatorPreview} alt="AI Website Calculator Preview" className="w-full h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img loading="lazy" decoding="async" src={calculatorPreview} alt="AI Website Calculator Preview" className="w-full h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 gradient-hero opacity-60" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 3, repeat: Infinity }} className="w-20 h-20 gradient-accent rounded-2xl flex items-center justify-center shadow-glow">

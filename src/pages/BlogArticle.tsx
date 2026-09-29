@@ -261,7 +261,7 @@ const BlogArticle = () => {
       {/* Hero image */}
       <div className="relative pt-16 lg:pt-20">
         <div className="aspect-[21/9] max-h-[480px] w-full overflow-hidden">
-          <img src={post.image} alt={post.title[language]} className="w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={post.image} alt={post.title[language]} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
         </div>
       </div>

@@ -202,7 +202,7 @@ const ConsultantTereza = () => {
               className="relative"
             >
               <div className="w-56 h-56 lg:w-72 lg:h-72 rounded-full overflow-hidden border-4 border-accent/50 shadow-glow">
-                <img src={terezaPhoto} alt="Tereza Nováková" className="w-full h-full object-cover" />
+                <img loading="lazy" decoding="async" src={terezaPhoto} alt="Tereza Nováková" className="w-full h-full object-cover" />
               </div>
               <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
@@ -312,7 +312,7 @@ const ConsultantTereza = () => {
             <Link to="/calculator" className="block group">
               <div className="max-w-4xl mx-auto bg-card rounded-2xl overflow-hidden shadow-card border border-border/50 hover:shadow-lg transition-all flex flex-col md:flex-row">
                 <div className="md:w-2/5 relative overflow-hidden">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={calculatorPreview}
                     alt="AI Website Calculator"
                     className="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
