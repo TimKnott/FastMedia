@@ -1,3 +1,4 @@
+import { hasValidJobToken } from '../_shared/require-admin.ts';
 // Daily website health scan for FastMedia.Pro.
 // Checks key public pages load correctly, stores a report, and emails the
 // admin a summary. Callable only by pg_cron (CRON_SECRET) or the service role.
@@ -24,9 +25,10 @@ const PAGES: { path: string; marker?: string }[] = [
   { path: '/sitemap.xml', marker: '<urlset' },
 ];
 
-function authorized(req: Request): boolean {
+async function authorized(req: Request): Promise<boolean> {
+  if (await hasValidJobToken(req)) return true;
   const bearer = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
-  const cron = req.headers.get('x-cron-secret') ?? '';
+  const cron = req.headers.get('x-cron-secret, x-job-token') ?? '';
   const CRON = Deno.env.get('CRON_SECRET') ?? '';
   if (SERVICE_ROLE && bearer === SERVICE_ROLE) return true;
   if (CRON && cron && cron === CRON) return true;
@@ -34,7 +36,7 @@ function authorized(req: Request): boolean {
 }
 
 Deno.serve(async (req) => {
-  if (!authorized(req)) return new Response('unauthorized', { status: 401 });
+  if (!(await authorized(req))) return new Response('unauthorized', { status: 401 });
 
   const issues: { path: string; problem: string }[] = [];
   let checked = 0;

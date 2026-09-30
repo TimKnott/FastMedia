@@ -1,3 +1,4 @@
+import { hasValidJobToken } from '../_shared/require-admin.ts'
 // Mirror Google Workspace inbox messages into the admin inbox (inbound_emails).
 // Read-only: it never changes mail delivery, DNS, or the Gmail account itself.
 // Callable by an admin (JWT) or by cron/service-role.
@@ -118,16 +119,9 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get('Authorization') || ''
     const token = authHeader.replace('Bearer ', '').trim()
-    if (!token) return json({ error: 'unauthorized' }, 401)
-
     // Cron / service-role calls bypass the admin check.
-    let isServiceRole = token === SERVICE_ROLE
-    if (!isServiceRole) {
-      try {
-        const claims = JSON.parse(b64urlDecode(token.split('.')[1] ?? ''))
-        isServiceRole = claims?.role === 'service_role'
-      } catch { /* not a JWT we can read */ }
-    }
+    const isServiceRole = (!!token && token === SERVICE_ROLE) || (await hasValidJobToken(req))
+    if (!isServiceRole && !token) return json({ error: 'unauthorized' }, 401)
     if (!isServiceRole) {
       const userClient = createClient(SUPABASE_URL, ANON, { global: { headers: { Authorization: authHeader } } })
       const { data: userData } = await userClient.auth.getUser()

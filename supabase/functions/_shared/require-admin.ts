@@ -14,6 +14,7 @@ export async function isAuthorizedAdminCaller(req: Request): Promise<boolean> {
 
   if (bearer && SERVICE_ROLE && bearer === SERVICE_ROLE) return true;
   if (CRON_SECRET && cronSecret && cronSecret === CRON_SECRET) return true;
+  if (await hasValidJobToken(req)) return true;
   if (!bearer || !SUPABASE_URL || !ANON) return false;
 
   try {
@@ -36,4 +37,20 @@ export function unauthorizedResponse(corsHeaders: Record<string, string>) {
     status: 401,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
+}
+
+/** Scheduled jobs send `x-job-token`, matched against internal_job_tokens (name='scheduled_jobs'). */
+export async function hasValidJobToken(req: Request): Promise<boolean> {
+  const tok = req.headers.get('x-job-token') ?? '';
+  if (tok.length < 32) return false;
+  const url = Deno.env.get('SUPABASE_URL') ?? '';
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+  if (!url || !key) return false;
+  try {
+    const admin = createClient(url, key);
+    const { data } = await admin.from('internal_job_tokens').select('token').eq('name', 'scheduled_jobs').maybeSingle();
+    return !!data?.token && data.token === tok;
+  } catch {
+    return false;
+  }
 }
