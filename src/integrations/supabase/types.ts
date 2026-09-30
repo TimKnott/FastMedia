@@ -531,6 +531,42 @@ export type Database = {
         }
         Relationships: []
       }
+      client_reviews: {
+        Row: {
+          approved_at: string | null
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          rating: number
+          review_text: string
+          status: string
+        }
+        Insert: {
+          approved_at?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          rating: number
+          review_text: string
+          status?: string
+        }
+        Update: {
+          approved_at?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          rating?: number
+          review_text?: string
+          status?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           company: string | null
@@ -4357,7 +4393,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_reviews: {
+        Row: {
+          approved_at: string | null
+          company: string | null
+          id: string | null
+          name: string | null
+          rating: number | null
+          review_text: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          company?: string | null
+          id?: string | null
+          name?: string | null
+          rating?: number | null
+          review_text?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          company?: string | null
+          id?: string | null
+          name?: string | null
+          rating?: number | null
+          review_text?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       delete_email: {
