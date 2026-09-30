@@ -4393,33 +4393,7 @@ export type Database = {
       }
     }
     Views: {
-      public_reviews: {
-        Row: {
-          approved_at: string | null
-          company: string | null
-          id: string | null
-          name: string | null
-          rating: number | null
-          review_text: string | null
-        }
-        Insert: {
-          approved_at?: string | null
-          company?: string | null
-          id?: string | null
-          name?: string | null
-          rating?: number | null
-          review_text?: string | null
-        }
-        Update: {
-          approved_at?: string | null
-          company?: string | null
-          id?: string | null
-          name?: string | null
-          rating?: number | null
-          review_text?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       delete_email: {
