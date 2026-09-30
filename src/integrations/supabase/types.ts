@@ -91,6 +91,81 @@ export type Database = {
         }
         Relationships: []
       }
+      backlink_opportunities: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          last_check_at: string | null
+          last_check_result: string | null
+          live_at: string | null
+          live_url: string | null
+          long_cs: string | null
+          long_en: string | null
+          notes: string | null
+          short_cs: string | null
+          short_en: string | null
+          site_name: string
+          site_url: string
+          sort_order: number
+          status: string
+          submit_url: string | null
+          submitted_at: string | null
+          target_url: string
+          title_cs: string | null
+          title_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          last_check_at?: string | null
+          last_check_result?: string | null
+          live_at?: string | null
+          live_url?: string | null
+          long_cs?: string | null
+          long_en?: string | null
+          notes?: string | null
+          short_cs?: string | null
+          short_en?: string | null
+          site_name: string
+          site_url: string
+          sort_order?: number
+          status?: string
+          submit_url?: string | null
+          submitted_at?: string | null
+          target_url?: string
+          title_cs?: string | null
+          title_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_check_at?: string | null
+          last_check_result?: string | null
+          live_at?: string | null
+          live_url?: string | null
+          long_cs?: string | null
+          long_en?: string | null
+          notes?: string | null
+          short_cs?: string | null
+          short_en?: string | null
+          site_name?: string
+          site_url?: string
+          sort_order?: number
+          status?: string
+          submit_url?: string | null
+          submitted_at?: string | null
+          target_url?: string
+          title_cs?: string | null
+          title_en?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_generation_log: {
         Row: {
           completed_at: string | null
