@@ -47,6 +47,21 @@ export default function AdminBacklinks() {
     data.forEach((o) => (c[o.status] = (c[o.status] ?? 0) + 1));
     return c;
   }, [data]);
+  const weeks = useMemo(() => {
+    const monday = (d: Date) => { const x = new Date(d); const day = (x.getDay() + 6) % 7; x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - day); return x; };
+    const start = monday(new Date());
+    return Array.from({ length: 8 }, (_, i) => {
+      const from = new Date(start); from.setDate(from.getDate() - (7 - i) * 7);
+      const to = new Date(from); to.setDate(to.getDate() + 7);
+      const inWeek = (s: string | null | undefined) => !!s && new Date(s) >= from && new Date(s) < to;
+      return {
+        label: from.toLocaleDateString("en-GB", { day: "numeric", month: "short" }),
+        submitted: data.filter((o) => inWeek((o as any).submitted_at)).length,
+        live: data.filter((o) => inWeek(o.live_at)).length,
+      };
+    });
+  }, [data]);
+  const weekMax = Math.max(1, ...weeks.map((w) => Math.max(w.submitted, w.live)));
   const rows = filter === "all" ? data : data.filter((o) => o.status === filter);
 
   const save = async (patch: Partial<Opp>) => {
@@ -92,6 +107,35 @@ export default function AdminBacklinks() {
           50 real places to list FastMedia.Pro, with Czech and English texts to review, edit and paste. Post each one yourself, then paste the page address and click "Check link".
         </p>
       </div>
+
+      <Card className="p-4 space-y-4">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <div className="text-xs text-muted-foreground">Live backlinks</div>
+            <div className="text-3xl font-bold">{counts.live ?? 0} <span className="text-base font-normal text-muted-foreground">of {data.length || 50}</span></div>
+          </div>
+          <div className="text-sm text-muted-foreground">{Math.round(((counts.live ?? 0) / (data.length || 50)) * 100)}% done</div>
+        </div>
+        <div className="h-3 rounded-full bg-muted overflow-hidden">
+          <div className="h-full bg-primary transition-all" style={{ width: `${((counts.live ?? 0) / (data.length || 50)) * 100}%` }} />
+        </div>
+        <div>
+          <div className="text-xs font-medium text-muted-foreground mb-2">Weekly progress (last 8 weeks) · submitted / went live</div>
+          <div className="grid grid-cols-8 gap-2 items-end h-28">
+            {weeks.map((w) => (
+              <div key={w.label} className="flex flex-col items-center gap-1 h-full justify-end">
+                <div className="flex gap-0.5 items-end h-20 w-full justify-center">
+                  <div className="w-1/3 bg-secondary rounded-t" style={{ height: `${(w.submitted / weekMax) * 100}%` }} title={`${w.submitted} submitted`} />
+                  <div className="w-1/3 bg-primary rounded-t" style={{ height: `${(w.live / weekMax) * 100}%` }} title={`${w.live} live`} />
+                </div>
+                <div className="text-[10px] text-muted-foreground">{w.submitted}/{w.live}</div>
+                <div className="text-[10px] text-muted-foreground">{w.label}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">Target pace: 5 submissions a week finishes all 50 in about 10 weeks.</p>
+        </div>
+      </Card>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {Object.entries(STATUS).map(([k, s]) => (

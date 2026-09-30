@@ -531,6 +531,42 @@ export type Database = {
         }
         Relationships: []
       }
+      client_reviews: {
+        Row: {
+          approved_at: string | null
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          rating: number
+          review_text: string
+          status: string
+        }
+        Insert: {
+          approved_at?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          rating: number
+          review_text: string
+          status?: string
+        }
+        Update: {
+          approved_at?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          rating?: number
+          review_text?: string
+          status?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           company: string | null

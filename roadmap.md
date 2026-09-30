@@ -89,3 +89,10 @@
 - [x] Sequence draft/approve/send + reply tracking
 - [x] Pipeline dashboard
 - [ ] User: connect timknott@fastmedia.pro inside Flowlu (Flowlu settings only)
+
+## Sep 30 batch
+- [x] Backlink builder: live count + 8-week progress tracker
+- [x] Reviews: /reviews submit form, admin approval at /admin/reviews, homepage shows approved only
+- [x] Press kit: grant section on /media-kit (also /press)
+- [x] Grant client portal — already exists at /grant-portal
+- [ ] Firmy.cz tick-off — BLOCKED waiting for user to forward Seznam approval email / listing URL

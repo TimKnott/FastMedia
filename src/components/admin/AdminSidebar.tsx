@@ -100,6 +100,7 @@ export const mainItems: MenuItem[] = [
   { titleKey: 'Flowlu CRM', url: '/admin/flowlu', icon: Phone, minRole: 'admin' },
   { titleKey: 'Language versions', url: '/admin/language-versions', icon: Map, minRole: 'admin' },
   { titleKey: 'Backlink builder', url: '/admin/backlinks', icon: Search, minRole: 'admin' },
+  { titleKey: 'Reviews', url: '/admin/reviews', icon: Search, minRole: 'admin' },
   { titleKey: 'Showcase', url: '/admin/showcase', icon: Eye, minRole: 'admin' },
 ];
 
