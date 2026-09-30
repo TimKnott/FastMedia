@@ -5,7 +5,7 @@ import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/requir
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-cron-secret',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-cron-secret, x-job-token',
 };
 const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -44,9 +44,15 @@ async function checkOne(db: ReturnType<typeof createClient>, row: Row) {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
-  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders);
-  const body = await req.json().catch(() => ({}));
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+  const jobToken = req.headers.get('x-job-token') ?? '';
+  let jobOk = false;
+  if (jobToken) {
+    const { data: tok } = await db.from('internal_job_tokens').select('token').eq('name', 'backlink_check').maybeSingle();
+    jobOk = !!tok?.token && tok.token === jobToken;
+  }
+  if (!jobOk && !(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders);
+  const body = await req.json().catch(() => ({}));
 
   if (body.all) {
     const { data: rows } = await db.from('backlink_opportunities').select('id, live_url, status').not('live_url', 'is', null);
