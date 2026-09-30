@@ -17,6 +17,7 @@ type Opp = {
   category: string; target_url: string; title_cs: string | null; title_en: string | null;
   short_cs: string | null; short_en: string | null; long_cs: string | null; long_en: string | null;
   notes: string | null; status: string; live_url: string | null; live_at: string | null;
+  link_ok: boolean | null; is_own_site: boolean;
   last_check_at: string | null; last_check_result: string | null;
 };
 
@@ -47,6 +48,18 @@ export default function AdminBacklinks() {
     data.forEach((o) => (c[o.status] = (c[o.status] ?? 0) + 1));
     return c;
   }, [data]);
+  const own = data.filter((o) => o.is_own_site);
+  const listings = data.filter((o) => !o.is_own_site && o.live_url && o.last_check_at);
+  const lost = data.filter((o) => o.status === "live" && o.link_ok === false);
+  const [checkingAll, setCheckingAll] = useState(false);
+  const checkAll = async () => {
+    setCheckingAll(true);
+    const { data: r, error } = await supabase.functions.invoke("backlink-check", { body: { all: true } });
+    setCheckingAll(false);
+    if (error || r?.error) return toast.error(r?.error ?? error?.message);
+    toast.success(`Checked ${r.checked} pages — ${r.linking} link to fastmedia.pro`);
+    qc.invalidateQueries({ queryKey: ["backlink_opps"] });
+  };
   const weeks = useMemo(() => {
     const monday = (d: Date) => { const x = new Date(d); const day = (x.getDay() + 6) % 7; x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - day); return x; };
     const start = monday(new Date());
@@ -107,6 +120,34 @@ export default function AdminBacklinks() {
           50 real places to list FastMedia.Pro, with Czech and English texts to review, edit and paste. Post each one yourself, then paste the page address and click "Check link".
         </p>
       </div>
+
+      <Card className="p-4 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-xs text-muted-foreground">Link health (checked automatically every Monday 08:00 Prague)</div>
+            <div className="flex flex-wrap gap-6 mt-1">
+              <div><span className="text-2xl font-bold">{own.filter((o) => o.link_ok).length}</span><span className="text-sm text-muted-foreground"> of {own.length} of your sites link back</span></div>
+              <div><span className="text-2xl font-bold">{listings.filter((o) => o.link_ok).length}</span><span className="text-sm text-muted-foreground"> of {listings.length} checked listings link back</span></div>
+              {lost.length > 0 && <div className="text-destructive text-sm self-end">{lost.length} live listing{lost.length > 1 ? "s" : ""} lost the link</div>}
+            </div>
+          </div>
+          <Button size="sm" variant="outline" disabled={checkingAll} onClick={checkAll}>
+            {checkingAll && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}Check all now
+          </Button>
+        </div>
+        {own.length > 0 && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {own.map((o) => (
+              <button key={o.id} onClick={() => setOpen(o)} className="text-left rounded-md border border-border p-2 hover:bg-muted/50">
+                <div className="text-sm font-medium flex items-center gap-2">
+                  <span className={`h-2 w-2 rounded-full ${o.link_ok ? "bg-primary" : o.last_check_at ? "bg-destructive" : "bg-muted-foreground"}`} />{o.site_name}
+                </div>
+                <div className="text-xs text-muted-foreground truncate">{o.last_check_result ?? "Not checked yet"}</div>
+              </button>
+            ))}
+          </div>
+        )}
+      </Card>
 
       <Card className="p-4 space-y-4">
         <div className="flex items-end justify-between gap-4">
