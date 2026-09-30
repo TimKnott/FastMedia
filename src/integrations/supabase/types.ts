@@ -91,13 +91,50 @@ export type Database = {
         }
         Relationships: []
       }
+      backlink_checks: {
+        Row: {
+          checked_at: string
+          found: boolean
+          id: string
+          nofollow: boolean
+          opportunity_id: string
+          result: string | null
+        }
+        Insert: {
+          checked_at?: string
+          found: boolean
+          id?: string
+          nofollow?: boolean
+          opportunity_id: string
+          result?: string | null
+        }
+        Update: {
+          checked_at?: string
+          found?: boolean
+          id?: string
+          nofollow?: boolean
+          opportunity_id?: string
+          result?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backlink_checks_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "backlink_opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       backlink_opportunities: {
         Row: {
           category: string
           created_at: string
           id: string
+          is_own_site: boolean
           last_check_at: string | null
           last_check_result: string | null
+          link_ok: boolean | null
           live_at: string | null
           live_url: string | null
           long_cs: string | null
@@ -120,8 +157,10 @@ export type Database = {
           category: string
           created_at?: string
           id?: string
+          is_own_site?: boolean
           last_check_at?: string | null
           last_check_result?: string | null
+          link_ok?: boolean | null
           live_at?: string | null
           live_url?: string | null
           long_cs?: string | null
@@ -144,8 +183,10 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          is_own_site?: boolean
           last_check_at?: string | null
           last_check_result?: string | null
+          link_ok?: boolean | null
           live_at?: string | null
           live_url?: string | null
           long_cs?: string | null
