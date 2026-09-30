@@ -1,3 +1,4 @@
+import { hasValidJobToken } from '../_shared/require-admin.ts';
 // Daily deliverability probe: sends a probe through the outbound pipeline,
 // waits for the queue to process it, gathers 24h send stats + failures, then
 // emails an admin report to NOTIFICATION_EMAIL.
@@ -12,12 +13,13 @@ import {
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-cron-secret',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-cron-secret, x-job-token',
 };
 
-function authorized(req: Request): boolean {
+async function authorized(req: Request): Promise<boolean> {
+  if (await hasValidJobToken(req)) return true;
   const bearer = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
-  const cron = req.headers.get('x-cron-secret') ?? '';
+  const cron = req.headers.get('x-cron-secret, x-job-token') ?? '';
   const SERVICE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
   const CRON = Deno.env.get('CRON_SECRET') ?? '';
   if (SERVICE && bearer === SERVICE) return true;
@@ -72,7 +74,7 @@ async function postSlackAlert(text: string): Promise<string | null> {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
-  if (!authorized(req)) {
+  if (!(await authorized(req))) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
