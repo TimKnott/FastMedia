@@ -98,6 +98,7 @@ const AdminCaseStudies = lazy(() => import("./pages/admin/AdminCaseStudies"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
 const AdminLeadsHub = lazy(() => import("./pages/admin/AdminLeadsHub"));
 const AdminFlowluLeads = lazy(() => import("./pages/admin/AdminFlowluLeads"));
+const AdminBacklinks = lazy(() => import("./pages/admin/AdminBacklinks"));
 const AdminPipeline = lazy(() => import("./pages/admin/AdminPipeline"));
 const AdminVoiceAgent = lazy(() => import("./pages/admin/AdminVoiceAgent"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
@@ -332,6 +333,7 @@ const App = () => (
               <Route path="case-studies" element={<AdminCaseStudies />} />
               <Route path="prospecting" element={<ProtectedRoute minRole="admin"><AdminProspecting /></ProtectedRoute>} />
               <Route path="voice-agent" element={<ProtectedRoute minRole="admin"><AdminVoiceAgent /></ProtectedRoute>} />
+              <Route path="backlinks" element={<ProtectedRoute minRole="admin"><AdminBacklinks /></ProtectedRoute>} />
               <Route path="flowlu" element={<ProtectedRoute minRole="admin"><AdminFlowlu /></ProtectedRoute>} />
               <Route path="language-versions" element={<ProtectedRoute minRole="admin"><AdminLanguageVersions /></ProtectedRoute>} />
               <Route path="accounting" element={<AdminAccounting />} />
