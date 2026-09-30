@@ -8,17 +8,18 @@ import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
 import AdminToolbar from "@/components/AdminToolbar";
-import WhatsAppFloat from "./components/WhatsAppFloat";
-import AdminQuickBar from "./components/AdminQuickBar";
-import EmbedCodeInjector from "./components/EmbedCodeInjector";
-import CookieConsentBanner from "./components/CookieConsentBanner";
-import AccessibilityToolbar from "./components/AccessibilityToolbar";
-import ExitIntentOffer from "./components/ExitIntentOffer";
+import DeferredMount from "./components/DeferredMount";
+const WhatsAppFloat = lazy(() => import("./components/WhatsAppFloat"));
+const AdminQuickBar = lazy(() => import("./components/AdminQuickBar"));
+const EmbedCodeInjector = lazy(() => import("./components/EmbedCodeInjector"));
+const CookieConsentBanner = lazy(() => import("./components/CookieConsentBanner"));
+const AccessibilityToolbar = lazy(() => import("./components/AccessibilityToolbar"));
+const ExitIntentOffer = lazy(() => import("./components/ExitIntentOffer"));
 import { A11yProvider } from "./contexts/A11yContext";
-import SuperAdminInboxBadge from "./components/SuperAdminInboxBadge";
+const SuperAdminInboxBadge = lazy(() => import("./components/SuperAdminInboxBadge"));
 import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner";
 import TrailingSlashRedirect from "./components/TrailingSlashRedirect";
-import CursorFX from "./components/CursorFX";
+const CursorFX = lazy(() => import("./components/CursorFX"));
 
 // Critical pages loaded eagerly
 import Index from "./pages/Index";
@@ -187,16 +188,18 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <TrailingSlashRedirect />
-          <CursorFX />
           <PaymentTestModeBanner />
           <AdminToolbar />
-          <AdminQuickBar />
-          <WhatsAppFloat />
-          <EmbedCodeInjector />
-          <CookieConsentBanner />
-          <AccessibilityToolbar />
-          <ExitIntentOffer />
-          <SuperAdminInboxBadge />
+          <DeferredMount>
+            <CursorFX />
+            <AdminQuickBar />
+            <WhatsAppFloat />
+            <EmbedCodeInjector />
+            <CookieConsentBanner />
+            <AccessibilityToolbar />
+            <ExitIntentOffer />
+            <SuperAdminInboxBadge />
+          </DeferredMount>
           <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
