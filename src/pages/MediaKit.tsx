@@ -10,7 +10,7 @@ import SEOHead from '@/components/SEOHead';
 import Footer from '@/components/Footer';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { reviews } from '@/data/reviews';
+import { useApprovedReviews, initials } from '@/hooks/useApprovedReviews';
 import logo from '@/assets/logo.jpeg';
 
 const copy = {
@@ -121,7 +121,11 @@ const MediaKit = () => {
   const { language } = useLanguage();
   const isEnglish = language === 'en';
   const t = copy[language as 'cs' | 'en'] ?? copy.cs;
-  const pickedReviews = reviews.slice(0, 6);
+  const { data: approved = [] } = useApprovedReviews();
+  const pickedReviews = approved.slice(0, 6).map((r) => ({
+    id: r.id, rating: r.rating, name: r.name, trade: r.company ?? '', avatar: initials(r.name),
+    text: { cs: r.review_text, en: r.review_text },
+  }));
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -218,7 +222,41 @@ const MediaKit = () => {
         </div>
       </section>
 
+      {/* Press: Kreativní vouchery */}
+      <section className="py-14 md:py-20 bg-muted/40">
+        <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
+          <motion.div {...fadeUp}>
+            <Badge variant="outline" className="mb-4">{isEnglish ? 'For journalists' : 'Pro novináře'}</Badge>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              {isEnglish ? 'Covering the Kreativní vouchery grant' : 'Píšete o programu Kreativní vouchery?'}
+            </h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              {isEnglish
+                ? 'FastMedia.Pro helps small Czech businesses prepare websites, video and marketing projects that may qualify for the Kreativní vouchery creative grant. Clients submit their own applications; we prepare the creative project and paperwork. Grant decisions are made by the programme administrator, not by us.'
+                : 'FastMedia.Pro pomáhá malým českým firmám připravit weby, videa a marketingové projekty, které mohou splňovat podmínky programu Kreativní vouchery. Žádost podává klient sám; my připravujeme kreativní projekt a podklady. O dotaci rozhoduje poskytovatel programu, ne my.'}
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4 mb-6">
+              <Card className="border-border/60"><CardContent className="p-5 text-sm space-y-1">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">{isEnglish ? 'Key facts' : 'Základní fakta'}</p>
+                <p><strong>{isEnglish ? 'Owner' : 'Majitel'}:</strong> Timothy Knott</p>
+                <p><strong>IČO:</strong> 17308551</p>
+                <p><strong>{isEnglish ? 'Based in' : 'Sídlo'}:</strong> Louny 440 01, Ústecký kraj</p>
+                <p><strong>Web:</strong> www.fastmedia.pro</p>
+              </CardContent></Card>
+              <Card className="border-border/60"><CardContent className="p-5 text-sm space-y-2">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">{isEnglish ? 'Downloads & links' : 'Ke stažení a odkazy'}</p>
+                <a href={logo} download="fastmedia-pro-logo.jpeg" className="block text-accent hover:underline">{isEnglish ? 'Download logo (JPEG)' : 'Stáhnout logo (JPEG)'}</a>
+                <a href="/tim-knott.vcf" download className="block text-accent hover:underline">{isEnglish ? 'Press contact card (vCard)' : 'Kontakt pro média (vCard)'}</a>
+                <Link to="/grants" className="block text-accent hover:underline">{isEnglish ? 'Grant overview page' : 'Přehled dotace'}</Link>
+                <Link to="/grant-process" className="block text-accent hover:underline">{isEnglish ? 'How the process works' : 'Jak proces funguje'}</Link>
+              </CardContent></Card>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Testimonials */}
+      {pickedReviews.length > 0 && (
       <section className="py-14 md:py-20">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div {...fadeUp} className="text-center mb-12">
@@ -254,6 +292,7 @@ const MediaKit = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* Brand & press contact */}
       <section className="py-14 md:py-20 bg-muted/40">

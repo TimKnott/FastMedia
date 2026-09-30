@@ -55,6 +55,8 @@ const GrantApplication = lazy(() => import("./pages/GrantApplication"));
 const GrantPortal = lazy(() => import("./pages/GrantPortal"));
 const AdminGrantFollowUp = lazy(() => import("./pages/admin/AdminGrantFollowUp"));
 const MediaKit = lazy(() => import("./pages/MediaKit"));
+const Reviews = lazy(() => import("./pages/Reviews"));
+const AdminReviews = lazy(() => import("./pages/admin/AdminReviews"));
 const Courses = lazy(() => import("./pages/Courses"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
@@ -218,6 +220,8 @@ const App = () => (
             <Route path="/grant-application" element={<GrantApplication />} />
             <Route path="/grant-portal" element={<GrantPortal />} />
             <Route path="/media-kit" element={<MediaKit />} />
+            <Route path="/press" element={<MediaKit />} />
+            <Route path="/reviews" element={<Reviews />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:slug" element={<CourseDetail />} />
             <Route path="/service/:slug" element={<ServiceLanding />} />
@@ -334,6 +338,7 @@ const App = () => (
               <Route path="prospecting" element={<ProtectedRoute minRole="admin"><AdminProspecting /></ProtectedRoute>} />
               <Route path="voice-agent" element={<ProtectedRoute minRole="admin"><AdminVoiceAgent /></ProtectedRoute>} />
               <Route path="backlinks" element={<ProtectedRoute minRole="admin"><AdminBacklinks /></ProtectedRoute>} />
+              <Route path="reviews" element={<ProtectedRoute minRole="admin"><AdminReviews /></ProtectedRoute>} />
               <Route path="flowlu" element={<ProtectedRoute minRole="admin"><AdminFlowlu /></ProtectedRoute>} />
               <Route path="language-versions" element={<ProtectedRoute minRole="admin"><AdminLanguageVersions /></ProtectedRoute>} />
               <Route path="accounting" element={<AdminAccounting />} />
