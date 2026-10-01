@@ -18,6 +18,7 @@ import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { revealLazySections } from '@/components/LazySection';
 
 const services = [
   { slug: 'websites', icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', position: 'left-[7%] top-[18%]' },
@@ -179,7 +180,7 @@ const OfferTeaser = () => {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-13 border-launch-border bg-launch-surface text-launch-foreground backdrop-blur-md hover:bg-launch-surface-strong hover:text-launch-foreground">
-                   <a href="#pricing">{copy.secondary}</a>
+                   <a href="#pricing" onClick={() => revealLazySections()}>{copy.secondary}</a>
                 </Button>
               </motion.div>
             </motion.div>
@@ -240,7 +241,7 @@ const OfferTeaser = () => {
               </div>
 
               <Button asChild size="lg" className="mt-7 bg-accent text-accent-foreground hover:bg-accent/90">
-                 <a href="#services">{copy.servicesCta} <ArrowRight className="h-4 w-4" /></a>
+                 <a href="#services" onClick={() => revealLazySections()}>{copy.servicesCta} <ArrowRight className="h-4 w-4" /></a>
               </Button>
             </motion.div>
           )}

@@ -18,6 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/logo.jpeg';
 import { useSiteSetting } from '@/hooks/useSiteSettings';
+import { revealLazySections } from '@/components/LazySection';
 
 const PAYMENTS_ENV: 'sandbox' | 'live' =
   (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined)?.startsWith('pk_test_')
