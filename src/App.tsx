@@ -62,6 +62,7 @@ const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 const IndustryLanding = lazy(() => import("./pages/IndustryLanding"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
+const Launch = lazy(() => import("./pages/Launch"));
 
 // Admin pages (lazy)
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
@@ -227,6 +228,7 @@ const App = () => (
             <Route path="/service/:slug" element={<ServiceLanding />} />
             <Route path="/websites-for/:slug" element={<IndustryLanding />} />
             <Route path="/case-studies" element={<CaseStudies />} />
+            <Route path="/launch" element={<Launch />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/demo/plumbing" element={<PlumbingDemo />} />

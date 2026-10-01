@@ -37,6 +37,7 @@ const Footer = () => {
     { href: '/grant-wizard', label: t('nav.grant') },
     { href: '/media-kit', label: isEnglish ? 'Press kit' : 'Tiskový kit' },
     { href: '/reviews', label: isEnglish ? 'Reviews' : 'Recenze' },
+    { href: '/launch', label: isEnglish ? 'Launch' : 'Start' },
     { href: '/install', label: t('nav.install') },
   ];
 

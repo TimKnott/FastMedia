@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
+import launchVideo from '@/assets/fastmedia-launch.mp4.asset.json';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { revealLazySections } from '@/components/LazySection';
@@ -110,19 +111,16 @@ const OfferTeaser = () => {
       aria-label={copy.aria}
       className="launch-hero relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground"
     >
-      <img decoding="async"
-        src={launchSky}
-        alt={copy.alt}
-        width={1920}
-        height={1088}
-        fetchPriority="high"
-        className="absolute inset-0 h-full w-full object-cover object-[62%_center]"
-      />
+      <img decoding="async" src={launchSky} alt={copy.alt} width={1920} height={1088} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-[62%_center]" />
+      {!reduceMotion && <video autoPlay muted loop playsInline preload="metadata" poster={launchSky} className="absolute inset-0 h-full w-full object-cover object-[62%_center]" aria-label={copy.aria}><source src={launchVideo.url} type="video/mp4" /></video>}
       <div className="launch-hero__shade absolute inset-0" />
       <div className="launch-hero__vignette absolute inset-0" />
       <div className="launch-stars absolute inset-0" aria-hidden="true" />
       <div className="shooting-star shooting-star--one absolute z-[5]" aria-hidden="true" />
       <div className="shooting-star shooting-star--two absolute z-[5]" aria-hidden="true" />
+      <div className="launch-smoke-bank" aria-hidden="true">
+        {Array.from({ length: 18 }, (_, index) => <span key={index} style={{ '--smoke-index': index } as React.CSSProperties} />)}
+      </div>
 
       <div className="container relative z-10 mx-auto flex min-h-[92svh] items-center px-5 pb-24 pt-28 sm:px-8 lg:px-12">
         <AnimatePresence mode="wait">
@@ -181,6 +179,9 @@ const OfferTeaser = () => {
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-13 border-launch-border bg-launch-surface text-launch-foreground backdrop-blur-md hover:bg-launch-surface-strong hover:text-launch-foreground">
                    <a href="#pricing" onClick={() => revealLazySections()}>{copy.secondary}</a>
+                </Button>
+                <Button asChild size="lg" variant="ghost" className="h-13 text-launch-foreground hover:bg-launch-surface hover:text-launch-foreground">
+                  <Link to="/launch">Launch film <Play className="h-4 w-4" /></Link>
                 </Button>
               </motion.div>
             </motion.div>
