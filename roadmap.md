@@ -96,3 +96,13 @@
 - [x] Press kit: grant section on /media-kit (also /press)
 - [x] Grant client portal — already exists at /grant-portal
 - [ ] Firmy.cz tick-off — BLOCKED waiting for user to forward Seznam approval email / listing URL
+
+## Oct 1 batch
+- [ ] Run the live-link check across the 10 current URLs and report failures
+- [ ] Add FastMedia footer credits to the 9 published projects — BLOCKED: this project can only read other projects
+- [ ] Prepare the remaining 15 unpublished projects for backlinks, then publish and verify them — BLOCKED: this project can only read other projects
+- [ ] Replace the homepage image-only launch treatment with a real launch video experience
+- [ ] Build a dedicated launch page with countdown, timeline and press-kit links — BLOCKED: launch date/time needed
+- [ ] Investigate and restore the missing Lovable project thumbnail
+- [ ] Increase the rocket exhaust to dense, full-width smoke across the top of the launch scene
+- [ ] Assess a persistent WhatsApp chat option and explain costs/limitations
