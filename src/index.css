@@ -290,6 +290,30 @@
   .launch-smoke--5 { width: 30%; height: 20%; bottom: 0%; left: 22%; animation-delay: 3.4s; animation-duration: 5s; }
   .launch-smoke--6 { width: 20%; height: 14%; bottom: 14%; left: 16%; animation-delay: 1.3s; animation-duration: 3.8s; }
 
+  .launch-smoke-bank {
+    position: absolute;
+    inset: 0;
+    z-index: 12;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .launch-smoke-bank span {
+    position: absolute;
+    bottom: var(--smoke-bottom);
+    left: var(--smoke-left);
+    width: clamp(240px, 32vw, 620px);
+    aspect-ratio: 1.8;
+    border-radius: 9999px;
+    background: radial-gradient(ellipse, hsl(var(--launch-foreground) / 0.86) 0%, hsl(var(--launch-muted) / 0.64) 38%, hsl(var(--launch) / 0.12) 68%, transparent 76%);
+    filter: blur(18px);
+    opacity: 0;
+    transform: translate3d(0, 20%, 0) scale(0.72);
+    animation: launch-smoke-bank 7s ease-in-out infinite;
+    animation-delay: calc(var(--smoke-index) * -0.42s);
+    will-change: transform, opacity;
+  }
+
   .launch-orbit {
     border: 1px solid hsl(var(--launch-border));
     box-shadow: 0 0 70px hsl(var(--launch-accent) / 0.14), inset 0 0 50px hsl(var(--launch-foreground) / 0.04);
@@ -385,6 +409,13 @@
   18% { opacity: 0.85; }
   55% { opacity: 0.5; }
   100% { opacity: 0; transform: translate3d(-46%, 26%, 0) scale(1.9); }
+}
+
+@keyframes launch-smoke-bank {
+  0% { opacity: 0; transform: translate3d(0, 28%, 0) scale(0.7); }
+  18% { opacity: 0.92; }
+  58% { opacity: 0.76; transform: translate3d(var(--smoke-drift), -32%, 0) scale(1.35); }
+  100% { opacity: 0; transform: translate3d(var(--smoke-drift), -105%, 0) scale(1.9); }
 }
 
 @keyframes shooting-star {
@@ -524,7 +555,7 @@ html.a11y-reduced-motion *::after {
   body.cursorfx-active [data-cursor-hover] { cursor: auto; }
   .cursorfx-root { display: none; }
   .parallax-slow, .parallax-medium, .parallax-fast { transform: none !important; }
-  .launch-stars, .launch-flame, .launch-smoke, .shooting-star,
+  .launch-stars, .launch-flame, .launch-smoke, .launch-smoke-bank span, .shooting-star,
   .grant-road__lines, .grant-pad-rocket, .grant-pad-trail { animation: none !important; }
 }
 

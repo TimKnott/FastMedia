@@ -98,11 +98,17 @@
 - [ ] Firmy.cz tick-off — BLOCKED waiting for user to forward Seznam approval email / listing URL
 
 ## Oct 1 batch
-- [ ] Run the live-link check across the 10 current URLs and report failures
+- [x] Run the live-link check across the 10 current URLs and report failures — Europages passes; 9 own sites still lack the footer link
 - [ ] Add FastMedia footer credits to the 9 published projects — BLOCKED: this project can only read other projects
 - [ ] Prepare the remaining 15 unpublished projects for backlinks, then publish and verify them — BLOCKED: this project can only read other projects
-- [ ] Replace the homepage image-only launch treatment with a real launch video experience
-- [ ] Build a dedicated launch page with countdown, timeline and press-kit links — BLOCKED: launch date/time needed
-- [ ] Investigate and restore the missing Lovable project thumbnail
-- [ ] Increase the rocket exhaust to dense, full-width smoke across the top of the launch scene
-- [ ] Assess a persistent WhatsApp chat option and explain costs/limitations
+- [x] Replace the homepage image-only launch treatment with a real launch video experience
+- [x] Build a dedicated launch page with countdown, timeline and press-kit links — countdown rolls automatically to each new monthly theme
+- [x] Investigate and mitigate the missing Lovable project thumbnail — crawler now bypasses the old full-screen loading cover; platform cache refresh remains outside project control
+- [x] Increase the rocket exhaust to dense, full-width smoke across the launch scene
+- [x] Assess a persistent WhatsApp chat option and explain costs/limitations — possible through WhatsApp Business with usage fees; this Lovable chat cannot be moved there
+
+## Oct 1 showcase domain
+- [ ] Turn myname.co.uk into a separate public portfolio/testing hub for all published sites
+- [ ] Connect myname.co.uk from Namecheap and preserve isolation from FastMedia
+- [ ] Add each publication under a clean showcase address as it becomes available
+- [ ] Replace or redirect the website currently served on myname.co.uk — BLOCKED: user must confirm whether it should be kept elsewhere
