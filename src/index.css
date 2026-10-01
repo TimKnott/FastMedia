@@ -271,6 +271,25 @@
     animation: launch-flame 0.18s ease-in-out infinite alternate;
   }
 
+  /* Steam / smoke plumes billowing from the rocket exhaust */
+  .launch-smoke {
+    position: absolute;
+    border-radius: 9999px;
+    background: radial-gradient(circle, hsl(var(--launch-foreground) / 0.55) 0%, hsl(var(--launch-foreground) / 0.22) 45%, transparent 70%);
+    filter: blur(10px);
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.4);
+    animation: launch-smoke 4.6s ease-out infinite;
+    will-change: transform, opacity;
+  }
+
+  .launch-smoke--1 { width: 34%; height: 22%; bottom: 2%; left: 2%; animation-delay: 0s; }
+  .launch-smoke--2 { width: 28%; height: 18%; bottom: 6%; left: 10%; animation-delay: 0.9s; animation-duration: 5.2s; }
+  .launch-smoke--3 { width: 40%; height: 26%; bottom: -2%; left: 14%; animation-delay: 1.8s; animation-duration: 5.8s; }
+  .launch-smoke--4 { width: 24%; height: 16%; bottom: 10%; left: 4%; animation-delay: 2.6s; animation-duration: 4.2s; }
+  .launch-smoke--5 { width: 30%; height: 20%; bottom: 0%; left: 22%; animation-delay: 3.4s; animation-duration: 5s; }
+  .launch-smoke--6 { width: 20%; height: 14%; bottom: 14%; left: 16%; animation-delay: 1.3s; animation-duration: 3.8s; }
+
   .launch-orbit {
     border: 1px solid hsl(var(--launch-border));
     box-shadow: 0 0 70px hsl(var(--launch-accent) / 0.14), inset 0 0 50px hsl(var(--launch-foreground) / 0.04);
@@ -359,6 +378,13 @@
 @keyframes launch-flame {
   from { opacity: 0.65; transform: scaleX(0.82); }
   to { opacity: 1; transform: scaleX(1.18); }
+}
+
+@keyframes launch-smoke {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.35); }
+  18% { opacity: 0.85; }
+  55% { opacity: 0.5; }
+  100% { opacity: 0; transform: translate3d(-46%, 26%, 0) scale(1.9); }
 }
 
 @keyframes shooting-star {
@@ -498,7 +524,7 @@ html.a11y-reduced-motion *::after {
   body.cursorfx-active [data-cursor-hover] { cursor: auto; }
   .cursorfx-root { display: none; }
   .parallax-slow, .parallax-medium, .parallax-fast { transform: none !important; }
-  .launch-stars, .launch-flame, .shooting-star,
+  .launch-stars, .launch-flame, .launch-smoke, .shooting-star,
   .grant-road__lines, .grant-pad-rocket, .grant-pad-trail { animation: none !important; }
 }
 
