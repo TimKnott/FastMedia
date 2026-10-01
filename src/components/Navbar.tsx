@@ -68,9 +68,12 @@ const Navbar = () => {
   useEffect(() => {
     if (!location.hash) return;
     const id = location.hash.slice(1);
+    // Lazy sections mount on demand — reveal them so the target exists in the DOM.
+    revealLazySections();
     const tryScroll = (attempt = 0) => {
       if (scrollToIdWithCorrection(id)) return;
-      if (attempt < 10) setTimeout(() => tryScroll(attempt + 1), 100);
+      // Keep retrying long enough for lazy sections to mount and render.
+      if (attempt < 70) setTimeout(() => tryScroll(attempt + 1), 100);
     };
     tryScroll();
   }, [location.pathname, location.hash]);
@@ -87,10 +90,15 @@ const Navbar = () => {
       navigate(`/${href}`);
       return;
     }
-    const scrollNow = () => {
+    // Reveal lazy sections first so the target exists, then scroll (with retries
+    // while the section mounts).
+    revealLazySections();
+    const scrollNow = (attempt = 0) => {
       if (scrollToIdWithCorrection(id)) {
         window.history.replaceState(null, '', href);
+        return;
       }
+      if (attempt < 70) window.setTimeout(() => scrollNow(attempt + 1), 100);
     };
     scrollNow();
     setIsOpen(false);
