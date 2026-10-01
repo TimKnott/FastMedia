@@ -18,6 +18,7 @@ import launchSky from '@/assets/launch-sky-moonlit.jpg';
 import launchRocket from '@/assets/launch-rocket.png';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { revealLazySections } from '@/components/LazySection';
 
 const services = [
   { slug: 'websites', icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', position: 'left-[7%] top-[18%]' },
@@ -109,7 +110,7 @@ const OfferTeaser = () => {
       aria-label={copy.aria}
       className="launch-hero relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground"
     >
-      <img loading="lazy" decoding="async"
+      <img decoding="async"
         src={launchSky}
         alt={copy.alt}
         width={1920}
@@ -179,7 +180,7 @@ const OfferTeaser = () => {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-13 border-launch-border bg-launch-surface text-launch-foreground backdrop-blur-md hover:bg-launch-surface-strong hover:text-launch-foreground">
-                   <a href="#pricing">{copy.secondary}</a>
+                   <a href="#pricing" onClick={() => revealLazySections()}>{copy.secondary}</a>
                 </Button>
               </motion.div>
             </motion.div>
@@ -240,7 +241,7 @@ const OfferTeaser = () => {
               </div>
 
               <Button asChild size="lg" className="mt-7 bg-accent text-accent-foreground hover:bg-accent/90">
-                 <a href="#services">{copy.servicesCta} <ArrowRight className="h-4 w-4" /></a>
+                 <a href="#services" onClick={() => revealLazySections()}>{copy.servicesCta} <ArrowRight className="h-4 w-4" /></a>
               </Button>
             </motion.div>
           )}
@@ -260,7 +261,7 @@ const OfferTeaser = () => {
       >
         <motion.div style={{ x: rocketSpringX, y: rocketSpringY }}>
           <div className="launch-flame absolute bottom-[7%] left-[12%] h-[18%] w-[28%] -rotate-45" />
-          <img loading="lazy" decoding="async" src={launchRocket} alt="" width={1024} height={1024} className="relative h-auto w-full drop-shadow-2xl" />
+          <img decoding="async" src={launchRocket} alt="" width={1024} height={1024} className="relative h-auto w-full drop-shadow-2xl" />
         </motion.div>
       </motion.div>
 

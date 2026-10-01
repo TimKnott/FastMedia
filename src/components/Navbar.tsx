@@ -18,6 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/logo.jpeg';
 import { useSiteSetting } from '@/hooks/useSiteSettings';
+import { revealLazySections } from '@/components/LazySection';
 
 const PAYMENTS_ENV: 'sandbox' | 'live' =
   (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined)?.startsWith('pk_test_')
@@ -68,9 +69,12 @@ const Navbar = () => {
   useEffect(() => {
     if (!location.hash) return;
     const id = location.hash.slice(1);
+    // Lazy sections mount on demand — reveal them so the target exists in the DOM.
+    revealLazySections();
     const tryScroll = (attempt = 0) => {
       if (scrollToIdWithCorrection(id)) return;
-      if (attempt < 10) setTimeout(() => tryScroll(attempt + 1), 100);
+      // Keep retrying long enough for lazy sections to mount and render.
+      if (attempt < 70) setTimeout(() => tryScroll(attempt + 1), 100);
     };
     tryScroll();
   }, [location.pathname, location.hash]);
@@ -87,10 +91,15 @@ const Navbar = () => {
       navigate(`/${href}`);
       return;
     }
-    const scrollNow = () => {
+    // Reveal lazy sections first so the target exists, then scroll (with retries
+    // while the section mounts).
+    revealLazySections();
+    const scrollNow = (attempt = 0) => {
       if (scrollToIdWithCorrection(id)) {
         window.history.replaceState(null, '', href);
+        return;
       }
+      if (attempt < 70) window.setTimeout(() => scrollNow(attempt + 1), 100);
     };
     scrollNow();
     setIsOpen(false);
@@ -175,7 +184,7 @@ const Navbar = () => {
         <div ref={navBarRef} className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <img loading="lazy" decoding="async" src={logo} alt="FastMedia.Pro" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow" />
+            <img decoding="async" src={logo} alt="FastMedia.Pro" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow" />
             <span className="font-display font-bold text-lg sm:text-xl text-foreground">
               Fast<span className="text-accent">Media</span>.Pro
             </span>
