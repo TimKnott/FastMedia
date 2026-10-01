@@ -7,6 +7,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import SEOHead from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import launchVideo from '@/assets/fastmedia-launch.mp4.asset.json';
+import launchSky from '@/assets/launch-sky-moonlit.jpg';
 
 const monthlyThemes = [
   'New year, new trajectory', 'Ideas in orbit', 'Spring launch', 'Creative ignition',
@@ -44,7 +45,7 @@ const Launch = () => {
       <ScrollToTop />
       <main>
         <section className="relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground">
-          <video autoPlay muted loop playsInline preload="metadata" poster="/pwa-512x512.png" className="absolute inset-0 h-full w-full object-cover" aria-label="FastMedia rocket launch film">
+          <video autoPlay muted loop playsInline preload="metadata" poster={launchSky} className="absolute inset-0 h-full w-full object-cover" aria-label="FastMedia rocket launch film">
             <source src={launchVideo.url} type="video/mp4" />
           </video>
           <div className="launch-hero__shade absolute inset-0" />
