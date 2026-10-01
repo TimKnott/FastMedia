@@ -261,6 +261,16 @@ const OfferTeaser = () => {
       >
         <motion.div style={{ x: rocketSpringX, y: rocketSpringY }}>
           <div className="launch-flame absolute bottom-[7%] left-[12%] h-[18%] w-[28%] -rotate-45" />
+          {!lite && (
+            <div className="absolute inset-0" aria-hidden="true">
+              <div className="launch-smoke launch-smoke--1" />
+              <div className="launch-smoke launch-smoke--2" />
+              <div className="launch-smoke launch-smoke--3" />
+              <div className="launch-smoke launch-smoke--4" />
+              <div className="launch-smoke launch-smoke--5" />
+              <div className="launch-smoke launch-smoke--6" />
+            </div>
+          )}
           <img decoding="async" src={launchRocket} alt="" width={1024} height={1024} className="relative h-auto w-full drop-shadow-2xl" />
         </motion.div>
       </motion.div>
