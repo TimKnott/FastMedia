@@ -299,10 +299,9 @@
   }
 
   .launch-smoke-bank span {
-    --smoke-column: calc(var(--smoke-index) % 9);
     position: absolute;
-    bottom: calc(-10% + (var(--smoke-index) % 3) * 8%);
-    left: calc(var(--smoke-column) * 12% - 10%);
+    bottom: var(--smoke-bottom);
+    left: var(--smoke-left);
     width: clamp(240px, 32vw, 620px);
     aspect-ratio: 1.8;
     border-radius: 9999px;
@@ -415,8 +414,8 @@
 @keyframes launch-smoke-bank {
   0% { opacity: 0; transform: translate3d(0, 28%, 0) scale(0.7); }
   18% { opacity: 0.92; }
-  58% { opacity: 0.76; transform: translate3d(calc((var(--smoke-index) % 2) * 7% - 3%), -32%, 0) scale(1.35); }
-  100% { opacity: 0; transform: translate3d(calc((var(--smoke-index) % 2) * 12% - 6%), -105%, 0) scale(1.9); }
+  58% { opacity: 0.76; transform: translate3d(var(--smoke-drift), -32%, 0) scale(1.35); }
+  100% { opacity: 0; transform: translate3d(var(--smoke-drift), -105%, 0) scale(1.9); }
 }
 
 @keyframes shooting-star {

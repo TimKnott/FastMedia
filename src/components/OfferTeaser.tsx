@@ -119,7 +119,7 @@ const OfferTeaser = () => {
       <div className="shooting-star shooting-star--one absolute z-[5]" aria-hidden="true" />
       <div className="shooting-star shooting-star--two absolute z-[5]" aria-hidden="true" />
       <div className="launch-smoke-bank" aria-hidden="true">
-        {Array.from({ length: 18 }, (_, index) => <span key={index} style={{ '--smoke-index': index } as React.CSSProperties} />)}
+        {Array.from({ length: 18 }, (_, index) => <span key={index} style={{ '--smoke-index': index, '--smoke-left': `${(index % 9) * 12 - 10}%`, '--smoke-bottom': `${-10 + (index % 3) * 8}%`, '--smoke-drift': `${index % 2 === 0 ? -8 : 8}%` } as React.CSSProperties} />)}
       </div>
 
       <div className="container relative z-10 mx-auto flex min-h-[92svh] items-center px-5 pb-24 pt-28 sm:px-8 lg:px-12">

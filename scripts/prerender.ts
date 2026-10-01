@@ -131,6 +131,10 @@ function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
   // real users never see the raw SEO content. Non-JS crawlers keep the
   // fallback content in the raw HTML.
   (function(){
+    if (/HeadlessChrome|Googlebot|bingbot|Twitterbot|facebookexternalhit|Lovable/i.test(navigator.userAgent)) {
+      var splash = document.querySelector('[data-prerender="splash"]');
+      if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+    }
     var strip = function(){
       var nodes = document.querySelectorAll('[data-prerender="fallback"],[data-prerender="splash"]');
       for (var i = 0; i < nodes.length; i++) {

@@ -50,7 +50,7 @@ const Launch = () => {
           <div className="launch-hero__shade absolute inset-0" />
           <div className="launch-hero__vignette absolute inset-0" />
           <div className="launch-smoke-bank" aria-hidden="true">
-            {Array.from({ length: 18 }, (_, index) => <span key={index} style={{ '--smoke-index': index } as React.CSSProperties} />)}
+            {Array.from({ length: 18 }, (_, index) => <span key={index} style={{ '--smoke-index': index, '--smoke-left': `${(index % 9) * 12 - 10}%`, '--smoke-bottom': `${-10 + (index % 3) * 8}%`, '--smoke-drift': `${index % 2 === 0 ? -8 : 8}%` } as React.CSSProperties} />)}
           </div>
           <div className="container relative z-20 mx-auto flex min-h-[92svh] items-end px-5 pb-28 pt-32 sm:px-8 lg:px-12">
             <div className="max-w-4xl">
