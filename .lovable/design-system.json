@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
@@ -131,6 +131,15 @@
       "src/assets/offer/case-eshop.jpg": "e28a865b27344a65a3dac0aa2626c418",
       "src/assets/offer/case-plumbing.jpg": "a48eb466a7092ac98dd0f43eb65d5525",
       "src/assets/offer/case-salon.jpg": "fcea238bd5dc649c6785f36094b335d7",
+      "src/assets/showcase/buddychip.jpg.asset.json": "7f15c2b13bc3f7ac60218c05a38e6b1c",
+      "src/assets/showcase/calcurly.jpg.asset.json": "75bd85abf90233a6461d8af32172bf36",
+      "src/assets/showcase/classifieds.jpg.asset.json": "a7b685f68fb58703f67488ac940e9c49",
+      "src/assets/showcase/expathelp.jpg.asset.json": "4259ff8630a7a6655edbd8daae5ea5b9",
+      "src/assets/showcase/growthreport.jpg.asset.json": "cf6647a0dcbff767becc22d4b050e469",
+      "src/assets/showcase/jitty.jpg.asset.json": "a2e7a1dae4265f53273da0a9bbbd3e1c",
+      "src/assets/showcase/minibric.jpg.asset.json": "68454cae44c693625dec47b279387208",
+      "src/assets/showcase/pinkpony.jpg.asset.json": "3dbefb944e8ed69f07f76a639b0a792a",
+      "src/assets/showcase/progenitors.jpg.asset.json": "fb9051665ff9f807380a83e5dca4c4a5",
       "src/assets/team/expert-1.jpg": "86428882bf6dc4c66e357d3dc537ca09",
       "src/assets/team/expert-2.jpg": "ba761a992d6daf1e383a7cdafae2ce34",
       "src/assets/team/expert-3.jpg": "84eebb272f8233dc2f727fbe27e6a56f",
@@ -407,6 +416,7 @@
       "src/components/ScrollToTop.tsx": "f74417f0ab6d5cf21511cb23382be4c8",
       "src/components/ServiceAreaMap.tsx": "6ec083f1ef2d67cd3c5c4afa4c1fb31e",
       "src/components/ServicesSection.tsx": "22ba916ca24ef5073912324a084be4d3",
+      "src/components/ShowcaseCarousel.tsx": "8892a1d82a486c06252053a6d7ef4d1a",
       "src/components/StickyCTABar.tsx": "bdd00b276a18c86e12c9990e728a985a",
       "src/components/StripeEmbeddedCheckout.tsx": "f6e4110c4ccf32ee8b898c6be2d62285",
       "src/components/SuperAdminInboxBadge.tsx": "11c8b004df962f3b84af9c9558f76643",
@@ -438,6 +448,7 @@
       "src/components/blog/BlogAudioPlayer.tsx": "769c167d74d084eeddca93c9044f0f07",
       "src/components/blog/BlogCard.tsx": "fe5432ed153b917fc0c8dabf3226ed66",
       "src/components/blog/BlogFeaturedHero.tsx": "12d6a55e66499f7e6eccd91803b4da7d",
+      "src/components/blog/BlogShareBar.tsx": "c78f76edc8bda38e0c24b965bf610e7e",
       "src/components/blog/BlogSidebar.tsx": "bd3d7574788689318a3b3e3aaded541e",
       "src/components/ui/accordion.tsx": "f9ebb6ee913b44e5f3e06fe1d9679784",
       "src/components/ui/alert-dialog.tsx": "2ee6c5e5e070315114319bc060d17a52",
@@ -503,6 +514,7 @@
       "src/data/performanceBlogPosts.ts": "53594eb67cd9bf7ca35ada922b5f1851",
       "src/data/reviews.ts": "70a8c3ef169f09f6419ea3291b6b7fca",
       "src/data/serviceLandings.ts": "efd995337864f45f1b314ee351ee7338",
+      "src/data/showcaseSites.ts": "d66725873bddb5b9559b08368958e035",
       "src/data/sitemap.ts": "59a52dfffbe17fdb4048b4c31fe4a4a7",
       "src/data/tradeFaqs.ts": "5e26c45b62c872fda52e8a367e7e5023",
       "src/data/tradeGalleryImages.ts": "aeacb1021bd296636e6e9d9269910bcc",
@@ -529,7 +541,7 @@
       "src/hooks/useUserRole.ts": "84f7fece01beea2a301120941107cff2",
       "src/hooks/useVisitorSafeguards.ts": "8f3c312450e36ba5b9a84def981caafb",
       "src/hooks/useVoiceAgent.ts": "91d32afd269e9e5109f6cde77911165d",
-      "src/index.css": "0d59365d83505a940b36c891eb24b026",
+      "src/index.css": "d23610b231984d912e147a68511edecf",
       "src/integrations/lovable/index.ts": "2b281422ef62231e654f8668addb90a5",
       "src/integrations/supabase/client.ts": "ea731aa7f857b1b89542717c662d05c0",
       "src/integrations/supabase/previewAuthStorage.ts": "0a2d63e049bc63135b19c8e21cc0b1aa",
@@ -547,7 +559,7 @@
       "src/pages/About.tsx": "0a4807f999323a5cd96d43a82a1c9d51",
       "src/pages/Account.tsx": "00641b161becde5495de8ff7cdcb2096",
       "src/pages/Blog.tsx": "b6d53b03d9d54d0f05a3245cec6addc4",
-      "src/pages/BlogArticle.tsx": "676cfe13cb8c5ca32ac7249c05a084a6",
+      "src/pages/BlogArticle.tsx": "5a130a50edbaabb102318aa94b6e2113",
       "src/pages/CalculatorPage.tsx": "d4137f28771633dded868bfd50a3ad48",
       "src/pages/CaseStudies.tsx": "6ebfda42007e8157d33611b47287e533",
       "src/pages/CheckoutSuccess.tsx": "766eb30a191a42681947cffa26296dc9",
@@ -564,7 +576,7 @@
       "src/pages/GrantPortal.tsx": "96e32f093eb6022db4bb12fa10e9ea4c",
       "src/pages/GrantProcess.tsx": "31a2dcfc0fedc5917729943d4946b0eb",
       "src/pages/GrantWizard.tsx": "e8f761fb74d3e01ecede6bd618ef3039",
-      "src/pages/Index.tsx": "419d5956ab0aec6dca610ff0a1f9e0c1",
+      "src/pages/Index.tsx": "20626ffacd40d32e2a240720676a6789",
       "src/pages/IndustryLanding.tsx": "620c7c38cfa27653cbcbea947fad2272",
       "src/pages/Inquiry.tsx": "ad09d30260aba8af79527fb629201ffc",
       "src/pages/Install.tsx": "92b0235399f66c327407acc8cf0abbdc",
@@ -1517,6 +1529,60 @@
       "file": "src/assets/offer/case-salon.jpg",
       "kind": "image",
       "format": "jpg"
+    },
+    {
+      "file": "src/assets/showcase/buddychip.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/calcurly.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/classifieds.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/expathelp.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/growthreport.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/jitty.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/minibric.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/pinkpony.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/showcase/progenitors.jpg.asset.json",
+      "kind": "image",
+      "format": "jpg",
+      "pointer": true
     },
     {
       "file": "src/assets/team/expert-1.jpg",

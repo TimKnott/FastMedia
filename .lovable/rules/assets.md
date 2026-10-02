@@ -70,5 +70,5 @@ The full machine-readable catalog lives in this library's `design-system.json` (
 - `@/design-system/{slug}/assets/eshop/product-massagegun.jpg` (jpg)
 - `@/design-system/{slug}/assets/eshop/product-scarf.jpg` (jpg)
 - `@/design-system/{slug}/assets/eshop/product-serum.jpg` (jpg)
-- …and 245 more — full list in `design-system.json`
+- …and 254 more — full list in `design-system.json`
 
