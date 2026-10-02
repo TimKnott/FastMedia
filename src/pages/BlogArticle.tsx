@@ -16,6 +16,7 @@ import SEOHead from '@/components/SEOHead';
 import BlogAudioCTA from '@/components/blog/BlogAudioCTA';
 import { usePublishedBlogPosts } from '@/hooks/usePublishedBlogPosts';
 import { toast } from 'sonner';
+import BlogShareBar from '@/components/blog/BlogShareBar';
 
 
 type Language = 'cs' | 'en' | 'de';
@@ -403,16 +404,13 @@ const BlogArticle = () => {
 
               {/* Share */}
               <Separator className="my-6" />
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={shareArticle}
-                >
-                  <Share2 className="w-4 h-4" />
-                  {labels.share[language]}
-                </Button>
+              <BlogShareBar
+                url={`https://www.fastmedia.pro/blog/${post.slug}`}
+                title={post.title[language]}
+                excerpt={post.excerpt[language]}
+                language={language as 'cs' | 'en' | 'de'}
+              />
+              <div className="flex items-center justify-end mt-6">
                 <Link to="/blog">
                   <Button variant="ghost" size="sm" className="gap-1.5">
                     <ArrowLeft className="w-4 h-4" />
