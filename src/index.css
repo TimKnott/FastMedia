@@ -563,3 +563,13 @@ html.a11y-reduced-motion *::after {
 @media (max-width: 767px), (hover: none) {
   [class*="backdrop-blur"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 }
+
+/* Homepage showcase carousel — continuous right-to-left loop */
+.showcase-track { animation: showcase-scroll 45s linear infinite; }
+@keyframes showcase-scroll { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 0.625rem)); } }
+@media (prefers-reduced-motion: reduce) {
+  .showcase-marquee { overflow-x: auto; }
+  .showcase-track { animation: none; }
+}
+.a11y-reduced-motion .showcase-track { animation: none; }
+.a11y-reduced-motion .showcase-marquee { overflow-x: auto; }

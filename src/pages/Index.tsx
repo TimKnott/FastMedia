@@ -10,6 +10,7 @@ import PromoBanner from '@/components/PromoBanner';
 import StickyCTABar from '@/components/StickyCTABar';
 import OfferTeaser from '@/components/OfferTeaser';
 import HomeDirectAnswer from '@/components/HomeDirectAnswer';
+import ShowcaseCarousel from '@/components/ShowcaseCarousel';
 import { lazy } from 'react';
 import LazySection from '@/components/LazySection';
 const AutomationSection = lazy(() => import('@/components/AutomationSection'));
@@ -47,6 +48,7 @@ const Index = () => {
         <ScrollToTop />
         {on('home_hero') && <OfferTeaser />}
         <main id="main-site">
+          <ShowcaseCarousel />
           {on('home_promo') && <PromoBanner variant="compact" />}
           <HomeDirectAnswer />
           {on('home_why') && <WhyFastMediaSection />}
