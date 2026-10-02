@@ -1,0 +1,2665 @@
+{
+  "meta": {
+    "name": "FastMedia Web Development with Inovation",
+    "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
+    "version": "1.0.0",
+    "framework": "react",
+    "css_framework": "tailwind",
+    "starter_template": "custom_design_system_tailwind",
+    "theme_files": [
+      "src/index.css"
+    ],
+    "source_type": "local",
+    "source_manifest": {
+      "#enrichment": "05fdcac629c42fc7b0875fb43eb47379a03cb3a8a9f01bf6ada7247b6cfa0505",
+      ".gitignore": "d9566700e8535935d03c1583474d790c",
+      ".lovable/plan/ai-search-visibility-geo-seo-workspace-2026-09-24.md": "c3315da58dbdde2614981cb980f82d2a",
+      ".lovable/plan/connect-timknott-fastmedia-pro-as-a-mailbox-in-flowlu-2026-09-29.md": "9044abdcc0fba8aa2d8fcc18739e9d94",
+      ".lovable/plan/czech-default-public-website-2026-09-10.md": "b6de513b8f10ca3e7274905827c38b4f",
+      ".lovable/plan/emails-in-the-back-office-and-the-missing-pages-2026-09-14.md": "6fac5372c7d63f9daabdc6b6b57e069b",
+      ".lovable/plan/fastmedia-voice-agent-homepage-publish-2026-09-24.md": "50085db0587b24572cc1faa3129dc96c",
+      ".lovable/plan/fix-fastmedia-pro-project-not-found-add-the-two-missing-txt-2026-09-09.md": "2651611d317922713602ccaec2ad6d24",
+      ".lovable/plan/fix-fastmedia-pro-shows-project-not-found-2026-09-09.md": "f1102a9b362c49f514d1a4242e1ba648",
+      ".lovable/plan/flowlu-lead-pipeline-and-client-dashboard-2026-09-29.md": "207c8ca07273ebc08c3608c813198976",
+      ".lovable/plan/grant-support-slider-in-the-ai-calculator-2026-09-09.md": "5b9adaa4b008d192a5cfec7a44908017",
+      ".lovable/plan/make-leads-easy-to-find-and-keep-admin-signed-in-2026-09-29.md": "db8b5d5e8c5be84929ba18471de6dfa7",
+      ".lovable/plan/make-the-prospecting-agent-actually-find-leads-2026-09-24.md": "2cd0bbe00f2ca169b0739272f129fb24",
+      ".lovable/plan/move-fastmedia-pro-mailbox-to-google-workspace-2026-09-07.md": "a6ec05e79a87fe05ac4eb1fb91090557",
+      ".lovable/plan/myname-co-uk-showcase-hub-for-all-24-projects-2026-10-01.md": "68525bc964d94d87f55c3fc726ffa93f",
+      ".lovable/plan/permanent-inbound-forwarding-and-deliverability-monitoring-2026-09-03.md": "d7953a33871b2b2017547bcce0d5cb86",
+      ".lovable/plan/plan-get-backlinks-from-your-other-lovable-projects-2026-10-01.md": "69526af4bdf0db049aae95fe446c068c",
+      ".lovable/plan/switch-to-www-fastmedia-pro-one-week-reminder-2026-09-25.md": "08143e52d20673089b7fbd07943d4214",
+      ".prewarm": "d41d8cd98f00b204e9800998ecf8427e",
+      "AGENTS.md": "d43e44f33c26d44ef634ea22a56725fb",
+      "README.md": "f4883400a888785b401ba15288cda0f7",
+      "components.json": "a547944ace00dc5d5373aaca70a40bc4",
+      "eslint.config.js": "31c0881fdd8500aa4d0aa963079713ae",
+      "index.html": "e9682ad058f106b530ea3451d8715384",
+      "package.json": "7a045653664fbffdf453c1fb66b7d64f",
+      "postcss.config.js": "c735540bb63936a123bc867d950c9f69",
+      "public/2105d77fd4efd018e519384bda4276fe.txt": "8eb84a7f7324e971795d0dc0271307fe",
+      "public/apple-touch-icon.png": "1dfbf062ceedd2ea84eadc40e82d7a67",
+      "public/case-studies/case-building.jpg": "c9870f05a3a7e1983eb8c1c3d248ab54",
+      "public/case-studies/case-eshop.jpg": "efe5dc6976d9fde2a0e668554922199a",
+      "public/case-studies/case-plumbing.jpg": "e759324008db9d99cd7c37aa20ac06ed",
+      "public/case-studies/case-salon.jpg": "478e152325642576d5d9bacea998b1ce",
+      "public/checklist_briefing_video_agency.pdf": "8aa4380af8efeb22e1f95f8970772177",
+      "public/checklist_thumbnails_meta_tiktok.pdf": "ee24cbf50772a822d6ccf0a7bfa6449f",
+      "public/checklist_tiktok_ads.pdf": "cf91f670b2a20af9af6987998e71ba04",
+      "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
+      "public/favicon.jpeg": "c10cb9bd03f95e83b33232b36588223e",
+      "public/fonts/NotoSans-Bold.ttf": "dbbf5562096cbcf083521d9108cae5b8",
+      "public/fonts/NotoSans-Regular.ttf": "35a8847c94600e5695bd23e6dbf472d2",
+      "public/placeholder.svg": "35707bd9960ba5281c72af927b79291f",
+      "public/pwa-192x192.png": "899e113b67fb668a23840bf12c232f2a",
+      "public/pwa-512x512.png": "40b91a5a3c32957db468eff85d96ce92",
+      "public/robots.txt": "e6390b4a36e921da60083635c71b259b",
+      "public/sitemap.xml": "5f8ac25bb8964c93d63b7706624f6f53",
+      "public/tim-knott.vcf": "2a49c21a990c2f3eacb5e27f558aa4b8",
+      "roadmap.md": "625fac378bf885c1e40c222b0111c983",
+      "scripts/prerender.ts": "d533b97e84de0bfe521886fdd12f5955",
+      "scripts/seo-routes.ts": "1b84142743340f102cf2dad60756be83",
+      "src/App.css": "3061aee6b63300763d91be8ff5432a42",
+      "src/App.tsx": "a4aea67f2dee0256ceda65dd69e79b88",
+      "src/assets/blog/blog-bakery.jpg": "c9982fcc8f2c11ef31525d8fa5f1da7c",
+      "src/assets/blog/blog-booking-system.jpg": "07b0726b34de8e31642a3c96a0ab5c69",
+      "src/assets/blog/blog-branding.jpg": "eece31d9411ab74c2b80105fc809e046",
+      "src/assets/blog/blog-email-marketing.jpg": "e0a247207ea4d55f2813d9661898ce11",
+      "src/assets/blog/blog-florist.jpg": "95409f554bc124b9f99669ea0f1e1a54",
+      "src/assets/blog/blog-google-business.jpg": "0a0b35b7d56aec2959e3a55207bd590b",
+      "src/assets/blog/blog-instant-lead-reply.jpg": "b80c21de51e14f45dab7a3e6ef912abd",
+      "src/assets/blog/blog-lead-response-time.jpg": "b664a16faad34f1ffa1c7315bd2aac3f",
+      "src/assets/blog/blog-massage.jpg": "cd21de9437197ebcbf027e642cd61c2d",
+      "src/assets/blog/blog-mobile-first.jpg": "18e6e557570edea6396a0c3d92075954",
+      "src/assets/blog/blog-nail-salon.jpg": "43f81a49dcd6a296baa11a60f8750efc",
+      "src/assets/blog/blog-nutritionist.jpg": "352cbe16b8556b56fe76bc018fa15474",
+      "src/assets/blog/blog-pet-grooming.jpg": "7eaa0dbf2ea93dccce15ae622486a23b",
+      "src/assets/blog/blog-photography.jpg": "b3e08c7e05bde40c76e66f1f36616d27",
+      "src/assets/blog/blog-redesign.jpg": "8aa442332f4514c5173c4bd8d1f5686f",
+      "src/assets/blog/blog-reviews.jpg": "ff1b5519d55cfa3843f3ecbc99bc2402",
+      "src/assets/blog/blog-seo-tips.jpg": "1b78d2fdd31b8d0877e18376c76b51d7",
+      "src/assets/blog/blog-social-media.jpg": "719d443eaa275010d9a7058f2fb8fd70",
+      "src/assets/blog/blog-speed.jpg": "73827ec470007bec0c89d28154100808",
+      "src/assets/blog/blog-virtual-assistant.jpg": "bf966ad1a7328da3e0ebe31093d964eb",
+      "src/assets/blog/blog-website-trends.jpg": "4b81d8f408980a6ef1b4b781847d8b0a",
+      "src/assets/blog/blog-wedding-planner.jpg": "adb1eae0baf674f25492314b8578a3cb",
+      "src/assets/blog/blog-women-business.jpg": "6384b84161acafda26319ebf2f2f0423",
+      "src/assets/blog/blog-yoga.jpg": "6156c37c16356a9a3e5df9cdb14cbdba",
+      "src/assets/blog/blog1_hero.jpg": "d21a31db882658982059b077ff79a7a3",
+      "src/assets/blog/blog2_hero.jpg": "2f4608e0e18cbdb418660982e2fd0292",
+      "src/assets/blog/blog3_hero.jpg": "97fc873ca1fde6136e3983c94dc5ba07",
+      "src/assets/blog/demo-blog-1.jpg": "d878c1b1aa1ddebdc88b14382411ac53",
+      "src/assets/blog/demo-blog-2.jpg": "0d19bb8bf3db5c55eae7cf4e2fc55b8a",
+      "src/assets/blog/demo-blog-3.jpg": "348f57fd23a4785e30d37e35f88eba86",
+      "src/assets/blog/inline-analytics.jpg": "202ebcaa1382c556e9b8121ce5ff9a6d",
+      "src/assets/blog/inline-content-strategy.jpg": "dafc45cea3a3a991d41931ebad40ecba",
+      "src/assets/blog/inline-tradesman-digital.jpg": "c8cbcd8247021640d37c18afab1361e5",
+      "src/assets/blog/inline-wireframe.jpg": "98f8d2a3b1f7711229ea39286dcd9348",
+      "src/assets/calculator-preview.jpg": "22b71456cab0bd52dbcae05a8b7d1cb6",
+      "src/assets/eshop/product-airfryer.jpg": "024dfc7ee3b4141da70cd267cb46f283",
+      "src/assets/eshop/product-airpurifier.jpg": "5040785696dfc1f45c6ec0da5c1d27d9",
+      "src/assets/eshop/product-bag.jpg": "3ed3fe2ec0f7c99a7e71aa4e25a05b57",
+      "src/assets/eshop/product-bands.jpg": "4a28d31f414a80bc0555a95c3dfb6df4",
+      "src/assets/eshop/product-brushset.jpg": "3df193d0a20be6217f454c33c18cb519",
+      "src/assets/eshop/product-diffuser.jpg": "178a3378fe69273a8441532169a842d4",
+      "src/assets/eshop/product-espresso.jpg": "31f2cfee54301a7d9379ebb9efecb4e7",
+      "src/assets/eshop/product-facebrush.jpg": "629cf68b62b43b16a197acbc6f596b31",
+      "src/assets/eshop/product-fitnesstracker.jpg": "8f95d33b648db2014606ad5cba896986",
+      "src/assets/eshop/product-headphones.jpg": "e085e540611db1858688a053d8758211",
+      "src/assets/eshop/product-jacket.jpg": "cc3caa5d0bd8d554fb630515570845a1",
+      "src/assets/eshop/product-ledbulb.jpg": "85a549665b257f803d772e88fa89027d",
+      "src/assets/eshop/product-massagegun.jpg": "cec081bbfb34e94f312402a3ba6ed3bd",
+      "src/assets/eshop/product-scarf.jpg": "2f6124a01cc9b1c896b6ed98e282f901",
+      "src/assets/eshop/product-serum.jpg": "1998b35a6aee2ce83aaee6980b0b1ee3",
+      "src/assets/eshop/product-smartwatch.jpg": "aab05f7098106ffd597ae3d51075754d",
+      "src/assets/eshop/product-sneakers.jpg": "ca37fbf30b726696983e69f5025d69c0",
+      "src/assets/eshop/product-speaker.jpg": "f1196bef90808194d7bbdd27703d5c35",
+      "src/assets/eshop/product-sunglasses.jpg": "61f84734f5dffc4866c9606605631f6e",
+      "src/assets/eshop/product-tablet.jpg": "4c9d614b60b47050dee85134ce104c3f",
+      "src/assets/eshop/product-treadmill.jpg": "a7869e67d3c428b4ed254f36e2deab19",
+      "src/assets/eshop/product-vacuum.jpg": "70f56fcb0a92f84a021ae42630815e7d",
+      "src/assets/eshop/product-webcam.jpg": "6428fda40f16525d874d5dc5b7113e2a",
+      "src/assets/eshop/product-yogamat.jpg": "a83afce34f1bcdbdc679c43aadb1730c",
+      "src/assets/fastmedia-launch.mp4.asset.json": "2f586abf73f2f0fafb60e25148c4efef",
+      "src/assets/launch-rocket.png": "5071e26e8cb8744d0d9919e89fdfdbee",
+      "src/assets/launch-sky-moonlit.jpg": "f2a8611b06441c715b06c2ef44135587",
+      "src/assets/launch-sky.jpg": "2d70c087c00b783e8d12a677ff7d185f",
+      "src/assets/logo.jpeg": "4170809c71907a76a4124953d35c98e4",
+      "src/assets/offer/case-building.jpg": "b58a5dde0b26d3c0bbeddf1634b9e155",
+      "src/assets/offer/case-eshop.jpg": "e28a865b27344a65a3dac0aa2626c418",
+      "src/assets/offer/case-plumbing.jpg": "a48eb466a7092ac98dd0f43eb65d5525",
+      "src/assets/offer/case-salon.jpg": "fcea238bd5dc649c6785f36094b335d7",
+      "src/assets/team/expert-1.jpg": "86428882bf6dc4c66e357d3dc537ca09",
+      "src/assets/team/expert-2.jpg": "ba761a992d6daf1e383a7cdafae2ce34",
+      "src/assets/team/expert-3.jpg": "84eebb272f8233dc2f727fbe27e6a56f",
+      "src/assets/team/jitka-listanska.jpg": "a99e0d1877b2e67861940d0e3af97ce4",
+      "src/assets/team/team-auto-1.jpg": "e7ef67d3022c2d34392ce43296071d49",
+      "src/assets/team/team-auto-2.jpg": "dd45919d1961a95fb1b736f261e0783c",
+      "src/assets/team/team-auto-3.jpg": "82892089a377564ad29a562088e5ce2f",
+      "src/assets/team/team-beauty-1.jpg": "ec1e249af668e72008780988ef3ebe45",
+      "src/assets/team/team-beauty-2.jpg": "43bf7156c1a5a366a65902f4797e8d4b",
+      "src/assets/team/team-beauty-3.jpg": "0edb34848fb6f671243902a530bad3e5",
+      "src/assets/team/team-business-1.jpg": "1680f8cb8592dd157c51eb9f26771dc1",
+      "src/assets/team/team-business-2.jpg": "f414c86cf058944e2e183c5996ac7a42",
+      "src/assets/team/team-business-3.jpg": "3e4b7e4b1b3a3f88666837588fbb8b53",
+      "src/assets/team/team-construction-1.jpg": "baabfb0ca368c0b49a6cb26268b1b60c",
+      "src/assets/team/team-construction-2.jpg": "436a80e07b849e2be3edb72cb278cd51",
+      "src/assets/team/team-construction-3.jpg": "95d9618309d8f47e827b2d4c2281ea22",
+      "src/assets/team/team-creative-1.jpg": "1aa2a610f1046ac1aae45f03d47cae7e",
+      "src/assets/team/team-creative-2.jpg": "17146627310c8921aa4e14397b876e45",
+      "src/assets/team/team-creative-3.jpg": "a66a6c5bf4371651343c6ffcd897fb99",
+      "src/assets/team/team-education-1.jpg": "e73af2d5eb8cca2ed419405c41a8612e",
+      "src/assets/team/team-education-2.jpg": "cbd3916fc5fb79313147b7c031cbdc8c",
+      "src/assets/team/team-education-3.jpg": "6ecc426c9f93e1893d54d4aaf4e48b12",
+      "src/assets/team/team-fitness-1.jpg": "a2a673e29f34d1689a539512bdd3258f",
+      "src/assets/team/team-fitness-2.jpg": "16aece0cd479f9fa63ef5a785126dc24",
+      "src/assets/team/team-fitness-3.jpg": "5415433f693a3abb22c9e507876062b8",
+      "src/assets/team/team-food-1.jpg": "4c5d11d4e32bb6c48a6f8959f0790ec4",
+      "src/assets/team/team-food-2.jpg": "c73243ef1f87e32c3e3aaef57fbb662f",
+      "src/assets/team/team-food-3.jpg": "d0c5084821794d05c4b44b525dd6065f",
+      "src/assets/team/team-medical-1.jpg": "508fd1c4db1348c8c1f01f4be7439433",
+      "src/assets/team/team-medical-2.jpg": "673db1c3c97698540e029f0dd1862d01",
+      "src/assets/team/team-medical-3.jpg": "856a053dcd9fad6a2f42a859af5f3c0a",
+      "src/assets/team/tereza-novakova.jpg": "9118c1a2a8b5b1fbccfd5952de93d94c",
+      "src/assets/trades/accounting-hero.jpg": "8e23023b5f354d0837f94a19baa7378a",
+      "src/assets/trades/autorepair-hero.jpg": "1a4f918cc79103bb94ffebae857677d5",
+      "src/assets/trades/bakery-hero.jpg": "b19990e56e7333dd47521d49e3697b06",
+      "src/assets/trades/beautysalon-hero.jpg": "d6a0fb210487d5a8755a54b1ea4063ab",
+      "src/assets/trades/builder-hero.jpg": "32a92ffe0808e3091019104354346128",
+      "src/assets/trades/carpenter-hero.jpg": "781f0c252744112460aef224abcb4155",
+      "src/assets/trades/catering-hero.jpg": "1ea389d3e19d584c015ec2a19caafba0",
+      "src/assets/trades/childcare-hero.jpg": "648583baf3fc628cf03e13f2ab925115",
+      "src/assets/trades/cleaning-hero.jpg": "ec8bf0408a07595d64cff3d58939b3a5",
+      "src/assets/trades/dental-hero.jpg": "0089d1230186373f9c9b554b62a5f138",
+      "src/assets/trades/drivingschool-hero.jpg": "1bcb7943ff0fa9b69ed5416cacaf2355",
+      "src/assets/trades/drywall-hero.jpg": "113946e5a9774b99766e70dffc0f0a31",
+      "src/assets/trades/electrician-hero.jpg": "47d7e489f82629539f32a2f0331e2df3",
+      "src/assets/trades/eshop-hero.jpg": "5cb3cb85a793027622bea843acf4891b",
+      "src/assets/trades/exterior-hero.jpg": "e52b556c28c91b58dfc2d109c5161584",
+      "src/assets/trades/fitness-hero.jpg": "bde001c6b513abbefb15d6c591076b87",
+      "src/assets/trades/florist-hero.jpg": "c214609726dd6df5ca61a1a948bee4b9",
+      "src/assets/trades/gallery/autorepair-1.jpg": "15bc736fda866c34a83a7f62989f2ad0",
+      "src/assets/trades/gallery/autorepair-2.jpg": "31d6fe0a29e8ecb58cdc9accb6906b82",
+      "src/assets/trades/gallery/autorepair-3.jpg": "41846e96319a29ee32fc89c596c94872",
+      "src/assets/trades/gallery/autorepair-4.jpg": "c3dc356f41cdf7b76f416306e39b661f",
+      "src/assets/trades/gallery/autorepair-5.jpg": "52e68106a90fc56c5c5c29f0dca98403",
+      "src/assets/trades/gallery/autorepair-6.jpg": "6320c2b9abc1fb3e5fadafcf70f1999e",
+      "src/assets/trades/gallery/beautysalon-1.jpg": "03139151b81926c045e35e4dcbc761bf",
+      "src/assets/trades/gallery/beautysalon-2.jpg": "2f304cdc61a49cd17b3d08f25d5359ab",
+      "src/assets/trades/gallery/beautysalon-3.jpg": "493e68f02533e1b992692940a88e2a41",
+      "src/assets/trades/gallery/beautysalon-4.jpg": "4c311dc1476618bdb1caff267b09a0be",
+      "src/assets/trades/gallery/beautysalon-5.jpg": "64651e48fa84c1b075b6170c0a7b1d62",
+      "src/assets/trades/gallery/beautysalon-6.jpg": "85767694931e351e734821c7075ecaf8",
+      "src/assets/trades/gallery/building-1.jpg": "3e20a62ba8d5e219cdc149c5da4e257b",
+      "src/assets/trades/gallery/building-2.jpg": "8522db0c4f32044a949abe0423ba1a93",
+      "src/assets/trades/gallery/building-3.jpg": "e3a951aa2812373bd94186fbd33cfd62",
+      "src/assets/trades/gallery/building-4.jpg": "28357b1653a36b0836e48ce441cf4677",
+      "src/assets/trades/gallery/building-5.jpg": "d35f017de468c9a57380864b42cbdd88",
+      "src/assets/trades/gallery/building-6.jpg": "fd3e0f3532b5095953c6e8df05bb658d",
+      "src/assets/trades/gallery/carpentry-1.jpg": "bf0be31edc0b6b33b13313e01bf86d70",
+      "src/assets/trades/gallery/carpentry-2.jpg": "817ba3fbb16170e984226cfef469cb54",
+      "src/assets/trades/gallery/carpentry-3.jpg": "83c47c0baa384e5e5e8f1e0eaf6d7cc7",
+      "src/assets/trades/gallery/carpentry-4.jpg": "f7c7d45ba4c6febab669b8c78b5e6d4e",
+      "src/assets/trades/gallery/carpentry-5.jpg": "c7bd6fbc978fe9fb1747c75ca427efac",
+      "src/assets/trades/gallery/carpentry-6.jpg": "6bbf94e30adfb67071603a6fda943a28",
+      "src/assets/trades/gallery/catering-1.jpg": "006368c25a61120d013ae0769eb9a328",
+      "src/assets/trades/gallery/catering-2.jpg": "ee241bb285cb81fdbc180e63fc8e239b",
+      "src/assets/trades/gallery/catering-3.jpg": "bd9a6c1fae1dac795f24ed09c95bdb83",
+      "src/assets/trades/gallery/catering-4.jpg": "1db56e527f27bc73427d59d74e0704c1",
+      "src/assets/trades/gallery/catering-5.jpg": "3187cbde75a120a089d6d75a11d63e8c",
+      "src/assets/trades/gallery/catering-6.jpg": "0b8af89e80b074ba0a216ebea24ecbd8",
+      "src/assets/trades/gallery/cleaning-1.jpg": "df36cc56526cff7a8a84e6c87ed188d5",
+      "src/assets/trades/gallery/cleaning-2.jpg": "c0a966b1bcd84c96c240c51cfe026a96",
+      "src/assets/trades/gallery/cleaning-3.jpg": "cf999f13613a071dcbefcf1b566cd45c",
+      "src/assets/trades/gallery/cleaning-4.jpg": "d4b0ecb04d46fac2e88d743f030e644b",
+      "src/assets/trades/gallery/cleaning-5.jpg": "975192bcab1d8e40e06c1adf7f29c594",
+      "src/assets/trades/gallery/cleaning-6.jpg": "c5a7cdf78d4df5d19ffbbfd1b28a551c",
+      "src/assets/trades/gallery/drywall-1.jpg": "db32f40705e895fc6ccf9c90d69d560f",
+      "src/assets/trades/gallery/drywall-2.jpg": "6ab86d960e0ec96a83d8769f0ac4f43d",
+      "src/assets/trades/gallery/drywall-3.jpg": "5582d72913ee3a68a43ea8f1b9913a98",
+      "src/assets/trades/gallery/drywall-4.jpg": "c6706405116a9420e97e1ae74e5d11b5",
+      "src/assets/trades/gallery/drywall-5.jpg": "c8bc73b5526182bd914083ce0035176f",
+      "src/assets/trades/gallery/drywall-6.jpg": "7dcdf177b29cc3d41899bc4484c82032",
+      "src/assets/trades/gallery/electrical-1.jpg": "0bf6bf9c9d33c6d1aedb15598a17921c",
+      "src/assets/trades/gallery/electrical-2.jpg": "08ff96a0529a28287170a236d1b0c1b2",
+      "src/assets/trades/gallery/electrical-3.jpg": "bb878fe275ec232c64f9b8bf27744be3",
+      "src/assets/trades/gallery/electrical-4.jpg": "31d730ca0e3ff6f6e705f676c7d185d6",
+      "src/assets/trades/gallery/electrical-5.jpg": "30d1cf9bd16f213cc7d48d9f9ab7a820",
+      "src/assets/trades/gallery/electrical-6.jpg": "98ca97e74ad059d9e9ef993b1fae2ca2",
+      "src/assets/trades/gallery/exterior-1.jpg": "c8c01469843c1eb36c315584a76dca38",
+      "src/assets/trades/gallery/exterior-2.jpg": "70184acb1a4318e5086d92cab5ffe627",
+      "src/assets/trades/gallery/exterior-3.jpg": "f142d705b7950836c09a95ddc68ab493",
+      "src/assets/trades/gallery/exterior-4.jpg": "dac2752727deb05e37376cf59fa12fb0",
+      "src/assets/trades/gallery/exterior-5.jpg": "089fe7faea7df2261c01c8fa2a1bfe0a",
+      "src/assets/trades/gallery/exterior-6.jpg": "aaffcbc02bb597f71d604b1029566aec",
+      "src/assets/trades/gallery/fitness-1.jpg": "7ec8531623ac76bea0a15be0d385af94",
+      "src/assets/trades/gallery/fitness-2.jpg": "bdca9b4f29a828616df0d2f82589dddf",
+      "src/assets/trades/gallery/fitness-3.jpg": "3b87e0be42b9dc4e566f4f620e250ee2",
+      "src/assets/trades/gallery/fitness-4.jpg": "fe0cfa34fe0120d1bc2ec8884dd27ee1",
+      "src/assets/trades/gallery/fitness-5.jpg": "d77e917684808ad39848b4d525e9b61b",
+      "src/assets/trades/gallery/fitness-6.jpg": "c40f905239b803ee3f0e28a8e802d2e6",
+      "src/assets/trades/gallery/gardening-1.jpg": "a83a79a74195cbb54095651b4c265d64",
+      "src/assets/trades/gallery/gardening-2.jpg": "b7e3fe57ec4bcf9f6dcdecdb1c63d136",
+      "src/assets/trades/gallery/gardening-3.jpg": "1527e48a2021d1ab10d23c2641fde7c4",
+      "src/assets/trades/gallery/gardening-4.jpg": "fea0af8a8de957843ec89fed6c844114",
+      "src/assets/trades/gallery/gardening-5.jpg": "39a20590c9c5e7742876a3ddb2d92a73",
+      "src/assets/trades/gallery/gardening-6.jpg": "3c60291dae5a7c5f89b41c05ac27ddab",
+      "src/assets/trades/gallery/heating-1.jpg": "4e722c756968375b24e7543991448053",
+      "src/assets/trades/gallery/heating-2.jpg": "bf338574602ae8daf6021cc9291e7333",
+      "src/assets/trades/gallery/heating-3.jpg": "e2860245fa9de0944817291e1bb408dc",
+      "src/assets/trades/gallery/heating-4.jpg": "2fdd3740f1da117e0b39c81a3a4bc112",
+      "src/assets/trades/gallery/heating-5.jpg": "7a3705f70be047daae735bd80c90bbe6",
+      "src/assets/trades/gallery/heating-6.jpg": "d0a25b454e37bfce9cb9fa71d65c5a45",
+      "src/assets/trades/gallery/heatpumps-1.jpg": "54d88e761b61462fc11bd17acdae5c2b",
+      "src/assets/trades/gallery/heatpumps-2.jpg": "2d192391cd0a93fa8dbaeab061ab2ea6",
+      "src/assets/trades/gallery/heatpumps-3.jpg": "bdd232c940c3c0aee62f86a4545d4d51",
+      "src/assets/trades/gallery/heatpumps-4.jpg": "e794dfd38beed5707ea728bf4ffc8033",
+      "src/assets/trades/gallery/heatpumps-5.jpg": "69a4d6a77b6ba5119d99599e058b33c3",
+      "src/assets/trades/gallery/heatpumps-6.jpg": "ad6c72405ae6610101dd6d33cc9aeb26",
+      "src/assets/trades/gallery/interior-1.jpg": "e25efa7e5121c4eb5f8cd0731db4caf5",
+      "src/assets/trades/gallery/interior-2.jpg": "455b81a06f72e4f956e27c9275698755",
+      "src/assets/trades/gallery/interior-3.jpg": "be9f20c96d54b8aae7861c7bd8b36ab4",
+      "src/assets/trades/gallery/interior-4.jpg": "a9b21171dc05718c471ec576121977db",
+      "src/assets/trades/gallery/interior-5.jpg": "4c9357365e31afd6cc26b9964551f41c",
+      "src/assets/trades/gallery/interior-6.jpg": "dce23ba23e16d54058269623d104c228",
+      "src/assets/trades/gallery/itservices-1.jpg": "5e5a978625a882ad9b2cd8621a354603",
+      "src/assets/trades/gallery/itservices-2.jpg": "7c669c74c4bd84fac43396351041b3ff",
+      "src/assets/trades/gallery/itservices-3.jpg": "cd0c065a16a57da79f6bae6c7bc97103",
+      "src/assets/trades/gallery/itservices-4.jpg": "0dbaf847f00eaad979711a8352055730",
+      "src/assets/trades/gallery/itservices-5.jpg": "06fb421aa4d92646afc2587b54f040cf",
+      "src/assets/trades/gallery/itservices-6.jpg": "63a8f5d56e6b557e738b691251f97e95",
+      "src/assets/trades/gallery/locksmith-1.jpg": "603df2ba080e3f1814638818d8dfde0d",
+      "src/assets/trades/gallery/locksmith-2.jpg": "f3490cdda21bfeed90887f64c92381f9",
+      "src/assets/trades/gallery/locksmith-3.jpg": "c880a842fd0fc9bdf21964fe7c390c71",
+      "src/assets/trades/gallery/locksmith-4.jpg": "107dfeab496a73274e729d6ad1cee1d3",
+      "src/assets/trades/gallery/locksmith-5.jpg": "226ceee8f61347de228cb5aef9799acf",
+      "src/assets/trades/gallery/locksmith-6.jpg": "c8d7ca69e2b7ff32d8ffbcfa7e62bbd8",
+      "src/assets/trades/gallery/moving-1.jpg": "2b3ab7cfcf54841c52b2356166443830",
+      "src/assets/trades/gallery/moving-2.jpg": "8830d50a2b3d51bdb203317714bae058",
+      "src/assets/trades/gallery/moving-3.jpg": "6edbf93ebd4399009403880fa6e20083",
+      "src/assets/trades/gallery/moving-4.jpg": "dc943af23cd8c775f683fd0b9b3e866b",
+      "src/assets/trades/gallery/moving-5.jpg": "a0b77aeff28b02f5f8d5c069f4de2e6e",
+      "src/assets/trades/gallery/moving-6.jpg": "b4eed3a9f083345ed6b35e562457dbe7",
+      "src/assets/trades/gallery/painting-1.jpg": "d2e49f00ea9b45a66ff6e77586d036d7",
+      "src/assets/trades/gallery/painting-2.jpg": "90d2286762c15ad44a1dcdc0a3d10837",
+      "src/assets/trades/gallery/painting-3.jpg": "22e62fa9cecf874dd5011213f46251b9",
+      "src/assets/trades/gallery/painting-4.jpg": "486188e3eb6101aa83d9b5e4a0874120",
+      "src/assets/trades/gallery/painting-5.jpg": "52f5ea68c511796ba958d93b91581f9d",
+      "src/assets/trades/gallery/painting-6.jpg": "7482750bb04d557e6da5ea064899f999",
+      "src/assets/trades/gallery/pestcontrol-1.jpg": "66ff32bc8593121ba6ec9db40f4e769c",
+      "src/assets/trades/gallery/pestcontrol-2.jpg": "c1e3ea0d1cbb84d3aad0d7c87340a3b5",
+      "src/assets/trades/gallery/pestcontrol-3.jpg": "327263a980aac0c79f3f3967f0c6ff57",
+      "src/assets/trades/gallery/pestcontrol-4.jpg": "13e482d43824e62d0fbdfedea9d1f7a7",
+      "src/assets/trades/gallery/pestcontrol-5.jpg": "721aa44954a5f462fdd68b1f3aa9b100",
+      "src/assets/trades/gallery/pestcontrol-6.jpg": "88754f884ec09f3f0100d8c0074536ab",
+      "src/assets/trades/gallery/photography-1.jpg": "5040cd6e76d79819f2e9361bd41fef03",
+      "src/assets/trades/gallery/photography-2.jpg": "80cc57459f3e71a4bb6b4da248dc711a",
+      "src/assets/trades/gallery/photography-3.jpg": "0c3acc1b217567c3fef8ec7188e9160b",
+      "src/assets/trades/gallery/photography-4.jpg": "be90e7b43573fcee90037ee2c777c464",
+      "src/assets/trades/gallery/photography-5.jpg": "737639838309cad2c18ec92df6ead11e",
+      "src/assets/trades/gallery/photography-6.jpg": "979696883874bf8f3ea05b9ee86c87f6",
+      "src/assets/trades/gallery/plumbing-1.jpg": "b7b6992395a48279cb2378f01bfff26e",
+      "src/assets/trades/gallery/plumbing-2.jpg": "1f5302c380254cd4fdb6fea2f0dcac08",
+      "src/assets/trades/gallery/plumbing-3.jpg": "e135ff3333cef7faebf2ed92016581a4",
+      "src/assets/trades/gallery/plumbing-4.jpg": "a111223e90c7fb2ac694fa478b5a54b0",
+      "src/assets/trades/gallery/plumbing-5.jpg": "6d37a55dfef7bf14d61bdfd04513edc6",
+      "src/assets/trades/gallery/plumbing-6.jpg": "795b3143ac12490d351029ef2c5d96b4",
+      "src/assets/trades/gallery/roofing-1.jpg": "fdf9011f15d890554bb73ddd14b2393a",
+      "src/assets/trades/gallery/roofing-2.jpg": "55cff9a57b868829a37cc86b2e68265e",
+      "src/assets/trades/gallery/roofing-3.jpg": "8338752cf0e019e0167d9590e72a4465",
+      "src/assets/trades/gallery/roofing-4.jpg": "5cf2da8acdeab734fe79ee0f1395c7db",
+      "src/assets/trades/gallery/roofing-5.jpg": "554f6de9cfc37a2f3185938ef87b2855",
+      "src/assets/trades/gallery/roofing-6.jpg": "127a3fa193a97021fccdf73f53255eaf",
+      "src/assets/trades/gallery/solar-1.jpg": "c46114f5b94f2cddd47cebdf88099c8b",
+      "src/assets/trades/gallery/solar-2.jpg": "8c9908cb37478ea0543e28d0fa60a375",
+      "src/assets/trades/gallery/solar-3.jpg": "d60d51f91eb58e21e234ff919f231606",
+      "src/assets/trades/gallery/solar-4.jpg": "0268cb7c0ff447c9bdb01f661e938bfd",
+      "src/assets/trades/gallery/solar-5.jpg": "2b0d549dea3654120f8586178018895c",
+      "src/assets/trades/gallery/solar-6.jpg": "3662bd226d2d442498c33dce3d9d482f",
+      "src/assets/trades/gallery/wells-1.jpg": "72536ceba43fee22aa59933b3b2409c1",
+      "src/assets/trades/gallery/wells-2.jpg": "61d90d631d83ca1537349ca2245f9136",
+      "src/assets/trades/gallery/wells-3.jpg": "b5ff289a210ba8221c4900f228dd369b",
+      "src/assets/trades/gallery/wells-4.jpg": "53b3e27e46b5642a4a6c4eb38896b4cc",
+      "src/assets/trades/gallery/wells-5.jpg": "c6983065489ea831113bc19606080430",
+      "src/assets/trades/gallery/wells-6.jpg": "f91ecb195b9e5292db76546ced917d62",
+      "src/assets/trades/gallery/womeninbusiness-1.jpg": "0340344508b267fcefcb7ca1d584d475",
+      "src/assets/trades/gallery/womeninbusiness-2.jpg": "7d8dae0c742167388631545a6f667c2a",
+      "src/assets/trades/gallery/womeninbusiness-3.jpg": "ee2cd530468308e86f0655f8000ce9ca",
+      "src/assets/trades/gallery/womeninbusiness-4.jpg": "751ab3bea5cff299668c9c7bb4dfc12f",
+      "src/assets/trades/gallery/womeninbusiness-5.jpg": "636e8c07dd66c6a48c204d909b5c727c",
+      "src/assets/trades/gallery/womeninbusiness-6.jpg": "bcfae4757ffc506bd731073092d507c1",
+      "src/assets/trades/gardener-hero.jpg": "3d7828e5e1a7ff7bdeafaaac851bc03b",
+      "src/assets/trades/handmade-hero.jpg": "2efba026625546a963b0242ad911329a",
+      "src/assets/trades/heating-hero.jpg": "4d75944670df5479c5ed598167de58bd",
+      "src/assets/trades/heatpump-hero.jpg": "e68059ace92120022aed8190500294e4",
+      "src/assets/trades/interior-hero.jpg": "9609d59ff9a17ed7346964fec6baa41a",
+      "src/assets/trades/itservices-hero.jpg": "7cc5320ac92e8c749d0fc3382dde0fc9",
+      "src/assets/trades/laundry-hero.jpg": "f29052fad5746143c1f7a1736bcbe90b",
+      "src/assets/trades/locksmith-hero.jpg": "1f58b4b9a58a5b1ada01e72ae78f2061",
+      "src/assets/trades/massage-hero.jpg": "f2e716a04eceffc55c6525334d53b489",
+      "src/assets/trades/moving-hero.jpg": "a2d3500438708e0dbcac00fb7b2dbd48",
+      "src/assets/trades/musicschool-hero.jpg": "dd7435d23a3a93550b530f19a6aed628",
+      "src/assets/trades/nailsalon-hero.jpg": "ccee15615ae32ba84ad6b0d9efd062cf",
+      "src/assets/trades/nutritionist-hero.jpg": "6a8b92cfeec63bb7f2b7efd16494575b",
+      "src/assets/trades/painter-hero.jpg": "dbfcf95eb6e4877bd2b74ff5b137e310",
+      "src/assets/trades/pestcontrol-hero.jpg": "73fdea705509eabf6d27f2492f446a65",
+      "src/assets/trades/petgrooming-hero.jpg": "cc6aa506afb1c6e97085acfd3a16fa84",
+      "src/assets/trades/photography-hero.jpg": "0e7f1370343be13e12c7a75349b51248",
+      "src/assets/trades/plumber-hero.jpg": "39d80218a600cc009ce5296d87cfa737",
+      "src/assets/trades/realestate-hero.jpg": "b4bea4eccb60825fdc8f5dd270b7c40f",
+      "src/assets/trades/roofer-hero.jpg": "db257eda56945ce59dc996ba1087e001",
+      "src/assets/trades/security-hero.jpg": "6add0e4bd9847f7ced0de80f9e4e9eb1",
+      "src/assets/trades/solar-hero.jpg": "67229c7f773669992612dac18836750f",
+      "src/assets/trades/tattoo-hero.jpg": "95c4ace2e28276979e567f8a1cd7b9c5",
+      "src/assets/trades/translation-hero.jpg": "1ee65d4df0c0a16692d241c712090dac",
+      "src/assets/trades/veterinary-hero.jpg": "57fdceac4b812a2c6be1686871191efd",
+      "src/assets/trades/virtualassistant-hero.jpg": "9c8fe0280cf2b9b217b65faed897a56c",
+      "src/assets/trades/weddingplanner-hero.jpg": "265b1d8ce963a8a43139bb399682d360",
+      "src/assets/trades/wells-hero.jpg": "c9c1d9422b46d44b3c178d3ecb856935",
+      "src/assets/trades/womeninbusiness-hero.jpg": "4e54492e6b056fb752f5c31be901b3f3",
+      "src/assets/trades/yoga-hero.jpg": "889be604c58efd4da0612e19ff6756dc",
+      "src/components/AccessibilityToolbar.tsx": "1ad7c2e953fe9015d30843eb76af9487",
+      "src/components/AdminQuickBar.tsx": "2e669ab3f7db54667cd20aa662eabac9",
+      "src/components/AdminToolbar.tsx": "a6d52f43139f3201fc396ecf1a48c880",
+      "src/components/AppointmentPoliciesSection.tsx": "68f28c4c4f4b5c5e54ec627f4a9abc8a",
+      "src/components/AutomationSection.tsx": "3a0c8d4d09a932807064ae62bf47dc20",
+      "src/components/BillingPortalButton.tsx": "bef45c4d1085983099d11d34bea5b503",
+      "src/components/BookingSection.tsx": "eda5975cf6cf46240eb19d678d45b18d",
+      "src/components/CalculatorShowcase.tsx": "05d654bac1674d58eeacc461556bc712",
+      "src/components/CaseStudiesSection.tsx": "3f5289cff1fa76c864f9bbcb9aa561d3",
+      "src/components/CaseStudyCard.tsx": "3d393b30640b2bfc42b911190456c567",
+      "src/components/CertificationsSection.tsx": "a5d470fa01f51ac008a384f9d2b0c561",
+      "src/components/ConsultantSection.tsx": "0ff86662b6eb72f5870fe659623b0c37",
+      "src/components/CookieConsentBanner.tsx": "e1167e4865fa827e2436aa064c5c8d72",
+      "src/components/CourseEmbed.tsx": "b2ae6d7b9db126eb045224d0141aa7c8",
+      "src/components/CourseRichText.tsx": "fe6f0ee3c657121d952fafdcfcf85407",
+      "src/components/CursorFX.tsx": "c9d135e0676c50ae7d17431aef777c40",
+      "src/components/DeferredMount.tsx": "18c03eb2ba61fc19a3818aef8e7c2e38",
+      "src/components/DemoBookingCalendar.tsx": "5c6c33d8b3e2f4e47060385063e51482",
+      "src/components/DemoFAQSection.tsx": "77856d1b1ec088819ecbc07b725d4505",
+      "src/components/DemoLayout.tsx": "5f0665bbff75ffe4f44ec3a2731c2caa",
+      "src/components/DemoShareBar.tsx": "dd4d960d65bca0dd5e18037de72abca9",
+      "src/components/DemosSection.tsx": "5f29524c6c9cd90e00122fe5855bfd9f",
+      "src/components/EditableImage.tsx": "3d909e3af28310072ecd2b79a962038b",
+      "src/components/EditableText.tsx": "23883a7ea9aa9d4dfe248517cf57aad9",
+      "src/components/EmbedCodeInjector.tsx": "218eff83d16a0b48c758ed3065a9fa6b",
+      "src/components/ExitIntentOffer.tsx": "4a524aa516e11098d44f12b8744aeee4",
+      "src/components/FAQJsonLd.tsx": "be7fe905d692969240ce3dc923402c9d",
+      "src/components/FAQSection.tsx": "f06b24ba5e390f39ca469e703a7b0742",
+      "src/components/Footer.tsx": "e19a34c62211b53772d73ef47a85294b",
+      "src/components/HeroSection.tsx": "d82392eab06c0d937287fc8153ad8bed",
+      "src/components/HomeDirectAnswer.tsx": "df7e7d29921acdacb73d1205c683512c",
+      "src/components/HomeJsonLd.tsx": "98ba6322bcf98ec64b8ce84db09f60ab",
+      "src/components/LanguageSwitcher.tsx": "06b002b828b1b4f948c24f26fbc89f43",
+      "src/components/LazySection.tsx": "fd8dab6966594506f57bf9597cb77b4f",
+      "src/components/LearnMoreModal.tsx": "9a16252864730c8e3269c277154da951",
+      "src/components/NavLink.tsx": "8f7c178b4776787e58e1011855ca28f6",
+      "src/components/Navbar.tsx": "96af1501c5b73ca2a95d8e5d0a4beb2f",
+      "src/components/OfferEnquiryForm.tsx": "643b1cc6f9087e01c86888aa037169df",
+      "src/components/OfferTeaser.tsx": "c9c1a00d16abc245e91901eadffd1461",
+      "src/components/PaymentTestModeBanner.tsx": "982d5df4caa68c4e2933b200b0b81437",
+      "src/components/PricingSection.tsx": "8cde817092331d5bf0471f1eeb39a037",
+      "src/components/PromoBanner.tsx": "4c1a325a2b252a17e1eaed8db69a6e2f",
+      "src/components/ReviewsSection.tsx": "49ea4117f8b233a01d1f1dfb8fc4dfdc",
+      "src/components/SEOHead.tsx": "2e31a8d4b2a4ce0fdc88ecfb1de022e1",
+      "src/components/ScrollToTop.tsx": "f74417f0ab6d5cf21511cb23382be4c8",
+      "src/components/ServiceAreaMap.tsx": "6ec083f1ef2d67cd3c5c4afa4c1fb31e",
+      "src/components/ServicesSection.tsx": "22ba916ca24ef5073912324a084be4d3",
+      "src/components/StickyCTABar.tsx": "bdd00b276a18c86e12c9990e728a985a",
+      "src/components/StripeEmbeddedCheckout.tsx": "f6e4110c4ccf32ee8b898c6be2d62285",
+      "src/components/SuperAdminInboxBadge.tsx": "11c8b004df962f3b84af9c9558f76643",
+      "src/components/TeamSection.tsx": "edd1b51fed36988dc6db31dedeedd16d",
+      "src/components/ThemeToggle.tsx": "94b96b37e4c65684929f99933e38a91b",
+      "src/components/TrailingSlashRedirect.tsx": "5c3d5d82a9c8119e24d5138b995e6502",
+      "src/components/WhatsAppFloat.tsx": "2c6a57d08b07118c2f88d2c9ac05626e",
+      "src/components/WhyFastMediaSection.tsx": "3fa447f09cbdc52be12c991850ea9a33",
+      "src/components/WhyThisWebsiteWorks.tsx": "d440b8616a826392db9863b420bbfc63",
+      "src/components/admin/AdminLayout.tsx": "dfd9deec0b0c9a7efb4f6983d9032fec",
+      "src/components/admin/AdminSidebar.tsx": "282590d944aa0190f6b858157a4c4e52",
+      "src/components/admin/AdminToolSearch.tsx": "b678df570d735b1beb02e58de69e4b9e",
+      "src/components/admin/BlogPostEditor.tsx": "b83e9e4f1aa85a14f0f33423ac612836",
+      "src/components/admin/BookingsCalendar.tsx": "aa70d712b7c97d86ab9c744d1a08b5b0",
+      "src/components/admin/BookingsKanban.tsx": "b797f9344c57fd4cdfd6f1650ab70eca",
+      "src/components/admin/CaseStudyEditorDialog.tsx": "7c7e94880188666fa82982a835b2a55b",
+      "src/components/admin/ClientBrandingEditor.tsx": "de3dd1c0903eca64287bbdd14d12bb5b",
+      "src/components/admin/ClientProjectFeesEditor.tsx": "70285f16454c565ba8a1f31a02fce907",
+      "src/components/admin/DailyBlogStatus.tsx": "7a9e995b4c96a47f2de934afcd1e47a3",
+      "src/components/admin/DashboardCharts.tsx": "951f300544f88185746dcc66b6986845",
+      "src/components/admin/EmailBody.tsx": "bd58156eb5e3a3e5a11eb0881a38fd46",
+      "src/components/admin/PermissionGate.tsx": "135fc0fd2c5f34a24b1c894e7375f3f5",
+      "src/components/admin/ProtectedRoute.tsx": "bffb56a907528e66ed190534dc7acda4",
+      "src/components/admin/SendTestEmail.tsx": "ff11daf022dc93cf05cebe29975048af",
+      "src/components/admin/SocialShareStudio.tsx": "a65f8f81bb1cb21013ebb323154dad97",
+      "src/components/admin/TrackingDiagnostics.tsx": "3b59fc5824acdcf42b2b9101cbf4948b",
+      "src/components/admin/VboutEmbedTester.tsx": "e3d97709dc62acc6363c915024cbe5c3",
+      "src/components/blog/BlogAudioCTA.tsx": "558f9e569f74372b487d415bd3f90785",
+      "src/components/blog/BlogAudioPlayer.tsx": "769c167d74d084eeddca93c9044f0f07",
+      "src/components/blog/BlogCard.tsx": "fe5432ed153b917fc0c8dabf3226ed66",
+      "src/components/blog/BlogFeaturedHero.tsx": "12d6a55e66499f7e6eccd91803b4da7d",
+      "src/components/blog/BlogSidebar.tsx": "bd3d7574788689318a3b3e3aaded541e",
+      "src/components/ui/accordion.tsx": "f9ebb6ee913b44e5f3e06fe1d9679784",
+      "src/components/ui/alert-dialog.tsx": "2ee6c5e5e070315114319bc060d17a52",
+      "src/components/ui/alert.tsx": "354d0206f924d48bcebbb023c3940a6b",
+      "src/components/ui/aspect-ratio.tsx": "c5c364545e1b25a94e9e752cd67ad048",
+      "src/components/ui/avatar.tsx": "53921dca0903c74cd72fada89388d9f8",
+      "src/components/ui/badge.tsx": "8db4e6d330f88f4041f81e7cde43782b",
+      "src/components/ui/breadcrumb.tsx": "c200fc41e9b214ebb6ccd19a300c42c5",
+      "src/components/ui/button.tsx": "b59f5a3c54b63cf3ea4eb2523151f617",
+      "src/components/ui/calendar.tsx": "1da7a387f28cdb11722da319c0295a6c",
+      "src/components/ui/card.tsx": "202402023747c80d975f48b906e6eb1b",
+      "src/components/ui/carousel.tsx": "63a7442a3088b58113c8a8cfc1defe26",
+      "src/components/ui/chart.tsx": "29cfd7470f3197deccd58b2b4f00fbae",
+      "src/components/ui/checkbox.tsx": "cb12d2f3410761f7a678add95c90ac5d",
+      "src/components/ui/collapsible.tsx": "934b00582dae08af749fb55469081de6",
+      "src/components/ui/command.tsx": "e911f182b4136a63c601c3fc48b2e9c7",
+      "src/components/ui/context-menu.tsx": "9b8e8efdf0456cd542e32d341b071cac",
+      "src/components/ui/dialog.tsx": "fc3a9626ba52435552c93ac3a74374ec",
+      "src/components/ui/drawer.tsx": "05e2b536fe11649e9b4c6e73678e32a6",
+      "src/components/ui/dropdown-menu.tsx": "f308eb98a2e21bf8bd1e30dbcb741dc0",
+      "src/components/ui/form.tsx": "4bb820d59aad3ee5bc78097596298ace",
+      "src/components/ui/hover-card.tsx": "f77f80ed64ff8f3549e5d7e9d837e08e",
+      "src/components/ui/input-otp.tsx": "3fb5994635434d5168bee869689fc2aa",
+      "src/components/ui/input.tsx": "b8279d768c2a1ce78a05a369a0502877",
+      "src/components/ui/label.tsx": "cd2b2255bbe519cb0865dfeaa6615797",
+      "src/components/ui/menubar.tsx": "163c3fa58a2b4ea2caa00166f4d862c7",
+      "src/components/ui/navigation-menu.tsx": "77e94b0c299d10c3763d2755bf556916",
+      "src/components/ui/pagination.tsx": "a3ced9f9b19826b467d788b1bf01746f",
+      "src/components/ui/popover.tsx": "c056d22288a642b756b77c7691ad4532",
+      "src/components/ui/progress.tsx": "9a8b05beca19e008a562a10e489f5968",
+      "src/components/ui/radio-group.tsx": "3773798b5b2f334a5db0dc9c8d06f1b8",
+      "src/components/ui/resizable.tsx": "ec681e92cbe705b5571ded11b5227a2a",
+      "src/components/ui/scroll-area.tsx": "cfbc224001af0e6daba676de225a2a47",
+      "src/components/ui/select.tsx": "25de64d0126624cbd8efa50cfb64bd21",
+      "src/components/ui/separator.tsx": "ed1101f185e9dc801712593e3330a75d",
+      "src/components/ui/sheet.tsx": "3660be09e2e40467a22fd46b354c1b50",
+      "src/components/ui/sidebar.tsx": "9eab1256b1ffe3f1336eebfd07b319c9",
+      "src/components/ui/skeleton.tsx": "c55f76f4faa1d6e888dbc51d41eaa586",
+      "src/components/ui/slider.tsx": "e3bf7b6116ddbdbe8c7b3597d07daee0",
+      "src/components/ui/sonner.tsx": "88644703cc00886c56e0e3b7df0e21d8",
+      "src/components/ui/switch.tsx": "eccd8c41c46e782eaaa1f8be0111e089",
+      "src/components/ui/table.tsx": "d0ff87c4734c23839337811378ad07df",
+      "src/components/ui/tabs.tsx": "26b15e1ffce0f831be4da95b8f8a43df",
+      "src/components/ui/textarea.tsx": "29ab470ee59e9da5070d4fba251bce81",
+      "src/components/ui/toast.tsx": "7c08b5cb6026058514672a4ebc53847e",
+      "src/components/ui/toaster.tsx": "1903846ab268620de6356ef667e3fa21",
+      "src/components/ui/toggle-group.tsx": "e82bf234e3877ad708ea3d1dba614def",
+      "src/components/ui/toggle.tsx": "ff7a7deebff23c3488e79ad72ee47e4b",
+      "src/components/ui/tooltip.tsx": "d7e923341b9e91d77db45ba5f2fa0cf9",
+      "src/components/ui/use-toast.ts": "4f094014a1315ca1081cbdc7f78d55cc",
+      "src/contexts/A11yContext.tsx": "4b4ee3724ba972759dae3212a8f99c9f",
+      "src/contexts/LanguageContext.tsx": "23ddbec52474ff73eccc97338eb6a77e",
+      "src/contexts/PreviewModeContext.tsx": "5eb17855bff45d292533bca04a6b2e03",
+      "src/data/blogPosts.ts": "f5dad05f895ff36c90d7010aaead04c9",
+      "src/data/bookings.ts": "bc48128b903e5487e934fb10a25dffad",
+      "src/data/calculatorFeatures.ts": "5ab36235447686975b38683eb833aade",
+      "src/data/featureDetails.ts": "135e56f2b8758e9b307ab114197ddf13",
+      "src/data/grantContentPages.ts": "02e5739723512c4ced8c2a4a7356cbf1",
+      "src/data/grantRegions.ts": "06c442e764d1644939df8d5858e5c87c",
+      "src/data/homeSections.ts": "e86c0b0dee2b4c16b58224ae3843f437",
+      "src/data/industryBlogPosts.ts": "268a163bf823a8290952d54841cd2b92",
+      "src/data/industryLandings.ts": "7f8282c7b887dd9e708d460b7bc54330",
+      "src/data/performanceBlogPosts.ts": "53594eb67cd9bf7ca35ada922b5f1851",
+      "src/data/reviews.ts": "70a8c3ef169f09f6419ea3291b6b7fca",
+      "src/data/serviceLandings.ts": "efd995337864f45f1b314ee351ee7338",
+      "src/data/sitemap.ts": "59a52dfffbe17fdb4048b4c31fe4a4a7",
+      "src/data/tradeFaqs.ts": "5e26c45b62c872fda52e8a367e7e5023",
+      "src/data/tradeGalleryImages.ts": "aeacb1021bd296636e6e9d9269910bcc",
+      "src/data/tradeIdeaPrompts.ts": "9c76ed8579472a3f3bcc52e5cabbe614",
+      "src/data/tradeImages.ts": "8179862d8e735b6e6afd46ae5a4ba717",
+      "src/data/trades.ts": "c3d790bc2592fe5c5d1244ed4f49c70f",
+      "src/data/youtubeLessonBlogPosts.ts": "27ab9cdea35c64010bdb71e3b70ff389",
+      "src/hooks/use-mobile.tsx": "c0a0bdd4638c391a1dd06ac82074e60b",
+      "src/hooks/use-toast.ts": "e706bc004c87e17db559a113637eddea",
+      "src/hooks/useApprovedReviews.ts": "6fdd19ddbfceb55375146ae7d620aa16",
+      "src/hooks/useCaseStudies.ts": "d0adf105871b300b4caf2777c0f1718b",
+      "src/hooks/useCourses.ts": "222089147551449e590973861b0fedc0",
+      "src/hooks/useCustomDemos.ts": "93348c0a05abd310bde82ac2a66f0bc3",
+      "src/hooks/useDbBlogPosts.ts": "b88236baaf23294adc4d582214f0cf7f",
+      "src/hooks/useImageContent.ts": "c86ab0b9efe43ad3b55b9e15a3f15a8c",
+      "src/hooks/usePageSeo.ts": "0af7770e393791577be7061daff894da",
+      "src/hooks/useProspects.ts": "145f806e14865894d6e88eb8e8977a89",
+      "src/hooks/usePublishedBlogPosts.ts": "08c57445e8ffdce66a62e2f19a501dc5",
+      "src/hooks/usePublishedSchema.ts": "298dfad91c4933a7ea8534714fa72177",
+      "src/hooks/useSiteContent.ts": "16ba145f4c52a8055c15392213040f14",
+      "src/hooks/useSiteSettings.ts": "c71633b5934c401a4169679c09569116",
+      "src/hooks/useStripeCheckout.tsx": "568d252a11596fd2b58c450168169679",
+      "src/hooks/useSubscription.tsx": "83f96e3e6f3c549a0501c87fbd394011",
+      "src/hooks/useUserRole.ts": "84f7fece01beea2a301120941107cff2",
+      "src/hooks/useVisitorSafeguards.ts": "8f3c312450e36ba5b9a84def981caafb",
+      "src/hooks/useVoiceAgent.ts": "91d32afd269e9e5109f6cde77911165d",
+      "src/index.css": "0d59365d83505a940b36c891eb24b026",
+      "src/integrations/lovable/index.ts": "2b281422ef62231e654f8668addb90a5",
+      "src/integrations/supabase/client.ts": "ea731aa7f857b1b89542717c662d05c0",
+      "src/integrations/supabase/previewAuthStorage.ts": "0a2d63e049bc63135b19c8e21cc0b1aa",
+      "src/integrations/supabase/types.ts": "98e29d0bd5bf17b8e0cab697f7ad6182",
+      "src/lib/agreementPdf.ts": "6353cd85956db21c96988177331e4b15",
+      "src/lib/agreementTemplate.ts": "c4bdacdd5434d343a8b2b41eba1648b8",
+      "src/lib/caseStudyPdf.ts": "91f12b9e69354673ab45b9ac7a1d3216",
+      "src/lib/geoExport.ts": "32fa524bbaf847392c9ef5eec399ea2b",
+      "src/lib/grantTemplatePdf.ts": "5bd6d4df5640707e3779bee18de46dcd",
+      "src/lib/pdfFont.ts": "8cd2b6928e6c6a93ed4961ccdb9d91c9",
+      "src/lib/stripe.ts": "f76ed145fb48bf88f7daf19d0add9471",
+      "src/lib/ttsErrors.ts": "a17aa937d5a88f4062ba857582ed335e",
+      "src/lib/utils.ts": "d9837f38cc05303254571985e3164050",
+      "src/main.tsx": "81d6473b589b8f1f3f4c3c7440a6099f",
+      "src/pages/About.tsx": "0a4807f999323a5cd96d43a82a1c9d51",
+      "src/pages/Account.tsx": "00641b161becde5495de8ff7cdcb2096",
+      "src/pages/Blog.tsx": "b6d53b03d9d54d0f05a3245cec6addc4",
+      "src/pages/BlogArticle.tsx": "aabb24fb397009c2f8c1fda8c1521648",
+      "src/pages/CalculatorPage.tsx": "d4137f28771633dded868bfd50a3ad48",
+      "src/pages/CaseStudies.tsx": "6ebfda42007e8157d33611b47287e533",
+      "src/pages/CheckoutSuccess.tsx": "766eb30a191a42681947cffa26296dc9",
+      "src/pages/ConsultantTereza.tsx": "ce36ef8a679421341dfb88cf3cdd4599",
+      "src/pages/Contact.tsx": "958d934cdf498f5a1ee80f4aafb31984",
+      "src/pages/CourseDetail.tsx": "7257ba3775d0305f8ffc5c4a09283187",
+      "src/pages/Courses.tsx": "b1fb2a23ebe62d5cc8a9eb222865d5cd",
+      "src/pages/FeatureDetail.tsx": "f77ae0b30049602bc6ee0766ea7b131b",
+      "src/pages/GrantApplication.tsx": "a13683320fcbcd96fa59435fa6d56014",
+      "src/pages/GrantContentPage.tsx": "989e63c24120299a77c5edca8b72222a",
+      "src/pages/GrantEligibility.tsx": "a90842f5f905f321bba545f8ec3dff83",
+      "src/pages/GrantGuide.tsx": "0728d37ab7274b780f05579588846db8",
+      "src/pages/GrantHubs.tsx": "61ee00e3970ea2b1a0f9d62c79ba633c",
+      "src/pages/GrantPortal.tsx": "96e32f093eb6022db4bb12fa10e9ea4c",
+      "src/pages/GrantProcess.tsx": "31a2dcfc0fedc5917729943d4946b0eb",
+      "src/pages/GrantWizard.tsx": "e8f761fb74d3e01ecede6bd618ef3039",
+      "src/pages/Index.tsx": "419d5956ab0aec6dca610ff0a1f9e0c1",
+      "src/pages/IndustryLanding.tsx": "620c7c38cfa27653cbcbea947fad2272",
+      "src/pages/Inquiry.tsx": "ad09d30260aba8af79527fb629201ffc",
+      "src/pages/Install.tsx": "92b0235399f66c327407acc8cf0abbdc",
+      "src/pages/LanguageVersionPage.tsx": "93f47f6d380b30e7918f2189cbe3e73d",
+      "src/pages/Launch.tsx": "6c7e2b700c62e722b7e29e8945890b33",
+      "src/pages/LegalDocument.tsx": "1845c1a6302f5ebbf1b5ac231d6c55b1",
+      "src/pages/MediaKit.tsx": "0c2c532401afc9b586dd5a01a31a58f0",
+      "src/pages/NotFound.tsx": "4dc36389c918a90e846423f62f4dc184",
+      "src/pages/OfferLanding.tsx": "2fe5f11f3d99487ce98f920381f2a498",
+      "src/pages/PackageDetail.tsx": "b44ed071a7069ed9bd3b1906dc0b71ee",
+      "src/pages/QuoteRequest.tsx": "a5aba3bdf8d6608c2abece6076554554",
+      "src/pages/Reviews.tsx": "fc1d411a11262e821e1e960ff09afc25",
+      "src/pages/ServiceLanding.tsx": "356d705a990824ba626c9e41f9c507b9",
+      "src/pages/Showcase.tsx": "1d1ccdf7e4ef252982990224f56c9bda",
+      "src/pages/SitemapRedirect.tsx": "cb58d0ee04177643baa2fcba94bc9771",
+      "src/pages/admin/AdminAccounting.tsx": "1ece0c53d4b6579ede829f840687b91d",
+      "src/pages/admin/AdminAuditLogs.tsx": "86963b9286c75063731c79cb8a6d07f8",
+      "src/pages/admin/AdminBacklinks.tsx": "0da1e122c8a41ca39ad6e4b3b01c4d05",
+      "src/pages/admin/AdminBlog.tsx": "c186e222189c82af4d7ec3e6d5fb7a6d",
+      "src/pages/admin/AdminBookings.tsx": "11c6ca17c9e39fc681cabc5172ece84f",
+      "src/pages/admin/AdminCaseStudies.tsx": "a07156ed9d27cd96c15c1705ec303b3e",
+      "src/pages/admin/AdminClientProjectDetail.tsx": "5e0d09b01acbb3893314ea133e9a0dac",
+      "src/pages/admin/AdminClientProjects.tsx": "bca7bf7f5f7cb254ab49255e89c54fbc",
+      "src/pages/admin/AdminClients.tsx": "0063e002dabdd789219129f15f791df0",
+      "src/pages/admin/AdminContentHistory.tsx": "3b8557ead4c75594acff1639ad084efb",
+      "src/pages/admin/AdminCoupons.tsx": "6054d8b818db54eb0daf18e5e12ee531",
+      "src/pages/admin/AdminCourses.tsx": "4cc4483f9b3f21a38a35c964b4294a30",
+      "src/pages/admin/AdminDashboard.tsx": "5c709335dfda3ba5cada4f02c5599b31",
+      "src/pages/admin/AdminDemos.tsx": "74e198850cfbd99a3d23abd7b23523cb",
+      "src/pages/admin/AdminEmailDashboard.tsx": "0ac959dabd5c162088c1f9c34007753b",
+      "src/pages/admin/AdminEmailDeliverability.tsx": "232cde94c23bf336f7d0557c36870abf",
+      "src/pages/admin/AdminEmailQueue.tsx": "612915e7091a8e3dd80766ca961b6e04",
+      "src/pages/admin/AdminEmails.tsx": "1a8729575288df9bddb5ef5772e1093b",
+      "src/pages/admin/AdminEmbedCodes.tsx": "7cb1e087e49f45b6954a88b818c3833e",
+      "src/pages/admin/AdminEnquiries.tsx": "41ea6ccfe037e24c95f59238c7c0a98d",
+      "src/pages/admin/AdminExport.tsx": "ae57b5104baa857dbbc80836b40dd98e",
+      "src/pages/admin/AdminFlowlu.tsx": "a1567949e16cb6f565b6c2ead261e972",
+      "src/pages/admin/AdminFlowluLeads.tsx": "e242cdfe3f73ddc24d7eadd6259e21c5",
+      "src/pages/admin/AdminGeo.tsx": "b67b6ebddf8d25bb419af79bd631523c",
+      "src/pages/admin/AdminGrantFollowUp.tsx": "6d0b927bdb2186d978d7b3adfae61468",
+      "src/pages/admin/AdminHR.tsx": "2a88fd2c4cb65f00d242980c9ee20f57",
+      "src/pages/admin/AdminInbox.tsx": "b8e5e672f76be052b2e3f0440adbfb56",
+      "src/pages/admin/AdminIntegrations.tsx": "e15e8cee2dd771ef6643d5ced71c58fb",
+      "src/pages/admin/AdminLandingPage.tsx": "73738833dc69485a3f3ce4b02bcefea8",
+      "src/pages/admin/AdminLanguageVersions.tsx": "1a99728482b842c32c636daf14ff5aee",
+      "src/pages/admin/AdminLeadEmails.tsx": "6aa0216def00432bb20f9c8d06c0e0d8",
+      "src/pages/admin/AdminLeads.tsx": "13450e6af3182cd06218213b12a28824",
+      "src/pages/admin/AdminLeadsHub.tsx": "039bc3b8892133a20ef9d617772e3c73",
+      "src/pages/admin/AdminLegal.tsx": "23199f42dce7d2bc924830e74e3a061d",
+      "src/pages/admin/AdminLogin.tsx": "d718e81bd17e7e4ca0c6a5e3f7e5b5d2",
+      "src/pages/admin/AdminMedia.tsx": "5d19fb73412b5c85835725b4a54145b3",
+      "src/pages/admin/AdminNewsletter.tsx": "f8b02bd48982d8b321e7cb8312ba0349",
+      "src/pages/admin/AdminOfferLeads.tsx": "062bb14d5876e8832b0e15a4a32d15bb",
+      "src/pages/admin/AdminPipeline.tsx": "86255b1173325e5c8e40480bb29ae7a5",
+      "src/pages/admin/AdminProspecting.tsx": "26081bbed61cbfe06542bea6fe045d6a",
+      "src/pages/admin/AdminQuoteRequests.tsx": "502c076888cc72112684c5213eb97290",
+      "src/pages/admin/AdminResetPassword.tsx": "bc0464dcdc981ae6fcf6fdd8fcd4c392",
+      "src/pages/admin/AdminReviews.tsx": "3da98d5f0be6454ff46849a51a88934a",
+      "src/pages/admin/AdminRoles.tsx": "89ec937247971a6972ffb32bfb7a0e62",
+      "src/pages/admin/AdminSEO.tsx": "0b8d1e0324db40a713d94624bc4ca5ac",
+      "src/pages/admin/AdminSEOHealth.tsx": "581365ea7898fcd5b969f50b243e7f6e",
+      "src/pages/admin/AdminSEOInsights.tsx": "3379f04ab10d4eb9cb4e778dd616367e",
+      "src/pages/admin/AdminSettings.tsx": "b136d532a4c3c47f11a249ee228409a8",
+      "src/pages/admin/AdminShowcase.tsx": "4e8d0b6d1d9f21edb238fcf98367566b",
+      "src/pages/admin/AdminSitemap.tsx": "d6984769fa8f26574ab72dba5262b250",
+      "src/pages/admin/AdminTracker.tsx": "66dcf5a607ab06a6babf1e62d5b39901",
+      "src/pages/admin/AdminTtsTest.tsx": "bffe0ea5ddbce900f430e72f403b85a7",
+      "src/pages/admin/AdminUsers.tsx": "a8feef8612dc697b795824240c409005",
+      "src/pages/admin/AdminVbout.tsx": "c076a965e7f547fbf736001b54878433",
+      "src/pages/admin/AdminVboutDebug.tsx": "00076ec1ffbadde1af5de5cfb3d630e3",
+      "src/pages/admin/AdminVoiceAgent.tsx": "75f914e2e9f6c352bf2a4af2b8d64315",
+      "src/pages/demos/AccountingDemo.tsx": "8ce9ca2b775ee955ebd7bd313c818ef4",
+      "src/pages/demos/AutoRepairDemo.tsx": "412c4d1e6114c046681eb5ea830f31f1",
+      "src/pages/demos/BakeryDemo.tsx": "d440afd56be6d5ed8446ba48b0ca9e6c",
+      "src/pages/demos/BeautySalonDemo.tsx": "a90e96c3cdc63ef2bac9b5dccc847c0f",
+      "src/pages/demos/BuildingDemo.tsx": "a06723fbc5573eeed40654b14456b054",
+      "src/pages/demos/CarpentryDemo.tsx": "45627c1f02d1c0699617afaeb47d22fc",
+      "src/pages/demos/CateringDemo.tsx": "e9c6be57c534ee6ad2d215421223e537",
+      "src/pages/demos/ChildcareDemo.tsx": "f4c5fa820c41d1f9d5ff575880700893",
+      "src/pages/demos/CleaningDemo.tsx": "3d4650ce3adbf15053f0dbc6933835b6",
+      "src/pages/demos/CustomDemoPage.tsx": "00e0abb5019515fbd6238c43a22bd798",
+      "src/pages/demos/DentalDemo.tsx": "1c2c5de7e1aef596ada66de284b17934",
+      "src/pages/demos/DrivingSchoolDemo.tsx": "450a15ae1a54d9debc9e1433405e9ce9",
+      "src/pages/demos/DrywallDemo.tsx": "7de6a82d5730c07fe6dd32ad25b4dd31",
+      "src/pages/demos/ElectricalDemo.tsx": "0f705b70686e77ce57ae99a037570d4a",
+      "src/pages/demos/EshopDemo.tsx": "23c56df456ea07a940bde53307676251",
+      "src/pages/demos/ExteriorDemo.tsx": "a0d981d0ac6d9c8a3c5491d8514590be",
+      "src/pages/demos/FitnessDemo.tsx": "79f0016e83f688f0a72c1a707f47a70a",
+      "src/pages/demos/FloristDemo.tsx": "f4a41a39294908af9ecf7b36523b68ac",
+      "src/pages/demos/GardeningDemo.tsx": "75eca5de78a4d55d546f0aacf48df5ab",
+      "src/pages/demos/HandmadeDemo.tsx": "a312a7ff2b3fc685edc2febfa5d21bcc",
+      "src/pages/demos/HeatingDemo.tsx": "90172c50abe99402378e5a253259abe5",
+      "src/pages/demos/HeatpumpsDemo.tsx": "d46f981572071c8f30a3f7ede0e7cf31",
+      "src/pages/demos/ITServicesDemo.tsx": "95257354443e3e9f06d1a515af1d86ef",
+      "src/pages/demos/InteriorDemo.tsx": "1e8d147dce62e65c4d0427cefd41133f",
+      "src/pages/demos/LaundryDemo.tsx": "d38c3355e9b69a297e07d27427a80a97",
+      "src/pages/demos/LocksmithDemo.tsx": "87bd384a4ffb339632eae0afbc689b29",
+      "src/pages/demos/MassageDemo.tsx": "d8c40cfa285f08de179908e7693e59b2",
+      "src/pages/demos/MovingDemo.tsx": "429ca3e7afaf10d16260bef5b3ef513f",
+      "src/pages/demos/MusicSchoolDemo.tsx": "a657365c831143ead28b53b46166c448",
+      "src/pages/demos/NailSalonDemo.tsx": "93d8d7d8d5d385f7a8c2f7e4b0718012",
+      "src/pages/demos/NutritionistDemo.tsx": "6a6a1f78a3cac2f757da17f1459201fb",
+      "src/pages/demos/PaintingDemo.tsx": "925060b2ec172c80ef2637e9114011ec",
+      "src/pages/demos/PestControlDemo.tsx": "d3dece6161afafbbacc6d553498a08e6",
+      "src/pages/demos/PetGroomingDemo.tsx": "012f0d2b3348143e1ce5cf18366ba7e5",
+      "src/pages/demos/PhotographyDemo.tsx": "7cb641cb071fc3cde2c537ee6c35c11a",
+      "src/pages/demos/PlumbingDemo.tsx": "3c92e8514d75b38089dd0aad978e5e95",
+      "src/pages/demos/RealEstateDemo.tsx": "83c8bfff4f444bf389882b07aa92fd1d",
+      "src/pages/demos/RoofingDemo.tsx": "e183489e2771470d7ef5591e715783ac",
+      "src/pages/demos/SecurityDemo.tsx": "818e0483b932c85b190b54c9e40db88f",
+      "src/pages/demos/SolarDemo.tsx": "85e4c64c763fe6ad48a700fbda318aec",
+      "src/pages/demos/TattooDemo.tsx": "8efc3cafc13ae3eb7a63b8bc131a8255",
+      "src/pages/demos/TranslationDemo.tsx": "4b68097b49262dab6f1ba6ee32db5436",
+      "src/pages/demos/VeterinaryDemo.tsx": "f2a5799009873288d2e2394131097e65",
+      "src/pages/demos/VirtualAssistantDemo.tsx": "555defa7c15d662b7f37d426c5187e33",
+      "src/pages/demos/WeddingPlannerDemo.tsx": "5df7ac99699abc40f2f20d0fc5af50d0",
+      "src/pages/demos/WellsDemo.tsx": "fc6a67550dee08e0a675a593595f6b36",
+      "src/pages/demos/WomenInBusinessDemo.tsx": "880c5cf23ec7d3640d199cf2c0ef27f9",
+      "src/pages/demos/YogaDemo.tsx": "60f647500a0fed1e5329289952dc4371",
+      "src/pages/portal/ClientPortal.tsx": "7fccacc2a303a96c89f3943f789ab57f",
+      "src/pages/portal/PortalErrorBoundary.tsx": "53a0a2766d4a657e7227324c2d2d7fd1",
+      "src/test/example.test.ts": "f7aec10728902324d57cf05ee8a8e57e",
+      "src/test/setup.ts": "3ed816a7adf0e76610ce76bd32744ea0",
+      "src/types/bookings.ts": "6e1592ef33279a13f1ec8146622bf1d4",
+      "src/vite-env.d.ts": "0352474ba2918efe13895edbc3780d94",
+      "supabase/config.toml": "fee7905814b144587f0cc70680750548",
+      "supabase/functions/_shared/ai-json.ts": "0b00a95c5a47dd589fc8251a2ca98009",
+      "supabase/functions/_shared/deliverability.ts": "3b19b4df364805839e9a1f44e77bc6ab",
+      "supabase/functions/_shared/email-templates/email-change.tsx": "b8699154ad7cc4a99bb00a159c38574d",
+      "supabase/functions/_shared/email-templates/invite.tsx": "ac02dbb2998dac8dc4dcf9350747583b",
+      "supabase/functions/_shared/email-templates/magic-link.tsx": "b67a9b8f1fd8f5ebf49bca0507565f87",
+      "supabase/functions/_shared/email-templates/reauthentication.tsx": "0e46c6a4322da78e4e3f13dfe1744a0a",
+      "supabase/functions/_shared/email-templates/recovery.tsx": "d107113061ee88e5372450e294700279",
+      "supabase/functions/_shared/email-templates/signup.tsx": "19344d00412818d91e5d33e9daaf4ff0",
+      "supabase/functions/_shared/geo-ai.ts": "ddbdcab62a41df59f34e04a364587c3c",
+      "supabase/functions/_shared/geo-html.ts": "c7a24b740884980fe88b8a41f1424ca7",
+      "supabase/functions/_shared/gmail-fallback.ts": "9ab477b79a717eb3ff3b2a38ba98e8ca",
+      "supabase/functions/_shared/require-admin.ts": "208832acf22c11b66ed7d85c45d28c30",
+      "supabase/functions/_shared/stripe.ts": "851f8b22fd8605d0d32265fbfde3131b",
+      "supabase/functions/_shared/transactional-email-templates/admin-booking-notification.tsx": "24d168715c16cccd83a90ebe9db66d9a",
+      "supabase/functions/_shared/transactional-email-templates/admin-newsletter-notification.tsx": "9443e6e3e1096da4afa8852fe1dd3604",
+      "supabase/functions/_shared/transactional-email-templates/ai-inbound-reply.tsx": "301662e16b604dd0147c4a1aed308303",
+      "supabase/functions/_shared/transactional-email-templates/booking-confirmation.tsx": "4218fd1f4b2f2c646a57d6501bc9f433",
+      "supabase/functions/_shared/transactional-email-templates/client-stage-update.tsx": "211600b8865f34f9f2c06045d0c93677",
+      "supabase/functions/_shared/transactional-email-templates/contact-enquiry.tsx": "ca65cbaf1665f4c5f16d160442d95d07",
+      "supabase/functions/_shared/transactional-email-templates/deliverability-daily-report.tsx": "23ed9b5a5550d3c5282e132297c750c5",
+      "supabase/functions/_shared/transactional-email-templates/deliverability-test.tsx": "c097428461c937fcd5e89eb4a4ccae03",
+      "supabase/functions/_shared/transactional-email-templates/inbound-forward.tsx": "cdf0eb64d6eede1333021b98bfb627fe",
+      "supabase/functions/_shared/transactional-email-templates/intake-received.tsx": "47da0265e30afc4cb06a295399dece4b",
+      "supabase/functions/_shared/transactional-email-templates/kanban-task-assignment.tsx": "626d33dee3046b9fae032888d49e7729",
+      "supabase/functions/_shared/transactional-email-templates/lead-notification.tsx": "0d7b1307bf5b52a64ff193a66a4c11d3",
+      "supabase/functions/_shared/transactional-email-templates/newsletter-welcome.tsx": "5ee7b0445136c9d56f43c316661431a6",
+      "supabase/functions/_shared/transactional-email-templates/portal-invite.tsx": "57ab3368fee12b92863aecec785da51d",
+      "supabase/functions/_shared/transactional-email-templates/registry.ts": "3645527e29cef8516fb64b3fb5b5e57d",
+      "supabase/functions/_shared/transactional-email-templates/send-email.ts": "eff179a58269445de0f5c8e2306b2c34",
+      "supabase/functions/admin-email-queue-status/index.ts": "4ad6d16f85a5a5fa4fb73e1b28984065",
+      "supabase/functions/admin-invite-user/index.ts": "fb81821719be8c5ebc4f32ee7eb6aee6",
+      "supabase/functions/admin-list-users/index.ts": "37134efb49340ce70773fe73a04d0e0b",
+      "supabase/functions/ai-feed/index.ts": "d87ddfbaf44e9c34ecb2d7b09bfb553e",
+      "supabase/functions/auth-email-hook/deno.json": "49c76feeb30a2d17f086296c45c282d4",
+      "supabase/functions/auth-email-hook/index.ts": "9a3fcea6d7b41cf49d277d87666cf49f",
+      "supabase/functions/auto-generate-blog/index.ts": "d1c77c6b5347c8cb5af53536f35d9ef0",
+      "supabase/functions/backlink-check/index.ts": "c6ad5a71c136580d3e94d2f85514973f",
+      "supabase/functions/blog-approve/index.ts": "6ed5794c605edda070a8a89bd7061957",
+      "supabase/functions/blog-tts/index.ts": "f8370bc61f2e00fa5f155481b0633f7e",
+      "supabase/functions/calculator-ai/index.ts": "b4ae1346c29e678144fa74264bf80ed1",
+      "supabase/functions/case-study-file/index.ts": "087621e57b44ca0f903cb24c48e4969d",
+      "supabase/functions/create-checkout/index.ts": "88f895f47726a4580a5f6784d0497f89",
+      "supabase/functions/daily-deliverability-probe/index.ts": "7b37b02ee9107f40ed6a40df99540d3d",
+      "supabase/functions/daily-deliverability-probe/probe_test.ts": "ccbf269ca3431a4d18e348cfe5ad66c4",
+      "supabase/functions/embed-codes/index.ts": "cc236d167ac16b91887268d454e062ae",
+      "supabase/functions/flowlu-admin/index.ts": "ac313e1696bfcd9637a3fd966aab18c3",
+      "supabase/functions/flowlu-sync/index.ts": "40f7061174a44afe4a601847663b6034",
+      "supabase/functions/flowlu-webhook/index.ts": "35d587fbf361612a1e9e85469c49db68",
+      "supabase/functions/generate-blog-post/index.ts": "2677bc1b47354a2ceb23b96e8b6d1856",
+      "supabase/functions/generate-demo/index.ts": "d395063a4d51a57691119ad36be0da0b",
+      "supabase/functions/generate-social-kit/index.ts": "04145dd6cd716542fce4ec037d9c64b1",
+      "supabase/functions/geo-audit/index.ts": "bef1836e54ef9eb083fe82322916b3e2",
+      "supabase/functions/geo-competitor/index.ts": "24727ae0d45ce6886ca8bacb73a7dc4f",
+      "supabase/functions/geo-generate/index.ts": "fc92857bf60b1010812f3baaabc38ca3",
+      "supabase/functions/getsales-push/index.ts": "370e8b87d987fe44f84929857a9821e6",
+      "supabase/functions/getsales-webhook/index.ts": "cdce7b216e5a934f70576ec78d2f8f6d",
+      "supabase/functions/gmail-send/deno.json": "af84e44d5c8e2c89ab58060848ce672d",
+      "supabase/functions/gmail-send/index.ts": "af52c64f8b1922a1c720b97947c931ba",
+      "supabase/functions/gmail-sync/index.ts": "2af2a5b77ed8c4b5715adc1d45aa3cf6",
+      "supabase/functions/grant-wizard-assess/index.ts": "b533b4a0b3c79788aa2cee26c1a0a358",
+      "supabase/functions/handle-email-events/deno.json": "8a80554c91d9fca8acb82f023de02f11",
+      "supabase/functions/handle-email-events/index.ts": "c9e6ff1947d8b6dca25a297320747414",
+      "supabase/functions/intake-conversation/index.ts": "0b59a93637a7ad6109dc95d7b6938b8a",
+      "supabase/functions/language-sitemap/index.ts": "7a57cb649aa05c26d524d362ea5085ef",
+      "supabase/functions/language-version/index.ts": "08c2f84fd56d61020a5953401f712cc0",
+      "supabase/functions/mailgun-inbound/index.ts": "d3a3e4fbdb5280ae68ffb01723f3557a",
+      "supabase/functions/notify-admin/index.ts": "2c2fcbd61502269a8779c650980d77b3",
+      "supabase/functions/outreach-agent/index.ts": "a3514228b8e7fe46034202201bf1724c",
+      "supabase/functions/payments-customer-portal/index.ts": "35e7a8d36af98849e66211fa29af0a87",
+      "supabase/functions/payments-webhook/index.ts": "d3f949b8e1e6dddfc760fad2fd0f5dca",
+      "supabase/functions/portal-access/index.ts": "89943fc5da5087c8fdbf86e2023e59ef",
+      "supabase/functions/portal-issue-invite/index.ts": "e2b4113a95509fe51cf864856072454a",
+      "supabase/functions/preview-transactional-email/deno.json": "49c76feeb30a2d17f086296c45c282d4",
+      "supabase/functions/preview-transactional-email/index.ts": "e00f62f7b1c6fcd72c6be716fc6f25b9",
+      "supabase/functions/score-lead/index.ts": "2b5c9d32a82a12d2016f9462b41ecb95",
+      "supabase/functions/search-visibility-agent/index.ts": "86166ac700c0323b956f2e039a84f89f",
+      "supabase/functions/send-app-email/deno.json": "49c76feeb30a2d17f086296c45c282d4",
+      "supabase/functions/send-app-email/index.ts": "e471acd88a578b2da9444e6434e9b89f",
+      "supabase/functions/seo-ai/index.ts": "08e581344b6d1d313204978a96449ffd",
+      "supabase/functions/seo-alerts/index.ts": "0fad83d76de45d5752b60661364ca433",
+      "supabase/functions/seo-audit-eat/index.ts": "a5c954842933e0976049978f7bdc6f26",
+      "supabase/functions/seo-broken-links/index.ts": "7f6a67f3ffa77e09be7007e33bd51751",
+      "supabase/functions/seo-content-freshness/index.ts": "5cfd5c9d86c5d92f2a2e05c30e2b0b48",
+      "supabase/functions/seo-daily-audit/index.ts": "5568c602a53037ddb4c837c2940052db",
+      "supabase/functions/seo-ga4-sync/index.ts": "32b62ab357f118a9b28742e94b44c908",
+      "supabase/functions/seo-pagespeed/index.ts": "397e3cc34c5848b568d789428e64d895",
+      "supabase/functions/seo-run-now/index.ts": "94000c4e7b63e38789c535df168314e9",
+      "supabase/functions/seo-schema-validator/index.ts": "5ab75a41cf0cc281f212088b55a47531",
+      "supabase/functions/seo-sync-gsc/index.ts": "452ef29a8f72ea5adcbfaddb8140ef29",
+      "supabase/functions/seo-sync-semrush/index.ts": "f78b118b23792987b3a23fda9589a905",
+      "supabase/functions/seo-voice-search/index.ts": "e8d4301d94ec1f99a76792e11cdb6f86",
+      "supabase/functions/showcase-access/index.test.ts": "f71ac2aea2ffdc690222a881ba656a1c",
+      "supabase/functions/showcase-access/index.ts": "a3d9e340777af83401e07ed001df6fe8",
+      "supabase/functions/sitemap/index.ts": "509e7ef2a93c559470869551d048c236",
+      "supabase/functions/submit-enquiry/index.ts": "0c2218ca05f45d529f74c35873d43ecc",
+      "supabase/functions/task-reminder/index.ts": "246d91a1e0493dc27c78b4ee46688eb9",
+      "supabase/functions/trigger-daily-blog/index.ts": "8e9d7a4a6f1baf4b34430e2f0148047c",
+      "supabase/functions/validate-coupon/index.ts": "8d34875bead734f7e3aa473d6df1019a",
+      "supabase/functions/vbout-proxy/index.ts": "f46a9e9644c95ebe3a5a6d72e30b1b6d",
+      "supabase/functions/visitor-signal/index.ts": "e87417e4a9ec51dcef3f1f2d096c10a4",
+      "supabase/functions/voice-daily-scan/index.ts": "f70eb8811cd2d939726f9f39b4f32085",
+      "supabase/functions/voice-webhook/index.ts": "6af4b18526e541308663cf51977d7d08",
+      "supabase/migrations/20260219105949_6816c78c-4095-4147-aca6-002d57f00f49.sql": "c68c2ce8b0ee52806d27fcb4db1bd814",
+      "supabase/migrations/20260219111131_03f9f00b-f514-4986-a267-8b72a34e0bbe.sql": "765186a8f0a27a0b1ebdff8f9dc9a24b",
+      "supabase/migrations/20260219111739_db485efd-0ede-4f55-829b-68c9d3e66a22.sql": "18f30cc6f4ce58da33014ae6cb877f6b",
+      "supabase/migrations/20260219144308_331a19f6-a25b-4772-893e-7ed230751ce4.sql": "08849e80f32c6e2f04cc5518755628ff",
+      "supabase/migrations/20260219145338_8241fb6d-d1a9-44c7-bfc6-a7fcc9bae0af.sql": "a43bcfa79649be4f7e610b8cb7d3be3f",
+      "supabase/migrations/20260219151204_304545c1-7696-4dae-a3d9-57aa010e81b5.sql": "293ce05becb1fe97bf6aced8a8598951",
+      "supabase/migrations/20260219153204_8c726b1c-5290-4798-b27b-226ec3791885.sql": "f6ad3058444ceb26b2c6bb17d37a99b0",
+      "supabase/migrations/20260223150025_f5c8cb74-6f41-4115-93b9-acc8e8b427a7.sql": "0858caf0dbdf91888b046efee50051aa",
+      "supabase/migrations/20260225113037_e2904d75-864d-4883-aa02-027b4d36a02c.sql": "d5482cc067e20547d1bc083d3b722b17",
+      "supabase/migrations/20260225124213_18071e89-aa91-4361-8565-5e556d465cbc.sql": "3ea16acff740b9a8b1c01fc6806c2081",
+      "supabase/migrations/20260225125325_7714abef-0e98-4b98-9a9d-50d1c43a9a44.sql": "7a7a862b5adca6827f4d0fe75b512e93",
+      "supabase/migrations/20260225132035_782454b5-9de1-4c1a-9f36-c52b3fc79abd.sql": "bb3181d6ab9c424b8aebd505ca775313",
+      "supabase/migrations/20260225132558_301dde5e-3211-4712-a420-4afe58d86a55.sql": "6040da033c9a2dfb49fdf8367891d30a",
+      "supabase/migrations/20260225132838_e8f25636-f06e-4397-addb-82a2a9d8eb47.sql": "11fd9fc8238d4f9c1f7480600f7a896f",
+      "supabase/migrations/20260225133542_a8d59bea-65b4-4792-b159-b2c7c4bf86f3.sql": "91e1c55ed91b815c0a7b0a78e61a5e6c",
+      "supabase/migrations/20260225140041_9d2b2304-10bd-4f15-8bb6-532744ca18ff.sql": "5bb850154d37a0d214f2756938eb4ea2",
+      "supabase/migrations/20260225140546_b81bad69-1d5e-4499-9631-3b3514c889f3.sql": "f383dda666f391605e04e8bc72baac99",
+      "supabase/migrations/20260225142519_40420d55-bb36-4e58-b234-84319f1fb425.sql": "9510ebcfa153136852dabf60e7e0fdd1",
+      "supabase/migrations/20260225142700_de3317cd-fe3e-434f-80ea-5e6b1c952be0.sql": "7303d4b086bf2131d8a2ed675b3063a9",
+      "supabase/migrations/20260225150549_ecb969ce-db57-4181-ae02-8eb452a6da88.sql": "992a50c3c6d4785b7c74b589870d756f",
+      "supabase/migrations/20260302073239_0a3a9dcc-cf76-4697-b0b2-1126cdb7ed00.sql": "b9c5ee9600fdad2a55a2e91235746361",
+      "supabase/migrations/20260302090209_b845caff-0261-44f3-bbda-b97b152a0abb.sql": "31418f7fb37c97df7e2e699cc4ac2bec",
+      "supabase/migrations/20260302093819_43c67559-2ce1-4712-8cc7-84db7af3ef9e.sql": "9e7511dfddc87815af5d747485ad6f55",
+      "supabase/migrations/20260302093835_306a99ed-fd0c-47d5-afa8-2d005ce7a5c3.sql": "2967c5c66117e0efff446cede8c7a10f",
+      "supabase/migrations/20260302100831_8e09563e-69fd-4bb4-a5ec-5015e8e93132.sql": "5501ad6970ef4e0ef882bddf3660132f",
+      "supabase/migrations/20260302100844_743756d8-4bcb-45d2-8e1f-d1cae232a0fa.sql": "bce2034452d5b0a16146e51fdbbbf03b",
+      "supabase/migrations/20260302104943_3ab60830-0e7d-4f0f-9277-267473e79d2f.sql": "933c8fb22990670ba83644fe322d4358",
+      "supabase/migrations/20260321152615_42f665df-b7f4-40c1-bed1-ca6b209acfae.sql": "3f456b018ef0e43c9cfa49d740743361",
+      "supabase/migrations/20260324111039_8fcca362-b148-4cab-b3a1-4461afb947d6.sql": "7dfdfd4411614570acf51e3d8a8d8af2",
+      "supabase/migrations/20260328091102_e17f197c-5835-4eb4-86cb-165df42078fb.sql": "cf710fe2801d4845600b55f3b330a027",
+      "supabase/migrations/20260331093754_bfc80f8f-da3e-40ed-8b71-0b7b71028e4f.sql": "8a90ceac47ea03aba06bb546c8e290ad",
+      "supabase/migrations/20260331093810_ac10f4fc-d000-480d-a39c-827c28ae3ae7.sql": "051c535b07609b961d1e434c06f5760c",
+      "supabase/migrations/20260402110643_e2857697-117e-4ede-887e-c538034a8c2c.sql": "ad2471a303980f32d2e214aee3b47a46",
+      "supabase/migrations/20260402130334_e05b7354-e308-4b1e-ac41-afee375fe02e.sql": "a9159c4a72d7ad2a8b13d2e691ce82c2",
+      "supabase/migrations/20260402132206_00083b74-28a2-4970-a384-fbb49771f42a.sql": "1aa465fc46e0030062c148e53cb961df",
+      "supabase/migrations/20260402132328_d051aeb7-cc31-44ef-be8a-133720d4bf05.sql": "deeac55c94b27b32246dde6ea0933813",
+      "supabase/migrations/20260420191405_0221c691-729f-449d-a513-24e1af94c497.sql": "3f8570be7c630674501901e66cf18f23",
+      "supabase/migrations/20260420191943_48d230fa-1e2b-4054-8c96-74ec5db37886.sql": "6f4d400de91f812228be90dd99e3aa57",
+      "supabase/migrations/20260503090052_9164b070-926d-48c8-a54c-913ec6836248.sql": "ccf0df1733ae8993bc1d861963f1f32c",
+      "supabase/migrations/20260503091224_154a822b-0962-470c-a02f-29bfa84606cd.sql": "6a3eeff4231d0e5804dafb60155cdc18",
+      "supabase/migrations/20260503091929_695e823d-c35a-4f0e-98d9-e4c903d9d4bd.sql": "ab99a0fea5329f6708168d6fc45b26e4",
+      "supabase/migrations/20260503104220_5cbd5d0b-23b7-468c-b982-0965306805a4.sql": "0dd3401c8be0d1110adbefbc08075e33",
+      "supabase/migrations/20260503111619_31b34f60-f996-42dd-80eb-43fd90ad75bc.sql": "b672ebdf098b1ab2d13992bab6893213",
+      "supabase/migrations/20260503112433_605353a8-9e9d-4bce-a7ba-be3dec867717.sql": "e2affcf45b8c7dfe23a4e76d87180773",
+      "supabase/migrations/20260509155922_5c727415-c3b3-4296-a192-ea0239955c64.sql": "0e6f1f5b28769dc12434059f6b8e877d",
+      "supabase/migrations/20260509160139_414b446d-fed2-4b2c-8550-f38b520748aa.sql": "9686541daef94330bb2670532af74c07",
+      "supabase/migrations/20260520110545_665dcef7-22ff-42cc-b60f-81f970d5d496.sql": "d05d97a7ac64761e72bedf24c0cbecfb",
+      "supabase/migrations/20260520124841_53aa4f30-add1-4b5e-994d-f693faa08cbd.sql": "5026d6070e3d4b55f5f6b0991082ca28",
+      "supabase/migrations/20260520125437_ab72ada2-1511-4470-88cc-c45fd71e2ef0.sql": "e81bdfae5f8b0cfca498c7048a7d4e84",
+      "supabase/migrations/20260520162120_8e7d83b2-85f9-4d26-b19e-01fc7f1443dd.sql": "61fc68a5b54d0631d8b591f7e4a5efe7",
+      "supabase/migrations/20260522121855_ca004a40-454e-42f3-a919-35028a5507ea.sql": "54e704eb110d0a0b39b42822085848a2",
+      "supabase/migrations/20260522121930_81650d33-b554-454f-9d78-18cb628ebe11.sql": "ad672ac912d812fb1151b03eb908e75e",
+      "supabase/migrations/20260522122012_5acdd54d-92a1-4f9f-be7a-3d634fd20040.sql": "501a9c32a5255bf58b69413b1f4889ae",
+      "supabase/migrations/20260527125257_bdd05303-978f-490d-9cf2-5ad22c79a27f.sql": "08179c43490e90ba2ab013637b0da41c",
+      "supabase/migrations/20260527125611_c1901983-9c8e-469c-a0cf-62ac2624279d.sql": "6076110b142c30b9bc3e265bacc3c93a",
+      "supabase/migrations/20260527130907_f05f61a2-f012-4458-959a-a0f9e18b36a1.sql": "709db900f5338084bf44cb681eaffa0a",
+      "supabase/migrations/20260527132228_a936415a-64b2-45b6-ba9f-f712d6a257d0.sql": "c7757031e51bf394c88c4db6ad8e1ea8",
+      "supabase/migrations/20260527134231_d35bfddc-8dcc-4cc0-8903-c9f2d1b15d35.sql": "8df4de39a2da84425b067d9f33c2144a",
+      "supabase/migrations/20260527134304_0ca47f00-43f5-4934-a865-a58126d02145.sql": "c8573f953220a09a8ac7ed5ef12a6118",
+      "supabase/migrations/20260527140726_c5e378af-7c6e-4231-b36a-2e53d6f088b7.sql": "832f8d592c7c892ff9b98192a00fcabf",
+      "supabase/migrations/20260527140822_70bde741-b059-4e10-afa0-08e3c271e76e.sql": "d8055e18d07d8e1aebb0fa77a5ab439a",
+      "supabase/migrations/20260527141423_81925888-cac4-4346-b43f-95648935acb5.sql": "4cb94c7d683395a453fb0deba1784365",
+      "supabase/migrations/20260528102303_5da638a0-fea4-4b0d-b225-7ccf3423397e.sql": "095a280a290270f4e5dfa0359153fa7f",
+      "supabase/migrations/20260604083507_9c8b5a3d-435a-4606-a864-29f46a2b43ae.sql": "1ae76f6bb9b2d2790c9ed203a0568229",
+      "supabase/migrations/20260605104458_53984aa7-7e6e-4429-897a-ea57f89ae381.sql": "867c2981d7837b53754dbdf77c0691b3",
+      "supabase/migrations/20260607075830_6bd0ed1a-878e-4439-8797-b93f01879a58.sql": "14a5ae316021254104f3ed3d572d852c",
+      "supabase/migrations/20260701170056_4e60d7e2-cd72-4525-b53f-4a958f342d4c.sql": "0b3be0a1f4533b6d6e70b7c53da56743",
+      "supabase/migrations/20260701201110_b9896285-84b6-4db2-aa5a-082715148ad5.sql": "f70ae71f5921afc83901b151e7f8ecec",
+      "supabase/migrations/20260722193315_e480ea25-ac61-4087-a6e7-bc856c36cbea.sql": "3480d1a210f6d6a6b142fb5e48f86a82",
+      "supabase/migrations/20260722194605_8ae351f3-ec7c-4150-ae52-c1d19478b910.sql": "bfca3a9c691fc80f34c161856e6cafc5",
+      "supabase/migrations/20260723113417_f03418b2-22ce-4229-a863-8f30b3273fb7.sql": "5e792d6afcca32952eed9a7389d8c185",
+      "supabase/migrations/20260725085317_3fb5f69a-34c2-4c32-aab7-683c1bc81066.sql": "775262871c696350dc5bc6d32f240ba3",
+      "supabase/migrations/20260903141529_4c5d8704-7728-4980-bfe5-121b78055640.sql": "d717b7f5b6215d6a5ee623b3b08d09c3",
+      "supabase/migrations/20260907103544_6ae554ec-5752-40ae-b20f-f175b95feb6b.sql": "aabca3755b54b0dc41e04d85374f35d7",
+      "supabase/migrations/20260909085743_dd323c3f-d735-4847-8a6b-8082884ba326.sql": "59ba8866f2a168d04405c4cf4f360d60",
+      "supabase/migrations/20260909090059_9ed34a2e-9dbb-4339-8234-c8a1e5a51141.sql": "5e4913fdd866c7b3f51f1a0ebb44a005",
+      "supabase/migrations/20260909092045_ff42dd50-5767-4a8c-bbad-072d3086e563.sql": "795df7e5e232e4eb2afd4b844b1c1340",
+      "supabase/migrations/20260909120740_24010248-4fe0-481d-86dc-211283a5d8fe.sql": "7ac5827eec2151604a9ef0e8e1302d09",
+      "supabase/migrations/20260910191726_73894ad8-d526-4bd3-b706-724e0936b1c7.sql": "1d59150665e9d04977f90f0c929c50ef",
+      "supabase/migrations/20260910193532_e91b3caa-d04b-4651-86f1-95fe85140831.sql": "27cdc62a7d8862160a2126a836ff0697",
+      "supabase/migrations/20260912125107_af719561-48af-4ba3-a87b-0361547d58fd.sql": "2f8486852d9ec4e83ea31598d7a01221",
+      "supabase/migrations/20260912144028_b5cc746b-4ba2-4a56-8080-b95e051c1326.sql": "a56805bd8d5fe063fc786af51bd0b4b5",
+      "supabase/migrations/20260912175604_21fcd16e-adb4-45b0-a4d7-92b0932c6f88.sql": "8a28e7d1d1a03989127cb70241e7f805",
+      "supabase/migrations/20260914134956_1b189272-5316-4d3c-8efc-0d3f3680ffac.sql": "a70e7283f5c9bd932e8a936aebad6894",
+      "supabase/migrations/20260918162137_68d0e85e-907a-45d5-8bd0-c5f923a6bc92.sql": "1c1f425e2ecf817f91491b5e318bf173",
+      "supabase/migrations/20260918182359_cb03ca3c-ac81-43a6-8006-1ab157a0d4c6.sql": "aba72e849c0deee457a7d0df0d3cbaaf",
+      "supabase/migrations/20260918182438_67635628-5301-4f1f-8252-ef3ad417850e.sql": "c012a6bb7c1d7ac38af83d2f33df0404",
+      "supabase/migrations/20260922083944_08a1d3cc-d303-46fb-8695-1d142ca112c0.sql": "958d7b8f17124694c29e687ab8529f0c",
+      "supabase/migrations/20260922084520_ff3bbea6-3ba9-4dae-bd55-029c91b9e447.sql": "a310d8121bd489cc598d5219357ea8e7",
+      "supabase/migrations/20260922085100_6584213b-db61-453d-b5fa-4e08fb5579d1.sql": "aae005bdf2301ab1a11a35d21825b145",
+      "supabase/migrations/20260923122219_902ba95e-8e26-44fe-8082-faf66996e996.sql": "290092808a9c48ec4e829e25bb14eedf",
+      "supabase/migrations/20260923122428_43a2b8cc-94f2-457d-8c5d-86159b11d68d.sql": "10c4455cdcd192b6b5367eb1ba760873",
+      "supabase/migrations/20260923122937_36e6df05-57c7-4e0c-9efa-1c67126e30a9.sql": "1f6aa515165a305443842c4cc51da0bd",
+      "supabase/migrations/20260923123354_48a8a8f1-3e3a-484d-a76c-71e4c79cf740.sql": "86428629bbff8b6a7eeb557ae68324bd",
+      "supabase/migrations/20260923150014_c4b6d9c3-dda3-467f-80f3-1a777db6b8a2.sql": "8ff36cd17a3b82e406e2df99164f5ebe",
+      "supabase/migrations/20260924074647_6cbf719c-5a40-460e-8751-0dda25c4c23f.sql": "f0a4cce4612e05ff03b67562d21f2e8b",
+      "supabase/migrations/20260924083522_07054b38-9e76-4019-aaf7-b33b9884e4a1.sql": "ead9b4b1dec5b578e6b6a50696c4402a",
+      "supabase/migrations/20260924083728_8458287f-3073-436c-afe1-41a8e6e5eb61.sql": "94588b008337bc7115d0959b0f9ead02",
+      "supabase/migrations/20260924084908_6543ee35-273d-491d-ab3a-aea058b93306.sql": "a0cf11fd1db7142a37cc84bd21bda680",
+      "supabase/migrations/20260924085416_cd9208b4-3842-4619-8791-a69804014681.sql": "ff8d68f432801bef8065677e852ef252",
+      "supabase/migrations/20260924090910_e10f058e-ff86-48a7-9f93-c1c11c91e50c.sql": "7b5fb9606a0420ceb5baad3f211220b6",
+      "supabase/migrations/20260924091635_6f2b1359-10e9-4099-85ba-396f6df2c25d.sql": "a3a5767427e7990f23689e833194502f",
+      "supabase/migrations/20260924092149_e7f5f148-30dc-41e3-a7c8-43110fbd2092.sql": "db00b9a5ed2d7d105de829395d9c0dde",
+      "supabase/migrations/20260924092403_db027eca-b2f1-4fd6-be6a-1010aa1350d5.sql": "7825d7b9de12cac6292a73f379b9f593",
+      "supabase/migrations/20260924095642_fadf4227-5456-4406-8d60-fc50bd1d9dbe.sql": "0a72b6a82241d9157b5802b61c65b12e",
+      "supabase/migrations/20260925131232_3ba436b5-781f-4858-b8b5-20f8858ca7a3.sql": "1eb26d75de574d534bd99558f4a3b14e",
+      "supabase/migrations/20260929161757_66bd0000-f239-407e-919e-36934193a60d.sql": "73fd4c509be2cd8677c91bd687a02ec7",
+      "supabase/migrations/20260929161810_220b130a-87ac-4907-9fbd-e65e24d289bd.sql": "86d41189efd08f9de6bcd9aaa327ab8e",
+      "supabase/migrations/20260929162943_ee8ed283-27c5-4d2c-ab57-007362002ffc.sql": "ef09f858c58e13c52366deb3e66672d7",
+      "supabase/migrations/20260929163542_b6d01715-33b5-4de5-933c-5267e43663c6.sql": "c4989449e26519ae63f4284b48ef9011",
+      "supabase/migrations/20260929180824_d01b5c3d-72fe-49d7-9720-5ca569cdba7f.sql": "7886a7116ae7d91258e9b68e36ccc14d",
+      "supabase/migrations/20260930080254_295042d1-cc0f-4d25-9bf0-0b758685ad5a.sql": "51c5939e97b4f5a811b2609d91cbdc65",
+      "supabase/migrations/20260930083937_3c71425d-037f-4eef-81f4-5369edd10bb0.sql": "ef2167c236776d0cdabaf421a71a6caf",
+      "supabase/migrations/20260930083952_e342bfba-c7e2-46d8-885f-46cd6734add9.sql": "4628fd6589ad5100393a7b48f8d8b61a",
+      "supabase/migrations/20260930084002_3f6958cf-e7f1-429c-9ae5-2143cd2b182e.sql": "3d09ee107a937f1ac5f628760b9b0d4c",
+      "supabase/migrations/20260930084356_ad0e12c6-a66d-4462-83d4-ecc4a693fe9e.sql": "159f9f5f3e41661ef6de146582fd8443",
+      "supabase/migrations/20260930085501_823626a7-056c-46d9-9c9a-2c02bc0900d5.sql": "479c75c000065984f4dc90884c64e7c4",
+      "supabase/migrations/20261001113859_3a4ea8c6-7b3a-46cc-9e4b-506dd47d3f6d.sql": "276a363e54347eb3741ce12949221c82",
+      "tailwind.config.ts": "a075df9e305d53784a3c1387d2022332",
+      "tests/e2e/portal-token.e2e.ts": "e103503b128e1ed57ce3b83de5dc3243",
+      "tsconfig.app.json": "9036c95ea413f9a07f9aa5c7650861a6",
+      "tsconfig.json": "bb72695c901d34a52a46196ba258371d",
+      "tsconfig.node.json": "1417fb05378a1d1102f085e60b20db0e",
+      "vite.config.ts": "c1fb64a1a9fd0d0811b311100142c43f",
+      "vitest.config.ts": "9285ab80c07d5cd1a71aa20c1687352a"
+    },
+    "pipeline_version": 8
+  },
+  "tokens": {
+    "color": [
+      {
+        "name": "--background",
+        "raw": "210 20% 98%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--foreground",
+        "raw": "215 25% 15%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--card",
+        "raw": "0 0% 100%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--card-foreground",
+        "raw": "215 25% 15%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--popover",
+        "raw": "0 0% 100%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--popover-foreground",
+        "raw": "215 25% 15%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--primary",
+        "raw": "215 90% 32%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--primary-foreground",
+        "raw": "0 0% 100%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--secondary",
+        "raw": "210 25% 94%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--secondary-foreground",
+        "raw": "215 25% 25%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--muted",
+        "raw": "210 20% 96%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--muted-foreground",
+        "raw": "215 15% 50%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--accent",
+        "raw": "16 90% 55%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--accent-foreground",
+        "raw": "0 0% 100%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--launch",
+        "raw": "219 71% 7%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--launch-foreground",
+        "raw": "210 40% 98%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--launch-muted",
+        "raw": "215 27% 82%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--launch-accent",
+        "raw": "16 90% 62%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--launch-surface",
+        "raw": "219 55% 9% / 0.62",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--launch-surface-strong",
+        "raw": "219 55% 9% / 0.84",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--launch-border",
+        "raw": "210 40% 98% / 0.2",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--destructive",
+        "raw": "0 84% 60%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--destructive-foreground",
+        "raw": "0 0% 100%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--border",
+        "raw": "214 20% 88%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--input",
+        "raw": "214 20% 88%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--ring",
+        "raw": "215 90% 32%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--gradient-primary",
+        "raw": "linear-gradient(135deg, hsl(215 90% 32%), hsl(215 90% 45%))",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--gradient-accent",
+        "raw": "linear-gradient(135deg, hsl(16 90% 55%), hsl(30 90% 55%))",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--gradient-card",
+        "raw": "linear-gradient(145deg, hsl(0 0% 100%), hsl(210 20% 98%))",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-background",
+        "raw": "0 0% 100%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-foreground",
+        "raw": "215 25% 25%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-primary",
+        "raw": "215 90% 32%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-primary-foreground",
+        "raw": "0 0% 100%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-accent",
+        "raw": "210 25% 94%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-accent-foreground",
+        "raw": "215 25% 25%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-border",
+        "raw": "214 20% 88%",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--sidebar-ring",
+        "raw": "215 90% 32%",
+        "source": "src/index.css"
+      }
+    ],
+    "radius": [
+      {
+        "name": "--radius",
+        "raw": "0.75rem",
+        "source": "src/index.css"
+      }
+    ],
+    "shadow": [
+      {
+        "name": "--shadow-sm",
+        "raw": "0 2px 8px -2px hsla(215 90% 32% / 0.1)",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--shadow-md",
+        "raw": "0 8px 24px -8px hsla(215 90% 32% / 0.15)",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--shadow-lg",
+        "raw": "0 16px 48px -12px hsla(215 90% 32% / 0.2)",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--shadow-glow",
+        "raw": "0 0 40px hsla(16 90% 55% / 0.3)",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--shadow-card",
+        "raw": "0 4px 20px -4px hsla(215 25% 15% / 0.08)",
+        "source": "src/index.css"
+      }
+    ],
+    "other": [
+      {
+        "name": "--gradient-hero",
+        "raw": "linear-gradient(135deg, hsl(215 90% 25%), hsl(215 85% 35%), hsl(220 80% 40%))",
+        "source": "src/index.css"
+      },
+      {
+        "name": "--gradient-glass",
+        "raw": "linear-gradient(135deg, hsla(0 0% 100% / 0.9), hsla(210 20% 98% / 0.7))",
+        "source": "src/index.css"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "DeferredMount",
+      "file": "src/components/DeferredMount",
+      "import_path": "",
+      "is_default": true
+    },
+    {
+      "name": "HomeDirectAnswer",
+      "file": "src/components/HomeDirectAnswer",
+      "import_path": "",
+      "is_default": true
+    },
+    {
+      "name": "LazySection",
+      "file": "src/components/LazySection",
+      "import_path": "",
+      "is_default": true
+    }
+  ],
+  "assets": [
+    {
+      "file": "src/assets/blog/blog-bakery.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-booking-system.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-branding.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-email-marketing.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-florist.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-google-business.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-instant-lead-reply.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-lead-response-time.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-massage.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-mobile-first.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-nail-salon.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-nutritionist.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-pet-grooming.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-photography.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-redesign.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-reviews.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-seo-tips.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-social-media.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-speed.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-virtual-assistant.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-website-trends.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-wedding-planner.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-women-business.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog-yoga.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog1_hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog2_hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/blog3_hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/demo-blog-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/demo-blog-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/demo-blog-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/inline-analytics.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/inline-content-strategy.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/inline-tradesman-digital.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/blog/inline-wireframe.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/calculator-preview.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-airfryer.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-airpurifier.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-bag.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-bands.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-brushset.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-diffuser.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-espresso.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-facebrush.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-fitnesstracker.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-headphones.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-jacket.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-ledbulb.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-massagegun.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-scarf.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-serum.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-smartwatch.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-sneakers.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-speaker.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-sunglasses.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-tablet.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-treadmill.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-vacuum.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-webcam.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/eshop/product-yogamat.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/fastmedia-launch.mp4.asset.json",
+      "kind": "video",
+      "format": "mp4",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/launch-rocket.png",
+      "kind": "image",
+      "format": "png"
+    },
+    {
+      "file": "src/assets/launch-sky-moonlit.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/launch-sky.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/logo.jpeg",
+      "kind": "logo",
+      "format": "jpeg"
+    },
+    {
+      "file": "src/assets/offer/case-building.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/offer/case-eshop.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/offer/case-plumbing.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/offer/case-salon.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/expert-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/expert-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/expert-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/jitka-listanska.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-auto-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-auto-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-auto-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-beauty-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-beauty-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-beauty-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-business-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-business-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-business-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-construction-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-construction-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-construction-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-creative-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-creative-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-creative-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-education-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-education-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-education-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-fitness-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-fitness-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-fitness-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-food-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-food-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-food-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-medical-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-medical-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/team-medical-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/team/tereza-novakova.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/accounting-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/autorepair-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/bakery-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/beautysalon-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/builder-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/carpenter-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/catering-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/childcare-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/cleaning-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/dental-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/drivingschool-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/drywall-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/electrician-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/eshop-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/exterior-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/fitness-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/florist-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/autorepair-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/autorepair-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/autorepair-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/autorepair-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/autorepair-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/autorepair-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/beautysalon-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/beautysalon-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/beautysalon-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/beautysalon-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/beautysalon-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/beautysalon-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/building-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/building-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/building-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/building-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/building-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/building-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/carpentry-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/carpentry-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/carpentry-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/carpentry-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/carpentry-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/carpentry-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/catering-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/catering-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/catering-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/catering-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/catering-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/catering-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/cleaning-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/cleaning-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/cleaning-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/cleaning-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/cleaning-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/cleaning-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/drywall-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/drywall-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/drywall-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/drywall-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/drywall-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/drywall-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/electrical-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/electrical-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/electrical-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/electrical-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/electrical-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/electrical-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/exterior-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/exterior-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/exterior-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/exterior-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/exterior-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/exterior-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/fitness-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/fitness-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/fitness-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/fitness-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/fitness-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/fitness-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/gardening-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/gardening-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/gardening-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/gardening-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/gardening-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/gardening-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heating-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heating-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heating-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heating-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heating-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heating-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heatpumps-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heatpumps-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heatpumps-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heatpumps-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heatpumps-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/heatpumps-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/interior-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/interior-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/interior-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/interior-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/interior-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/interior-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/itservices-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/itservices-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/itservices-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/itservices-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/itservices-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/itservices-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/locksmith-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/locksmith-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/locksmith-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/locksmith-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/locksmith-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/locksmith-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/moving-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/moving-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/moving-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/moving-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/moving-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/moving-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/painting-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/painting-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/painting-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/painting-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/painting-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/painting-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/pestcontrol-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/pestcontrol-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/pestcontrol-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/pestcontrol-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/pestcontrol-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/pestcontrol-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/photography-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/photography-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/photography-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/photography-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/photography-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/photography-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/plumbing-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/plumbing-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/plumbing-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/plumbing-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/plumbing-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/plumbing-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/roofing-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/roofing-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/roofing-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/roofing-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/roofing-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/roofing-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/solar-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/solar-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/solar-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/solar-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/solar-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/solar-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/wells-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/wells-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/wells-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/wells-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/wells-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/wells-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/womeninbusiness-1.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/womeninbusiness-2.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/womeninbusiness-3.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/womeninbusiness-4.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/womeninbusiness-5.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gallery/womeninbusiness-6.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/gardener-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/handmade-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/heating-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/heatpump-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/interior-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/itservices-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/laundry-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/locksmith-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/massage-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/moving-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/musicschool-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/nailsalon-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/nutritionist-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/painter-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/pestcontrol-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/petgrooming-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/photography-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/plumber-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/realestate-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/roofer-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/security-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/solar-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/tattoo-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/translation-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/veterinary-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/virtualassistant-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/weddingplanner-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/wells-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/womeninbusiness-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/trades/yoga-hero.jpg",
+      "kind": "image",
+      "format": "jpg"
+    }
+  ]
+}
