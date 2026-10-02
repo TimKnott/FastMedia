@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
@@ -520,7 +520,7 @@
       "src/data/performanceBlogPosts.ts": "53594eb67cd9bf7ca35ada922b5f1851",
       "src/data/reviews.ts": "70a8c3ef169f09f6419ea3291b6b7fca",
       "src/data/serviceLandings.ts": "efd995337864f45f1b314ee351ee7338",
-      "src/data/showcaseSites.ts": "8394a77954a29003ddea34d2d579705f",
+      "src/data/showcaseSites.ts": "799e03da3a3a7be16f72a73a3b882538",
       "src/data/sitemap.ts": "59a52dfffbe17fdb4048b4c31fe4a4a7",
       "src/data/tradeFaqs.ts": "5e26c45b62c872fda52e8a367e7e5023",
       "src/data/tradeGalleryImages.ts": "aeacb1021bd296636e6e9d9269910bcc",
