@@ -48,7 +48,6 @@ const BlogShareBar = ({ url, title, excerpt, language }: BlogShareBarProps) => {
     { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
     { name: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${u}` },
     { name: 'X', href: `https://twitter.com/intent/tweet?text=${ti}&url=${u}` },
-    { name: 'Messenger', href: `https://www.facebook.com/dialog/send?link=${u}&app_id=291494419107518&redirect_uri=${u}` },
     { name: 'Telegram', href: `https://t.me/share/url?url=${u}&text=${ti}` },
     { name: 'Reddit', href: `https://www.reddit.com/submit?url=${u}&title=${ti}` },
     { name: 'Pinterest', href: `https://pinterest.com/pin/create/button/?url=${u}&description=${ti}` },
