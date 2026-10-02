@@ -31,7 +31,7 @@ const ShowcaseCarousel = () => {
           {loop.map((site, i) => (
             <li key={`${site.name}-${i}`} aria-hidden={i >= showcaseSites.length} className="w-64 shrink-0 sm:w-72">
               <a
-                href={SHOWCASE_HUB_URL}
+                href={site.url}
                 target="_blank"
                 rel="noopener"
                 tabIndex={i >= showcaseSites.length ? -1 : 0}
