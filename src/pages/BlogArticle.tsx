@@ -15,6 +15,7 @@ import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import BlogAudioCTA from '@/components/blog/BlogAudioCTA';
 import { usePublishedBlogPosts } from '@/hooks/usePublishedBlogPosts';
+import { toast } from 'sonner';
 
 
 type Language = 'cs' | 'en' | 'de';
@@ -174,6 +175,50 @@ const BlogArticle = () => {
     back: { cs: 'Zpět na blog', en: 'Back to blog', de: 'Zurück zum Blog' },
     related: { cs: 'Související články', en: 'Related Articles', de: 'Verwandte Artikel' },
     share: { cs: 'Sdílet', en: 'Share', de: 'Teilen' },
+    linkCopied: { cs: 'Odkaz na článek byl zkopírován.', en: 'Article link copied.', de: 'Artikellink kopiert.' },
+    shareFailed: {
+      cs: 'Sdílení se nepodařilo. Zkopírujte adresu z prohlížeče.',
+      en: 'Sharing failed. Please copy the address from your browser.',
+      de: 'Teilen fehlgeschlagen. Bitte kopieren Sie die Adresse aus dem Browser.',
+    },
+  };
+
+  const shareArticle = async () => {
+    const url = `https://www.fastmedia.pro/blog/${encodeURIComponent(post.slug)}`;
+    const shareData = {
+      title: post.title[language],
+      text: post.excerpt[language],
+      url,
+    };
+
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+      }
+    }
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const input = document.createElement('textarea');
+        input.value = url;
+        input.setAttribute('readonly', '');
+        input.style.position = 'fixed';
+        input.style.opacity = '0';
+        document.body.appendChild(input);
+        input.select();
+        const copied = document.execCommand('copy');
+        input.remove();
+        if (!copied) throw new Error('Copy command failed');
+      }
+      toast.success(labels.linkCopied[language]);
+    } catch {
+      toast.error(labels.shareFailed[language]);
+    }
   };
 
   return (
@@ -363,7 +408,7 @@ const BlogArticle = () => {
                   variant="outline"
                   size="sm"
                   className="gap-2"
-                  onClick={() => navigator.clipboard?.writeText(window.location.href)}
+                  onClick={shareArticle}
                 >
                   <Share2 className="w-4 h-4" />
                   {labels.share[language]}
