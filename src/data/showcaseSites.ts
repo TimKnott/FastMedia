@@ -13,17 +13,19 @@ export const SHOWCASE_HUB_URL = 'https://myname.co.uk';
 export interface ShowcaseSite {
   name: string;
   image: string;
+  /** The site's own address on the myname.co.uk showcase. */
+  url: string;
 }
 
 /** Approved, published sites shown in the homepage carousel. Add new entries after approval. */
 export const showcaseSites: ShowcaseSite[] = [
-  { name: 'Calcurly calculators', image: calcurly.url },
-  { name: 'The Progenitors', image: progenitors.url },
-  { name: 'Expat Help Online', image: expathelp.url },
-  { name: 'BuddyChip Reimagined', image: buddychip.url },
-  { name: 'English Ride With Jitty', image: jitty.url },
-  { name: 'MiniBRIC Connect', image: minibric.url },
-  { name: 'AI classifieds', image: classifieds.url },
-  { name: 'Pink Pony Club', image: pinkpony.url },
-  { name: 'Growth Report Pro', image: growthreport.url },
+  { name: 'Calcurly calculators', image: calcurly.url, url: 'https://calcurly.myname.co.uk' },
+  { name: 'The Progenitors', image: progenitors.url, url: 'https://progenitors.myname.co.uk' },
+  { name: 'Expat Help Online', image: expathelp.url, url: 'https://expathelp.myname.co.uk' },
+  { name: 'BuddyChip Reimagined', image: buddychip.url, url: 'https://buddychip.myname.co.uk' },
+  { name: 'English Ride With Jitty', image: jitty.url, url: 'https://jitty.myname.co.uk' },
+  { name: 'MiniBRIC Connect', image: minibric.url, url: 'https://minibrics.myname.co.uk' },
+  { name: 'AI classifieds', image: classifieds.url, url: 'https://classifieds.myname.co.uk' },
+  { name: 'Pink Pony Club', image: pinkpony.url, url: 'https://pinkpony.myname.co.uk' },
+  { name: 'Growth Report Pro', image: growthreport.url, url: 'https://growthreport.myname.co.uk' },
 ];
