@@ -14,6 +14,164 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_campaigns: {
+        Row: {
+          active: boolean
+          created_at: string
+          ends_at: string | null
+          id: string
+          kind: string
+          name: string
+          priority: number
+          starts_at: string | null
+          target_domains: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          kind?: string
+          name: string
+          priority?: number
+          starts_at?: string | null
+          target_domains?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          kind?: string
+          name?: string
+          priority?: number
+          starts_at?: string | null
+          target_domains?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ad_creatives: {
+        Row: {
+          active: boolean
+          alt_text: string | null
+          campaign_id: string
+          click_url: string | null
+          created_at: string
+          html: string | null
+          id: string
+          image_url: string | null
+          type: string
+          zone_id: string
+        }
+        Insert: {
+          active?: boolean
+          alt_text?: string | null
+          campaign_id: string
+          click_url?: string | null
+          created_at?: string
+          html?: string | null
+          id?: string
+          image_url?: string | null
+          type?: string
+          zone_id: string
+        }
+        Update: {
+          active?: boolean
+          alt_text?: string | null
+          campaign_id?: string
+          click_url?: string | null
+          created_at?: string
+          html?: string | null
+          id?: string
+          image_url?: string | null
+          type?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_creatives_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_creatives_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_events: {
+        Row: {
+          created_at: string
+          creative_id: string | null
+          domain: string | null
+          event: string
+          id: number
+          zone_slug: string | null
+        }
+        Insert: {
+          created_at?: string
+          creative_id?: string | null
+          domain?: string | null
+          event: string
+          id?: number
+          zone_slug?: string | null
+        }
+        Update: {
+          created_at?: string
+          creative_id?: string | null
+          domain?: string | null
+          event?: string
+          id?: number
+          zone_slug?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_events_creative_id_fkey"
+            columns: ["creative_id"]
+            isOneToOne: false
+            referencedRelation: "ad_creatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_zones: {
+        Row: {
+          active: boolean
+          created_at: string
+          height: number | null
+          id: string
+          name: string
+          slug: string
+          width: number | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          height?: number | null
+          id?: string
+          name: string
+          slug: string
+          width?: number | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          height?: number | null
+          id?: string
+          name?: string
+          slug?: string
+          width?: number | null
+        }
+        Relationships: []
+      }
       attendance: {
         Row: {
           check_in: string | null
@@ -4458,6 +4616,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      log_ad_event: {
+        Args: {
+          _creative: string
+          _domain: string
+          _event: string
+          _zone: string
+        }
+        Returns: undefined
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -4474,6 +4641,19 @@ export type Database = {
           message: Json
           msg_id: number
           read_ct: number
+        }[]
+      }
+      serve_ad: {
+        Args: { _domain: string; _zone: string }
+        Returns: {
+          alt_text: string
+          click_url: string
+          creative_id: string
+          height: number
+          html: string
+          image_url: string
+          type: string
+          width: number
         }[]
       }
       set_email_queue_service_key: {
