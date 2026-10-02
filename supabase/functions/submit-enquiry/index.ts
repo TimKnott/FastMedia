@@ -72,6 +72,14 @@ Deno.serve(async (req) => {
 
   if (sessionKey) details.Session = sessionKey
 
+  // Portfolio sites post here too: record which website the enquiry came from.
+  const origin = req.headers.get('origin') || req.headers.get('referer') || ''
+  let sourceHost = ''
+  try { sourceHost = origin ? new URL(origin).hostname.replace(/^www\./, '') : '' } catch { /* ignore */ }
+  if (sourceHost && sourceHost !== 'fastmedia.pro') details['Source website'] = sourceHost.slice(0, 120)
+  const requestType = str(body.type, 40)
+  if (requestType) details['Request type'] = requestType
+
   const row = {
     kind,
     name: safeName,
