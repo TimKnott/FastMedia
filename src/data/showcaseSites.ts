@@ -13,19 +13,19 @@ export const SHOWCASE_HUB_URL = 'https://myname.co.uk';
 export interface ShowcaseSite {
   name: string;
   image: string;
-  /** The site's case-study page on the myname.co.uk showcase (/work/:slug). */
+  /** The site's live address. Switch to its myname.co.uk showcase page once that page exists. */
   url: string;
 }
 
 /** Approved, published sites shown in the homepage carousel. Add new entries after approval. */
 export const showcaseSites: ShowcaseSite[] = [
-  { name: 'Calcurly calculators', image: calcurly.url, url: 'https://myname.co.uk/work/calcurly' },
-  { name: 'The Progenitors', image: progenitors.url, url: 'https://myname.co.uk/work/progenitors' },
-  { name: 'Expat Help Online', image: expathelp.url, url: 'https://myname.co.uk/work/expathelp' },
-  { name: 'BuddyChip Reimagined', image: buddychip.url, url: 'https://myname.co.uk/work/buddychip' },
-  { name: 'English Ride With Jitty', image: jitty.url, url: 'https://myname.co.uk/work/jitty' },
-  { name: 'MiniBRIC Connect', image: minibric.url, url: 'https://myname.co.uk/work/minibrics' },
-  { name: 'AI classifieds', image: classifieds.url, url: 'https://myname.co.uk/work/classifieds' },
-  { name: 'Pink Pony Club', image: pinkpony.url, url: 'https://myname.co.uk/work/pinkpony' },
-  { name: 'Growth Report Pro', image: growthreport.url, url: 'https://myname.co.uk/work/growthreport' },
+  { name: 'Calcurly calculators', image: calcurly.url, url: 'https://convert-and-calculate.lovable.app' },
+  { name: 'The Progenitors', image: progenitors.url, url: 'https://theprogenitors.lovable.app' },
+  { name: 'Expat Help Online', image: expathelp.url, url: 'https://expathelp.lovable.app' },
+  { name: 'BuddyChip Reimagined', image: buddychip.url, url: 'https://find-my-buddy-magic.lovable.app' },
+  { name: 'English Ride With Jitty', image: jitty.url, url: 'https://englishridewithjitty.lovable.app' },
+  { name: 'MiniBRIC Connect', image: minibric.url, url: 'https://minibrick-connect-africa.lovable.app' },
+  { name: 'AI classifieds', image: classifieds.url, url: 'https://aiclassifiedseu.lovable.app' },
+  { name: 'Pink Pony Club', image: pinkpony.url, url: 'https://stable-heart-of-nature.lovable.app' },
+  { name: 'Growth Report Pro', image: growthreport.url, url: 'https://emerald-edge-advisor.lovable.app' },
 ];
