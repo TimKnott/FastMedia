@@ -184,6 +184,25 @@ const OfferTeaser = () => {
                   <Link to="/launch">Launch film <Play className="h-4 w-4" /></Link>
                 </Button>
               </motion.div>
+
+              <ul aria-label={copy.servicesAria} className="mt-8 grid max-w-3xl grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+                {services.slice(0, 4).map((service, index) => (
+                  <motion.li
+                    key={service.slug}
+                    initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 14, filter: 'blur(8px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{ delay: reduceMotion ? 0 : 1 + index * 0.15, duration: 0.8, ease: 'easeOut' }}
+                  >
+                    <Link
+                      to={`/service/${service.slug}`}
+                      className="flex h-full items-center gap-2 rounded-full border border-launch-border bg-launch-surface-strong px-4 py-2.5 text-xs font-semibold text-launch-foreground shadow-lg backdrop-blur-md transition-colors hover:border-launch-accent hover:bg-launch-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
+                    >
+                      <service.icon className="h-4 w-4 shrink-0 text-launch-accent" aria-hidden="true" />
+                      <span>{service[lang]}</span>
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
             </motion.div>
           ) : (
             <motion.div
