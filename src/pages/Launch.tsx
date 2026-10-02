@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useReducedMotion } from 'framer-motion';
 import { ArrowRight, CalendarDays, Film, Newspaper, Rocket } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -21,6 +22,10 @@ const getNextMonth = () => {
 };
 
 const Launch = () => {
+  const systemReducedMotion = useReducedMotion();
+  const [toolbarReducedMotion, setToolbarReducedMotion] = useState(() =>
+    typeof document !== 'undefined' && document.documentElement.classList.contains('a11y-reduced-motion'),
+  );
   const target = useMemo(getNextMonth, []);
   const [remaining, setRemaining] = useState(() => Math.max(0, target.getTime() - Date.now()));
 
@@ -28,6 +33,17 @@ const Launch = () => {
     const timer = window.setInterval(() => setRemaining(Math.max(0, target.getTime() - Date.now())), 1000);
     return () => window.clearInterval(timer);
   }, [target]);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const observer = new MutationObserver(() => {
+      setToolbarReducedMotion(html.classList.contains('a11y-reduced-motion'));
+    });
+    observer.observe(html, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const reduceMotion = Boolean(systemReducedMotion || toolbarReducedMotion);
 
   const totalSeconds = Math.floor(remaining / 1000);
   const countdown = [
@@ -45,9 +61,12 @@ const Launch = () => {
       <ScrollToTop />
       <main>
         <section className="relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground">
-          <video autoPlay muted loop playsInline preload="metadata" poster={launchSky} className="absolute inset-0 h-full w-full object-cover" aria-label="FastMedia rocket launch film">
-            <source src={launchVideo.url} type="video/mp4" />
-          </video>
+          <img decoding="async" src={launchSky} alt="A moonlit starry sky glowing above a distant sunset" width={1920} height={1088} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" />
+          {!reduceMotion && (
+            <video autoPlay muted loop playsInline preload="metadata" poster={launchSky} className="absolute inset-0 h-full w-full object-cover" aria-label="FastMedia rocket launch film">
+              <source src={launchVideo.url} type="video/mp4" />
+            </video>
+          )}
           <div className="launch-hero__shade absolute inset-0" />
           <div className="launch-hero__vignette absolute inset-0" />
           <div className="launch-smoke-bank" aria-hidden="true">

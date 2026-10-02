@@ -112,7 +112,7 @@ const OfferTeaser = () => {
       className="launch-hero relative min-h-[92svh] overflow-hidden bg-launch text-launch-foreground"
     >
       <img decoding="async" src={launchSky} alt={copy.alt} width={1920} height={1088} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-[62%_center]" />
-      {!reduceMotion && <video autoPlay muted loop playsInline preload="metadata" poster={launchSky} className="absolute inset-0 h-full w-full object-cover object-[62%_center]" aria-label={copy.aria}><source src={launchVideo.url} type="video/mp4" /></video>}
+      {!lite && <video autoPlay muted loop playsInline preload="metadata" poster={launchSky} className="absolute inset-0 h-full w-full object-cover object-[62%_center]" aria-label={copy.aria}><source src={launchVideo.url} type="video/mp4" /></video>}
       <div className="launch-hero__shade absolute inset-0" />
       <div className="launch-hero__vignette absolute inset-0" />
       <div className="launch-stars absolute inset-0" aria-hidden="true" />
@@ -122,7 +122,7 @@ const OfferTeaser = () => {
         {Array.from({ length: 18 }, (_, index) => <span key={index} style={{ '--smoke-index': index, '--smoke-left': `${(index % 9) * 12 - 10}%`, '--smoke-bottom': `${-10 + (index % 3) * 8}%`, '--smoke-drift': `${index % 2 === 0 ? -8 : 8}%` } as React.CSSProperties} />)}
       </div>
 
-      <div className="container relative z-10 mx-auto flex min-h-[92svh] items-center px-5 pb-24 pt-28 sm:px-8 lg:px-12">
+      <div className="container relative z-20 mx-auto flex min-h-[92svh] items-center px-5 pb-24 pt-28 sm:px-8 lg:px-12">
         <AnimatePresence mode="wait">
           {scene === 0 ? (
             <motion.div
