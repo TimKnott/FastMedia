@@ -13,11 +13,11 @@ const LanguageSwitcher = ({ className, triggerClassName }: LanguageSwitcherProps
 
   return (
     <div
-      className={cn('inline-flex h-9 items-center rounded-md border border-border bg-background/70 p-0.5', className)}
+      className={cn('inline-flex h-8 sm:h-9 items-center rounded-md border border-border bg-background/70 p-0.5', className)}
       role="group"
       aria-label={language === 'cs' ? 'Výběr jazyka' : 'Language selection'}
     >
-      <Languages className="mx-1.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+      <Languages className="mx-1 sm:mx-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" aria-hidden="true" />
       {(['cs', 'en'] as const).map((option) => {
         const active = language === option;
         const label = option === 'cs' ? 'CZ' : 'EN';
@@ -30,7 +30,7 @@ const LanguageSwitcher = ({ className, triggerClassName }: LanguageSwitcherProps
             aria-label={accessibleLabel}
             aria-pressed={active}
             className={cn(
-              'h-7 min-w-9 rounded px-2 text-xs font-semibold transition-colors',
+              'h-6 sm:h-7 min-w-8 sm:min-w-9 rounded px-1.5 sm:px-2 text-[11px] sm:text-xs font-semibold transition-colors',
               active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground',
               triggerClassName,
             )}
