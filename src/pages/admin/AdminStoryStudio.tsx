@@ -168,7 +168,7 @@ const AdminStoryStudio = () => {
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
-        <h1 className="text-2xl font-bold font-heading flex items-center gap-2"><BookOpenText className="w-6 h-6" /> Story Studio</h1>
+        <h1 className="text-2xl font-bold font-heading flex items-center gap-2"><BookOpenText className="w-6 h-6" /> Freytag's Pyramid</h1>
         <p className="text-sm text-muted-foreground mt-1">LinkedIn story posts in 8–12 short lines, written only from your own answers. Nothing is ever posted automatically — you approve every post, then choose where to share it. Back office only.</p>
       </div>
 

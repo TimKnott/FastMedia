@@ -109,7 +109,7 @@ export const contentItems: MenuItem[] = [
   { titleKey: 'admin.homepage', url: '/admin/landing-page', icon: Home, minRole: 'editor' },
   { titleKey: 'admin.demo_pages', url: '/admin/demos', icon: Palette, minRole: 'editor' },
   { titleKey: 'admin.blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
-  { titleKey: 'Story Studio', url: '/admin/story-studio', icon: BookOpen, minRole: 'admin' },
+  { titleKey: "Freytag's Pyramid", url: '/admin/story-studio', icon: BookOpen, minRole: 'admin' },
   { titleKey: 'TTS Test Lab', url: '/admin/tts-test', icon: Volume2, minRole: 'admin' },
   { titleKey: 'admin.media', url: '/admin/media', icon: ImageIcon, minRole: 'editor' },
   { titleKey: 'admin.seo', url: '/admin/seo', icon: Search, minRole: 'super_admin' },
