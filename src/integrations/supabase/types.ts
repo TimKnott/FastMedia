@@ -2510,6 +2510,69 @@ export type Database = {
         }
         Relationships: []
       }
+      linkedin_stories: {
+        Row: {
+          angle: string | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          draft: Json | null
+          episode: number | null
+          id: string
+          notes: string | null
+          planned_date: string | null
+          post: string | null
+          posted_on: Json
+          purpose: string | null
+          questions: Json
+          status: string
+          story_type: string
+          suggested_hook: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          angle?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          draft?: Json | null
+          episode?: number | null
+          id?: string
+          notes?: string | null
+          planned_date?: string | null
+          post?: string | null
+          posted_on?: Json
+          purpose?: string | null
+          questions?: Json
+          status?: string
+          story_type?: string
+          suggested_hook?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          angle?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          draft?: Json | null
+          episode?: number | null
+          id?: string
+          notes?: string | null
+          planned_date?: string | null
+          post?: string | null
+          posted_on?: Json
+          purpose?: string | null
+          questions?: Json
+          status?: string
+          story_type?: string
+          suggested_hook?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
