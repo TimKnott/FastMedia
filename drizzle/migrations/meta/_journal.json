@@ -15,6 +15,13 @@
       "when": 1791020289100,
       "tag": "0001_linkedin_story_studio",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791026933406,
+      "tag": "0002_calculator_modules_packages_requests",
+      "breakpoints": true
     }
   ]
 }
