@@ -75,6 +75,12 @@ serve(async (req) => {
         body = `New subscriber: ${subscriberEmail}\n\nView in admin: https://www.fastmedia.pro/admin/newsletter`;
         break;
       }
+      case "module_request": {
+        const { trade, summary, range, contact } = data;
+        subject = `💡 New module idea from the calculator — ${trade || "unknown trade"}`;
+        body = `${summary}\n\nRough range: ${range}\nContact: ${contact}\n\nReview: https://www.fastmedia.pro/admin/module-requests`;
+        break;
+      }
       default: {
         subject = `FastMedia.Pro Notification`;
         body = JSON.stringify(data, null, 2);
