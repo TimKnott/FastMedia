@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Check, Calculator, CreditCard } from 'lucide-react';
+import { Check, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import EditableText from '@/components/EditableText';
@@ -59,18 +59,6 @@ const PricingSection = () => {
   const fmt = (n: number) => `${n.toLocaleString('cs-CZ')} Kč`;
 
   const viewPackage = (slug: string) => navigate(`/package/${slug}`);
-
-  const buyPackage = (tier: PricingTierExt) => {
-    if (!tier.priceId) {
-      navigate(`/package/${tier.slug}`);
-      return;
-    }
-    openCheckout({
-      priceId: tier.priceId,
-      source: 'package',
-      title: `${t(tier.nameKey)} \u2014 ${t(tier.priceKey)}`,
-    });
-  };
 
   return (
     <section id="pricing" className="py-20 lg:py-32 bg-secondary/30">
