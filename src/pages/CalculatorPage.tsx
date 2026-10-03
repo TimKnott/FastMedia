@@ -1298,96 +1298,17 @@ const CalculatorPage = () => {
                   <h2 className="font-display text-2xl font-bold text-foreground mb-2">{l.specialTitle}</h2>
                   <p className="text-muted-foreground text-sm mb-6">{l.canChange}</p>
 
-                  {/* Idea prompts */}
-                  <div className="mb-5">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
-                      {lang === 'cs' ? '💡 Nápady k vyzkoušení' : lang === 'de' ? '💡 Ideen zum Ausprobieren' : '💡 Ideas to try'}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {getTradePrompts(selectedTrade, lang).map((prompt) => (
-                        <motion.button
-                          key={prompt}
-                          whileHover={{ scale: 1.03 }}
-                          whileTap={{ scale: 0.97 }}
-                          onClick={() => setSpecialRequest(prompt)}
-                          className="text-xs px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors"
-                        >
-                          {prompt}
-                        </motion.button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="relative">
-                    <Input
-                      value={specialRequest}
-                      onChange={e => setSpecialRequest(e.target.value)}
-                      placeholder={l.specialPlaceholder}
-                      className="pr-20 h-14 text-base"
-                    />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={toggleVoice}
-                        className={`h-10 w-10 ${isListening ? 'text-destructive animate-pulse' : 'text-muted-foreground'}`}
-                      >
-                        {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                      </Button>
-                    </div>
-                  </div>
-                  {isListening && (
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-xs text-destructive mt-2 flex items-center gap-1"
-                    >
-                      <span className="inline-block w-2 h-2 bg-destructive rounded-full animate-pulse" />
-                      {l.voiceHint}
-                    </motion.p>
-                  )}
-                  <Button
-                    onClick={submitSpecialRequest}
-                    disabled={!specialRequest.trim() || isLoadingAI}
-                    className="mt-4"
-                  >
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    {isLoadingAI ? '...' : l.askSpecial}
-                  </Button>
-
-                  {specialResponse && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-6 p-5 rounded-xl bg-card border border-border shadow-card"
-                    >
-                      <p className="text-sm text-foreground whitespace-pre-wrap">{specialResponse.suggestion}</p>
-                      {specialResponse.alternativeFeatures?.length > 0 && (
-                        <div className="mt-4">
-                          <p className="text-xs font-semibold text-muted-foreground mb-2">
-                            {lang === 'cs' ? 'Doporučené alternativy:' : 'Recommended alternatives:'}
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {specialResponse.alternativeFeatures.map((fId: string) => {
-                              const feature = getFeatureById(fId);
-                              if (!feature) return null;
-                              return (
-                                <Button
-                                  key={fId}
-                                  size="sm"
-                                  variant={isSelected(fId) ? 'default' : 'outline'}
-                                  onClick={() => toggleFeature(fId)}
-                                  className="text-xs"
-                                >
-                                  {feature.icon} {feature[nameKey]}
-                                </Button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </motion.div>
-                  )}
+                  <ModuleAdvisor
+                    trade={selectedTrade}
+                    selectedModules={selectedFeatures.map(f => f.id)}
+                    modules={calculatorFeatures}
+                    ideaPrompts={getTradePrompts(selectedTrade, lang)}
+                    contactName={contactName}
+                    contactEmail={contactEmail}
+                    isSelected={isSelected}
+                    onToggleModule={toggleFeature}
+                    onSummary={(summary) => setSpecialRequest(summary)}
+                  />
                 </div>
               )}
 
