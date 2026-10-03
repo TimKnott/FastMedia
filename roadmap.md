@@ -115,3 +115,6 @@
 - [ ] Google verification: myname.co.uk serves wrong tag (_11_pqF...) — user must replace it with sRfE5PEcxkOW5-SQPcDfgMTGct7_zGOV3Z_cwNDVRPY in the myname project's own chat, then publish there
 - [ ] FastMedia: new tag sRfE5... added to index.html — needs Release version, then Verify in Google for fastmedia.pro
 - [ ] AdSense: still waiting on ca-pub publisher ID before ads.txt / ad code can be added
+
+- [ ] Pricing: calculator as single source, packages preselect modules, AI module advisor, admin Modules + Module requests
+- [ ] Homepage review: whitespace/clutter and section order advice (after pricing)
