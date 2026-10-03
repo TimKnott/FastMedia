@@ -14,7 +14,7 @@ export const DEFAULT_PACKAGES: CalculatorPackage[] = [
 
 type ModuleRow = {
   id: string; icon: string; name_en: string; name_cs: string; desc_en: string; desc_cs: string;
-  one_time_price: number; monthly_price: number; labor_hours: number; category: CalculatorFeature['category'];
+  one_time_price: number; monthly_price: number; labor_hours: number; category: string;
   allow_multiple: boolean; active: boolean; sort_order: number;
 };
 
@@ -22,7 +22,7 @@ export const rowToFeature = (r: ModuleRow): CalculatorFeature => ({
   id: r.id, icon: r.icon, nameEn: r.name_en, nameCs: r.name_cs || r.name_en, nameDe: r.name_en,
   descEn: r.desc_en, descCs: r.desc_cs || r.desc_en, descDe: r.desc_en,
   oneTimePrice: r.one_time_price, monthlyPrice: r.monthly_price, laborHours: Number(r.labor_hours),
-  category: r.category, allowMultiple: r.allow_multiple,
+  category: r.category as CalculatorFeature['category'], allowMultiple: r.allow_multiple,
 });
 
 export const featureToRow = (f: CalculatorFeature, i: number) => ({
