@@ -112,3 +112,6 @@
 - [ ] Connect myname.co.uk from Namecheap and preserve isolation from FastMedia
 - [ ] Add each publication under a clean showcase address as it becomes available
 - [ ] Replace or redirect the website currently served on myname.co.uk — BLOCKED: user must confirm whether it should be kept elsewhere
+- [ ] Google verification: myname.co.uk serves wrong tag (_11_pqF...) — user must replace it with sRfE5PEcxkOW5-SQPcDfgMTGct7_zGOV3Z_cwNDVRPY in the myname project's own chat, then publish there
+- [ ] FastMedia: new tag sRfE5... added to index.html — needs Release version, then Verify in Google for fastmedia.pro
+- [ ] AdSense: still waiting on ca-pub publisher ID before ads.txt / ad code can be added
