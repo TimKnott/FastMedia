@@ -65,7 +65,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
         <p className="text-sm text-muted-foreground">{caseField(item, 'summary', language)}</p>
 
         {!compact && caseField(item, 'body', language) && (
-          <p className="text-sm text-muted-foreground">{caseField(item, 'body', language)}</p>
+          <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{caseField(item, 'body', language)}</p>
         )}
 
         {item.stats.length > 0 && (
