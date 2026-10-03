@@ -19,8 +19,9 @@ import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useCalculatorModules } from '@/hooks/useCalculatorModules';
+import ModuleAdvisor from '@/components/ModuleAdvisor';
 import {
-  calculatorFeatures,
   BASE_WEBSITE_PRICE,
   BASE_HOSTING_PRICE,
   LABOR_RATE,
@@ -48,6 +49,7 @@ type SpeechRecognitionLike = {
 const CalculatorPage = () => {
   const { language, t } = useLanguage();
   const { openCheckout, checkoutElement } = useStripeCheckout();
+  const { modules: calculatorFeatures, packages } = useCalculatorModules();
   const [searchParams] = useSearchParams();
   const initialTrade = (() => {
     const q = searchParams.get('trade');
@@ -56,6 +58,15 @@ const CalculatorPage = () => {
   const [step, setStep] = useState<Step>(initialTrade ? 'features' : 'trade');
   const [selectedTrade, setSelectedTrade] = useState(initialTrade);
   const [selectedFeatures, setSelectedFeatures] = useState<SelectedFeature[]>([]);
+  const packageSlug = searchParams.get('package');
+  const [packageApplied, setPackageApplied] = useState(false);
+  useEffect(() => {
+    if (!packageSlug || packageApplied) return;
+    const pkg = packages.find(p => p.slug === packageSlug);
+    if (!pkg) return;
+    setSelectedFeatures(pkg.module_ids.filter(id => calculatorFeatures.some(f => f.id === id)).map(id => ({ id, quantity: 1 })));
+    setPackageApplied(true);
+  }, [packageSlug, packageApplied, packages, calculatorFeatures]);
   const [specialRequest, setSpecialRequest] = useState('');
   const [specialResponse, setSpecialResponse] = useState<SpecialResponse | null>(null);
   const [aiSuggestions, setAiSuggestions] = useState<AiSuggestion[]>([]);

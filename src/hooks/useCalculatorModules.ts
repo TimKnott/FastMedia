@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { calculatorFeatures, BASE_WEBSITE_PRICE, type CalculatorFeature } from '@/data/calculatorFeatures';
+import { calculatorFeatures, BASE_WEBSITE_PRICE, BASE_HOSTING_PRICE, LABOR_RATE, type CalculatorFeature } from '@/data/calculatorFeatures';
 
 export interface CalculatorPackage { slug: string; name: string; module_ids: string[]; sort_order: number }
 
@@ -50,7 +50,10 @@ export function useCalculatorModules() {
   return { modules: q.data?.modules ?? calculatorFeatures, packages: q.data?.packages ?? DEFAULT_PACKAGES, isLoading: q.isLoading };
 }
 
-/** One-off price of a package = base website + its modules, so packages and calculator always agree. */
+/** Package totals use the calculator's own formula, so a package and the calculator always agree. */
 export function packagePrice(pkg: CalculatorPackage, modules: CalculatorFeature[]) {
-  return pkg.module_ids.reduce((s, id) => s + (modules.find(m => m.id === id)?.oneTimePrice ?? 0), BASE_WEBSITE_PRICE);
+  const picked = pkg.module_ids.map(id => modules.find(m => m.id === id)).filter(Boolean) as CalculatorFeature[];
+  const oneTime = picked.reduce((s, m) => s + m.oneTimePrice + m.laborHours * LABOR_RATE, BASE_WEBSITE_PRICE);
+  const monthly = picked.reduce((s, m) => s + m.monthlyPrice, BASE_HOSTING_PRICE);
+  return { oneTime, monthly };
 }
