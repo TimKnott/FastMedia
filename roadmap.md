@@ -116,5 +116,5 @@
 - [ ] FastMedia: new tag sRfE5... added to index.html — needs Release version, then Verify in Google for fastmedia.pro
 - [ ] AdSense: still waiting on ca-pub publisher ID before ads.txt / ad code can be added
 
-- [ ] Pricing: calculator as single source, packages preselect modules, AI module advisor, admin Modules + Module requests
-- [ ] Homepage review: whitespace/clutter and section order advice (after pricing)
+- [x] Pricing: calculator as single source, packages preselect modules, AI module advisor, admin Modules + Module requests
+- [x] Homepage review: advice given (awaiting user go-ahead to apply)
