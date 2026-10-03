@@ -553,6 +553,84 @@ export type Database = {
           },
         ]
       }
+      calculator_modules: {
+        Row: {
+          active: boolean
+          allow_multiple: boolean
+          category: string
+          created_at: string
+          desc_cs: string
+          desc_en: string
+          icon: string
+          id: string
+          labor_hours: number
+          monthly_price: number
+          name_cs: string
+          name_en: string
+          one_time_price: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          allow_multiple?: boolean
+          category?: string
+          created_at?: string
+          desc_cs?: string
+          desc_en?: string
+          icon?: string
+          id: string
+          labor_hours?: number
+          monthly_price?: number
+          name_cs?: string
+          name_en: string
+          one_time_price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          allow_multiple?: boolean
+          category?: string
+          created_at?: string
+          desc_cs?: string
+          desc_en?: string
+          icon?: string
+          id?: string
+          labor_hours?: number
+          monthly_price?: number
+          name_cs?: string
+          name_en?: string
+          one_time_price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      calculator_packages: {
+        Row: {
+          module_ids: string[]
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          module_ids?: string[]
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          module_ids?: string[]
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       case_studies: {
         Row: {
           body_cs: string
@@ -2569,6 +2647,60 @@ export type Database = {
           story_type?: string
           suggested_hook?: string | null
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      module_requests: {
+        Row: {
+          admin_notes: string | null
+          contact_email: string | null
+          contact_name: string | null
+          conversation: Json
+          converted_module_id: string | null
+          covered_by: string[]
+          created_at: string
+          id: string
+          selected_modules: string[]
+          status: string
+          suggested_max: number | null
+          suggested_min: number | null
+          summary: string | null
+          trade: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          conversation?: Json
+          converted_module_id?: string | null
+          covered_by?: string[]
+          created_at?: string
+          id?: string
+          selected_modules?: string[]
+          status?: string
+          suggested_max?: number | null
+          suggested_min?: number | null
+          summary?: string | null
+          trade?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          conversation?: Json
+          converted_module_id?: string | null
+          covered_by?: string[]
+          created_at?: string
+          id?: string
+          selected_modules?: string[]
+          status?: string
+          suggested_max?: number | null
+          suggested_min?: number | null
+          summary?: string | null
+          trade?: string | null
           updated_at?: string
         }
         Relationships: []

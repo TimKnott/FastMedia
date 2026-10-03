@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Check, Calculator, CreditCard } from 'lucide-react';
+import { Check, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import LearnMoreModal from '@/components/LearnMoreModal';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
+import { useCalculatorModules, packagePrice } from '@/hooks/useCalculatorModules';
 
 interface PricingTier {
   slug: string;
@@ -50,20 +51,14 @@ const PricingSection = () => {
   const { getContent, invalidate } = useSiteContent();
   const { openCheckout, checkoutElement } = useStripeCheckout();
   const lang = language as 'cs' | 'en' | 'de';
+  const { modules, packages } = useCalculatorModules();
+  const priceFor = (slug: string) => {
+    const pkg = packages.find(p => p.slug === slug);
+    return pkg ? packagePrice(pkg, modules) : null;
+  };
+  const fmt = (n: number) => `${n.toLocaleString('cs-CZ')} Kč`;
 
   const viewPackage = (slug: string) => navigate(`/package/${slug}`);
-
-  const buyPackage = (tier: PricingTierExt) => {
-    if (!tier.priceId) {
-      navigate(`/package/${tier.slug}`);
-      return;
-    }
-    openCheckout({
-      priceId: tier.priceId,
-      source: 'package',
-      title: `${t(tier.nameKey)} \u2014 ${t(tier.priceKey)}`,
-    });
-  };
 
   return (
     <section id="pricing" className="py-20 lg:py-32 bg-secondary/30">
@@ -129,10 +124,16 @@ const PricingSection = () => {
                 </p>
 
                 <div className="mb-6">
+                  {(() => { const p = priceFor(tier.slug); return p ? (<>
+                  <span className={`text-xs uppercase tracking-wider ${tier.popular ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>From</span>
+                  <span className="block text-3xl font-display font-bold">{fmt(p.oneTime)}</span>
+                  <div className={`text-xs mt-1 ${tier.popular ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                    + {t('pricing.hosting.label')}: <span className="font-semibold">{fmt(p.monthly)}/month</span>
+                  </div></>) : (<>
                   <span className="text-3xl font-display font-bold">{t(tier.priceKey)}</span>
                   <div className={`text-xs mt-1 ${tier.popular ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                     + {t('pricing.hosting.label')}: <span className="font-semibold">{t(tier.hostingKey)}</span>
-                  </div>
+                  </div></>); })()}
                 </div>
 
                 <ul className="space-y-3 mb-8 flex-1">
@@ -145,24 +146,14 @@ const PricingSection = () => {
                 </ul>
 
                 <div className="space-y-2">
-                  {tier.priceId ? (
-                    <Button
-                      onClick={() => buyPackage(tier)}
-                      variant={tier.popular ? 'secondary' : 'default'}
-                      className="w-full font-semibold gap-2"
-                    >
-                      <CreditCard className="w-4 h-4" />
-                      {t('pricing.cta')}
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => viewPackage(tier.slug)}
-                      variant={tier.popular ? 'secondary' : 'default'}
-                      className="w-full font-semibold"
-                    >
-                      {t('pricing.cta')}
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => navigate(`/calculator?package=${tier.slug}`)}
+                    variant={tier.popular ? 'secondary' : 'default'}
+                    className="w-full font-semibold gap-2"
+                  >
+                    <Calculator className="w-4 h-4" />
+                    Customise this package
+                  </Button>
                   <button
                     onClick={() => viewPackage(tier.slug)}
                     className={`w-full text-xs underline ${tier.popular ? 'text-primary-foreground/80' : 'text-muted-foreground'} hover:text-accent`}
@@ -183,7 +174,7 @@ const PricingSection = () => {
           className="text-center mt-12"
         >
           <p className="text-muted-foreground mb-4 text-sm">
-            {t('pricing.calculator.hint')}
+            Every package is a starting point. Add or remove modules in the calculator, and the price updates as you go. Need something that isn't listed? Our assistant will help you describe it.
           </p>
           <Button
             onClick={() => navigate('/calculator')}
