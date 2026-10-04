@@ -638,6 +638,7 @@ export type Database = {
           brand: string
           created_at: string
           created_by: string | null
+          gallery_images: Json
           id: string
           is_published: boolean
           pdf_path: string | null
@@ -658,6 +659,7 @@ export type Database = {
           brand: string
           created_at?: string
           created_by?: string | null
+          gallery_images?: Json
           id?: string
           is_published?: boolean
           pdf_path?: string | null
@@ -678,6 +680,7 @@ export type Database = {
           brand?: string
           created_at?: string
           created_by?: string | null
+          gallery_images?: Json
           id?: string
           is_published?: boolean
           pdf_path?: string | null
