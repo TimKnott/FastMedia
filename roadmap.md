@@ -118,3 +118,9 @@
 
 - [x] Pricing: calculator as single source, packages preselect modules, AI module advisor, admin Modules + Module requests
 - [x] Homepage review: advice given (awaiting user go-ahead to apply)
+
+## Oct 4 case-study galleries
+- [ ] Add 3–7 authentic, relevant screenshots to each published real case study
+- [ ] Display screenshots as an accessible case-study gallery on public cards/pages
+- [ ] Let staff maintain case-study gallery images in the back office
+- [ ] Verify galleries on desktop and mobile
