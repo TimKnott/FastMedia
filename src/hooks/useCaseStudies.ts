@@ -18,6 +18,7 @@ export interface CaseStudy {
   body_cs: string;
   body_en: string;
   stats: CaseStudyStat[];
+  gallery_images: CaseStudyImage[];
   thumbnail_url: string | null;
   pdf_url: string | null;
   pdf_path: string | null;
@@ -25,6 +26,12 @@ export interface CaseStudy {
   sort_order: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface CaseStudyImage {
+  url: string;
+  alt: string;
+  caption?: string;
 }
 
 // Generated Supabase types lag behind this table, so the client is cast locally.
@@ -44,6 +51,9 @@ export const fetchCaseStudies = async (includeHidden = false): Promise<CaseStudy
   return ((data ?? []) as CaseStudy[]).map((c) => ({
     ...c,
     stats: Array.isArray(c.stats) ? c.stats : [],
+    gallery_images: Array.isArray(c.gallery_images)
+      ? c.gallery_images.filter((g) => g && typeof g.url === 'string' && g.url)
+      : [],
   }));
 };
 
