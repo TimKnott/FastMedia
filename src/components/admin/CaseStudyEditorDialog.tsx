@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { caseStudiesTable, type CaseStudy, type CaseStudyStat } from '@/hooks/useCaseStudies';
+import { caseStudiesTable, type CaseStudy, type CaseStudyStat, type CaseStudyImage } from '@/hooks/useCaseStudies';
 import { useToast } from '@/hooks/use-toast';
 
 const slugify = (value: string) =>
