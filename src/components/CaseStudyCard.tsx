@@ -6,6 +6,7 @@ import { Download, FileText, Pencil } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { caseField, resolvePdfUrl, statLabel, type CaseStudy } from '@/hooks/useCaseStudies';
 import { buildCaseStudyPdf, caseStudyPdfFilename } from '@/lib/caseStudyPdf';
+import CaseStudyGallery from '@/components/CaseStudyGallery';
 
 interface Props {
   item: CaseStudy;
@@ -47,13 +48,13 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
 
   return (
     <Card className="overflow-hidden flex flex-col h-full">
-      {item.thumbnail_url && (
+      {(item.thumbnail_url || item.gallery_images[0]?.url) && (
         <div className={compact ? 'aspect-[16/10] overflow-hidden' : 'aspect-[16/9] overflow-hidden'}>
           <img
-            src={item.thumbnail_url}
-            alt={item.brand}
+            src={item.thumbnail_url || item.gallery_images[0].url}
+            alt={item.thumbnail_url ? item.brand : item.gallery_images[0].alt}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
           />
         </div>
       )}
@@ -67,6 +68,11 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
         {!compact && caseField(item, 'body', language) && (
           <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{caseField(item, 'body', language)}</p>
         )}
+
+        {!compact && item.gallery_images.length > 1 && (
+          <CaseStudyGallery images={item.gallery_images} brand={item.brand} />
+        )}
+
 
         {item.stats.length > 0 && (
           <div className="grid grid-cols-3 gap-3 pt-1">

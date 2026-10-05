@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { caseStudiesTable, type CaseStudy, type CaseStudyStat } from '@/hooks/useCaseStudies';
+import { caseStudiesTable, type CaseStudy, type CaseStudyStat, type CaseStudyImage } from '@/hooks/useCaseStudies';
 import { useToast } from '@/hooks/use-toast';
 
 const slugify = (value: string) =>
@@ -54,6 +54,7 @@ const CaseStudyEditorDialog = ({ open, onOpenChange, item = null, nextSortOrder 
   const [pdfUrl, setPdfUrl] = useState('');
   const [pdfPath, setPdfPath] = useState('');
   const [published, setPublished] = useState(true);
+  const [gallery, setGallery] = useState<CaseStudyImage[]>([]);
 
   useEffect(() => {
     if (!open) return;
@@ -70,7 +71,39 @@ const CaseStudyEditorDialog = ({ open, onOpenChange, item = null, nextSortOrder 
     setPdfUrl(item?.pdf_url ?? '');
     setPdfPath(item?.pdf_path ?? '');
     setPublished(item?.is_published ?? true);
+    setGallery(item?.gallery_images ?? []);
   }, [open, item]);
+
+  const updateGallery = (index: number, patch: Partial<CaseStudyImage>) =>
+    setGallery((prev) => prev.map((g, i) => (i === index ? { ...g, ...patch } : g)));
+  const moveGallery = (index: number, d: number) =>
+    setGallery((prev) => {
+      const next = [...prev];
+      const t = index + d;
+      if (t < 0 || t >= next.length) return prev;
+      [next[index], next[t]] = [next[t], next[index]];
+      return next;
+    });
+
+  const uploadGalleryFiles = async (files: FileList) => {
+    setUploading(true);
+    try {
+      for (const file of Array.from(files)) {
+        const safeName = slugify(file.name.replace(/\.[^.]+$/, ''));
+        const ext = file.name.split('.').pop() ?? 'jpg';
+        const path = `gallery/${Date.now()}-${safeName}.${ext}`;
+        const { error } = await supabase.storage.from('case-studies').upload(path, file, { cacheControl: '3600', upsert: false });
+        if (error) throw error;
+        const { data } = await supabase.storage.from('case-studies').createSignedUrl(path, 60 * 60 * 24 * 365 * 5);
+        if (data?.signedUrl) setGallery((prev) => [...prev, { url: data.signedUrl, alt: `${brand || 'Project'} screenshot` }]);
+      }
+      toast({ title: 'Screenshots uploaded' });
+    } catch (err: any) {
+      toast({ title: 'Upload failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const updateStat = (index: number, patch: Partial<CaseStudyStat>) =>
     setStats((prev) => prev.map((s, i) => (i === index ? { ...s, ...patch } : s)));
@@ -122,6 +155,9 @@ const CaseStudyEditorDialog = ({ open, onOpenChange, item = null, nextSortOrder 
         pdf_url: pdfUrl.trim() || null,
         pdf_path: pdfPath.trim() || null,
         is_published: published,
+        gallery_images: gallery
+          .filter((g) => g.url.trim())
+          .map((g) => ({ url: g.url.trim(), alt: g.alt.trim() || `${brand.trim()} screenshot`, ...(g.caption?.trim() ? { caption: g.caption.trim() } : {}) })),
       };
       const { error } = item
         ? await caseStudiesTable().update(payload).eq('id', item.id)
@@ -242,6 +278,29 @@ const CaseStudyEditorDialog = ({ open, onOpenChange, item = null, nextSortOrder 
                 />
               </label>
             </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label>Screenshot gallery (3–7 recommended, first one is used when there is no thumbnail)</Label>
+            {gallery.map((g, i) => (
+              <div key={`${g.url}-${i}`} className="flex gap-3 items-start rounded-lg border border-border p-3">
+                <img src={g.url} alt="" className="w-20 h-14 object-cover object-top rounded" />
+                <div className="flex-1 space-y-2">
+                  <Input value={g.alt} onChange={(e) => updateGallery(i, { alt: e.target.value })} placeholder="Describe the screenshot" aria-label="Screenshot description" />
+                  <Input value={g.caption ?? ''} onChange={(e) => updateGallery(i, { caption: e.target.value })} placeholder="Caption (optional)" aria-label="Screenshot caption" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <Button type="button" size="icon" variant="ghost" disabled={i === 0} onClick={() => moveGallery(i, -1)} aria-label="Move screenshot up"><ArrowUp className="w-4 h-4" /></Button>
+                  <Button type="button" size="icon" variant="ghost" disabled={i === gallery.length - 1} onClick={() => moveGallery(i, 1)} aria-label="Move screenshot down"><ArrowDown className="w-4 h-4" /></Button>
+                  <Button type="button" size="icon" variant="ghost" onClick={() => setGallery((p) => p.filter((_, j) => j !== i))} aria-label="Remove screenshot"><Trash2 className="w-4 h-4" /></Button>
+                </div>
+              </div>
+            ))}
+            <label className="inline-flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+              <Upload className="w-4 h-4" />
+              <span>Add screenshots</span>
+              <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => e.target.files?.length && uploadGalleryFiles(e.target.files)} />
+            </label>
           </div>
 
           <div className="flex items-center justify-between rounded-lg border border-border p-4">
