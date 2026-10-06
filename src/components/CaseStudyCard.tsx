@@ -90,7 +90,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
             <Button size="sm" variant="secondary" asChild>
               <a href={item.website_url} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-4 h-4" />
-                {isEnglish ? 'Visit' : 'Navštívit'} {item.website_label || item.brand.split(' — ')[0]}
+                Visit {item.website_label || item.brand.split(' — ')[0]}
               </a>
             </Button>
           )}
