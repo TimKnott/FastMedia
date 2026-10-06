@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, FileText, Pencil } from 'lucide-react';
+import { Download, ExternalLink, FileText, Pencil } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { caseField, resolvePdfUrl, statLabel, type CaseStudy } from '@/hooks/useCaseStudies';
 import { buildCaseStudyPdf, caseStudyPdfFilename } from '@/lib/caseStudyPdf';
@@ -86,6 +86,14 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
         )}
 
         <div className="flex flex-wrap gap-2 mt-auto pt-3">
+          {item.website_url && (
+            <Button size="sm" variant="secondary" asChild>
+              <a href={item.website_url} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="w-4 h-4" />
+                Visit {item.website_label || item.brand.split(' — ')[0]}
+              </a>
+            </Button>
+          )}
           <Button size="sm" variant="default" disabled={busy} onClick={() => openPdf(false)}>
             <FileText className="w-4 h-4" />
             {isEnglish ? 'Open PDF' : 'Otevřít PDF'}

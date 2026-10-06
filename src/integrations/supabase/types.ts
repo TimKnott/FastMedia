@@ -652,6 +652,8 @@ export type Database = {
           tag_en: string
           thumbnail_url: string | null
           updated_at: string
+          website_label: string | null
+          website_url: string | null
         }
         Insert: {
           body_cs?: string
@@ -673,6 +675,8 @@ export type Database = {
           tag_en?: string
           thumbnail_url?: string | null
           updated_at?: string
+          website_label?: string | null
+          website_url?: string | null
         }
         Update: {
           body_cs?: string
@@ -694,6 +698,8 @@ export type Database = {
           tag_en?: string
           thumbnail_url?: string | null
           updated_at?: string
+          website_label?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }

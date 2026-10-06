@@ -22,6 +22,9 @@ export interface CaseStudy {
   thumbnail_url: string | null;
   pdf_url: string | null;
   pdf_path: string | null;
+  /** Live site address; shown to visitors only by its website_label name. */
+  website_url?: string | null;
+  website_label?: string | null;
   is_published: boolean;
   sort_order: number;
   created_at: string;
