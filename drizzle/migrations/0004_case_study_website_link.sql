@@ -1,0 +1,1 @@
+ALTER TABLE public.case_studies ADD COLUMN IF NOT EXISTS website_url text, ADD COLUMN IF NOT EXISTS website_label text;
