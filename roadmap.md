@@ -125,4 +125,5 @@
 - [ ] Let staff maintain case-study gallery images in the back office
 - [ ] Verify galleries on desktop and mobile
 ## Open tasks
-- [x] Added Google Analytics gtag.js tag (G-LWX7RC4BDE) to index.html head — goes live on next publish
+- [x] Added Google Analytics gtag.js tag (G-LWX7RC4BDE) to index.html head — published 11 Oct, live on www.fastmedia.pro
+- [ ] Owner: confirm data appears in Google Analytics → Reports → Realtime after publish finishes
