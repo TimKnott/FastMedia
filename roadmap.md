@@ -128,5 +128,6 @@
 - [x] Added Google Analytics gtag.js tag (G-LWX7RC4BDE) to index.html head — published 11 Oct, live on www.fastmedia.pro
 - [ ] Owner: confirm data appears in Google Analytics → Reports → Realtime after publish finishes
 - [x] SEO fixes 2–6 (5 demo pages in sitemap, external sitemap ref removed, package structured data, accessible button labels, social share image) — publish requested 11 Oct 17:34 UTC
+- [x] Share banner: index.html alone was overridden by the build-time prerender (scripts/seo-routes.ts OG_IMG) — pointed OG_IMG + prerender hero fallback at og-image.jpg, re-published 11 Oct 17:38 UTC
 - [ ] SEO point 1: connect Google Search Console (needs user's Google account)
-- [ ] SEO point 7: per-page social previews need a render-on-server rebuild — deferred
+- [ ] SEO point 7: give each page its own preview by adding per-route ogImage entries in scripts/seo-routes.ts (prerender already supports it)
