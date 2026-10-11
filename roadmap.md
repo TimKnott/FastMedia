@@ -124,3 +124,5 @@
 - [ ] Display screenshots as an accessible case-study gallery on public cards/pages
 - [ ] Let staff maintain case-study gallery images in the back office
 - [ ] Verify galleries on desktop and mobile
+## Open tasks
+- [ ] Add Google Analytics gtag.js tag to index.html head (waiting on user to paste G-XXXX measurement ID; secret value is not readable by agent)
