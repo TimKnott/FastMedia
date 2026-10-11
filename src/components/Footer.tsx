@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useA11y } from '@/contexts/A11yContext';
-import { MessageCircle, Contact, Accessibility } from 'lucide-react';
+import { MessageCircle, Contact, Accessibility, Shield } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
@@ -184,6 +184,14 @@ const Footer = () => {
               <Accessibility className="w-4 h-4" />
                {isEnglish ? 'Accessibility' : 'Přístupnost'}
             </button>
+            <span className="text-background/20">|</span>
+            <Link
+              to="/admin/login"
+              className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
+            >
+              <Shield className="w-4 h-4" />
+              {isEnglish ? 'Admin Portal' : 'Administrace'}
+            </Link>
             <span className="text-background/20">|</span>
             <a
               href="https://wa.me/447926400060"

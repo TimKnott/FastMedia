@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard, CreditCard, UserCircle2, Loader2, LogOut } from 'lucide-react';
+import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard, CreditCard, UserCircle2, Loader2, LogOut, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -276,6 +276,18 @@ const Navbar = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            )}
+
+            {/* Admin sign-in — desktop only, shown when signed out */}
+            {!isAuthed && (
+              <Link
+                to="/admin/login"
+                className="hidden md:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors shrink-0"
+                title={isEnglish ? 'Admin sign in' : 'Přihlášení administrátora'}
+              >
+                <Shield className="w-4 h-4" />
+                {isEnglish ? 'Admin' : 'Administrace'}
+              </Link>
             )}
 
             <ThemeToggle className="hidden sm:inline-flex" />
