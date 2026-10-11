@@ -59,7 +59,7 @@
 - [ ] Google Business Profile — needs user to connect GBP + complete Google's postcard/video verification
 - [ ] Request indexing (homepage, grant pages) — must be done by hand in Search Console URL Inspection
 - [ ] Real case-study evidence — needs client-approved figures from user
-- [ ] Sitemap/canonical URLs use fastmedia.pro but live site redirects to www — align
+- [x] Sitemap/canonical URLs use fastmedia.pro but live site redirects to www — align (97 www URLs, 0 bare; robots points to www)
 
 ## Sep 25 batch 2
 - [x] Switch all addresses to www + resubmit sitemap; reminder email scheduled 2 Oct
@@ -127,3 +127,6 @@
 ## Open tasks
 - [x] Added Google Analytics gtag.js tag (G-LWX7RC4BDE) to index.html head — published 11 Oct, live on www.fastmedia.pro
 - [ ] Owner: confirm data appears in Google Analytics → Reports → Realtime after publish finishes
+- [x] SEO fixes 2–6 (5 demo pages in sitemap, external sitemap ref removed, package structured data, accessible button labels, social share image) — publish requested 11 Oct 17:34 UTC
+- [ ] SEO point 1: connect Google Search Console (needs user's Google account)
+- [ ] SEO point 7: per-page social previews need a render-on-server rebuild — deferred
