@@ -22,25 +22,36 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
   const [busy, setBusy] = useState(false);
 
   const openPdf = async (download: boolean) => {
+    // Open the tab synchronously inside the click so popup blockers allow it.
+    const tab = download ? null : window.open('', '_blank');
+    if (tab) tab.document.title = item.brand;
     setBusy(true);
     try {
       const url = await resolvePdfUrl(item);
+      let blobUrl: string;
       if (url) {
-        if (download) {
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = caseStudyPdfFilename(item);
-          link.rel = 'noopener';
-          link.target = '_blank';
-          link.click();
-        } else {
-          window.open(url, '_blank', 'noopener,noreferrer');
-        }
-        return;
+        if (!download && tab) { tab.location.href = url; return; }
+        const res = await fetch(url);
+        blobUrl = URL.createObjectURL(await res.blob());
+      } else {
+        const doc = await buildCaseStudyPdf(item, language);
+        blobUrl = URL.createObjectURL(doc.output('blob'));
       }
-      const doc = await buildCaseStudyPdf(item, language);
-      if (download) doc.save(caseStudyPdfFilename(item));
-      else window.open(doc.output('bloburl') as unknown as string, '_blank', 'noopener,noreferrer');
+      if (download) {
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = caseStudyPdfFilename(item);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else if (tab) {
+        tab.location.href = blobUrl;
+      } else {
+        window.location.href = blobUrl;
+      }
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+    } catch {
+      tab?.close();
     } finally {
       setBusy(false);
     }
