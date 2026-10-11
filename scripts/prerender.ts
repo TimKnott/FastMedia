@@ -106,7 +106,7 @@ function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
     and SEO advice, or start a project below.</p>
   `;
 
-  const heroImgSrc = (route as { ogImage?: string }).ogImage ?? "https://www.fastmedia.pro/pwa-512x512.png";
+  const heroImgSrc = (route as { ogImage?: string }).ogImage ?? "https://www.fastmedia.pro/og-image.jpg";
   const heroImg = `<img src="${escAttr(heroImgSrc)}" alt="${escAttr(route.h1 ?? route.title)}" width="1200" height="630" loading="lazy" decoding="async" />`;
 
   return `
