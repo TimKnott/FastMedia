@@ -146,6 +146,11 @@
     overflow-x: clip;
   }
 
+  /**
+   * NOTICE: This design system requires 'Inter' and 'Space Grotesk' fonts.
+   * They are loaded via <link> tags in index.html; any consumer of these
+   * styles must add the same Google Fonts links to their <head>.
+   */
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
