@@ -125,4 +125,4 @@
 - [ ] Let staff maintain case-study gallery images in the back office
 - [ ] Verify galleries on desktop and mobile
 ## Open tasks
-- [ ] Add Google Analytics gtag.js tag to index.html head (waiting on user to paste G-XXXX measurement ID; secret value is not readable by agent)
+- [x] Added Google Analytics gtag.js tag (G-LWX7RC4BDE) to index.html head — goes live on next publish
