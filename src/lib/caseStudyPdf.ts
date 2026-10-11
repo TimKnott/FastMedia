@@ -41,7 +41,8 @@ export const buildCaseStudyPdf = async (item: CaseStudy, lang: 'cs' | 'en' | str
   const pageH = doc.internal.pageSize.getHeight();
   const margin = 48;
   const width = pageW - margin * 2;
-  const cs = lang === 'cs';
+  // Site is locked to British English, so PDF labels are English.
+  const cs = false;
 
   const gallery = [...item.gallery_images];
   const urls = [item.thumbnail_url, ...gallery.map((g) => g.url)].filter(Boolean) as string[];
@@ -60,6 +61,9 @@ export const buildCaseStudyPdf = async (item: CaseStudy, lang: 'cs' | 'en' | str
     if (y + need <= pageH - 50) return y;
     footer();
     doc.addPage();
+    doc.setFont(font, 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...NAVY);
     return margin;
   };
 
