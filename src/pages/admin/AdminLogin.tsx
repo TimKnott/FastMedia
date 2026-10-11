@@ -123,6 +123,18 @@ const AdminLogin = () => {
       return;
     }
 
+    // Offer to save the credentials in the browser / Google Password Manager.
+    // Non-fatal: unsupported browsers simply skip the prompt.
+    try {
+      const creds = (navigator as Navigator & { credentials?: { store?: (c: unknown) => Promise<void> } }).credentials;
+      const PasswordCredentialCtor = (window as Window & { PasswordCredential?: new (init: { id: string; password: string; name?: string }) => unknown }).PasswordCredential;
+      if (creds?.store && PasswordCredentialCtor) {
+        await creds.store(new PasswordCredentialCtor({ id: email.trim(), password, name: email.trim() }));
+      }
+    } catch {
+      /* ignore — password managers are best-effort */
+    }
+
     if (data.user) {
       const ok = await verifyAndRoute(data.user.id);
       setLoading(false);
