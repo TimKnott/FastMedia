@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "2.8.0",
+    "version": "2.9.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
@@ -74,7 +74,7 @@
       "public/robots.txt": "e6390b4a36e921da60083635c71b259b",
       "public/sitemap.xml": "5f8ac25bb8964c93d63b7706624f6f53",
       "public/tim-knott.vcf": "2a49c21a990c2f3eacb5e27f558aa4b8",
-      "roadmap.md": "88fef7890fb39c4c34edeac418132759",
+      "roadmap.md": "fccc8f07b8a737d08a05bfb3d73a175b",
       "scripts/prerender.ts": "d533b97e84de0bfe521886fdd12f5955",
       "scripts/seo-routes.ts": "1b84142743340f102cf2dad60756be83",
       "src/App.css": "3061aee6b63300763d91be8ff5432a42",
