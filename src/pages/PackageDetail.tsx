@@ -8,6 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
+import { Helmet } from 'react-helmet-async';
 import ScrollToTop from '@/components/ScrollToTop';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -256,6 +257,26 @@ const PackageDetail = () => {
         description={pkg.tagline}
         pagePath={`/package/${pkg.slug}`}
       />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'Service',
+              name: `${pkg.name} Website Package`,
+              description: pkg.tagline,
+              serviceType: 'Website design and development',
+              url: `https://www.fastmedia.pro/package/${pkg.slug}`,
+              provider: { '@type': 'Organization', name: 'FastMedia.Pro', url: 'https://www.fastmedia.pro' },
+              ...(/\d/.test(pkg.price) ? { offers: { '@type': 'Offer', price: pkg.price.replace(/[^\d]/g, ''), priceCurrency: 'CZK' } } : {}),
+            },
+            {
+              '@type': 'FAQPage',
+              mainEntity: pkg.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+            },
+          ],
+        })}</script>
+      </Helmet>
       <ScrollToTop />
       <Navbar />
 

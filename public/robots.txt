@@ -47,4 +47,3 @@ Disallow: /portal/
 Disallow: /404
 
 Sitemap: https://www.fastmedia.pro/sitemap.xml
-Sitemap: https://aivnnjsrupmubcjsgulb.supabase.co/functions/v1/language-sitemap

@@ -1272,11 +1272,11 @@ const CalculatorPage = () => {
                                     className="flex items-center gap-3 mt-3 pt-3 border-t border-border"
                                     onClick={e => e.stopPropagation()}
                                   >
-                                    <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(feature.id, -1)}>
+                                    <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(feature.id, -1)} aria-label="Decrease quantity">
                                       <Minus className="w-3 h-3" />
                                     </Button>
                                     <span className="text-sm font-bold w-8 text-center">{qty}</span>
-                                    <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(feature.id, 1)}>
+                                    <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(feature.id, 1)} aria-label="Increase quantity">
                                       <Plus className="w-3 h-3" />
                                     </Button>
                                     <span className="text-xs text-muted-foreground">{l.quantity}</span>
@@ -1626,6 +1626,7 @@ const CalculatorPage = () => {
                               variant="ghost"
                               className="h-7 w-7 text-muted-foreground hover:text-destructive"
                               onClick={() => toggleFeature(sf.id)}
+                              aria-label="Remove feature"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
@@ -1722,7 +1723,7 @@ const CalculatorPage = () => {
                               −{appliedCoupon.discount_type === 'percentage' ? `${appliedCoupon.discount_value}%` : `${formatPrice(appliedCoupon.discount_value)} Kč`}
                             </span>
                           </div>
-                          <Button size="icon" variant="ghost" onClick={removeCoupon} className="h-7 w-7">
+                          <Button size="icon" variant="ghost" onClick={removeCoupon} className="h-7 w-7" aria-label="Remove coupon">
                             <X className="w-3.5 h-3.5" />
                           </Button>
                         </div>
