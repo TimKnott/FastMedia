@@ -25,7 +25,7 @@ export interface RouteSeo {
 }
 
 const BRAND = "FastMedia.Pro";
-const OG_IMG = "https://www.fastmedia.pro/pwa-512x512.png";
+const OG_IMG = "https://www.fastmedia.pro/og-image.jpg";
 
 export const orgJsonLd = {
   "@context": "https://schema.org",
