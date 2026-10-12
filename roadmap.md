@@ -136,3 +136,8 @@
 - [x] /offer rebuilt with 6 900 Kč / 990 Kč pricing, renewal terms, no-hostage guarantee, calculator for bigger sites
 - [x] Super Admin Ad Studio (/admin/ad-studio): 10 ads × 7 platforms, PNG, text, tracking links
 - [ ] Owner to confirm VAT wording on prices
+
+## Marketing & PPC tools
+- [x] Option A: Ad Compliance Checker (/admin/ad-compliance) — Sklik/Google/Meta rules + AI fix
+- [ ] Option B: Negative Keyword Generator — user asked to revisit in a few days (remind them)
+- [ ] Option C: Keyword viability evaluator; Option D: UTM tracker
