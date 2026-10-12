@@ -1,6 +1,54 @@
 <!doctype html>
 <html lang="en-GB">
   <head>
+    <script>
+      // Blank-page self-repair: if the app's files fail to load after a new
+      // release (stale browser/offline copy), clear the old copies and reload
+      // once — the same effect as Ctrl+Shift+R, done automatically.
+      (function () {
+        var KEY = 'fm-boot-recover-at';
+        function recover() {
+          try {
+            var last = Number(sessionStorage.getItem(KEY) || 0);
+            if (Date.now() - last < 30000) return;
+            sessionStorage.setItem(KEY, String(Date.now()));
+          } catch (e) {}
+          var jobs = [];
+          try {
+            if ('serviceWorker' in navigator) {
+              jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+                return Promise.all(rs.map(function (r) { return r.unregister(); }));
+              }));
+            }
+            if (window.caches) {
+              jobs.push(caches.keys().then(function (ks) {
+                return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+              }));
+            }
+          } catch (e) {}
+          var done = false;
+          var go = function () {
+            if (done) return; done = true;
+            var u = location.pathname + (location.search ? location.search + '&' : '?') + '_r=' + Date.now() + location.hash;
+            location.replace(u);
+          };
+          Promise.all(jobs).then(go, go);
+          setTimeout(go, 2500);
+        }
+        window.__fmRecover = recover;
+        window.addEventListener('error', function (e) {
+          var t = e.target;
+          if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) {
+            var src = t.src || t.href || '';
+            if (/\/assets\//.test(src)) recover();
+          }
+        }, true);
+        setTimeout(function () {
+          var root = document.getElementById('root');
+          if (!window.__fmBooted && root && root.childElementCount === 0) recover();
+        }, 12000);
+      })();
+    </script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LWX7RC4BDE"></script>
     <script>

@@ -20,9 +20,27 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.jpeg", "favicon.ico"],
       workbox: {
-        navigateFallbackDenylist: [/^\/~oauth/],
-        globPatterns: ["**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff,woff2}"],
+        // Pages are never served from an old offline copy: always fetch the
+        // latest page from the network, falling back to cache only when offline.
+        // Serving stale page copies after a release caused blank screens.
+        navigateFallback: null,
+        globPatterns: ["**/*.{js,css,ico,png,jpg,jpeg,svg,woff,woff2}"],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        runtimeCaching: [
+          {
+            urlPattern: ({ request, url }) =>
+              request.mode === "navigate" && !url.pathname.startsWith("/~oauth"),
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "fm-pages",
+              networkTimeoutSeconds: 5,
+              expiration: { maxEntries: 30 },
+            },
+          },
+        ],
       },
       manifest: {
         name: "FastMedia.Pro — Profesionální weby pro řemeslníky",
