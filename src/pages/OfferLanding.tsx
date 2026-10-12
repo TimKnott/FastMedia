@@ -191,7 +191,7 @@ const copy = {
       ['What exactly do I get for 6,900 Kč?', 'A complete one-page website for your trade with copy, gallery, contact form, map, call and WhatsApp buttons, Google Maps and Firmy.cz listing, plus the first year of hosting, .cz domain, SSL and one email address.'],
       ['What do I pay after the first year?', `${P.renewalYear} a year for hosting, domain, SSL, backups and support. One invoice a year.`],
       ['How does the 990 Kč a month option work?', 'You pay nothing upfront. For the first 12 months you pay 990 Kč a month, then continue with monthly notice or switch to yearly hosting.'],
-      ['How does the 30-day guarantee work?', 'If you are not happy within 30 days of launch, we refund what you paid. No questions.'],
+      ['How does the 30-day guarantee work?', 'It applies to both packages (Own Website and Website as a Service). If you are not happy within 30 days of launch, we refund what you paid. No questions. Larger calculator-priced projects are covered by a functionality warranty and handover protocol instead.'],
       ['What if I want to leave?', 'The site and domain are yours. We hand over all files free of charge and help you move.'],
       ['I need more than one page.', `Use our calculator — it prices websites with more pages, booking or an e-shop. Bigger websites start from ${P.customFrom}.`],
     ],
