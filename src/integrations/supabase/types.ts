@@ -562,6 +562,7 @@ export type Database = {
           id: string
           lead_brief: string
           name: string
+          sheet_url: string | null
           url: string | null
         }
         Insert: {
@@ -572,6 +573,7 @@ export type Database = {
           id?: string
           lead_brief?: string
           name: string
+          sheet_url?: string | null
           url?: string | null
         }
         Update: {
@@ -582,6 +584,7 @@ export type Database = {
           id?: string
           lead_brief?: string
           name?: string
+          sheet_url?: string | null
           url?: string | null
         }
         Relationships: []
@@ -1238,6 +1241,80 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      directory_finds: {
+        Row: {
+          address: string | null
+          category: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          date_end: string | null
+          date_start: string | null
+          email: string | null
+          exported_at: string | null
+          id: string
+          kind: string
+          phone: string | null
+          query: string | null
+          site_id: string
+          source_url: string | null
+          status: string
+          summary: string | null
+          title: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          category?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date_end?: string | null
+          date_start?: string | null
+          email?: string | null
+          exported_at?: string | null
+          id?: string
+          kind: string
+          phone?: string | null
+          query?: string | null
+          site_id: string
+          source_url?: string | null
+          status?: string
+          summary?: string | null
+          title: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date_end?: string | null
+          date_start?: string | null
+          email?: string | null
+          exported_at?: string | null
+          id?: string
+          kind?: string
+          phone?: string | null
+          query?: string | null
+          site_id?: string
+          source_url?: string | null
+          status?: string
+          summary?: string | null
+          title?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "directory_finds_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "business_sites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       eat_audits: {
         Row: {
