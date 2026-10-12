@@ -18,7 +18,7 @@ const Footer = () => {
     { href: '/#demos', label: t('nav.demos') },
     { href: '/#services', label: t('nav.services') },
     { href: '/#reviews', label: t('nav.reviews') },
-    { href: '/#pricing', label: t('nav.pricing') },
+    { href: '/offer#cenik', label: t('nav.pricing') },
     { href: '/#faq', label: t('nav.faq') },
     { href: '/#contact', label: t('nav.contact') },
   ];
