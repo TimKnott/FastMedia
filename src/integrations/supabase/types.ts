@@ -2508,6 +2508,44 @@ export type Database = {
           },
         ]
       }
+      lead_feedback: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          reason: string
+          site_id: string
+          title: string | null
+          website: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          reason: string
+          site_id: string
+          title?: string | null
+          website?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          reason?: string
+          site_id?: string
+          title?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_feedback_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "business_sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_notes: {
         Row: {
           author_id: string
