@@ -3425,6 +3425,30 @@ export type Database = {
           },
         ]
       }
+      saved_ads: {
+        Row: {
+          ad: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          platform: string
+        }
+        Insert: {
+          ad: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          platform: string
+        }
+        Update: {
+          ad?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          platform?: string
+        }
+        Relationships: []
+      }
       scoring_rules: {
         Row: {
           condition: Json
