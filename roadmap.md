@@ -131,3 +131,8 @@
 - [x] Share banner: index.html alone was overridden by the build-time prerender (scripts/seo-routes.ts OG_IMG) — pointed OG_IMG + prerender hero fallback at og-image.jpg, re-published 11 Oct 17:38 UTC
 - [ ] SEO point 1: connect Google Search Console (needs user's Google account)
 - [ ] SEO point 7: give each page its own preview by adding per-route ogImage entries in scripts/seo-routes.ts (prerender already supports it)
+
+## Oct 12 — Ad funnel
+- [x] /offer rebuilt with 6 900 Kč / 990 Kč pricing, renewal terms, no-hostage guarantee, calculator for bigger sites
+- [x] Super Admin Ad Studio (/admin/ad-studio): 10 ads × 7 platforms, PNG, text, tracking links
+- [ ] Owner to confirm VAT wording on prices

@@ -85,6 +85,7 @@ const AdminLandingPage = lazy(() => import("./pages/admin/AdminLandingPage"));
 const AdminDemos = lazy(() => import("./pages/admin/AdminDemos"));
 const AdminBlog = lazy(() => import("./pages/admin/AdminBlog"));
 const AdminStoryStudio = lazy(() => import("./pages/admin/AdminStoryStudio"));
+const AdminAdStudio = lazy(() => import("./pages/admin/AdminAdStudio"));
 const AdminModules = lazy(() => import("./pages/admin/AdminModules"));
 const AdminModuleRequests = lazy(() => import("./pages/admin/AdminModuleRequests"));
 const AdminTtsTest = lazy(() => import("./pages/admin/AdminTtsTest"));
@@ -328,6 +329,7 @@ const App = () => (
               <Route path="demos" element={<AdminDemos />} />
               <Route path="blog-manage" element={<AdminBlog />} />
               <Route path="story-studio" element={<ProtectedRoute minRole="admin"><AdminStoryStudio /></ProtectedRoute>} />
+              <Route path="ad-studio" element={<ProtectedRoute minRole="super_admin"><AdminAdStudio /></ProtectedRoute>} />
               <Route path="modules" element={<ProtectedRoute minRole="admin"><AdminModules /></ProtectedRoute>} />
               <Route path="module-requests" element={<ProtectedRoute minRole="admin"><AdminModuleRequests /></ProtectedRoute>} />
               <Route path="tts-test" element={<ProtectedRoute minRole="admin"><AdminTtsTest /></ProtectedRoute>} />
