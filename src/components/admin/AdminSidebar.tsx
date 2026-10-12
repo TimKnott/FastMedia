@@ -36,6 +36,7 @@ import {
   Phone,
   Sparkles,
   Target,
+  Film,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
