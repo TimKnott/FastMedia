@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "3.1.0",
+    "version": "3.2.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
@@ -11,7 +11,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "05fdcac629c42fc7b0875fb43eb47379a03cb3a8a9f01bf6ada7247b6cfa0505",
+      "#enrichment": "ed5ca8628ddefd0d60b8b121a6ee544fecdf522c7370e0a6bbb61e4fa8c7874e",
       ".gitignore": "d9566700e8535935d03c1583474d790c",
       ".lovable/meta.yaml": "954a981e8847ec1692669dbb04ae9ae9",
       ".lovable/plan/ai-search-visibility-geo-seo-workspace-2026-09-24.md": "c3315da58dbdde2614981cb980f82d2a",
@@ -33,7 +33,7 @@
       ".lovable/plan/switch-to-www-fastmedia-pro-one-week-reminder-2026-09-25.md": "08143e52d20673089b7fbd07943d4214",
       ".lovable/sources.yaml": "85650baf848ef209adbcf704cd10bef1",
       ".prewarm": "d41d8cd98f00b204e9800998ecf8427e",
-      "AGENTS.md": "83c89ae7c05b0904386d9f7a4f509df6",
+      "AGENTS.md": "c81858ddb135a9f0c37345bb8017260b",
       "README.md": "f4883400a888785b401ba15288cda0f7",
       "components.json": "a547944ace00dc5d5373aaca70a40bc4",
       "drizzle.config.ts": "c2b6029fa56b49433380b7263b06e3f7",
@@ -50,7 +50,7 @@
       "drizzle/migrations/meta/_journal.json": "61d40b55d19c91843c7920ce97dc342b",
       "drizzle/schema.ts": "a60267d05d7dd11572f02686241f37c6",
       "eslint.config.js": "31c0881fdd8500aa4d0aa963079713ae",
-      "index.html": "568f07716c6f3b5f454948f919b4c9d6",
+      "index.html": "8549a53d3aaa2d6973ff95e954074b15",
       "package.json": "6e135949b5e8825cca46d0061ac9e9fb",
       "postcss.config.js": "c735540bb63936a123bc867d950c9f69",
       "public/2105d77fd4efd018e519384bda4276fe.txt": "8eb84a7f7324e971795d0dc0271307fe",
@@ -78,7 +78,6 @@
       "roadmap.md": "876fc5da411475bac43d2f482d84a2b5",
       "scripts/prerender.ts": "2fdc87bf173478a310e1d2aea4c97828",
       "scripts/seo-routes.ts": "988127163d165dc1ecfa76b1cae25dcd",
-      "src/App.css": "3061aee6b63300763d91be8ff5432a42",
       "src/App.tsx": "486f4bbeb7c5a30626919b94a3608bc8",
       "src/assets/blog/blog-bakery.jpg": "c9982fcc8f2c11ef31525d8fa5f1da7c",
       "src/assets/blog/blog-booking-system.jpg": "07b0726b34de8e31642a3c96a0ab5c69",
@@ -409,6 +408,7 @@
       "src/components/AccessibilityToolbar.tsx": "1ad7c2e953fe9015d30843eb76af9487",
       "src/components/AdminQuickBar.tsx": "2e669ab3f7db54667cd20aa662eabac9",
       "src/components/AdminToolbar.tsx": "a6d52f43139f3201fc396ecf1a48c880",
+      "src/components/AppErrorBoundary.tsx": "73ea9e68b35bb695a1468e0449db5033",
       "src/components/AppointmentPoliciesSection.tsx": "68f28c4c4f4b5c5e54ec627f4a9abc8a",
       "src/components/AutomationSection.tsx": "3a0c8d4d09a932807064ae62bf47dc20",
       "src/components/BillingPortalButton.tsx": "bef45c4d1085983099d11d34bea5b503",
@@ -582,11 +582,11 @@
       "src/hooks/useVisitorSafeguards.ts": "8f3c312450e36ba5b9a84def981caafb",
       "src/hooks/useVoiceAgent.ts": "91d32afd269e9e5109f6cde77911165d",
       "src/index.css": "8d499877c4e7b6ad50296a0e149ac672",
-      "src/index.ts": "68d27cc24387851a676b12e93ea912bb",
+      "src/index.ts": "ded6b1eb53962627867310baedc00296",
       "src/integrations/lovable/index.ts": "2b281422ef62231e654f8668addb90a5",
       "src/integrations/supabase/client.ts": "ea731aa7f857b1b89542717c662d05c0",
       "src/integrations/supabase/previewAuthStorage.ts": "0a2d63e049bc63135b19c8e21cc0b1aa",
-      "src/integrations/supabase/types.ts": "42ae5eda1a15de6f3777b859ffe92844",
+      "src/integrations/supabase/types.ts": "64de47b9d9c9a4dabd0b71ea389f4d79",
       "src/lib/agreementPdf.ts": "6353cd85956db21c96988177331e4b15",
       "src/lib/agreementTemplate.ts": "c4bdacdd5434d343a8b2b41eba1648b8",
       "src/lib/caseStudyPdf.ts": "07a1d70d5e30fb427bbd55c0aa90855c",
@@ -596,7 +596,7 @@
       "src/lib/stripe.ts": "f76ed145fb48bf88f7daf19d0add9471",
       "src/lib/ttsErrors.ts": "a17aa937d5a88f4062ba857582ed335e",
       "src/lib/utils.ts": "d9837f38cc05303254571985e3164050",
-      "src/main.tsx": "81d6473b589b8f1f3f4c3c7440a6099f",
+      "src/main.tsx": "6dee177fff37fb57955307f19b524d9b",
       "src/pages/About.tsx": "0a4807f999323a5cd96d43a82a1c9d51",
       "src/pages/Account.tsx": "00641b161becde5495de8ff7cdcb2096",
       "src/pages/Blog.tsx": "b6d53b03d9d54d0f05a3245cec6addc4",
@@ -975,7 +975,7 @@
       "tsconfig.app.json": "9036c95ea413f9a07f9aa5c7650861a6",
       "tsconfig.json": "bb72695c901d34a52a46196ba258371d",
       "tsconfig.node.json": "1417fb05378a1d1102f085e60b20db0e",
-      "vite.config.ts": "c1fb64a1a9fd0d0811b311100142c43f",
+      "vite.config.ts": "4e0eccad0afbc471eb9b786d63d48d3a",
       "vitest.config.ts": "9285ab80c07d5cd1a71aa20c1687352a"
     },
     "pipeline_version": 8
@@ -1216,6 +1216,19 @@
     ]
   },
   "components": [
+    {
+      "name": "AppErrorBoundary",
+      "file": "src/components/AppErrorBoundary",
+      "import_path": "",
+      "is_default": true,
+      "props": [
+        {
+          "name": "children",
+          "type": "any",
+          "required": true
+        }
+      ]
+    },
     {
       "name": "DeferredMount",
       "file": "src/components/DeferredMount",

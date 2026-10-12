@@ -2,6 +2,18 @@
 
 Component catalog for **FastMedia Web Development with Inovation**. Import all components from `@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2`.
 
+### AppErrorBoundary
+
+```ts
+import AppErrorBoundary from "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `children` | any | `—` |
+
 ### DeferredMount
 
 ```ts

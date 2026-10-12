@@ -4,7 +4,7 @@
 
 The design system exports these components — import them from `@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2` and compose them before building anything from scratch:
 
-`DeferredMount`, `HomeDirectAnswer`, `LazySection`
+`AppErrorBoundary`, `DeferredMount`, `HomeDirectAnswer`, `LazySection`
 
 Per-component details (import stanzas, props, variants, examples) live in `.lovable/rules/libraries/{slug}/components.md` — on disk, not auto-loaded. Read that file or the component source when the name alone isn't enough.
 
