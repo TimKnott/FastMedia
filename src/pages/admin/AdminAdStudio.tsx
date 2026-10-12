@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import { toast } from 'sonner';
-import { Download, Copy, Link2, ShieldCheck, Phone } from 'lucide-react';
+import { Download, Copy, Link2, ShieldCheck, Phone, Sparkles, Loader2, Save, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -113,6 +114,111 @@ function AdTile({ ad, f, platform }: { ad: AdCopy; f: AdFormat; platform: string
   );
 }
 
+type GenAd = AdCopy & { hashtags?: string; image_prompt?: string };
+interface SavedRow { id: string; platform: string; ad: GenAd }
+
+function AiGenerator() {
+  const [platform, setPlatform] = useState('facebook');
+  const [audience, setAudience] = useState('Instalatéři a topenáři');
+  const [offer, setOffer] = useState('starter 6 900 Kč');
+  const [tone, setTone] = useState('direct');
+  const [angle, setAngle] = useState('');
+  const [count, setCount] = useState(3);
+  const [busy, setBusy] = useState(false);
+  const [results, setResults] = useState<GenAd[]>([]);
+  const [saved, setSaved] = useState<SavedRow[]>([]);
+  const fmt = (platforms.find((p) => p.id === platform) ?? platforms[0]).formats[0];
+
+  const loadSaved = async () => {
+    const { data } = await supabase.from('saved_ads' as never).select('id, platform, ad').order('created_at', { ascending: false }).limit(60);
+    setSaved((data as unknown as SavedRow[]) ?? []);
+  };
+  useEffect(() => { loadSaved(); }, []);
+
+  const generate = async () => {
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ad-generator', { body: { platform, audience, offer, tone, angle, count } });
+      if (error || !data?.ok) {
+        let msg = data?.error;
+        try { msg = msg ?? (await (error as { context?: Response })?.context?.json())?.error; } catch { /* ignore */ }
+        throw new Error(msg || 'Could not generate adverts.');
+      }
+      setResults(data.ads);
+    } catch (e) { toast.error(e instanceof Error ? e.message : 'Could not generate adverts.'); }
+    finally { setBusy(false); }
+  };
+  const save = async (ad: GenAd) => {
+    const { error } = await supabase.from('saved_ads' as never).insert({ platform, ad } as never);
+    if (error) toast.error('Could not save.'); else { toast.success('Saved to library'); loadSaved(); }
+  };
+  const remove = async (id: string) => { await supabase.from('saved_ads' as never).delete().eq('id', id); loadSaved(); };
+  const fmtFor = (pid: string) => (platforms.find((p) => p.id === pid) ?? platforms[0]).formats[0];
+
+  return (
+    <Card className="border-primary/40">
+      <CardContent className="p-5 space-y-4">
+        <div className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary" /><h2 className="text-xl font-semibold">Create new adverts with AI</h2></div>
+        <p className="text-sm text-muted-foreground">Uses AI credits (a fraction of a cent per batch), not build credits. Copy is written in Czech from your real prices only.</p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <label className="text-sm space-y-1"><span>Platform</span>
+            <select className="w-full rounded-md border border-input bg-background p-2" value={platform} onChange={(e) => setPlatform(e.target.value)}>
+              {platforms.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select></label>
+          <label className="text-sm space-y-1"><span>Who is it for?</span>
+            <input className="w-full rounded-md border border-input bg-background p-2" value={audience} onChange={(e) => setAudience(e.target.value)} /></label>
+          <label className="text-sm space-y-1"><span>Offer</span>
+            <select className="w-full rounded-md border border-input bg-background p-2" value={offer} onChange={(e) => setOffer(e.target.value)}>
+              <option value="starter 6 900 Kč">Starter 6 900 Kč</option>
+              <option value="subscription 990 Kč/month, 0 Kč upfront">990 Kč / month</option>
+              <option value="bigger site via calculator from 18 900 Kč">Bigger site (calculator)</option>
+              <option value="30-day money-back guarantee">30-day guarantee</option>
+            </select></label>
+          <label className="text-sm space-y-1"><span>Tone</span>
+            <select className="w-full rounded-md border border-input bg-background p-2" value={tone} onChange={(e) => setTone(e.target.value)}>
+              <option value="direct">Direct and punchy</option><option value="friendly">Friendly</option>
+              <option value="humorous">Light humour</option><option value="problem-solving">Problem / solution</option>
+            </select></label>
+          <label className="text-sm space-y-1"><span>How many?</span>
+            <select className="w-full rounded-md border border-input bg-background p-2" value={count} onChange={(e) => setCount(Number(e.target.value))}>
+              {[1, 3, 5].map((n) => <option key={n} value={n}>{n}</option>)}
+            </select></label>
+          <label className="text-sm space-y-1"><span>Extra idea (optional)</span>
+            <input className="w-full rounded-md border border-input bg-background p-2" placeholder="e.g. busy season, no time for marketing" value={angle} onChange={(e) => setAngle(e.target.value)} /></label>
+        </div>
+        <Button onClick={generate} disabled={busy}>{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}{busy ? 'Writing adverts…' : 'Generate adverts'}</Button>
+        {results.length > 0 && (
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {results.map((ad, i) => (
+              <div key={`${ad.slug}-${i}`} className="space-y-2">
+                <AdTile ad={ad} f={fmt} platform={platform} />
+                {ad.hashtags && <p className="text-xs text-muted-foreground">{ad.hashtags}</p>}
+                <div className="flex gap-2">
+                  <Button size="sm" variant="secondary" onClick={() => save(ad)}><Save className="w-4 h-4" />Save</Button>
+                  {ad.image_prompt && <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText(ad.image_prompt!).then(() => toast.success('Image prompt copied'))}><Copy className="w-4 h-4" />Image prompt</Button>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {saved.length > 0 && (
+          <div className="space-y-3 pt-2">
+            <h3 className="font-semibold">Saved library ({saved.length})</h3>
+            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {saved.map((r) => (
+                <div key={r.id} className="space-y-2">
+                  <AdTile ad={r.ad} f={fmtFor(r.platform)} platform={r.platform} />
+                  <Button size="sm" variant="ghost" onClick={() => remove(r.id)}><Trash2 className="w-4 h-4" />Remove</Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 const AdminAdStudio = () => (
   <div className="space-y-6">
     <div>
@@ -120,6 +226,7 @@ const AdminAdStudio = () => (
       <p className="text-muted-foreground">Ready adverts for every platform. Each one links to the offer page with tracking, so you can see which ad brought the enquiry.</p>
       <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2"><Phone className="w-4 h-4" />Landing page: {P.offerUrl}</p>
     </div>
+    <AiGenerator />
     <Tabs defaultValue="facebook">
       <TabsList className="flex flex-wrap h-auto">
         {platforms.map((p) => <TabsTrigger key={p.id} value={p.id}>{p.name}</TabsTrigger>)}
