@@ -45,7 +45,7 @@ const copy = {
     demosSub: 'Vyberte svůj obor a prohlédněte si živou ukázku.',
     demosAll: 'Všechny obory',
     pricingTitle: 'Dvě jednoduché možnosti',
-    pricingSub: 'Obě obsahují stejný kompletní web. Liší se jen tím, jak platíte.',
+    pricingSub: 'Obě obsahují stejný kompletní web. Liší se jen tím, jak platíte. Nejsme plátci DPH — ceny jsou konečné.',
     own: {
       name: 'Vlastní web', tag: 'Jednorázová platba', price: P.ownPrice, unit: 'jednorázově',
       note: `Od 2. roku ${P.renewalYear} / rok (${P.renewalMonthEq} měsíčně)`,
@@ -107,7 +107,7 @@ const copy = {
       ['Co přesně dostanu za 6 900 Kč?', 'Kompletní jednostránkový web pro váš obor včetně textů, galerie, kontaktního formuláře, mapy, tlačítka pro volání a WhatsApp, zápisu do Google Map a Firmy.cz, plus první rok hostingu, .cz domény, SSL a jednoho e-mailu.'],
       ['Kolik zaplatím po prvním roce?', `${P.renewalYear} ročně za hosting, doménu, SSL, zálohy a podporu. Jedna faktura ročně, žádné měsíční drobné platby.`],
       ['Jak funguje varianta za 990 Kč měsíčně?', 'Nic neplatíte předem. Prvních 12 měsíců platíte 990 Kč měsíčně, poté můžete pokračovat s měsíční výpovědí, nebo přejít na roční hosting.'],
-      ['Jak funguje 30denní garance?', 'Pokud do 30 dnů od spuštění nebudete spokojeni, vrátíme vám zaplacenou částku. Bez dokazování.'],
+      ['Jak funguje 30denní garance?', 'Platí pro oba balíčky (Vlastní web i Web jako služba). Pokud do 30 dnů od spuštění nebudete spokojeni, vrátíme vám zaplacenou částku. Bez dokazování. U větších webů z kalkulačky garanci vrácení nabídnout nemůžeme — tam platí garance funkčnosti a předávací protokol.'],
       ['Co když budu chtít odejít?', 'Web i doména jsou vaše. Zdarma vám předáme všechna data a pomůžeme s převodem.'],
       ['Potřebuji víc než jednu stránku.', `Použijte naši kalkulačku — spočítá cenu webu s více stránkami, rezervacemi nebo e-shopem. Větší weby začínají od ${P.customFrom}.`],
     ],
