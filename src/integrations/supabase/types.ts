@@ -553,6 +553,39 @@ export type Database = {
           },
         ]
       }
+      business_sites: {
+        Row: {
+          created_at: string
+          default_location: string
+          default_radius_km: number
+          description: string
+          id: string
+          lead_brief: string
+          name: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          default_location?: string
+          default_radius_km?: number
+          description?: string
+          id?: string
+          lead_brief?: string
+          name: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          default_location?: string
+          default_radius_km?: number
+          description?: string
+          id?: string
+          lead_brief?: string
+          name?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       calculator_modules: {
         Row: {
           active: boolean
@@ -3484,6 +3517,65 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      scraped_leads: {
+        Row: {
+          address: string | null
+          category: string | null
+          created_at: string
+          distance_note: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          query: string | null
+          site_id: string
+          source_url: string | null
+          status: string
+          website: string | null
+          why_fit: string | null
+        }
+        Insert: {
+          address?: string | null
+          category?: string | null
+          created_at?: string
+          distance_note?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          query?: string | null
+          site_id: string
+          source_url?: string | null
+          status?: string
+          website?: string | null
+          why_fit?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string | null
+          created_at?: string
+          distance_note?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          query?: string | null
+          site_id?: string
+          source_url?: string | null
+          status?: string
+          website?: string | null
+          why_fit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_leads_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "business_sites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seo_alerts_log: {
         Row: {
