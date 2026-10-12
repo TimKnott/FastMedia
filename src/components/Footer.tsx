@@ -63,7 +63,7 @@ const Footer = () => {
               multiline
             />
             <p className="mt-4 text-xs text-background/50 leading-relaxed">
-              {isEnglish ? 'Timothy Knott — Founder' : 'Timothy Knott — zakladatel'} · IČO 17308551
+              {isEnglish ? 'Timothy Knott — Founder' : 'Timothy Knott — zakladatel'} · IČO 17308551 · {isEnglish ? 'Not VAT registered' : 'Neplátce DPH'}
               <br />
               {isEnglish
                 ? 'Louny 440 01, Ústí nad Labem Region, Czech Republic'
