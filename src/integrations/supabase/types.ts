@@ -561,6 +561,7 @@ export type Database = {
           description: string
           id: string
           lead_brief: string
+          modes: Json
           name: string
           sheet_url: string | null
           url: string | null
@@ -572,6 +573,7 @@ export type Database = {
           description?: string
           id?: string
           lead_brief?: string
+          modes?: Json
           name: string
           sheet_url?: string | null
           url?: string | null
@@ -583,6 +585,7 @@ export type Database = {
           description?: string
           id?: string
           lead_brief?: string
+          modes?: Json
           name?: string
           sheet_url?: string | null
           url?: string | null
@@ -1245,6 +1248,7 @@ export type Database = {
       directory_finds: {
         Row: {
           address: string | null
+          audit: Json | null
           category: string | null
           city: string | null
           country: string | null
@@ -1257,6 +1261,7 @@ export type Database = {
           kind: string
           phone: string | null
           query: string | null
+          score: number | null
           site_id: string
           source_url: string | null
           status: string
@@ -1266,6 +1271,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          audit?: Json | null
           category?: string | null
           city?: string | null
           country?: string | null
@@ -1278,6 +1284,7 @@ export type Database = {
           kind: string
           phone?: string | null
           query?: string | null
+          score?: number | null
           site_id: string
           source_url?: string | null
           status?: string
@@ -1287,6 +1294,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          audit?: Json | null
           category?: string | null
           city?: string | null
           country?: string | null
@@ -1299,6 +1307,7 @@ export type Database = {
           kind?: string
           phone?: string | null
           query?: string | null
+          score?: number | null
           site_id?: string
           source_url?: string | null
           status?: string
