@@ -1346,6 +1346,12 @@ import { Skeleton } from "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d50
 import { Slider } from "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2"
 ```
 
+### Sonner
+
+```ts
+import { Sonner } from "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2"
+```
+
 ### Switch
 
 ```ts
@@ -1428,6 +1434,12 @@ import { TabsTrigger } from "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15
 
 ```ts
 import { Textarea } from "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2"
+```
+
+### ThemeProvider
+
+```ts
+import { ThemeProvider } from "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2"
 ```
 
 ### Toast
