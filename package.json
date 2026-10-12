@@ -54,6 +54,7 @@
     "dompurify": "^3.4.15",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.27.1",
+    "html-to-image": "1.11.11",
     "input-otp": "^1.4.2",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.462.0",
