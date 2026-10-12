@@ -1,16 +1,25 @@
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
+import AppErrorBoundary from "./components/AppErrorBoundary";
 import "./index.css";
 
-// After a new release, an open tab (or cached app shell) may request page
-// files that no longer exist. Reload once to pick up the latest version.
-const RELOAD_KEY = "fm-chunk-reload-at";
+// Tell the blank-page watchdog in index.html that the app's code loaded.
+(window as unknown as { __fmBooted?: boolean }).__fmBooted = true;
+
+// Tidy the address bar after an automatic clean reload.
+if (new URLSearchParams(window.location.search).has("_r")) {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("_r");
+  window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+}
+
+// After a new release, an open tab (or cached copy) may request page files
+// that no longer exist. Clear old copies and reload once.
 const reloadForStaleChunk = () => {
-  const last = Number(sessionStorage.getItem(RELOAD_KEY) || 0);
-  if (Date.now() - last < 10_000) return; // avoid reload loops
-  sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
-  window.location.reload();
+  const w = window as unknown as { __fmRecover?: () => void };
+  if (w.__fmRecover) w.__fmRecover();
+  else window.location.reload();
 };
 window.addEventListener("vite:preloadError", (event) => {
   event.preventDefault();
@@ -25,7 +34,9 @@ window.addEventListener("unhandledrejection", (event) => {
 });
 
 createRoot(document.getElementById("root")!).render(
-  <HelmetProvider>
-    <App />
-  </HelmetProvider>
+  <AppErrorBoundary>
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
+  </AppErrorBoundary>
 );
