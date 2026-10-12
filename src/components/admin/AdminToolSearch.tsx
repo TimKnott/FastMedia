@@ -8,10 +8,11 @@ import {
 import { useUserRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
-  mainItems, contentItems, publicPageItems, adminItems, settingsItems, type MenuItem,
+  mainItems, businessToolItems, contentItems, publicPageItems, adminItems, settingsItems, type MenuItem,
 } from './AdminSidebar';
 
 const groups: { label: string; items: MenuItem[] }[] = [
+  { label: 'Business tools', items: businessToolItems },
   { label: 'Main tools', items: mainItems },
   { label: 'Content', items: contentItems },
   { label: 'Public pages', items: publicPageItems },

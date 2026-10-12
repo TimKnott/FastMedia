@@ -110,7 +110,6 @@ export const contentItems: MenuItem[] = [
   { titleKey: 'admin.demo_pages', url: '/admin/demos', icon: Palette, minRole: 'editor' },
   { titleKey: 'admin.blog', url: '/admin/blog-manage', icon: BookOpen, minRole: 'editor' },
   { titleKey: "Freytag's Pyramid", url: '/admin/story-studio', icon: BookOpen, minRole: 'admin' },
-  { titleKey: 'Ad Studio', url: '/admin/ad-studio', icon: TicketPercent, minRole: 'super_admin' },
   { titleKey: 'Calculator modules', url: '/admin/modules', icon: Palette, minRole: 'admin' },
   { titleKey: 'Module requests', url: '/admin/module-requests', icon: TrendingUp, minRole: 'admin' },
   { titleKey: 'TTS Test Lab', url: '/admin/tts-test', icon: Volume2, minRole: 'admin' },
@@ -122,6 +121,11 @@ export const contentItems: MenuItem[] = [
   { titleKey: 'admin.sitemap', url: '/admin/sitemap', icon: Map, minRole: 'admin' },
   { titleKey: 'admin.versions', url: '/admin/content-history', icon: History, minRole: 'admin' },
   { titleKey: 'Legal Documents', url: '/admin/legal', icon: Scale, minRole: 'admin' },
+];
+
+export const businessToolItems: MenuItem[] = [
+  { titleKey: 'Ad Studio', url: '/admin/ad-studio', icon: TicketPercent, minRole: 'super_admin' },
+  { titleKey: 'Lead Scraper', url: '/admin/lead-scraper', icon: Search, minRole: 'admin' },
 ];
 
 export const publicPageItems: MenuItem[] = [
@@ -172,6 +176,7 @@ const AdminSidebar = () => {
   };
 
   const visibleMain = mainItems.filter(item => hasMinRole(item.minRole));
+  const visibleBusiness = businessToolItems.filter(item => hasMinRole(item.minRole));
   const visibleContent = contentItems.filter(item => hasMinRole(item.minRole));
   const visiblePublicPages = publicPageItems.filter(item => hasMinRole(item.minRole));
   const visibleAdmin = adminItems.filter(item => hasMinRole(item.minRole));
@@ -226,6 +231,7 @@ const AdminSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
+        {visibleBusiness.length > 0 && renderGroup(visibleBusiness, 'Business tools')}
         {visibleMain.length > 0 && renderGroup(visibleMain, t('admin.main_menu'))}
         {visibleContent.length > 0 && renderGroup(visibleContent, t('admin.content'))}
         {visiblePublicPages.length > 0 && renderGroup(visiblePublicPages, 'Public pages')}
