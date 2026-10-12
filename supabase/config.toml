@@ -55,3 +55,6 @@ verify_jwt = false
 
 [functions.search-visibility-agent]
 verify_jwt = false
+
+[functions.lead-scraper]
+verify_jwt = false

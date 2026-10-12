@@ -10,6 +10,7 @@ export interface AiJsonOptions {
   schema?: Record<string, unknown>
   schemaName?: string
   effort?: 'low' | 'medium' | 'high'
+  webSearch?: boolean
 }
 
 export async function generateJson<T = unknown>(
@@ -30,6 +31,7 @@ export async function generateJson<T = unknown>(
     stream: true,
     reasoning: { effort: options.effort ?? 'low' },
   }
+  if (options.webSearch) body.tools = [{ type: 'web_search' }]
   if (options.schema) {
     body.text = {
       format: {
