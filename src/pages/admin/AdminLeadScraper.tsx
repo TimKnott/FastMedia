@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { MicButton, ExternalLinkText, ReportBad } from '@/components/admin/LeadTools';
 import { Loader2, Plus, Search, Download, Settings2, Trash2 } from 'lucide-react';
 
 type Site = { id: string; name: string; url: string | null; description: string; lead_brief: string; default_location: string; default_radius_km: number };
@@ -109,13 +110,13 @@ const AdminLeadScraper = () => {
           {site && <p className="text-xs text-muted-foreground"><strong>Looking for:</strong> {site.lead_brief}</p>}
           <div className="grid gap-3 md:grid-cols-4">
             <div className="md:col-span-2"><Label>Industry or search term (English or Czech)</Label>
-              <Input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. jezdecká stáj, dairy farm, plumber" /></div>
+              <div className="flex gap-2"><Input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. jezdecká stáj, dairy farm, plumber" /><MicButton onText={setIndustry} /></div></div>
             <div><Label>Near</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Telč" /></div>
             <div><Label>Radius (km)</Label><Input type="number" min={1} max={500} value={radius} onChange={(e) => setRadius(Number(e.target.value))} /></div>
           </div>
           <div className="grid gap-3 md:grid-cols-4">
             <div className="md:col-span-3"><Label>Extra notes (optional)</Label>
-              <Input value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="e.g. no website yet, at least 10 horses" /></div>
+              <div className="flex gap-2"><Input value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="e.g. no website yet, at least 10 horses" /><MicButton onText={setExtra} /></div></div>
             <div><Label>How many</Label>
               <Select value={String(count)} onValueChange={(v) => setCount(Number(v))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -150,14 +151,14 @@ const AdminLeadScraper = () => {
                 </div>
               </div>
               <div className="text-muted-foreground flex flex-wrap gap-x-4">
-                {l.website && <a className="text-primary underline" href={l.website} target="_blank" rel="noreferrer">{l.website}</a>}
+                <ExternalLinkText url={l.website} />
                 {l.email && <a href={`mailto:${l.email}`}>{l.email}</a>}
                 {l.phone && <a href={`tel:${l.phone}`}>{l.phone}</a>}
                 {l.address && <span>{l.address}</span>}
                 {l.distance_note && <span>{l.distance_note}</span>}
               </div>
               {l.why_fit && <p>{l.why_fit}</p>}
-              {l.source_url && <a className="text-xs text-muted-foreground underline" href={l.source_url} target="_blank" rel="noreferrer">Source</a>}
+              <span className="text-xs flex items-center gap-2"><ExternalLinkText url={l.source_url} label="Where it was found" /><ReportBad siteId={siteId} kind="lead" title={l.name} website={l.website} onDone={loadLeads} /></span>
             </div>
           ))}
         </CardContent>

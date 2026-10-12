@@ -3,6 +3,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 import { generateJson } from '../_shared/ai-json.ts';
+import { feedbackGuidance, domainOf } from '../_shared/lead-feedback.ts';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -41,19 +42,20 @@ Deno.serve(async (req) => {
     const { data: existing } = await db.from('scraped_leads').select('name,website').eq('site_id', siteId).limit(1000);
     const seen = new Set((existing ?? []).flatMap((l) => [l.name?.toLowerCase(), l.website?.toLowerCase()]).filter(Boolean));
 
+    const fb = await feedbackGuidance(db, siteId);
     const res = await generateJson<{ leads: Record<string, string>[] }>(
       `Search the web (Czech and English sources: Google Maps listings, Firmy.cz, Mapy.cz, company websites, Facebook pages, directories) and find up to ${count} REAL businesses or organisations.
 Industry / search term (may be Czech or English): ${industry}
 Area: within about ${radius} km of ${location}.
 Extra notes: ${extra || 'none'}
-Only include entries you actually found on a public page. Use only publicly listed business contact details. Leave a field as an empty string if unknown — never guess emails or phone numbers. distance_note: town and rough distance from ${location}. why_fit: one short English sentence. source_url: the page you found it on.`,
+Only include entries you actually found on a public page. Use only publicly listed business contact details. Leave a field as an empty string if unknown — never guess emails or phone numbers. distance_note: town and rough distance from ${location}. why_fit: one short English sentence. source_url: the page you found it on.` + fb.text,
       {
         instructions: `You are a lead researcher for "${site.name}" (${site.url || 'no site yet'}): ${site.description}\nLead brief: ${site.lead_brief}`,
         schema, schemaName: 'leads', effort: 'low', webSearch: true,
       },
     );
 
-    const fresh = (res.leads ?? []).filter((l) => l.name && !seen.has(l.name.toLowerCase()) && !(l.website && seen.has(l.website.toLowerCase())));
+    const fresh = (res.leads ?? []).filter((l) => l.name && !fb.blockedTitles.has(l.name.toLowerCase()) && !(l.website && fb.blocked.has(domainOf(l.website))) && !seen.has(l.name.toLowerCase()) && !(l.website && seen.has(l.website.toLowerCase())));
     const rows = fresh.map((l) => ({ ...l, site_id: siteId, query: `${industry} · ${location} · ${radius} km` }));
     if (rows.length) await db.from('scraped_leads').insert(rows);
     return json({ ok: true, found: res.leads?.length ?? 0, added: rows.length });

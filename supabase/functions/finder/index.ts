@@ -4,6 +4,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 import { generateJson } from '../_shared/ai-json.ts';
+import { feedbackGuidance, domainOf } from '../_shared/lead-feedback.ts';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -147,16 +148,18 @@ audience_note: plain English, rough audience size as an ESTIMATE. budget_note: p
     const countries = (Array.isArray(b.countries) ? b.countries : []).filter((c: string) => ALLOWED_COUNTRIES.includes(c));
     if (!countries.length) countries.push('Czech Republic');
     const count = Math.min(Math.max(Number(b.count) || 10, 3), 20);
+    const fb = await feedbackGuidance(db, siteId);
     const res = await generateJson<{ items: Record<string, string>[] }>(
       brief(kind, topic, countries, count, str(b.date_from, 10), str(b.date_to, 10), loc, radius) +
-        `\nOnly include items you actually found on a public page; source_url must be that page. Use only publicly listed business contact details; leave a field empty rather than guessing. country = country name in English.`,
+        `\nOnly include items you actually found on a public page; source_url must be that page. Use only publicly listed business contact details; leave a field empty rather than guessing. country = country name in English.` + (kind === 'content' ? '' : fb.text),
       { instructions, schema: itemsSchema, schemaName: 'items', effort: 'low', webSearch: true },
     );
     const { data: existing } = await db.from('directory_finds').select('title').eq('site_id', siteId).eq('kind', kind).limit(5000);
     const seen = new Set((existing ?? []).map((r) => r.title.toLowerCase()));
     const rows = (res.items ?? []).filter((i) => {
       const k = i.title?.toLowerCase();
-      if (!k || seen.has(k)) return false;
+      if (!k || seen.has(k) || fb.blockedTitles.has(k)) return false;
+      if (i.website && fb.blocked.has(domainOf(i.website))) return false;
       seen.add(k);
       return true;
     }).map((i) => ({ ...Object.fromEntries(FIELDS.map((f) => [f, String(i[f] ?? '').slice(0, 1000)])), site_id: siteId, kind, query: `${topic || kind} · ${kind === 'bad_site' || kind === 'local_place' ? `${loc} ${radius} km` : countries.join('/')}` }));
