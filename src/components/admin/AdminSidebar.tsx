@@ -36,6 +36,7 @@ import {
   Phone,
   Sparkles,
   Target,
+  Film,
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -127,6 +128,7 @@ export const businessToolItems: MenuItem[] = [
   { titleKey: 'Ad Studio', url: '/admin/ad-studio', icon: TicketPercent, minRole: 'super_admin' },
   { titleKey: 'Lead Scraper', url: '/admin/lead-scraper', icon: Search, minRole: 'admin' },
   { titleKey: 'Ad Compliance Checker', url: '/admin/ad-compliance', icon: FileCheck2, minRole: 'admin' },
+  { titleKey: 'Video Studio', url: '/admin/video-studio', icon: Film, minRole: 'admin' },
 ];
 
 export const publicPageItems: MenuItem[] = [

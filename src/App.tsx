@@ -88,6 +88,7 @@ const AdminStoryStudio = lazy(() => import("./pages/admin/AdminStoryStudio"));
 const AdminAdStudio = lazy(() => import("./pages/admin/AdminAdStudio"));
 const AdminLeadScraper = lazy(() => import("./pages/admin/AdminLeadScraper"));
 const AdminAdCompliance = lazy(() => import("./pages/admin/AdminAdCompliance"));
+const AdminVideoStudio = lazy(() => import("./pages/admin/AdminVideoStudio"));
 const AdminModules = lazy(() => import("./pages/admin/AdminModules"));
 const AdminModuleRequests = lazy(() => import("./pages/admin/AdminModuleRequests"));
 const AdminTtsTest = lazy(() => import("./pages/admin/AdminTtsTest"));
@@ -333,6 +334,7 @@ const App = () => (
               <Route path="story-studio" element={<ProtectedRoute minRole="admin"><AdminStoryStudio /></ProtectedRoute>} />
               <Route path="lead-scraper" element={<ProtectedRoute minRole="admin"><AdminLeadScraper /></ProtectedRoute>} />
               <Route path="ad-compliance" element={<ProtectedRoute minRole="admin"><AdminAdCompliance /></ProtectedRoute>} />
+              <Route path="video-studio" element={<ProtectedRoute minRole="admin"><AdminVideoStudio /></ProtectedRoute>} />
               <Route path="ad-studio" element={<ProtectedRoute minRole="super_admin"><AdminAdStudio /></ProtectedRoute>} />
               <Route path="modules" element={<ProtectedRoute minRole="admin"><AdminModules /></ProtectedRoute>} />
               <Route path="module-requests" element={<ProtectedRoute minRole="admin"><AdminModuleRequests /></ProtectedRoute>} />
