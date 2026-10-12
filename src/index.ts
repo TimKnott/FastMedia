@@ -1,3 +1,4 @@
+import "./index.css";
 export * from "./components/ui/button";
 export * from "./components/ui/card";
 export * from "./components/ui/dialog";
@@ -47,3 +48,5 @@ export * from "./components/ui/toggle-group";
 export * from "./components/ui/toggle";
 export * from "./components/ui/tooltip";
 export * from "./components/ui/use-toast";
+export { ThemeProvider } from "next-themes";
+export { Toaster as Sonner, toast as sonnerToast } from "./components/ui/sonner";
