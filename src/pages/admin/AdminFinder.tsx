@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { MicButton, ExternalLinkText, ReportBad } from '@/components/admin/LeadTools';
 import { Loader2, Search, Sheet, Trash2, ExternalLink, Download, Gauge, Target, Copy, Send } from 'lucide-react';
 
 type Kind = 'listing' | 'event' | 'content' | 'bad_site' | 'local_place' | 'audience_pack';
@@ -189,7 +190,7 @@ const AdminFinder = () => {
         <CardContent className="pt-6 space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="topic">{kind === 'audience_pack' ? 'Who to reach' : 'What to look for (Czech or English)'}</Label>
-            <Input id="topic" placeholder={PLACEHOLDER[kind]} value={topic} onChange={(e) => setTopic(e.target.value)} />
+            <div className="flex gap-2"><Input id="topic" placeholder={PLACEHOLDER[kind]} value={topic} onChange={(e) => setTopic(e.target.value)} /><MicButton onText={setTopic} /></div>
           </div>
           {usesArea(kind) ? (
             <div className="flex flex-wrap gap-4">
@@ -254,8 +255,8 @@ const AdminFinder = () => {
               {i.audit?.reasons && <p className="text-sm">{i.audit.reasons.join(' · ')}</p>}
               {i.summary && <p className="text-sm text-muted-foreground">{i.summary}</p>}
               <div className="flex flex-wrap gap-3 text-sm">
-                {i.website && <a className="text-primary inline-flex items-center gap-1" href={i.website} target="_blank" rel="noreferrer">Website <ExternalLink className="w-3 h-3" /></a>}
-                {i.source_url && i.source_url !== i.website && <a className="text-primary inline-flex items-center gap-1" href={i.source_url} target="_blank" rel="noreferrer">Source <ExternalLink className="w-3 h-3" /></a>}
+                {i.website ? <span className="inline-flex items-center gap-1"><ExternalLink className="w-3 h-3" /><ExternalLinkText url={i.website} /></span> : i.kind !== 'audience_pack' && <span className="text-muted-foreground">No website found</span>}
+                {i.source_url && i.source_url !== i.website && <ExternalLinkText url={i.source_url} label="Where it was found" />}
                 {i.email && <span>{i.email}</span>}
                 {i.phone && <span>{i.phone}</span>}
               </div>
@@ -267,6 +268,7 @@ const AdminFinder = () => {
                   </Select>
                 )}
                 {i.kind === 'bad_site' && i.email && <Button size="sm" variant="outline" onClick={() => toProspecting(i)}><Send className="w-3 h-3" /> Prospecting desk</Button>}
+                {i.kind !== 'audience_pack' && <ReportBad siteId={siteId} kind={i.kind} title={i.title} website={i.website} onDone={() => setStatus(i.id, 'rejected')} />}
                 <Button size="icon" variant="ghost" aria-label="Delete" onClick={() => remove(i.id)}><Trash2 className="w-4 h-4" /></Button>
               </div>
             </CardContent>
