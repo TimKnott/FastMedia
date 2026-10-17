@@ -602,18 +602,18 @@ const CalculatorPage = () => {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(200, 210, 230);
-      doc.text('Bespoke websites for service businesses', M + 58, 64);
+      doc.text((lang === 'de' ? 'Websites für Dienstleistungsunternehmen' : 'Bespoke websites for service businesses'), M + 58, 64);
 
       // Right-side QUOTE wordmark
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(22);
       doc.setTextColor(255);
-      doc.text('QUOTE', pageW - M, 44, { align: 'right' });
+      doc.text((lang === 'de' ? 'ANGEBOT' : 'QUOTE'), pageW - M, 44, { align: 'right' });
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(200, 210, 230);
       doc.text(`No. ${quoteId}`, pageW - M, 60, { align: 'right' });
-      doc.text(`Issued: ${today}`, pageW - M, 73, { align: 'right' });
+      doc.text((lang === 'de' ? `Ausgestellt: ${today}` : `Issued: ${today}`), pageW - M, 73, { align: 'right' });
 
       doc.setTextColor(...INK);
     };
@@ -632,11 +632,11 @@ const CalculatorPage = () => {
 
       // Legal links (rich hyperlinks)
       const links: { label: string; slug: string }[] = [
-        { label: 'Terms of Service', slug: 'terms-of-service' },
-        { label: 'Privacy Policy', slug: 'privacy-policy' },
-        { label: 'GDPR & Data Rights', slug: 'gdpr' },
-        { label: 'Cookie Policy', slug: 'cookie-policy' },
-        { label: 'Refund Policy', slug: 'refund-policy' },
+        { label: (lang === 'de' ? 'AGB' : 'Terms of Service'), slug: 'terms-of-service' },
+        { label: (lang === 'de' ? 'Datenschutz' : 'Privacy Policy'), slug: 'privacy-policy' },
+        { label: (lang === 'de' ? 'DSGVO' : 'GDPR & Data Rights'), slug: 'gdpr' },
+        { label: (lang === 'de' ? 'Cookies' : 'Cookie Policy'), slug: 'cookie-policy' },
+        { label: (lang === 'de' ? 'Erstattung' : 'Refund Policy'), slug: 'refund-policy' },
         { label: 'DPA', slug: 'dpa' },
       ];
       let lx = M;
@@ -657,8 +657,8 @@ const CalculatorPage = () => {
 
       doc.setTextColor(...MUTED);
       doc.setFontSize(8);
-      doc.text(`Page ${pageNum} of ${totalPages}`, pageW - M, fy + 30, { align: 'right' });
-      doc.text(`Quote valid until ${validUntil}`, pageW - M, fy + 14, { align: 'right' });
+      doc.text((lang === 'de' ? `Seite ${pageNum} von ${totalPages}` : `Page ${pageNum} of ${totalPages}`), pageW - M, fy + 30, { align: 'right' });
+      doc.text((lang === 'de' ? `Gültig bis ${validUntil}` : `Quote valid until ${validUntil}`), pageW - M, fy + 14, { align: 'right' });
       doc.setTextColor(...INK);
     };
 
@@ -672,8 +672,8 @@ const CalculatorPage = () => {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.setTextColor(...MUTED);
-    doc.text('PREPARED FOR', M + 16, y + 20);
-    doc.text('PROJECT', pageW / 2 + 8, y + 20);
+    doc.text((lang === 'de' ? 'ERSTELLT FÜR' : 'PREPARED FOR'), M + 16, y + 20);
+    doc.text((lang === 'de' ? 'PROJEKT' : 'PROJECT'), pageW / 2 + 8, y + 20);
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(13);
@@ -686,8 +686,8 @@ const CalculatorPage = () => {
     doc.setTextColor(...MUTED);
     if (contactEmail) doc.text(contactEmail, M + 16, y + 56);
     if (contactPhone) doc.text(contactPhone, M + 16, y + 70);
-    doc.text(`Estimated build: 4–6 weeks`, pageW / 2 + 8, y + 56);
-    doc.text(`Currency: CZK  •  All prices excl. VAT`, pageW / 2 + 8, y + 70);
+    doc.text((lang === 'de' ? `Geschätzte Umsetzung: 4–6 Wochen` : `Estimated build: 4–6 weeks`), pageW / 2 + 8, y + 56);
+    doc.text((lang === 'de' ? 'Währung: CZK • Endpreise, nicht umsatzsteuerregistriert' : lang === 'cs' ? 'Měna: CZK • Konečné ceny, neplátce DPH' : 'Currency: CZK • Final prices, not VAT registered'), pageW / 2 + 8, y + 70);
 
     y += 110;
 
@@ -695,7 +695,7 @@ const CalculatorPage = () => {
     doc.setTextColor(...NAVY);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text('Your Custom Website Quote', M, y);
+    doc.text((lang === 'de' ? 'Ihr individuelles Website-Angebot' : 'Your Custom Website Quote'), M, y);
     doc.setDrawColor(...CORAL);
     doc.setLineWidth(2);
     doc.line(M, y + 5, M + 60, y + 5);
@@ -713,10 +713,10 @@ const CalculatorPage = () => {
       doc.setTextColor(255);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9.5);
-      doc.text('ITEM', COL_ITEM, y + 16);
-      doc.text('QTY', COL_QTY, y + 16, { align: 'right' });
-      doc.text('ONE-TIME', COL_ONE, y + 16, { align: 'right' });
-      doc.text('MONTHLY', COL_MO, y + 16, { align: 'right' });
+      doc.text((lang === 'de' ? 'POSITION' : 'ITEM'), COL_ITEM, y + 16);
+      doc.text((lang === 'de' ? 'ANZAHL' : 'QTY'), COL_QTY, y + 16, { align: 'right' });
+      doc.text((lang === 'de' ? 'EINMALIG' : 'ONE-TIME'), COL_ONE, y + 16, { align: 'right' });
+      doc.text((lang === 'de' ? 'MONATLICH' : 'MONTHLY'), COL_MO, y + 16, { align: 'right' });
       y += 24;
       doc.setTextColor(...INK);
     };
@@ -774,8 +774,8 @@ const CalculatorPage = () => {
 
     // Base website row + inclusions
     tableRow(
-      'Base Website',
-      'Up to 5 pages · Mobile responsive · SSL/HTTPS · Basic SEO · GDPR cookie banner · Google Maps · Contact details · 12 months hosting prepaid',
+      (lang === 'de' ? 'Basis-Website' : 'Base Website'),
+      (lang === 'de' ? 'Bis zu 5 Seiten · Mobiloptimiert · SSL/HTTPS · Basis-SEO · Cookie-Banner · Google Maps · Kontaktdaten · Hosting für 12 Monate im Voraus' : 'Up to 5 pages · Mobile responsive · SSL/HTTPS · Basic SEO · GDPR cookie banner · Google Maps · Contact details · 12 months hosting prepaid'),
       '1',
       `${formatPrice(BASE_WEBSITE_PRICE)} Kč`,
       `${formatPrice(BASE_HOSTING_PRICE)} Kč/mo`,
@@ -796,8 +796,8 @@ const CalculatorPage = () => {
 
     if (totalLaborHours > 0) {
       tableRow(
-        `Custom development & integration`,
-        `Senior engineering time at ${LABOR_RATE} Kč/h`,
+        (lang === 'de' ? `Individuelle Entwicklung und Integration` : `Custom development & integration`),
+        (lang === 'de' ? `Entwicklungszeit: ${LABOR_RATE} Kč/h` : `Senior engineering time at ${LABOR_RATE} Kč/h`),
         `${totalLaborHours} h`,
         `${formatPrice(laborCost)} Kč`,
         '—',
@@ -817,15 +817,15 @@ const CalculatorPage = () => {
     doc.setTextColor(255);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
-    doc.text('Subtotal (one-time)', cardX + 16, y + 24);
+    doc.text((lang === 'de' ? 'Zwischensumme (einmalig)' : 'Subtotal (one-time)'), cardX + 16, y + 24);
     doc.text(`${formatPrice(grandTotalOneTime)} Kč`, cardX + cardW - 16, y + 24, { align: 'right' });
-    doc.text('Recurring', cardX + 16, y + 42);
+    doc.text((lang === 'de' ? 'Monatlich' : 'Recurring'), cardX + 16, y + 42);
     doc.text(`${formatPrice(totalMonthly)} Kč/mo`, cardX + cardW - 16, y + 42, { align: 'right' });
 
     let cardY = y + 60;
     if (appliedCoupon) {
       doc.setTextColor(255, 180, 170);
-      doc.text(`Coupon ${appliedCoupon.code}`, cardX + 16, cardY);
+      doc.text((lang === 'de' ? `Gutschein ${appliedCoupon.code}` : `Coupon ${appliedCoupon.code}`), cardX + 16, cardY);
       const discLabel = `- ${formatPrice(oneTimeDiscount)} Kč`;
       doc.text(discLabel, cardX + cardW - 16, cardY, { align: 'right' });
       cardY += 18;
@@ -834,12 +834,12 @@ const CalculatorPage = () => {
       doc.setTextColor(255);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
-      doc.text('Total due today', cardX + 16, cardY + 8);
+      doc.text((lang === 'de' ? 'Heute zu zahlen' : 'Total due today'), cardX + 16, cardY + 8);
       doc.text(`${formatPrice(discountedOneTime)} Kč`, cardX + cardW - 16, cardY + 8, { align: 'right' });
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9.5);
       doc.setTextColor(255, 180, 170);
-      doc.text('Recurring after discount', cardX + 16, cardY + 26);
+      doc.text((lang === 'de' ? 'Monatlich nach Rabatt' : 'Recurring after discount'), cardX + 16, cardY + 26);
       doc.text(`${formatPrice(discountedMonthly)} Kč/mo`, cardX + cardW - 16, cardY + 26, { align: 'right' });
     } else {
       doc.setDrawColor(80, 100, 140);
@@ -847,7 +847,7 @@ const CalculatorPage = () => {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.setTextColor(...CORAL);
-      doc.text('Total due today', cardX + 16, cardY + 12);
+      doc.text((lang === 'de' ? 'Heute zu zahlen' : 'Total due today'), cardX + 16, cardY + 12);
       doc.setTextColor(255);
       doc.text(`${formatPrice(grandTotalOneTime)} Kč`, cardX + cardW - 16, cardY + 12, { align: 'right' });
     }
@@ -856,12 +856,12 @@ const CalculatorPage = () => {
     doc.setTextColor(...INK);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
-    doc.text('What happens next', M, y + 8);
+    doc.text((lang === 'de' ? 'Die nächsten Schritte' : 'What happens next'), M, y + 8);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...MUTED);
     const next = doc.splitTextToSize(
-      '1. Accept this quote and pay the deposit.\n2. Discovery call within 48 hours.\n3. Design proofs in 5–7 business days.\n4. Build & QA, then launch.\n\nAll figures exclude VAT. Hosting is billed annually in advance.',
+      (lang === 'de' ? '1. Angebot und Zahlung vereinbaren.\n2. Projekt besprechen.\n3. Entwürfe abstimmen.\n4. Umsetzung, Prüfung und Veröffentlichung.\n\nEndpreise in CZK. Hosting wird jährlich im Voraus berechnet.' : '1. Accept this quote and pay the deposit.\n2. Discovery call within 48 hours.\n3. Design proofs in 5–7 business days.\n4. Build & QA, then launch.\n\nFinal prices; not VAT registered. Hosting is billed annually in advance.'),
       cardX - M - 24,
     );
     doc.text(next, M, y + 28);
@@ -876,18 +876,18 @@ const CalculatorPage = () => {
       doc.setTextColor(...INK);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
-      doc.text(`Digitalisation grant estimate — ${grantRate}% support rate`, M + 14, y + 20);
+      doc.text((lang === 'de' ? `Förderschätzung — ${grantRate}% Förderanteil` : `Digitalisation grant estimate — ${grantRate}% support rate`), M + 14, y + 20);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(...MUTED);
       doc.text(
-        `Estimated grant contribution: ${formatPrice(grantAmount)} Kč   |   Your share after the grant: ${formatPrice(netAfterGrant)} Kč`,
+        (lang === 'de' ? `Förderung: ${formatPrice(grantAmount)} Kč   |   Eigenanteil: ${formatPrice(netAfterGrant)} Kč` : `Estimated grant contribution: ${formatPrice(grantAmount)} Kč   |   Your share after the grant: ${formatPrice(netAfterGrant)} Kč`),
         M + 14,
         y + 36,
       );
       doc.setFontSize(8);
       doc.text(
-        'Indicative only. The support rate and eligibility are decided by the grant provider; this quote is payable in full unless a grant is awarded.',
+        (lang === 'de' ? 'Unverbindlich. Förderstelle entscheidet über Eignung und Förderanteil. Ohne bewilligte Förderung ist der volle Betrag zu zahlen.' : 'Indicative only. The support rate and eligibility are decided by the grant provider; this quote is payable in full unless a grant is awarded.'),
         M + 14,
         y + 48,
       );
@@ -903,7 +903,7 @@ const CalculatorPage = () => {
     doc.setFontSize(8.5);
     doc.setTextColor(...MUTED);
     const legalIntro = doc.splitTextToSize(
-      'By accepting this quote you agree to FastMedia.Pro\'s Terms of Service, Privacy Policy, GDPR processing terms, Cookie Policy, Refund Policy and Data Processing Agreement linked in the footer of every page. This proposal is valid for 14 days from the issue date.',
+      (lang === 'de' ? 'Mit Annahme dieses Angebots stimmen Sie den verlinkten Vertrags- und Datenschutzbedingungen von FastMedia.Pro zu. Dieses Angebot ist 14 Tage ab Ausstellung gültig. Für größere Kalkulator-Projekte gilt nicht die Geld-zurück-Garantie der kleinen Pakete.' : 'By accepting this quote you agree to FastMedia.Pro\'s Terms of Service, Privacy Policy, GDPR processing terms, Cookie Policy, Refund Policy and Data Processing Agreement linked in the footer of every page. This proposal is valid for 14 days from the issue date.'),
       pageW - M * 2,
     );
     doc.text(legalIntro, M, y);
