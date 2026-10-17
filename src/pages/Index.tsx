@@ -36,8 +36,8 @@ const Index = () => {
   return (
     <>
       <SEOHead
-        title={isEnglish ? 'FastMedia.Pro — Websites for Trades and Services' : 'FastMedia.Pro — Profesionální weby pro řemeslníky a služby'}
-        description={isEnglish ? 'Conversion-focused websites for trades and services, with AI assistance, online bookings and lead capture. Delivered worldwide.' : 'FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI asistent, online rezervace a sběr poptávek.'}
+        title={language === 'de' ? 'FastMedia.Pro – Webdesign für Handwerksbetriebe und Unternehmen' : (isEnglish ? 'FastMedia.Pro — Websites for Trades and Services' : 'FastMedia.Pro — Profesionální weby pro řemeslníky a služby')}
+        description={language === 'de' ? 'Websites für Handwerksbetriebe und Dienstleister. Individuelle Funktionen für Anfragen, Buchungen und Ihr Unternehmen. Projekte aus der Ferne.' : (isEnglish ? 'Conversion-focused websites for trades and services, with AI assistance, online bookings and lead capture. Delivered worldwide.' : 'FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI asistent, online rezervace a sběr poptávek.')}
         canonical="/"
         ogType="website"
         pagePath="/"

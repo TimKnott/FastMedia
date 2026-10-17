@@ -6,6 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import logo from '@/assets/logo.jpeg';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { localizedPath } from '@/lib/publicLanguage';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 const Footer = () => {
@@ -28,16 +29,16 @@ const Footer = () => {
     { href: '/consultant/tereza', label: t('nav.consultant') },
     { href: '/calculator', label: t('nav.calculator') },
     { href: '/inquiry', label: t('nav.inquiry') },
-    { href: '/about', label: isEnglish ? 'About' : 'O nás' },
-    { href: '/websites-for/plumbers', label: isEnglish ? 'Websites for plumbers' : 'Weby pro instalatéry' },
-    { href: '/websites-for/electricians', label: isEnglish ? 'Websites for electricians' : 'Weby pro elektrikáře' },
-    { href: '/websites-for/small-service-businesses', label: isEnglish ? 'Websites for small businesses' : 'Weby pro malé firmy' },
-    { href: '/contact', label: isEnglish ? 'Contact' : 'Kontakt' },
-    { href: '/quote-request', label: isEnglish ? 'Request a quote' : 'Nezávazná nabídka' },
+    { href: '/about', label: language === 'de' ? 'Über uns' : (isEnglish ? 'About' : 'O nás') },
+    { href: '/websites-for/plumbers', label: language === 'de' ? 'Websites für Sanitärbetriebe' : (isEnglish ? 'Websites for plumbers' : 'Weby pro instalatéry') },
+    { href: '/websites-for/electricians', label: language === 'de' ? 'Websites für Elektrobetriebe' : (isEnglish ? 'Websites for electricians' : 'Weby pro elektrikáře') },
+    { href: '/websites-for/small-service-businesses', label: language === 'de' ? 'Websites für kleine Unternehmen' : (isEnglish ? 'Websites for small businesses' : 'Weby pro malé firmy') },
+    { href: '/contact', label: language === 'de' ? 'Kontakt' : (isEnglish ? 'Contact' : 'Kontakt') },
+    { href: '/quote-request', label: language === 'de' ? 'Angebot anfordern' : (isEnglish ? 'Request a quote' : 'Nezávazná nabídka') },
     { href: '/grant-wizard', label: t('nav.grant') },
-    { href: '/media-kit', label: isEnglish ? 'Press kit' : 'Tiskový kit' },
-    { href: '/reviews', label: isEnglish ? 'Reviews' : 'Recenze' },
-    { href: '/launch', label: isEnglish ? 'Launch' : 'Start' },
+    { href: '/media-kit', label: language === 'de' ? 'Presseunterlagen' : (isEnglish ? 'Press kit' : 'Tiskový kit') },
+    { href: '/reviews', label: language === 'de' ? 'Bewertungen' : (isEnglish ? 'Reviews' : 'Recenze') },
+    { href: '/launch', label: language === 'de' ? 'Start' : (isEnglish ? 'Launch' : 'Start') },
     { href: '/install', label: t('nav.install') },
   ];
 
@@ -63,11 +64,11 @@ const Footer = () => {
               multiline
             />
             <p className="mt-4 text-xs text-background/50 leading-relaxed">
-              {isEnglish ? 'Timothy Knott — Founder' : 'Timothy Knott — zakladatel'} · IČO 17308551 · {isEnglish ? 'Not VAT registered' : 'Neplátce DPH'}
+              {language === 'de' ? 'Timothy Knott — Gründer' : (isEnglish ? 'Timothy Knott — Founder' : 'Timothy Knott — zakladatel')} · IČO 17308551 · {language === 'de' ? 'Nicht umsatzsteuerpflichtig registriert' : (isEnglish ? 'Not VAT registered' : 'Neplátce DPH')}
               <br />
-              {isEnglish
+              {language === 'de' ? 'Louny 440 01, Region Ústí nad Labem, Tschechien' : (isEnglish
                 ? 'Louny 440 01, Ústí nad Labem Region, Czech Republic'
-                : 'Louny 440 01, Ústecký kraj, Česká republika'}
+                : 'Louny 440 01, Ústecký kraj, Česká republika')}
             </p>
           </div>
 
@@ -99,7 +100,7 @@ const Footer = () => {
               {pageLinks.map((link) => (
                 <li key={link.href}>
                   <Link
-                    to={link.href}
+                    to={localizedPath(link.href, language)}
                     className="text-sm text-background/60 hover:text-accent transition-colors"
                   >
                     {link.label}
@@ -114,7 +115,7 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-sm uppercase tracking-wider text-background/80 mb-4 inline-flex items-center gap-1.5">
               {t('footer.terms')}
               <LearnMoreModal
-                title={isEnglish ? 'Accessibility & Compliance' : 'Přístupnost a soulad s předpisy'}
+                title={language === 'de' ? 'Barrierefreiheit und Datenschutz' : (isEnglish ? 'Accessibility & Compliance' : 'Přístupnost a soulad s předpisy')}
                 explanation={isEnglish ? 'FastMedia.Pro builds with WCAG 2.1 AA accessibility criteria in mind, GDPR compliance and transparent data handling.' : 'FastMedia.Pro staví weby s ohledem na kritéria přístupnosti WCAG 2.1 AA, soulad s GDPR a transparentní zpracování údajů.'}
                 benefits={isEnglish ? ['WCAG 2.1 AA accessible', 'GDPR-compliant data handling', 'Czech and British English'] : ['Přístupnost WCAG 2.1 AA', 'Zpracování údajů v souladu s GDPR', 'Čeština a britská angličtina']}
               />
@@ -132,7 +133,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/legal/cookie-policy" className="text-sm text-background/60 hover:text-accent transition-colors">
-                   {isEnglish ? 'Cookie Policy' : 'Zásady používání cookies'}
+                   {language === 'de' ? 'Cookie-Richtlinie' : (isEnglish ? 'Cookie Policy' : 'Zásady používání cookies')}
                 </Link>
               </li>
               <li>
@@ -142,27 +143,27 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/legal/privacy-policy?region=us" className="text-sm text-background/60 hover:text-accent transition-colors">
-                   {isEnglish ? 'US Privacy Notice' : 'Ochrana soukromí v USA'}
+                   {language === 'de' ? 'US-Datenschutzhinweise' : (isEnglish ? 'US Privacy Notice' : 'Ochrana soukromí v USA')}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/dpa" className="text-sm text-background/60 hover:text-accent transition-colors">
-                   {isEnglish ? 'Data Processing Agreement' : 'Smlouva o zpracování údajů'}
+                   {language === 'de' ? 'Auftragsverarbeitungsvertrag' : (isEnglish ? 'Data Processing Agreement' : 'Smlouva o zpracování údajů')}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/acceptable-use" className="text-sm text-background/60 hover:text-accent transition-colors">
-                   {isEnglish ? 'Acceptable Use' : 'Pravidla přijatelného používání'}
+                   {language === 'de' ? 'Nutzungsregeln' : (isEnglish ? 'Acceptable Use' : 'Pravidla přijatelného používání')}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/refund-policy" className="text-sm text-background/60 hover:text-accent transition-colors">
-                   {isEnglish ? 'Refunds & Cancellation' : 'Vrácení peněz a zrušení'}
+                   {language === 'de' ? 'Erstattung und Kündigung' : (isEnglish ? 'Refunds & Cancellation' : 'Vrácení peněz a zrušení')}
                 </Link>
               </li>
               <li>
                 <Link to="/legal/imprint" className="text-sm text-background/60 hover:text-accent transition-colors">
-                   {isEnglish ? 'Imprint' : 'Identifikační údaje'}
+                   {language === 'de' ? 'Impressum' : (isEnglish ? 'Imprint' : 'Identifikační údaje')}
                 </Link>
               </li>
             </ul>
@@ -174,7 +175,7 @@ const Footer = () => {
           <p className="text-sm text-background/50">
             © {new Date().getFullYear()} FastMedia.Pro. {t('footer.rights')}.
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <ThemeToggle variant="inverted" />
             <span className="text-background/20">|</span>
             <button
@@ -182,7 +183,7 @@ const Footer = () => {
               className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
             >
               <Accessibility className="w-4 h-4" />
-               {isEnglish ? 'Accessibility' : 'Přístupnost'}
+               {language === 'de' ? 'Barrierefreiheit' : (isEnglish ? 'Accessibility' : 'Přístupnost')}
             </button>
             <span className="text-background/20">|</span>
             <Link
@@ -190,7 +191,7 @@ const Footer = () => {
               className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
             >
               <Shield className="w-4 h-4" />
-              {isEnglish ? 'Admin Portal' : 'Administrace'}
+              {language === 'de' ? 'Admin-Bereich' : (isEnglish ? 'Admin Portal' : 'Administrace')}
             </Link>
             <span className="text-background/20">|</span>
             <a
@@ -209,7 +210,7 @@ const Footer = () => {
               className="inline-flex items-center gap-1.5 text-sm text-background/60 hover:text-accent transition-colors"
             >
               <Contact className="w-4 h-4" />
-               {isEnglish ? 'Save Contact' : 'Uložit kontakt'}
+               {language === 'de' ? 'Kontakt speichern' : (isEnglish ? 'Save Contact' : 'Uložit kontakt')}
             </a>
           </div>
         </div>

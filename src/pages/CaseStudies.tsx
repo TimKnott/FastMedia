@@ -38,7 +38,7 @@ const CaseStudies = () => {
   return (
     <>
       <SEOHead
-        title={isEnglish ? 'Case Studies — Real Website Results | FastMedia.Pro' : 'Případové studie — skutečné výsledky webů | FastMedia.Pro'}
+        title={language === 'de' ? 'Projektbeispiele – Websites von FastMedia.Pro' : (isEnglish ? 'Case Studies — Real Website Results | FastMedia.Pro' : 'Případové studie — skutečné výsledky webů | FastMedia.Pro')}
         description={
           isEnglish
             ? 'Case studies from FastMedia.Pro website projects: enquiry growth, booking numbers, load times and shop conversions. Each study can be opened and downloaded as a PDF.'
@@ -54,7 +54,7 @@ const CaseStudies = () => {
           <section className="container mx-auto px-4 pt-28 pb-12 md:pt-32">
             <div className="max-w-3xl">
               <h1 className="text-3xl md:text-5xl font-bold mb-4">
-                {isEnglish ? 'Case studies' : 'Případové studie'}
+                {language === 'de' ? 'Projektbeispiele' : (isEnglish ? 'Case studies' : 'Případové studie')}
               </h1>
               <p className="text-lg text-muted-foreground">
                 {isEnglish
@@ -64,7 +64,7 @@ const CaseStudies = () => {
               {isEditor && (
                 <Button className="mt-6" onClick={openNew}>
                   <Plus className="w-4 h-4" />
-                  {isEnglish ? 'Add case study' : 'Přidat případovou studii'}
+                  {language === 'de' ? 'Projektbeispiel hinzufügen' : (isEnglish ? 'Add case study' : 'Přidat případovou studii')}
                 </Button>
               )}
             </div>
@@ -72,10 +72,10 @@ const CaseStudies = () => {
 
           <section className="container mx-auto px-4 pb-16">
             {isLoading ? (
-              <p className="text-muted-foreground">{isEnglish ? 'Loading…' : 'Načítám…'}</p>
+              <p className="text-muted-foreground">{language === 'de' ? 'Wird geladen…' : (isEnglish ? 'Loading…' : 'Načítám…')}</p>
             ) : items.length === 0 ? (
               <p className="text-muted-foreground">
-                {isEnglish ? 'No case studies published yet.' : 'Zatím nejsou zveřejněné žádné případové studie.'}
+                {language === 'de' ? 'Noch keine Projektbeispiele veröffentlicht.' : (isEnglish ? 'No case studies published yet.' : 'Zatím nejsou zveřejněné žádné případové studie.')}
               </p>
             ) : (
               <div className="grid gap-8 md:grid-cols-2">
@@ -89,7 +89,7 @@ const CaseStudies = () => {
           <section className="container mx-auto px-4 pb-20">
             <div className="rounded-2xl border border-border bg-card p-8 text-center">
               <h2 className="text-2xl font-bold mb-3">
-                {isEnglish ? 'Want results like these?' : 'Chcete podobné výsledky?'}
+                {language === 'de' ? 'Planen Sie Ihr nächstes Website-Projekt?' : (isEnglish ? 'Want results like these?' : 'Chcete podobné výsledky?')}
               </h2>
               <p className="text-muted-foreground mb-6">
                 {isEnglish
@@ -99,12 +99,12 @@ const CaseStudies = () => {
               <div className="flex flex-wrap gap-3 justify-center">
                 <Button asChild>
                   <Link to="/calculator">
-                    {isEnglish ? 'Get an estimate' : 'Spočítat cenu'}
+                    {language === 'de' ? 'Preis kalkulieren' : (isEnglish ? 'Get an estimate' : 'Spočítat cenu')}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link to="/grant-wizard">{isEnglish ? 'Check grant eligibility' : 'Ověřit dotaci'}</Link>
+                  <Link to="/grant-wizard">{language === 'de' ? 'Fördermöglichkeiten prüfen' : (isEnglish ? 'Check grant eligibility' : 'Ověřit dotaci')}</Link>
                 </Button>
               </div>
             </div>
