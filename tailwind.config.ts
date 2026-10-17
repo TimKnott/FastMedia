@@ -43,6 +43,14 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        stage: {
+          plan: "hsl(var(--stage-plan))",
+          find: "hsl(var(--stage-find))",
+          create: "hsl(var(--stage-create))",
+          send: "hsl(var(--stage-send))",
+          track: "hsl(var(--stage-track))",
+          foreground: "hsl(var(--stage-foreground))",
+        },
         launch: {
           DEFAULT: "hsl(var(--launch))",
           foreground: "hsl(var(--launch-foreground))",
