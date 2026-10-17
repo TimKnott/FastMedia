@@ -141,3 +141,8 @@
 - [x] Option A: Ad Compliance Checker (/admin/ad-compliance) — Sklik/Google/Meta rules + AI fix
 - [ ] Option B: Negative Keyword Generator — user asked to revisit in a few days (remind them)
 - [ ] Option C: Keyword viability evaluator; Option D: UTM tracker
+
+## Oct 17 — Browse AI and widget shop
+- [ ] Browse AI phase 2: approved robot runs, retrieval and lead import — BLOCKED: API key not configured; owner must identify robot, target site and quota before a paid test.
+- [ ] Browse AI phase 3: authenticated ChatGPT MCP connection — establish admin account and validate phase 2 first; publish separately after setup.
+- [ ] Resume widget shop plan and cost review — BLOCKED: annual product prices, monthly AI allowances and refund terms need agreement; implementation remains paused for cost approval.
