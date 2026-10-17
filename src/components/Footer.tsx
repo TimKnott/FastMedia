@@ -170,6 +170,18 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Discreet referral-partner CTA */}
+        <p className="pb-6 text-sm text-background/60">
+          {language === 'de'
+            ? 'Kennen Sie ein Unternehmen, das eine bessere Website braucht? Werden Sie Partner von FastMedia.Pro und erhalten Sie Prämien für erfolgreiche Empfehlungen. '
+            : isEnglish
+              ? 'Know a business that needs a better website? Partner with FastMedia.Pro and earn rewards for successful referrals. '
+              : 'Znáte firmu, která potřebuje lepší web? Staňte se partnerem FastMedia.Pro a získejte odměnu za úspěšná doporučení. '}
+          <Link to="/partners" className="text-accent hover:underline font-medium">
+            {language === 'de' ? 'Empfehlungspartner werden →' : isEnglish ? 'Become a referral partner →' : 'Stát se partnerem →'}
+          </Link>
+        </p>
+
         {/* Bottom bar */}
         <div className="pt-8 border-t border-background/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-background/50">
