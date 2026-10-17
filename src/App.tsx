@@ -1,11 +1,12 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
+import { pathLanguage } from '@/lib/publicLanguage';
 import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
 import AdminToolbar from "@/components/AdminToolbar";
 import DeferredMount from "./components/DeferredMount";
@@ -185,6 +186,16 @@ const CustomDemoPage = lazy(() => import("./pages/demos/CustomDemoPage"));
 
 const queryClient = new QueryClient();
 
+const LanguageRouteSync = () => {
+  const { pathname } = useLocation();
+  const { language, setLanguage } = useLanguage();
+  useEffect(() => {
+    const requested = pathLanguage(pathname);
+    if (requested && requested !== language) setLanguage(requested);
+  }, [pathname, language, setLanguage]);
+  return null;
+};
+
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
     <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -201,6 +212,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <LanguageRouteSync />
           <TrailingSlashRedirect />
           <PaymentTestModeBanner />
           <AdminToolbar />
