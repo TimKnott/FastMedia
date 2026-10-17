@@ -19,14 +19,14 @@ const ReviewsSection = () => {
     <section id="reviews" className="py-20 lg:py-28 bg-background overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="text-accent font-semibold text-sm uppercase tracking-wider">{en ? 'Reviews' : 'Recenze'}</span>
+          <span className="text-accent font-semibold text-sm uppercase tracking-wider">{language === 'de' ? 'Bewertungen' : en ? 'Reviews' : 'Recenze'}</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mt-3 mb-4">
-            {en ? 'What our clients say' : 'Co říkají naši klienti'}
+            {language === 'de' ? 'Das sagen unsere Kunden' : en ? 'What our clients say' : 'Co říkají naši klienti'}
           </h2>
           <div className="inline-flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-2">
             <Star className="w-4 h-4 text-accent fill-accent" />
             <span className="font-display font-bold text-foreground">{avg}</span>
-            <span className="text-muted-foreground text-sm">({reviews.length} {en ? 'reviews' : 'recenzí'})</span>
+            <span className="text-muted-foreground text-sm">({reviews.length} {language === 'de' ? 'Bewertungen' : en ? 'reviews' : 'recenzí'})</span>
           </div>
         </div>
 
@@ -45,6 +45,7 @@ const ReviewsSection = () => {
                   <Star key={s} className={`w-4 h-4 ${s < r.rating ? 'text-accent fill-accent' : 'text-muted'}`} />
                 ))}
               </div>
+              {language === 'de' && <p className="text-xs text-muted-foreground mb-2">Bewertung in der Originalsprache</p>}
               <p className="text-foreground mb-4 leading-relaxed">“{r.review_text}”</p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent/15 text-accent flex items-center justify-center font-semibold text-sm">
@@ -61,7 +62,7 @@ const ReviewsSection = () => {
 
         <div className="text-center mt-10">
           <Button asChild variant="outline">
-            <Link to="/reviews">{en ? 'Read all reviews or leave yours' : 'Všechny recenze a napsat vlastní'}</Link>
+            <Link to="/reviews">{language === 'de' ? 'Alle Bewertungen ansehen oder eine Bewertung schreiben' : en ? 'Read all reviews or leave yours' : 'Všechny recenze a napsat vlastní'}</Link>
           </Button>
         </div>
       </div>

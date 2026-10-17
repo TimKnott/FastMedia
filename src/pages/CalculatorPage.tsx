@@ -612,7 +612,7 @@ const CalculatorPage = () => {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(200, 210, 230);
-      doc.text(`No. ${quoteId}`, pageW - M, 60, { align: 'right' });
+      doc.text((lang === 'de' ? `Nr. ${quoteId}` : `No. ${quoteId}`), pageW - M, 60, { align: 'right' });
       doc.text((lang === 'de' ? `Ausgestellt: ${today}` : `Issued: ${today}`), pageW - M, 73, { align: 'right' });
 
       doc.setTextColor(...INK);
@@ -777,8 +777,8 @@ const CalculatorPage = () => {
       (lang === 'de' ? 'Basis-Website' : 'Base Website'),
       (lang === 'de' ? 'Bis zu 5 Seiten · Mobiloptimiert · SSL/HTTPS · Basis-SEO · Cookie-Banner · Google Maps · Kontaktdaten · Hosting für 12 Monate im Voraus' : 'Up to 5 pages · Mobile responsive · SSL/HTTPS · Basic SEO · GDPR cookie banner · Google Maps · Contact details · 12 months hosting prepaid'),
       '1',
-      `${formatPrice(BASE_WEBSITE_PRICE)} Kč`,
-      `${formatPrice(BASE_HOSTING_PRICE)} Kč/mo`,
+      `${formatPrice(BASE_WEBSITE_PRICE)} CZK`,
+      `${formatPrice(BASE_HOSTING_PRICE)} CZK/${lang === 'de' ? 'Monat' : lang === 'cs' ? 'měsíc' : 'month'}`,
     );
 
     // Add-on rows
@@ -789,17 +789,17 @@ const CalculatorPage = () => {
         `${f.icon}  ${f[nameKey]}`,
         f[descKey],
         String(sf.quantity),
-        `${formatPrice(f.oneTimePrice * sf.quantity)} Kč`,
-        f.monthlyPrice > 0 ? `${formatPrice(f.monthlyPrice * sf.quantity)} Kč/mo` : '—',
+        `${formatPrice(f.oneTimePrice * sf.quantity)} CZK`,
+        f.monthlyPrice > 0 ? `${formatPrice(f.monthlyPrice * sf.quantity)} CZK/${lang === 'de' ? 'Monat' : lang === 'cs' ? 'měsíc' : 'month'}` : '—',
       );
     });
 
     if (totalLaborHours > 0) {
       tableRow(
         (lang === 'de' ? `Individuelle Entwicklung und Integration` : `Custom development & integration`),
-        (lang === 'de' ? `Entwicklungszeit: ${LABOR_RATE} Kč/h` : `Senior engineering time at ${LABOR_RATE} Kč/h`),
+        (lang === 'de' ? `Entwicklungszeit: ${LABOR_RATE} CZK/h` : `Senior engineering time at ${LABOR_RATE} CZK/h`),
         `${totalLaborHours} h`,
-        `${formatPrice(laborCost)} Kč`,
+        `${formatPrice(laborCost)} CZK`,
         '—',
       );
     }
@@ -818,15 +818,15 @@ const CalculatorPage = () => {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     doc.text((lang === 'de' ? 'Zwischensumme (einmalig)' : 'Subtotal (one-time)'), cardX + 16, y + 24);
-    doc.text(`${formatPrice(grandTotalOneTime)} Kč`, cardX + cardW - 16, y + 24, { align: 'right' });
+    doc.text(`${formatPrice(grandTotalOneTime)} CZK`, cardX + cardW - 16, y + 24, { align: 'right' });
     doc.text((lang === 'de' ? 'Monatlich' : 'Recurring'), cardX + 16, y + 42);
-    doc.text(`${formatPrice(totalMonthly)} Kč/mo`, cardX + cardW - 16, y + 42, { align: 'right' });
+    doc.text(`${formatPrice(totalMonthly)} CZK/${lang === 'de' ? 'Monat' : lang === 'cs' ? 'měsíc' : 'month'}`, cardX + cardW - 16, y + 42, { align: 'right' });
 
     let cardY = y + 60;
     if (appliedCoupon) {
       doc.setTextColor(255, 180, 170);
       doc.text((lang === 'de' ? `Gutschein ${appliedCoupon.code}` : `Coupon ${appliedCoupon.code}`), cardX + 16, cardY);
-      const discLabel = `- ${formatPrice(oneTimeDiscount)} Kč`;
+      const discLabel = `- ${formatPrice(oneTimeDiscount)} CZK`;
       doc.text(discLabel, cardX + cardW - 16, cardY, { align: 'right' });
       cardY += 18;
       doc.setDrawColor(80, 100, 140);
@@ -835,12 +835,12 @@ const CalculatorPage = () => {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.text((lang === 'de' ? 'Heute zu zahlen' : 'Total due today'), cardX + 16, cardY + 8);
-      doc.text(`${formatPrice(discountedOneTime)} Kč`, cardX + cardW - 16, cardY + 8, { align: 'right' });
+      doc.text(`${formatPrice(discountedOneTime)} CZK`, cardX + cardW - 16, cardY + 8, { align: 'right' });
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9.5);
       doc.setTextColor(255, 180, 170);
       doc.text((lang === 'de' ? 'Monatlich nach Rabatt' : 'Recurring after discount'), cardX + 16, cardY + 26);
-      doc.text(`${formatPrice(discountedMonthly)} Kč/mo`, cardX + cardW - 16, cardY + 26, { align: 'right' });
+      doc.text(`${formatPrice(discountedMonthly)} CZK/${lang === 'de' ? 'Monat' : lang === 'cs' ? 'měsíc' : 'month'}`, cardX + cardW - 16, cardY + 26, { align: 'right' });
     } else {
       doc.setDrawColor(80, 100, 140);
       doc.line(cardX + 16, cardY - 4, cardX + cardW - 16, cardY - 4);
@@ -849,7 +849,7 @@ const CalculatorPage = () => {
       doc.setTextColor(...CORAL);
       doc.text((lang === 'de' ? 'Heute zu zahlen' : 'Total due today'), cardX + 16, cardY + 12);
       doc.setTextColor(255);
-      doc.text(`${formatPrice(grandTotalOneTime)} Kč`, cardX + cardW - 16, cardY + 12, { align: 'right' });
+      doc.text(`${formatPrice(grandTotalOneTime)} CZK`, cardX + cardW - 16, cardY + 12, { align: 'right' });
     }
 
     // Notes column left of totals card
@@ -881,7 +881,7 @@ const CalculatorPage = () => {
       doc.setFontSize(9);
       doc.setTextColor(...MUTED);
       doc.text(
-        (lang === 'de' ? `Förderung: ${formatPrice(grantAmount)} Kč   |   Eigenanteil: ${formatPrice(netAfterGrant)} Kč` : `Estimated grant contribution: ${formatPrice(grantAmount)} Kč   |   Your share after the grant: ${formatPrice(netAfterGrant)} Kč`),
+        (lang === 'de' ? `Förderung: ${formatPrice(grantAmount)} CZK   |   Eigenanteil: ${formatPrice(netAfterGrant)} CZK` : `Estimated grant contribution: ${formatPrice(grantAmount)} CZK   |   Your share after the grant: ${formatPrice(netAfterGrant)} CZK`),
         M + 14,
         y + 36,
       );
