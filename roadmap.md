@@ -143,6 +143,7 @@
 - [ ] Option C: Keyword viability evaluator; Option D: UTM tracker
 
 ## Oct 17 — Browse AI and widget shop
+- [ ] Document paid back-office marketing tools for a public myname.co.uk section; distinguish existing tools from optional integrations and keep tools private — cross-project editing unavailable here.
 - [ ] Browse AI phase 2: approved robot runs, retrieval and lead import — BLOCKED: API key not configured; owner must identify robot, target site and quota before a paid test.
 - [ ] Browse AI phase 3: authenticated ChatGPT MCP connection — establish admin account and validate phase 2 first; publish separately after setup.
 - [ ] Resume widget shop plan and cost review — BLOCKED: annual product prices, monthly AI allowances and refund terms need agreement; implementation remains paused for cost approval.
