@@ -16,19 +16,19 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PRICING as P } from '@/lib/offerPricing';
 
-type Lang = 'cs' | 'en';
+type Lang = 'cs' | 'en' | 'de';
 
 const HERO_IMG = 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1600&q=80';
 
 const trades = [
-  { slug: 'plumbing', icon: Wrench, cs: 'Instalatér', en: 'Plumber' },
-  { slug: 'electrical', icon: Zap, cs: 'Elektrikář', en: 'Electrician' },
-  { slug: 'autorepair', icon: Car, cs: 'Autoservis', en: 'Car repair' },
-  { slug: 'beautysalon', icon: Scissors, cs: 'Salon krásy', en: 'Beauty salon' },
-  { slug: 'carpentry', icon: Hammer, cs: 'Truhlář', en: 'Carpenter' },
-  { slug: 'painting', icon: Paintbrush, cs: 'Malíř', en: 'Painter' },
-  { slug: 'locksmith', icon: KeyRound, cs: 'Zámečník', en: 'Locksmith' },
-  { slug: 'florist', icon: Flower2, cs: 'Květinářství', en: 'Florist' },
+  { slug: 'plumbing', icon: Wrench, cs: 'Instalatér', en: 'Plumber', de: 'Sanitärbetrieb' },
+  { slug: 'electrical', icon: Zap, cs: 'Elektrikář', en: 'Electrician', de: 'Elektrobetrieb' },
+  { slug: 'autorepair', icon: Car, cs: 'Autoservis', en: 'Car repair', de: 'Autowerkstatt' },
+  { slug: 'beautysalon', icon: Scissors, cs: 'Salon krásy', en: 'Beauty salon', de: 'Kosmetikstudio' },
+  { slug: 'carpentry', icon: Hammer, cs: 'Truhlář', en: 'Carpenter', de: 'Tischlerei' },
+  { slug: 'painting', icon: Paintbrush, cs: 'Malíř', en: 'Painter', de: 'Malerbetrieb' },
+  { slug: 'locksmith', icon: KeyRound, cs: 'Zámečník', en: 'Locksmith', de: 'Schlüsseldienst' },
+  { slug: 'florist', icon: Flower2, cs: 'Květinářství', en: 'Florist', de: 'Floristik' },
 ];
 
 const copy = {
@@ -200,11 +200,60 @@ const copy = {
     call: `Call ${P.phone}`,
     wa: 'Message on WhatsApp',
   },
+  de: {
+    seoTitle: 'Webdesign für Handwerksbetriebe ab 6.900 Kč | FastMedia',
+    seoDesc: 'Eine Website für Ihr Unternehmen: 6.900 Kč einmalig mit Hosting und .cz-Domain im ersten Jahr oder 990 Kč monatlich ohne Anzahlung. Klare Folgekosten.',
+    badge: 'Online innerhalb von 10 Arbeitstagen',
+    h1: 'Eine Website für Ihr Unternehmen. Ab 6.900 Kč.',
+    sub: 'Professionelle Websites für Handwerksbetriebe und kleine Unternehmen. Klare Preise ohne versteckte Gebühren. Für die beiden kleinen Pakete gilt unsere 30-Tage-Geld-zurück-Garantie.',
+    ctaPrimary: 'Preise ansehen', ctaSecondary: 'Unverbindlich anfragen',
+    trust: ['30-Tage-Geld-zurück-Garantie für kleine Pakete', 'Hosting und .cz-Domain im ersten Jahr inklusive', 'Website und Domain gehören Ihnen'],
+    demosTitle: 'So könnte Ihre Website aussehen', demosSub: 'Wählen Sie Ihre Branche und sehen Sie sich eine Live-Demo an.', demosAll: 'Alle Branchen',
+    pricingTitle: 'Zwei einfache Möglichkeiten',
+    pricingSub: 'Beide Pakete enthalten dieselbe vollständige Website. Der Unterschied liegt in der Zahlung. Wir sind nicht umsatzsteuerpflichtig registriert – die angegebenen Preise sind Endpreise in tschechischen Kronen.',
+    own: {
+      name: 'Eigene Website', tag: 'Einmalige Zahlung', price: P.ownPrice, unit: 'einmalig',
+      note: `Ab dem zweiten Jahr: ${P.renewalYear} jährlich (${P.renewalMonthEq} monatlich umgerechnet)`,
+      items: ['Eine einseitige Website für Ihre Branche', 'Schaltflächen für Anrufe und WhatsApp', 'Bis zu 6 Leistungen, Über-uns-Bereich und bis zu 12 Fotos', 'Öffnungszeiten, Gebietskarte und Kontaktformular', 'Hosting und .cz-Domain im ersten Jahr inklusive', 'SSL-Zertifikat (HTTPS) und eine geschäftliche E-Mail-Adresse', 'Eintrag bei Google Maps und Firmy.cz', 'Schnelle Darstellung auf Mobilgeräten'],
+      cta: 'Ich möchte eine eigene Website',
+    },
+    sub2: {
+      name: 'Website im Monatsabo', tag: 'Ohne Anzahlung', price: P.subMonthly, unit: '/ Monat', upfront: `${P.subUpfront} im Voraus`,
+      note: '12 Monate Mindestlaufzeit, danach jederzeit mit 30 Tagen Frist kündbar',
+      items: ['Alles aus dem Paket Eigene Website', 'Hosting und Domain während der Laufzeit inklusive', 'Bis zu 45 Minuten Inhaltsänderungen pro Monat', 'Neue Fotos, Preise, Öffnungszeiten und Mitteilungen', 'Sicherheitsupdates und tägliche Backups', 'Unterstützung per E-Mail und Telefon', `Nach 12 Monaten Wechsel zu ${P.renewalYear} jährlich möglich`],
+      cta: 'Ich möchte ohne Anzahlung starten', popular: 'Beliebtes Paket',
+    },
+    renewalTitle: 'Was kostet die Website nach dem ersten Jahr?',
+    renewalRows: [
+      ['Eigene Website', `${P.renewalYear} jährlich für Hosting, Domainverlängerung, SSL, tägliche Backups und technischen Support. Eine Rechnung pro Jahr.`],
+      ['Website im Monatsabo', `Weiterhin ${P.subMonthly} monatlich mit Kündigungsfrist oder Wechsel zu ${P.renewalYear} jährlich, wenn Sie keine Inhaltsänderungen mehr benötigen.`],
+      ['Optionale Betreuung', 'Umfassende Betreuung für 4.900 Kč jährlich: eine Stunde Änderungen pro Monat und bevorzugter telefonischer Support.'],
+    ],
+    hostageTitle: 'Ihre Website bleibt Ihre Website',
+    hostageBody: `Website und Domain gehören Ihnen vom ersten Tag an. Nach 12 Monaten können Sie für ${P.renewalYear} jährlich bei uns bleiben oder alle Dateien kostenlos erhalten und zu einem anderen Anbieter wechseln.`,
+    calcTitle: 'Benötigen Sie eine größere Website?',
+    calcBody: `Diese Pakete gelten für eine einseitige Website. Für mehrere Seiten, Buchungen, einen Onlineshop, einen Kundenbereich oder mehrere Sprachen nutzen Sie unseren Kalkulator. Größere Projekte beginnen bei ${P.customFrom}. Die Geld-zurück-Garantie der kleinen Pakete gilt hierfür nicht.`,
+    calcPoints: ['Mehrseitige Websites', 'Online-Terminbuchung', 'Onlineshop und Zahlungen', 'Kundenbereich', 'Mehrere Sprachen'], calcCta: 'Größeres Projekt kalkulieren',
+    proofTitle: 'Unsere Projekte', proofBody: 'Sehen Sie sich echte Websites mit Screenshots und Beschreibungen an.', proofCta: 'Projektbeispiele ansehen',
+    grantTitle: 'Planen Sie ein größeres Projekt?', grantBody: 'Digitalisierungsförderungen können unter bestimmten Voraussetzungen einen Teil der Kosten abdecken. Die Förderstelle entscheidet über die Eignung; eine deutsche Förderung ist nicht zugesichert.', grantCta: 'Fördermöglichkeiten ansehen',
+    processTitle: 'So läuft Ihr Projekt ab',
+    process: [['01', 'Anfrage', 'Senden Sie uns Ihre Angaben oder rufen Sie an. Wir antworten innerhalb von 24 Stunden.'], ['02', 'Kostenloser Entwurf', 'Wir erstellen einen Entwurf. Sie bezahlen erst, wenn er Ihnen gefällt.'], ['03', 'Abstimmung', 'Wir passen Texte, Fotos und Farben mit Ihnen an.'], ['04', 'Veröffentlichung', 'Online innerhalb von 10 Arbeitstagen. Für kleine Pakete gilt die 30-Tage-Garantie.']],
+    faqTitle: 'Häufige Fragen',
+    faqs: [
+      ['Was erhalte ich für 6.900 Kč?', 'Eine vollständige einseitige Website mit Texten, Galerie, Kontaktformular, Karte, Anruf- und WhatsApp-Schaltflächen, Eintrag bei Google Maps und Firmy.cz sowie Hosting, .cz-Domain, SSL und einer E-Mail-Adresse im ersten Jahr.'],
+      ['Was bezahle ich nach dem ersten Jahr?', `${P.renewalYear} jährlich für Hosting, Domain, SSL, Backups und Support. Eine Rechnung pro Jahr.`],
+      ['Wie funktioniert das Monatsabo für 990 Kč?', 'Keine Anzahlung. Sie bezahlen 990 Kč monatlich für zunächst 12 Monate. Danach können Sie monatlich mit 30 Tagen Frist kündigen oder zum jährlichen Hosting wechseln.'],
+      ['Wie funktioniert die 30-Tage-Garantie?', 'Sie gilt für die beiden kleinen Pakete. Wenn Sie innerhalb von 30 Tagen nach Veröffentlichung unzufrieden sind, erstatten wir Ihre Zahlung. Größere Projekte aus dem Kalkulator sind ausgeschlossen; dort gelten die Funktionsgewährleistung und das Übergabeprotokoll.'],
+      ['Kann ich zu einem anderen Anbieter wechseln?', 'Ja. Website und Domain gehören Ihnen. Wir übergeben die Dateien kostenlos und helfen beim Umzug.'],
+      ['Ich benötige mehrere Seiten.', `Nutzen Sie den Kalkulator für zusätzliche Seiten, Buchungen oder einen Onlineshop. Größere Websites beginnen bei ${P.customFrom}.`],
+    ],
+    finalTitle: 'Sprechen wir über Ihre Website', finalSub: 'Rufen Sie an, schreiben Sie über WhatsApp oder senden Sie eine Anfrage. Wir antworten innerhalb von 24 Stunden.', call: `Anrufen: ${P.phone}`, wa: 'Über WhatsApp schreiben',
+  },
 } as const;
 
 const OfferLanding = () => {
   const { language } = useLanguage();
-  const lang: Lang = language === 'en' ? 'en' : 'cs';
+  const lang: Lang = language;
   const t = copy[lang];
   const { hash, search } = useLocation();
   const params = new URLSearchParams(search);
@@ -312,7 +361,7 @@ const OfferLanding = () => {
                 <CardContent className="p-8 flex flex-col h-full">
                   <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-2">{p.tag}</p>
                   <h3 className="text-2xl font-bold mb-4">{p.name}</h3>
-                  {p.upfront && <p className="text-lg font-semibold text-foreground">{p.upfront}, {lang === 'cs' ? 'poté' : 'then'}</p>}
+                  {p.upfront && <p className="text-lg font-semibold text-foreground">{p.upfront}, {lang === 'cs' ? 'poté' : lang === 'de' ? 'danach' : 'then'}</p>}
                   <div className="flex items-baseline gap-2 mb-2">
                     <span className="text-5xl font-bold">{p.price}</span>
                     <span className="text-muted-foreground">{p.unit}</span>
