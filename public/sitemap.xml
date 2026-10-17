@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.fastmedia.pro/de/offer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.fastmedia.pro/de/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.fastmedia.pro/en/offer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.fastmedia.pro/en/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.fastmedia.pro/cs/offer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.fastmedia.pro/cs/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url>
     <loc>https://www.fastmedia.pro/</loc>
     <changefreq>weekly</changefreq>

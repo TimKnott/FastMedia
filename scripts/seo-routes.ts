@@ -7,6 +7,8 @@ import { calculatorFeatures } from "../src/data/calculatorFeatures.ts";
 import { getFeatureDetail } from "../src/data/featureDetails.ts";
 import { serviceLandings } from "../src/data/serviceLandings.ts";
 import { industryLandings } from "../src/data/industryLandings.ts";
+import { publicSeo } from '../src/lib/publicSeo.ts';
+import { languageLocales } from '../src/lib/publicLanguage.ts';
 
 export interface RouteSeo {
   path: string;
@@ -22,6 +24,8 @@ export interface RouteSeo {
   h1?: string;
   /** Route-specific paragraphs for the crawler content block. */
   contentBlocks?: string[];
+  language?: string;
+  alternates?: Array<{ language: string; path: string }>;
 }
 
 const BRAND = "FastMedia.Pro";
@@ -504,6 +508,17 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     } catch (err) {
       console.warn("[seo-routes] dynamic route fetch failed:", err);
     }
+  }
+
+  for (const [base, versions] of Object.entries(publicSeo)) {
+    const alternates = (['cs', 'en', 'de'] as const).map(language => ({ language: languageLocales[language], path: `/${language}${base}` }));
+    alternates.push({ language: 'x-default', path: `/cs${base}` });
+    for (const language of ['cs', 'en', 'de'] as const) {
+      const content = versions[language];
+      routes.push({ path: `/${language}${base}`, title: content.title, description: content.description, h1: content.title.split('|')[0].trim(), contentBlocks: content.content, language: languageLocales[language], alternates, ogImage: OG_IMG, changefreq: 'monthly', priority: '0.7' });
+    }
+    const original = routes.find(route => route.path === base);
+    if (original) Object.assign(original, { title: versions.cs.title, description: versions.cs.description, h1: versions.cs.title.split('|')[0].trim(), contentBlocks: versions.cs.content, language: 'cs-CZ', alternates });
   }
 
   // Guard: drop any malformed entry so prerendering can never crash on it
