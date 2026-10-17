@@ -147,4 +147,5 @@
 - [ ] Apply handoff in Fastmedia Showcase — BLOCKED: cross-project editing unavailable here; owner must use that project's chat.
 - [x] Browse AI phase 2: prepare plan only for approved robot runs and safe normalised, deduplicated import; no implementation or paid tests authorised.
 - [x] Browse AI phase 3: explain least-cost authenticated ChatGPT MCP setup and required owner input only; no implementation, auth changes or publishing authorised.
-- [ ] Resume widget shop plan and cost review — BLOCKED: annual product prices, monthly AI allowances and refund terms need agreement; implementation remains paused for cost approval.
+- [x] Resume widget shop plan and cost review — phased catalogue/intake, payments/access, bounded customer AI and reporting scope; no unsupported numerical credit quote.
+- [ ] Widget shop implementation — BLOCKED: final product prices, monthly allowance rules, refund/renewal terms, Phase 1 spend limit and separate build approval.
