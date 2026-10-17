@@ -5378,6 +5378,13 @@ export type Database = {
         Returns: number
       }
       ensure_admin_role: { Args: never; Returns: string }
+      get_partner_programme_public: {
+        Args: never
+        Returns: {
+          is_open: boolean
+          terms: string
+        }[]
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
