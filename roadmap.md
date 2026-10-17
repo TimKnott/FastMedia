@@ -158,3 +158,11 @@
 - [ ] German discovery for myname.co.uk and horse/stable site — other projects require their own edits; confirm horse/stable URL.
 - [x] Language toggle (CZ/EN/DE) also inside the mobile menu
 - [ ] Publish so DE appears on www.fastmedia.pro — owner action
+
+## Oct 17 — Campaign Studio & Partner Programme
+- [x] /admin/campaign-studio: 5 numbered stages (1A–5B) mapped to existing tools, campaign brief, drafts with approve-before-send, outcome tracking, integration status
+- [x] /admin/partners (2C): partners, partner finder (public sources, manual LinkedIn), referrals, commissions, report, rules (no rate set)
+- [x] Public /partners signup + referral form with ?ref= attribution; footer CTA
+- [ ] Owner: set commission rate/terms and open signups under Partner Manager → Rules
+- [ ] Social auto-publishing (RADAAR) — not connected; drafts are manual
+- [ ] Existing tools (Finder, Ad Studio, Prospecting) don't yet prefill from ?campaign= — use "Copy brief"

@@ -670,6 +670,125 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_drafts: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          body: string
+          campaign_id: string
+          channel: string
+          created_at: string
+          cta: string | null
+          destination_url: string | null
+          id: string
+          image_url: string | null
+          outcome: Json
+          sent_at: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          body?: string
+          campaign_id: string
+          channel: string
+          created_at?: string
+          cta?: string | null
+          destination_url?: string | null
+          id?: string
+          image_url?: string | null
+          outcome?: Json
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          body?: string
+          campaign_id?: string
+          channel?: string
+          created_at?: string
+          cta?: string | null
+          destination_url?: string | null
+          id?: string
+          image_url?: string | null
+          outcome?: Json
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_drafts_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          assets: Json
+          audience: string | null
+          copy: Json
+          created_at: string
+          created_by: string | null
+          cta: string | null
+          destination_url: string | null
+          hero_image_url: string | null
+          id: string
+          industry: string | null
+          metrics: Json
+          name: string
+          objective: string | null
+          offer: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assets?: Json
+          audience?: string | null
+          copy?: Json
+          created_at?: string
+          created_by?: string | null
+          cta?: string | null
+          destination_url?: string | null
+          hero_image_url?: string | null
+          id?: string
+          industry?: string | null
+          metrics?: Json
+          name: string
+          objective?: string | null
+          offer?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assets?: Json
+          audience?: string | null
+          copy?: Json
+          created_at?: string
+          created_by?: string | null
+          cta?: string | null
+          destination_url?: string | null
+          hero_image_url?: string | null
+          id?: string
+          industry?: string | null
+          metrics?: Json
+          name?: string
+          objective?: string | null
+          offer?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       case_studies: {
         Row: {
           body_cs: string
@@ -948,6 +1067,57 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      commissions: {
+        Row: {
+          amount_cents: number
+          basis: string | null
+          created_at: string
+          id: string
+          paid_at: string | null
+          partner_id: string | null
+          referral_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          basis?: string | null
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          partner_id?: string | null
+          referral_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          basis?: string | null
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          partner_id?: string | null
+          referral_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       contact_enquiries: {
         Row: {
@@ -3146,6 +3316,96 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_programme_settings: {
+        Row: {
+          attribution_days: number
+          commission_rate_bps: number | null
+          commission_type: string
+          fixed_commission_cents: number | null
+          id: number
+          is_open: boolean
+          min_project_value_cents: number
+          terms: string | null
+          updated_at: string
+        }
+        Insert: {
+          attribution_days?: number
+          commission_rate_bps?: number | null
+          commission_type?: string
+          fixed_commission_cents?: number | null
+          id?: number
+          is_open?: boolean
+          min_project_value_cents?: number
+          terms?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attribution_days?: number
+          commission_rate_bps?: number | null
+          commission_type?: string
+          fixed_commission_cents?: number | null
+          id?: number
+          is_open?: boolean
+          min_project_value_cents?: number
+          terms?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      partners: {
+        Row: {
+          company: string | null
+          consent_at: string | null
+          consent_marketing: boolean
+          created_at: string
+          email: string | null
+          id: string
+          linkedin_url: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          referral_code: string
+          source: string
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          company?: string | null
+          consent_at?: string | null
+          consent_marketing?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin_url?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          referral_code?: string
+          source?: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          company?: string | null
+          consent_at?: string | null
+          consent_marketing?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin_url?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          referral_code?: string
+          source?: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       payment_orders: {
         Row: {
           amount_total: number
@@ -3578,6 +3838,75 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          business_name: string
+          campaign_id: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          partner_id: string | null
+          project_value_cents: number | null
+          referral_code: string | null
+          source: string
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          business_name: string
+          campaign_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id?: string | null
+          project_value_cents?: number | null
+          referral_code?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          business_name?: string
+          campaign_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id?: string | null
+          project_value_cents?: number | null
+          referral_code?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
             referencedColumns: ["id"]
           },
         ]
@@ -5049,6 +5378,13 @@ export type Database = {
         Returns: number
       }
       ensure_admin_role: { Args: never; Returns: string }
+      get_partner_programme_public: {
+        Args: never
+        Returns: {
+          is_open: boolean
+          terms: string
+        }[]
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
@@ -5087,6 +5423,17 @@ export type Database = {
           read_ct: number
         }[]
       }
+      register_partner: {
+        Args: {
+          _company: string
+          _consent: boolean
+          _email: string
+          _name: string
+          _phone: string
+          _website: string
+        }
+        Returns: string
+      }
       serve_ad: {
         Args: { _domain: string; _zone: string }
         Returns: {
@@ -5103,6 +5450,18 @@ export type Database = {
       set_email_queue_service_key: {
         Args: { new_key: string }
         Returns: undefined
+      }
+      submit_referral: {
+        Args: {
+          _business: string
+          _code: string
+          _contact: string
+          _email: string
+          _notes: string
+          _phone: string
+          _website: string
+        }
+        Returns: boolean
       }
     }
     Enums: {
