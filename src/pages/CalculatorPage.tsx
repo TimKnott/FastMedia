@@ -104,12 +104,11 @@ const CalculatorPage = () => {
   } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
 
-  // Keep the legacy German data keys type-compatible while public selection is Czech or English.
-  const lang = (language === 'en' ? 'en' : 'cs') as 'cs' | 'en' | 'de';
+  const lang = language;
 
   const formatPrice = (value: number): string => {
     if (lang === 'en') return value.toLocaleString('en-GB');
-    return value.toLocaleString('cs-CZ');
+    return value.toLocaleString(lang === 'de' ? 'de-DE' : 'cs-CZ');
   };
   const nameKey = `name${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'nameCs' | 'nameEn' | 'nameDe';
   const descKey = `desc${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'descCs' | 'descEn' | 'descDe';

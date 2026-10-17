@@ -218,6 +218,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/offer" element={<OfferLanding />} />
+            {['cs', 'en', 'de'].map(lang => <Route key={`${lang}-offer`} path={`/${lang}/offer`} element={<OfferLanding />} />)}
+            {['cs', 'en', 'de'].map(lang => <Route key={`${lang}-contact`} path={`/${lang}/contact`} element={<Contact />} />)}
             <Route path="/grants" element={<GrantGuide />} />
             <Route path="/grant-wizard" element={<GrantWizard />} />
             <Route path="/grant-eligibility" element={<GrantEligibility />} />
