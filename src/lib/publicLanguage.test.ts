@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { initialLanguage, localizedPath, languageLocales } from './publicLanguage';
+import { translatedPageSeo } from './publicSeo';
 
 describe('public languages', () => {
   it('preserves Czech as the default for new visitors', () => {
@@ -17,5 +18,9 @@ describe('public languages', () => {
     expect(localizedPath('/offer', 'de')).toBe('/de/offer');
     expect(localizedPath('/de/contact', 'en')).toBe('/en/contact');
     expect(localizedPath('/admin', 'de')).toBe('/admin');
+  });
+  it('does not advertise untranslated pages as German SEO equivalents', () => {
+    expect(translatedPageSeo('/blog', 'de')).toBeUndefined();
+    expect(translatedPageSeo('/offer', 'de')).toBeDefined();
   });
 });

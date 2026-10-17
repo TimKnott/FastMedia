@@ -19,10 +19,10 @@ const CaseStudiesSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            {isEnglish ? 'Case studies' : 'Případové studie'}
+            {language === 'de' ? 'Projektbeispiele' : isEnglish ? 'Case studies' : 'Případové studie'}
           </h2>
           <p className="text-lg text-muted-foreground">
-            {isEnglish
+            {language === 'de' ? 'Echte Website-Projekte mit Screenshots. Beschreibungen und PDFs stehen in der verfügbaren Originalsprache bereit.' : isEnglish
               ? 'Real projects and the numbers that followed. Open any study as a PDF.'
               : 'Skutečné projekty a čísla, která přinesly. Každou studii lze otevřít jako PDF.'}
           </p>
@@ -37,7 +37,7 @@ const CaseStudiesSection = () => {
         <div className="text-center mt-10">
           <Button asChild variant="outline">
             <Link to="/case-studies">
-              {isEnglish ? 'All case studies' : 'Všechny případové studie'}
+              {language === 'de' ? 'Alle Projektbeispiele' : isEnglish ? 'All case studies' : 'Všechny případové studie'}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </Button>

@@ -40,7 +40,7 @@ const CaseStudies = () => {
       <SEOHead
         title={language === 'de' ? 'Projektbeispiele – Websites von FastMedia.Pro' : (isEnglish ? 'Case Studies — Real Website Results | FastMedia.Pro' : 'Případové studie — skutečné výsledky webů | FastMedia.Pro')}
         description={
-          isEnglish
+          language === 'de' ? 'Website-Projekte von FastMedia.Pro mit Screenshots und Beschreibungen. PDFs stehen in der verfügbaren Originalsprache bereit.' : isEnglish
             ? 'Case studies from FastMedia.Pro website projects: enquiry growth, booking numbers, load times and shop conversions. Each study can be opened and downloaded as a PDF.'
             : 'Případové studie webů od FastMedia.Pro: růst poptávek, rezervace, rychlost načtení a konverze e-shopů. Každou studii lze otevřít a stáhnout jako PDF.'
         }
@@ -57,7 +57,7 @@ const CaseStudies = () => {
                 {language === 'de' ? 'Projektbeispiele' : (isEnglish ? 'Case studies' : 'Případové studie')}
               </h1>
               <p className="text-lg text-muted-foreground">
-                {isEnglish
+                {language === 'de' ? 'Sehen Sie sich unsere Website-Projekte mit Screenshots an. Projektbeschreibungen und PDFs bleiben in der verfügbaren Originalsprache.' : isEnglish
                   ? 'Website projects with the numbers that followed: enquiries, bookings, order values and load times. Open any study as a PDF or download it to share with your team.'
                   : 'Webové projekty a čísla, která přinesly: poptávky, rezervace, hodnota objednávek a rychlost načtení. Každou studii si můžete otevřít jako PDF nebo stáhnout a poslat kolegům.'}
               </p>
@@ -92,7 +92,7 @@ const CaseStudies = () => {
                 {language === 'de' ? 'Planen Sie Ihr nächstes Website-Projekt?' : (isEnglish ? 'Want results like these?' : 'Chcete podobné výsledky?')}
               </h2>
               <p className="text-muted-foreground mb-6">
-                {isEnglish
+                {language === 'de' ? 'Planen Sie ein größeres Projekt im Kalkulator oder informieren Sie sich über Fördermöglichkeiten und deren Voraussetzungen.' : isEnglish
                   ? 'Get an instant estimate for your own project, or see which grant could cover part of the cost.'
                   : 'Spočítejte si odhad pro svůj projekt nebo zjistěte, jaká dotace může část ceny pokrýt.'}
               </p>
