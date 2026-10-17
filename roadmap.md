@@ -156,3 +156,5 @@
 - [x] German calculator: exercised trade selection → checkout summary → PDF preview without AI/payment; rendered and inspected the generated PDF and corrected unsupported currency glyphs.
 - [ ] Remaining public translation batches: grants/courses, dynamic case-study/blog/legal content and remaining homepage copy; outside the approved first core/search batch. No complete-site translation claim; public release still requires publishing.
 - [ ] German discovery for myname.co.uk and horse/stable site — other projects require their own edits; confirm horse/stable URL.
+- [x] Language toggle (CZ/EN/DE) also inside the mobile menu
+- [ ] Publish so DE appears on www.fastmedia.pro — owner action
