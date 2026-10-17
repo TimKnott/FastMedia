@@ -380,6 +380,12 @@ const Navbar = () => {
                    {language === 'de' ? 'Abrechnung verwalten' : (isEnglish ? 'Manage billing' : 'Spravovat platby')}
                 </button>
               )}
+              <div className="flex items-center justify-between gap-3 py-2">
+                <span className="text-sm font-medium text-foreground">
+                  {language === 'de' ? 'Sprache' : (isEnglish ? 'Language' : 'Jazyk')}
+                </span>
+                <LanguageSwitcher />
+              </div>
               <div className="flex items-center justify-between gap-3 py-2 sm:hidden">
                 <span className="text-sm font-medium text-foreground">
                   {language === 'de' ? 'Dunkler Modus' : (isEnglish ? 'Dark mode' : 'Tmavý režim')}
