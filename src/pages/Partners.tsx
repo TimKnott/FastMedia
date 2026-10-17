@@ -66,7 +66,7 @@ const Partners = () => {
     setRef({ ...ref, business: '', contact: '', email: '', phone: '', website: '', notes: '' });
   };
 
-  const field = <T extends Record<string, unknown>>(state: T, set: (v: T) => void, k: keyof T & string, label: string, type = 'text') => (
+  const field = <T,>(state: T, set: (v: T) => void, k: keyof T & string, label: string, type = 'text') => (
     <div className="space-y-1"><Label htmlFor={`f-${k}`}>{label}</Label>
       <Input id={`f-${k}`} type={type} value={state[k] as string} onChange={(e) => set({ ...state, [k]: e.target.value })} /></div>
   );
