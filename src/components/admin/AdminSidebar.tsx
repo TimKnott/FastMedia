@@ -125,6 +125,8 @@ export const contentItems: MenuItem[] = [
 ];
 
 export const businessToolItems: MenuItem[] = [
+  { titleKey: 'Campaign Studio (1–5)', url: '/admin/campaign-studio', icon: Sparkles, minRole: 'admin' },
+  { titleKey: '2C Partner Manager', url: '/admin/partners', icon: Users, minRole: 'admin' },
   { titleKey: 'Ad Studio', url: '/admin/ad-studio', icon: TicketPercent, minRole: 'super_admin' },
   { titleKey: 'Lead Scraper', url: '/admin/lead-scraper', icon: Search, minRole: 'admin' },
   { titleKey: 'Finder', url: '/admin/finder', icon: Map, minRole: 'admin' },

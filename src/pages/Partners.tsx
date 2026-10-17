@@ -40,9 +40,7 @@ const Partners = () => {
     const fromUrl = params.get('ref');
     if (fromUrl) localStorage.setItem(REF_KEY, fromUrl.toUpperCase().slice(0, 20));
     setRef((r) => ({ ...r, code: localStorage.getItem(REF_KEY) ?? '' }));
-    // Programme rules are admin-only data; show terms via public settings when available.
-    supabase.from('site_settings').select('value').eq('key', 'partner_programme_public').maybeSingle()
-      .then(({ data }) => setProgramme((data?.value as { is_open: boolean; terms: string | null }) ?? null));
+    supabase.rpc('get_partner_programme_public').then(({ data }) => setProgramme(data?.[0] ?? null));
   }, [params]);
 
   const submitJoin = async (e: React.FormEvent) => {

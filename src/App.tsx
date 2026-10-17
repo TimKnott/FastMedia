@@ -89,6 +89,9 @@ const AdminStoryStudio = lazy(() => import("./pages/admin/AdminStoryStudio"));
 const AdminAdStudio = lazy(() => import("./pages/admin/AdminAdStudio"));
 const AdminLeadScraper = lazy(() => import("./pages/admin/AdminLeadScraper"));
 const AdminFinder = lazy(() => import("./pages/admin/AdminFinder"));
+const AdminCampaignStudio = lazy(() => import("./pages/admin/AdminCampaignStudio"));
+const AdminPartners = lazy(() => import("./pages/admin/AdminPartners"));
+const Partners = lazy(() => import("./pages/Partners"));
 const DesignSystemShowcase = lazy(() => import("./pages/admin/DesignSystemShowcase"));
 const AdminAdCompliance = lazy(() => import("./pages/admin/AdminAdCompliance"));
 const AdminVideoStudio = lazy(() => import("./pages/admin/AdminVideoStudio"));
@@ -310,6 +313,7 @@ const App = () => (
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
+            <Route path="/partners" element={<Partners />} />
             <Route path="/quote-request" element={<QuoteRequest />} />
 
             <Route path="/feature/:featureId" element={<FeatureDetail />} />
@@ -350,6 +354,8 @@ const App = () => (
               <Route path="story-studio" element={<ProtectedRoute minRole="admin"><AdminStoryStudio /></ProtectedRoute>} />
               <Route path="lead-scraper" element={<ProtectedRoute minRole="admin"><AdminLeadScraper /></ProtectedRoute>} />
               <Route path="finder" element={<ProtectedRoute minRole="admin"><AdminFinder /></ProtectedRoute>} />
+              <Route path="campaign-studio" element={<ProtectedRoute minRole="admin"><AdminCampaignStudio /></ProtectedRoute>} />
+              <Route path="partners" element={<ProtectedRoute minRole="admin"><AdminPartners /></ProtectedRoute>} />
               <Route path="design-system" element={<ProtectedRoute minRole="admin"><DesignSystemShowcase /></ProtectedRoute>} />
               <Route path="directory-finder" element={<Navigate to="/admin/finder" replace />} />
               <Route path="ad-compliance" element={<ProtectedRoute minRole="admin"><AdminAdCompliance /></ProtectedRoute>} />
