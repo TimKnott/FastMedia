@@ -151,6 +151,7 @@
 - [ ] Widget shop implementation — BLOCKED: final product prices, monthly allowance rules, refund/renewal terms, Phase 1 spend limit and separate build approval.
 
 ## Oct 17 — German translation and discovery
-- [ ] Plan proper German public translations while preserving Czech and English, with indexable language URLs and Germany-focused search metadata.
-- [ ] Implement and verify approved multilingual scope — awaiting plan approval.
+- [x] Plan proper German public translations while preserving Czech and English, with indexable language URLs and Germany-focused search metadata.
+- [x] First batch: DE selection, translated offer/contact and enquiry states, German homepage/navigation introductions, calculator German labels, explicit original-language case-study notices, /cs /en /de offer/contact SEO and sitemap; seven language tests pass and browser switching/validation checks pass.
+- [ ] Remaining public translation batches: grants/courses, dynamic case-study/blog/legal content, remaining homepage copy and fully verified calculator PDF; no complete-site translation claim.
 - [ ] German discovery for myname.co.uk and horse/stable site — other projects require their own edits; confirm horse/stable URL.
