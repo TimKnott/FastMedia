@@ -153,5 +153,6 @@
 ## Oct 17 — German translation and discovery
 - [x] Plan proper German public translations while preserving Czech and English, with indexable language URLs and Germany-focused search metadata.
 - [x] First batch: DE selection, translated offer/contact and enquiry states, German homepage/navigation introductions, calculator German labels, explicit original-language case-study notices, /cs /en /de offer/contact SEO and sitemap; seven language tests pass and browser switching/validation checks pass.
-- [ ] Remaining public translation batches: grants/courses, dynamic case-study/blog/legal content, remaining homepage copy and fully verified calculator PDF; no complete-site translation claim.
+- [x] German calculator: exercised trade selection → checkout summary → PDF preview without AI/payment; rendered and inspected the generated PDF and corrected unsupported currency glyphs.
+- [ ] Remaining public translation batches: grants/courses, dynamic case-study/blog/legal content and remaining homepage copy; outside the approved first core/search batch. No complete-site translation claim; public release still requires publishing.
 - [ ] German discovery for myname.co.uk and horse/stable site — other projects require their own edits; confirm horse/stable URL.
