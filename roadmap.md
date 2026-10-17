@@ -143,7 +143,8 @@
 - [ ] Option C: Keyword viability evaluator; Option D: UTM tracker
 
 ## Oct 17 — Browse AI and widget shop
-- [ ] Document paid back-office marketing tools for a public myname.co.uk section; distinguish existing tools from optional integrations and keep tools private — cross-project editing unavailable here.
-- [ ] Browse AI phase 2: prepare plan only for approved robot runs and safe normalised, deduplicated import; no implementation or paid tests authorised.
-- [ ] Browse AI phase 3: explain least-cost authenticated ChatGPT MCP setup and required owner input only; no implementation, auth changes or publishing authorised.
+- [x] Document paid back-office marketing tools and provide myname.co.uk content handoff; distinguish existing tools from optional integrations and keep tools private.
+- [ ] Apply handoff in Fastmedia Showcase — BLOCKED: cross-project editing unavailable here; owner must use that project's chat.
+- [x] Browse AI phase 2: prepare plan only for approved robot runs and safe normalised, deduplicated import; no implementation or paid tests authorised.
+- [x] Browse AI phase 3: explain least-cost authenticated ChatGPT MCP setup and required owner input only; no implementation, auth changes or publishing authorised.
 - [ ] Resume widget shop plan and cost review — BLOCKED: annual product prices, monthly AI allowances and refund terms need agreement; implementation remains paused for cost approval.
