@@ -1,4 +1,5 @@
 import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
+import { initialLanguage, languageLocales, localizedPath } from '@/lib/publicLanguage';
 
 type Language = 'cs' | 'en' | 'de';
 
@@ -704,18 +705,21 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'cs';
     try {
-      return localStorage.getItem('fastmedia-language') === 'en' ? 'en' : 'cs';
+      return initialLanguage(window.location.pathname, localStorage.getItem('fastmedia-language'));
     } catch {
-      return 'cs';
+      return initialLanguage(window.location.pathname, null);
     }
   });
 
   const handleSetLanguage = (nextLanguage: Language) => {
-    setLanguageState(nextLanguage === 'en' ? 'en' : 'cs');
+    const target = localizedPath(window.location.pathname, nextLanguage);
+    setLanguageState(nextLanguage);
+    try { localStorage.setItem('fastmedia-language', nextLanguage); } catch { /* Optional persistence. */ }
+    if (target !== window.location.pathname) window.location.assign(`${target}${window.location.search}${window.location.hash}`);
   };
 
   useEffect(() => {
-    document.documentElement.lang = language === 'en' ? 'en-GB' : 'cs-CZ';
+    document.documentElement.lang = languageLocales[language];
     try {
       localStorage.setItem('fastmedia-language', language);
     } catch {

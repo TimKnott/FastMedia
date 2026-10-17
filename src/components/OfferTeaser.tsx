@@ -22,12 +22,12 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 import { revealLazySections } from '@/components/LazySection';
 
 const services = [
-  { slug: 'websites', icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', position: 'left-[7%] top-[18%]' },
-  { slug: 'ai-lead-assistant', icon: Bot, cs: 'AI asistent pro poptávky 24/7', en: '24/7 AI lead assistant', position: 'left-[15%] bottom-[18%]' },
-  { slug: 'bookings', icon: CalendarCheck, cs: 'Rezervace a následná péče', en: 'Bookings & follow-up', position: 'right-[9%] top-[16%]' },
-  { slug: 'seo-performance', icon: Gauge, cs: 'SEO a rychlost', en: 'SEO & performance', position: 'right-[6%] bottom-[20%]' },
-  { slug: 'campaigns', icon: Megaphone, cs: 'Kampaně, které prodávají', en: 'Campaigns that convert', position: 'left-1/2 top-[7%] -translate-x-1/2' },
-  { slug: 'managed-growth', icon: ShieldCheck, cs: 'Bezpečný řízený růst', en: 'Secure, managed growth', position: 'left-1/2 bottom-[7%] -translate-x-1/2' },
+  { slug: 'websites', icon: Globe2, cs: 'Weby, které získávají zákazníky', en: 'High-converting websites', de: 'Websites für Ihr Unternehmen', position: 'left-[7%] top-[18%]' },
+  { slug: 'ai-lead-assistant', icon: Bot, cs: 'AI asistent pro poptávky 24/7', en: '24/7 AI lead assistant', de: 'AI-Unterstützung für Anfragen', position: 'left-[15%] bottom-[18%]' },
+  { slug: 'bookings', icon: CalendarCheck, cs: 'Rezervace a následná péče', en: 'Bookings & follow-up', de: 'Buchungen und Nachbetreuung', position: 'right-[9%] top-[16%]' },
+  { slug: 'seo-performance', icon: Gauge, cs: 'SEO a rychlost', en: 'SEO & performance', de: 'SEO und Geschwindigkeit', position: 'right-[6%] bottom-[20%]' },
+  { slug: 'campaigns', icon: Megaphone, cs: 'Kampaně, které prodávají', en: 'Campaigns that convert', de: 'Online-Werbekampagnen', position: 'left-1/2 top-[7%] -translate-x-1/2' },
+  { slug: 'managed-growth', icon: ShieldCheck, cs: 'Bezpečný řízený růst', en: 'Secure, managed growth', de: 'Sichere Website-Betreuung', position: 'left-1/2 bottom-[7%] -translate-x-1/2' },
 ];
 
 const heroCopy = {
@@ -41,12 +41,17 @@ const heroCopy = {
     headline: ['Launch', 'your business', 'beyond ordinary.'], body: 'Beautiful websites, intelligent automation and measurable growth — built into one powerful digital launchpad.',
     primary: 'Start your launch', secondary: 'Explore packages', control: 'Mission control', servicesTitle: 'Everything you need to grow in orbit.', servicesBody: 'One connected system turns attention into enquiries — and enquiries into loyal customers.', servicesCta: 'Explore every service', previous: 'Previous scene', next: 'Next scene', launchScene: 'Show launch scene', servicesScene: 'Show services scene', servicesAria: 'FastMedia services',
   },
+  de: {
+    aria: 'FastMedia für Ihr Unternehmen', alt: 'Sternenhimmel über einem leuchtenden Horizont', eyebrow: 'Ihr nächster Schritt beginnt hier',
+    headline: ['Starten Sie', 'Ihr Unternehmen', 'mit FastMedia.'], body: 'Professionelle Websites, passende Automatisierung und Werkzeuge für Ihr Unternehmen – abgestimmt auf Ihre Ziele.',
+    primary: 'Projekt planen', secondary: 'Pakete ansehen', control: 'Ihre digitale Zentrale', servicesTitle: 'Die passenden Werkzeuge für Ihr Unternehmen.', servicesBody: 'Verbinden Sie Ihre Website mit Anfragen, Buchungen und den Systemen, die Sie bereits nutzen.', servicesCta: 'Leistungen ansehen', previous: 'Vorherige Szene', next: 'Nächste Szene', launchScene: 'Startszene anzeigen', servicesScene: 'Leistungen anzeigen', servicesAria: 'Leistungen von FastMedia',
+  },
 } as const;
 
 const OfferTeaser = () => {
   const { language } = useLanguage();
   const { getContent } = useSiteContent();
-  const lang = language === 'en' ? 'en' : 'cs';
+  const lang = language;
   const base = heroCopy[lang];
   const headlineOverride = getContent('hero.headline', '');
   const copy = {
@@ -178,10 +183,10 @@ const OfferTeaser = () => {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-13 border-launch-border bg-launch-surface text-launch-foreground backdrop-blur-md hover:bg-launch-surface-strong hover:text-launch-foreground">
-                   <a href="#pricing" onClick={() => revealLazySections()}>{copy.secondary}</a>
+                   <Link to={language === 'de' ? '/de/offer' : '/offer'}>{copy.secondary}</Link>
                 </Button>
                 <Button asChild size="lg" variant="ghost" className="h-13 text-launch-foreground hover:bg-launch-surface hover:text-launch-foreground">
-                  <Link to="/launch">Launch film <Play className="h-4 w-4" /></Link>
+                  <Link to="/launch">{language === 'de' ? 'Startfilm' : language === 'cs' ? 'Startovací film' : 'Launch film'} <Play className="h-4 w-4" /></Link>
                 </Button>
               </motion.div>
 

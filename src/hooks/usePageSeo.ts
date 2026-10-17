@@ -20,6 +20,8 @@ export const usePageSeo = (pagePath: string) => {
   const [seo, setSeo] = useState<PageSeo | null>(seoCache[key] ?? null);
 
   useEffect(() => {
+    let active = true;
+    setSeo(seoCache[key] ?? null);
     if (seoCache[key] !== undefined) {
       setSeo(seoCache[key]);
       return;
@@ -34,8 +36,9 @@ export const usePageSeo = (pagePath: string) => {
         .maybeSingle();
 
       seoCache[key] = data ?? null;
-      setSeo(data ?? null);
+      if (active) setSeo(data ?? null);
     })();
+    return () => { active = false; };
   }, [pagePath, language, key]);
 
   return seo;

@@ -1,6 +1,7 @@
 import { Languages } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -15,15 +16,17 @@ const LanguageSwitcher = ({ className, triggerClassName }: LanguageSwitcherProps
     <div
       className={cn('inline-flex h-8 sm:h-9 items-center rounded-md border border-border bg-background/70 p-0.5', className)}
       role="group"
-      aria-label={language === 'cs' ? 'Výběr jazyka' : 'Language selection'}
+      aria-label={language === 'cs' ? 'Výběr jazyka' : language === 'de' ? 'Sprachauswahl' : 'Language selection'}
     >
       <Languages className="mx-1 sm:mx-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" aria-hidden="true" />
-      {(['cs', 'en'] as const).map((option) => {
+      {(['cs', 'en', 'de'] as const).map((option) => {
         const active = language === option;
-        const label = option === 'cs' ? 'CZ' : 'EN';
-        const accessibleLabel = option === 'cs' ? 'Čeština' : 'British English';
+        const label = option === 'cs' ? 'CZ' : option.toUpperCase();
+        const accessibleLabel = option === 'cs' ? 'Čeština' : option === 'de' ? 'Deutsch' : 'British English';
         return (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             key={option}
             type="button"
             onClick={() => setLanguage(option)}
@@ -36,7 +39,7 @@ const LanguageSwitcher = ({ className, triggerClassName }: LanguageSwitcherProps
             )}
           >
             {label}
-          </button>
+          </Button>
         );
       })}
     </div>

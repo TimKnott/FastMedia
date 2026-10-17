@@ -35,11 +35,22 @@ const copy = {
       { q: 'Nabízí FastMedia.Pro pomoc s dotací zdarma?', a: 'Ano: bezplatný kurz, šablonu podnikatelského plánu a AI prompty v jakémkoli jazyce.' },
     ],
   },
+  de: {
+    h2: 'Was FastMedia.Pro für Ihr Unternehmen entwickelt',
+    answer: 'FastMedia.Pro entwickelt Websites, Preisrechner, Buchungsformulare und individuell vereinbarte CRM/API-Verbindungen für Unternehmen in Tschechien und Europa. Private Marketingwerkzeuge helfen bei der Vorbereitung von Inhalten und der Recherche öffentlicher Geschäftskontakte. Direkte Social-Media-Veröffentlichung und weitere Integrationen werden separat geprüft und sind nicht automatisch enthalten.',
+    cards: [
+      { icon: GraduationCap, t: 'Informationen zu Förderprogrammen', d: 'Unsere Förderinformationen beziehen sich auf tschechische Programme; die jeweilige Förderstelle entscheidet.', to: '/eu-creative-grant' },
+      { icon: FileText, t: 'Projekt und Kosten planen', d: 'Für größere Websites: Funktionen auswählen und einen unverbindlichen Kostenrahmen ermitteln.', to: '/calculator' },
+      { icon: Languages, t: 'Unsere Website-Projekte', d: 'Entdecken Sie unser Portfolio auf myname.co.uk.', to: 'https://myname.co.uk' },
+    ],
+    more: 'Webdesign-Pakete und Folgekosten ansehen',
+    faqs: [],
+  },
 };
 
 export default function HomeDirectAnswer() {
   const { language } = useLanguage();
-  const t = copy[language === 'en' ? 'en' : 'cs'];
+  const t = copy[language];
   return (
     <section className="border-b border-border bg-background py-14" aria-labelledby="home-answer">
       <FAQJsonLd faqs={t.faqs.map((f) => ({ question: f.q, answer: f.a }))} />
@@ -48,7 +59,7 @@ export default function HomeDirectAnswer() {
         <p className="mt-4 max-w-3xl text-lg leading-relaxed text-muted-foreground" data-speakable>{t.answer}</p>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {t.cards.map((c) => (
-            <Link key={c.to} to={c.to} className="group">
+            <Link key={c.to} to={c.to} target={c.to.startsWith('https://') ? '_blank' : undefined} rel={c.to.startsWith('https://') ? 'noopener noreferrer' : undefined} className="group">
               <Card className="h-full transition-colors group-hover:border-accent">
                 <CardContent className="p-5">
                   <c.icon className="mb-3 h-6 w-6 text-accent" />
@@ -59,7 +70,7 @@ export default function HomeDirectAnswer() {
             </Link>
           ))}
         </div>
-        <Link to="/eu-creative-grant" className="mt-6 inline-flex items-center gap-1 font-medium text-accent hover:underline">
+        <Link to={language === 'de' ? '/de/offer' : '/eu-creative-grant'} className="mt-6 inline-flex items-center gap-1 font-medium text-accent hover:underline">
           {t.more} <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

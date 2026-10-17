@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Send, CheckCircle2 } from 'lucide-react';
 
-type Lang = 'cs' | 'en';
+type Lang = 'cs' | 'en' | 'de';
 
 const copy = {
   cs: {
@@ -53,6 +53,12 @@ const copy = {
     errMessage: 'Please tell us what you need.',
     errGeneric: 'We could not send your enquiry. Please try again or email support@fastmedia.pro.',
   },
+  de: {
+    title: 'Unverbindlich anfragen', sub: 'Beschreiben Sie Ihr Vorhaben. Wir antworten innerhalb von 24 Stunden mit einem Vorschlag, Preis und gegebenenfalls einer Prüfung der Fördermöglichkeiten.',
+    name: 'Vor- und Nachname', email: 'E-Mail', phone: 'Telefon (optional)', company: 'Unternehmen (optional)', message: 'Was benötigen Sie?', messagePlaceholder: 'Zum Beispiel eine Website für einen Handwerksbetrieb mit Terminbuchung und mehreren Sprachen.',
+    grant: 'Ich möchte Fördermöglichkeiten prüfen lassen', grantLevel: 'Erwarteter Förderanteil (unverbindlich)', submit: 'Anfrage senden', sending: 'Wird gesendet…', doneTitle: 'Anfrage gesendet', doneBody: 'Ihre Anfrage ist angekommen. Wir antworten innerhalb von 24 Stunden. Bei dringenden Anliegen: +420 797 864 432.',
+    errName: 'Bitte geben Sie Ihren Namen ein.', errEmail: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.', errMessage: 'Bitte beschreiben Sie Ihr Anliegen.', errGeneric: 'Die Anfrage konnte nicht gesendet werden. Versuchen Sie es erneut oder schreiben Sie an support@fastmedia.pro.',
+  },
 } as const;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -88,7 +94,7 @@ const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: strin
           message: form.message.trim(),
           details: {
             Source: source ?? 'Offer campaign page (/offer)',
-            Language: lang === 'cs' ? 'Czech' : 'English',
+            Language: lang === 'cs' ? 'Czech' : lang === 'de' ? 'German' : 'English',
             'Grant check requested': grant ? 'Yes' : 'No',
             ...(grant ? { 'Expected grant level': `${grantPercent}%` } : {}),
           },

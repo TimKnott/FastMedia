@@ -36,13 +36,12 @@ function buildHead(route: RouteSeo): string {
     `<meta property="og:type" content="${ogType}" />`,
     `<meta property="og:site_name" content="FastMedia.Pro" />`,
     `<meta property="og:image" content="${escAttr(ogImage)}" />`,
-    `<meta property="og:locale" content="en_GB" />`,
+    `<meta property="og:locale" content="${route.language?.replace('-', '_') ?? 'en_GB'}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${escAttr(route.title)}" />`,
     `<meta name="twitter:description" content="${escAttr(route.description)}" />`,
     `<meta name="twitter:image" content="${escAttr(ogImage)}" />`,
-    `<link rel="alternate" hreflang="en-GB" href="${escAttr(canonical)}" />`,
-    `<link rel="alternate" hreflang="x-default" href="${escAttr(canonical)}" />`,
+    ...(route.alternates ?? []).map(alternate => `<link rel="alternate" hreflang="${escAttr(alternate.language)}" href="${BASE_URL}${escAttr(alternate.path)}" />`),
   ];
   if (route.jsonLd) {
     const items = Array.isArray(route.jsonLd) ? route.jsonLd : [route.jsonLd];
@@ -61,7 +60,7 @@ function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
   // never see it — the SPA takes over immediately.
   const topLinks = allRoutes
     .filter((r) => r && typeof r.path === "string" && typeof r.title === "string" && typeof r.description === "string")
-    .filter((r) => r.path !== route.path && (r.path === "/" || r.path.startsWith("/demo/") || r.path === "/blog" || r.path === "/calculator" || r.path === "/inquiry"))
+    .filter((r) => r.path !== route.path && (route.language ? r.language === route.language : (r.path === "/" || r.path.startsWith("/demo/") || r.path === "/blog" || r.path === "/calculator" || r.path === "/inquiry")))
     .slice(0, 16)
     .map((r) => {
       const label = escText(r.title.split("—")[0].split("|")[0].trim());
@@ -237,7 +236,7 @@ async function main() {
   for (const route of routes) {
     const head = buildHead(route);
     const body = buildCrawlBody(route, routes);
-    const html = applyToTemplate(template, head, body);
+    const html = applyToTemplate(template, head, body).replace(/<html\b[^>]*>/i, `<html lang="${route.language ?? 'en-GB'}">`);
     writeRouteFile(route, html);
   }
 

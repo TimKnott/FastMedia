@@ -18,6 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/logo.jpeg';
 import { useSiteSetting } from '@/hooks/useSiteSettings';
+import { localizedPath } from '@/lib/publicLanguage';
 import { revealLazySections } from '@/components/LazySection';
 
 const PAYMENTS_ENV: 'sandbox' | 'live' =
@@ -121,7 +122,7 @@ const Navbar = () => {
 
   const openBillingPortal = async () => {
     if (!userEmail) {
-      toast.error(isEnglish ? 'Sign in first to manage billing.' : 'Pro správu plateb se nejprve přihlaste.');
+      toast.error(language === 'de' ? 'Melden Sie sich zuerst an, um Ihre Abrechnung zu verwalten.' : (isEnglish ? 'Sign in first to manage billing.' : 'Pro správu plateb se nejprve přihlaste.'));
       return;
     }
     setBillingLoading(true);
@@ -138,7 +139,7 @@ const Navbar = () => {
       if (!url) throw new Error((data as { error?: string })?.error ?? 'No portal URL returned.');
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (e) {
-      const msg = e instanceof Error ? e.message : (isEnglish ? 'Could not open the billing portal.' : 'Platební portál se nepodařilo otevřít.');
+      const msg = e instanceof Error ? e.message : (language === 'de' ? 'Das Abrechnungsportal konnte nicht geöffnet werden.' : (isEnglish ? 'Could not open the billing portal.' : 'Platební portál se nepodařilo otevřít.'));
       console.error('[Navbar billing]', e);
       toast.error(msg);
     } finally {
@@ -159,8 +160,8 @@ const Navbar = () => {
     ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
     { href: '#faq', label: t('nav.faq') },
     { href: '/offer', label: t('nav.offer'), isRoute: true },
-    { href: '/case-studies', label: isEnglish ? 'Case studies' : 'Případové studie', isRoute: true },
-    { href: '/courses', label: isEnglish ? 'Courses' : 'Kurzy', isRoute: true },
+    { href: '/case-studies', label: language === 'de' ? 'Projektbeispiele' : (isEnglish ? 'Case studies' : 'Případové studie'), isRoute: true },
+    { href: '/courses', label: language === 'de' ? 'Kurse' : (isEnglish ? 'Courses' : 'Kurzy'), isRoute: true },
     { href: '/blog', label: 'Blog', isRoute: true },
     { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
     { href: '/calculator', label: t('nav.calculator'), isRoute: true },
@@ -221,10 +222,10 @@ const Navbar = () => {
                 <Button
                   size="sm"
                   className="h-9 px-3 sm:px-4 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-glow border border-accent/40"
-                  title={isEnglish ? 'Open the Website Builder' : 'Otevřít tvůrce webu'}
+                  title={language === 'de' ? 'Website-Editor öffnen' : (isEnglish ? 'Open the Website Builder' : 'Otevřít tvůrce webu')}
                 >
                   <LayoutDashboard className="w-4 h-4 sm:mr-1.5" />
-                  <span className="hidden sm:inline">{isEnglish ? 'Builder' : 'Tvůrce webu'}</span>
+                  <span className="hidden sm:inline">{language === 'de' ? 'Website-Editor' : (isEnglish ? 'Builder' : 'Tvůrce webu')}</span>
                 </Button>
               </Link>
             )}
@@ -237,11 +238,11 @@ const Navbar = () => {
                     size="sm"
                     variant="outline"
                     className="h-9 px-2 sm:px-3 shrink-0"
-                    title={isEnglish ? 'Account' : 'Účet'}
-                    aria-label={isEnglish ? 'Account menu' : 'Nabídka účtu'}
+                    title={language === 'de' ? 'Konto' : (isEnglish ? 'Account' : 'Účet')}
+                    aria-label={language === 'de' ? 'Kontomenü' : (isEnglish ? 'Account menu' : 'Nabídka účtu')}
                   >
                     <UserCircle2 className="w-4 h-4 sm:mr-1.5" />
-                    <span className="hidden sm:inline">{isEnglish ? 'Account' : 'Účet'}</span>
+                    <span className="hidden sm:inline">{language === 'de' ? 'Konto' : (isEnglish ? 'Account' : 'Účet')}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-60">
@@ -261,18 +262,18 @@ const Navbar = () => {
                     ) : (
                       <CreditCard className="w-4 h-4" />
                     )}
-                     {isEnglish ? 'Manage billing' : 'Spravovat platby'}
+                     {language === 'de' ? 'Abrechnung verwalten' : (isEnglish ? 'Manage billing' : 'Spravovat platby')}
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/account">
                       <UserCircle2 className="w-4 h-4" />
-                       {isEnglish ? 'Account page' : 'Stránka účtu'}
+                       {language === 'de' ? 'Kontoseite' : (isEnglish ? 'Account page' : 'Stránka účtu')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={(e) => { e.preventDefault(); void signOut(); }}>
                     <LogOut className="w-4 h-4" />
-                     {isEnglish ? 'Sign out' : 'Odhlásit se'}
+                     {language === 'de' ? 'Abmelden' : (isEnglish ? 'Sign out' : 'Odhlásit se')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -283,10 +284,10 @@ const Navbar = () => {
               <Link
                 to="/admin/login"
                 className="hidden md:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors shrink-0"
-                title={isEnglish ? 'Admin sign in' : 'Přihlášení administrátora'}
+                title={language === 'de' ? 'Admin-Anmeldung' : (isEnglish ? 'Admin sign in' : 'Přihlášení administrátora')}
               >
                 <Shield className="w-4 h-4" />
-                {isEnglish ? 'Admin' : 'Administrace'}
+                {language === 'de' ? 'Admin' : (isEnglish ? 'Admin' : 'Administrace')}
               </Link>
             )}
 
@@ -305,7 +306,7 @@ const Navbar = () => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 text-foreground shrink-0 rounded-lg hover:bg-muted/50 transition-colors"
-               aria-label={isEnglish ? 'Toggle menu' : 'Otevřít nebo zavřít nabídku'}
+               aria-label={language === 'de' ? 'Menü öffnen oder schließen' : (isEnglish ? 'Toggle menu' : 'Otevřít nebo zavřít nabídku')}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -315,21 +316,21 @@ const Navbar = () => {
         {/* Desktop quick links row — makes the key pages reachable without opening the menu */}
         <div className="hidden md:flex items-center gap-1 flex-wrap pb-2 -mt-1">
           {[
-            { to: '/offer', label: isEnglish ? 'Offer' : 'Nabídka' },
-            { to: '/case-studies', label: isEnglish ? 'Case studies' : 'Případové studie' },
-            { to: '/grant-wizard', label: isEnglish ? 'Grant wizard' : 'Žádost o grant' },
-            { to: '/grant-eligibility', label: isEnglish ? 'Grant rules' : 'Podmínky grantu' },
-            { to: '/eugrants', label: isEnglish ? 'Grant hubs map' : 'Mapa krajů' },
-            { to: '/eu-creative-grant', label: isEnglish ? 'EU creative grant' : 'Kreativní vouchery' },
-            { to: '/eu-language-websites', label: isEnglish ? 'EU language websites' : 'Weby v jazycích EU' },
-            { to: '/calculator', label: isEnglish ? 'Calculator' : 'Kalkulačka' },
-            { to: '/courses', label: isEnglish ? 'Courses' : 'Kurzy' },
+            { to: '/offer', label: language === 'de' ? 'Angebot' : (isEnglish ? 'Offer' : 'Nabídka') },
+            { to: '/case-studies', label: language === 'de' ? 'Projektbeispiele' : (isEnglish ? 'Case studies' : 'Případové studie') },
+            { to: '/grant-wizard', label: language === 'de' ? 'Förderanfrage' : (isEnglish ? 'Grant wizard' : 'Žádost o grant') },
+            { to: '/grant-eligibility', label: language === 'de' ? 'Förderbedingungen' : (isEnglish ? 'Grant rules' : 'Podmínky grantu') },
+            { to: '/eugrants', label: language === 'de' ? 'Regionale Förderstellen' : (isEnglish ? 'Grant hubs map' : 'Mapa krajů') },
+            { to: '/eu-creative-grant', label: language === 'de' ? 'EU-Kreativförderung' : (isEnglish ? 'EU creative grant' : 'Kreativní vouchery') },
+            { to: '/eu-language-websites', label: language === 'de' ? 'Websites in EU-Sprachen' : (isEnglish ? 'EU language websites' : 'Weby v jazycích EU') },
+            { to: '/calculator', label: language === 'de' ? 'Kalkulator' : (isEnglish ? 'Calculator' : 'Kalkulačka') },
+            { to: '/courses', label: language === 'de' ? 'Kurse' : (isEnglish ? 'Courses' : 'Kurzy') },
             { to: '/blog', label: 'Blog' },
-            { to: '/contact', label: isEnglish ? 'Contact' : 'Kontakt' },
+            { to: '/contact', label: language === 'de' ? 'Kontakt' : (isEnglish ? 'Contact' : 'Kontakt') },
           ].map((l) => (
             <Link
               key={l.to}
-              to={l.to}
+              to={localizedPath(l.to, language)}
               className="px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors"
             >
               {l.label}
@@ -357,9 +358,9 @@ const Navbar = () => {
                 >
                   <span className="flex items-center gap-2">
                     <LayoutDashboard className="w-4 h-4" />
-                     {isEnglish ? 'Open Website Builder' : 'Otevřít tvůrce webu'}
+                     {language === 'de' ? 'Website-Editor öffnen' : (isEnglish ? 'Open Website Builder' : 'Otevřít tvůrce webu')}
                   </span>
-                   <span className="text-[10px] uppercase tracking-wide opacity-80">{isEnglish ? 'Signed in' : 'Přihlášeno'}</span>
+                   <span className="text-[10px] uppercase tracking-wide opacity-80">{language === 'de' ? 'Angemeldet' : (isEnglish ? 'Signed in' : 'Přihlášeno')}</span>
                 </Link>
               )}
               {isAuthed && (
@@ -376,12 +377,12 @@ const Navbar = () => {
                   ) : (
                     <CreditCard className="w-4 h-4" />
                   )}
-                   {isEnglish ? 'Manage billing' : 'Spravovat platby'}
+                   {language === 'de' ? 'Abrechnung verwalten' : (isEnglish ? 'Manage billing' : 'Spravovat platby')}
                 </button>
               )}
               <div className="flex items-center justify-between gap-3 py-2 sm:hidden">
                 <span className="text-sm font-medium text-foreground">
-                  {isEnglish ? 'Dark mode' : 'Tmavý režim'}
+                  {language === 'de' ? 'Dunkler Modus' : (isEnglish ? 'Dark mode' : 'Tmavý režim')}
                 </span>
                 <ThemeToggle />
               </div>
@@ -389,7 +390,7 @@ const Navbar = () => {
                 link.isRoute ? (
                   <Link
                     key={link.href}
-                    to={link.href}
+                    to={localizedPath(link.href, language)}
                     onClick={() => setIsOpen(false)}
                     className={`block py-2 font-medium hover:text-accent transition-colors ${link.mobileOnly ? 'text-accent flex items-center gap-2' : 'text-foreground'}`}
                   >
@@ -428,7 +429,7 @@ const Navbar = () => {
                   className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
                 >
                   <Contact className="w-4 h-4" />
-                   {isEnglish ? 'Save Contact' : 'Uložit kontakt'}
+                   {language === 'de' ? 'Kontakt speichern' : (isEnglish ? 'Save Contact' : 'Uložit kontakt')}
                 </a>
                 {'share' in navigator && (
                   <button
@@ -439,7 +440,7 @@ const Navbar = () => {
                     className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
                   >
                     <Share2 className="w-4 h-4" />
-                     {isEnglish ? 'Share' : 'Sdílet'}
+                     {language === 'de' ? 'Teilen' : (isEnglish ? 'Share' : 'Sdílet')}
                   </button>
                 )}
               </div>

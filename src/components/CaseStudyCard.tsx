@@ -74,6 +74,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
           <Badge variant="secondary" className="w-fit">{caseField(item, 'tag', language)}</Badge>
         )}
         <h3 className={compact ? 'text-lg font-bold' : 'text-xl font-bold'}>{item.brand}</h3>
+        {language === 'de' && <p className="text-xs text-muted-foreground">Projektbeschreibung und PDF in der verfügbaren Originalsprache.</p>}
         <p className="text-sm text-muted-foreground">{caseField(item, 'summary', language)}</p>
 
         {!compact && caseField(item, 'body', language) && (
@@ -101,22 +102,22 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
             <Button size="sm" variant="secondary" asChild>
               <a href={item.website_url} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-4 h-4" />
-                Visit {item.website_label || item.brand.split(' — ')[0]}
+                {language === 'de' ? 'Website ansehen:' : language === 'cs' ? 'Navštívit:' : 'Visit'} {item.website_label || item.brand.split(' — ')[0]}
               </a>
             </Button>
           )}
           <Button size="sm" variant="default" disabled={busy} onClick={() => openPdf(false)}>
             <FileText className="w-4 h-4" />
-            {isEnglish ? 'Open PDF' : 'Otevřít PDF'}
+            {language === 'de' ? 'PDF öffnen' : isEnglish ? 'Open PDF' : 'Otevřít PDF'}
           </Button>
           <Button size="sm" variant="outline" disabled={busy} onClick={() => openPdf(true)}>
             <Download className="w-4 h-4" />
-            {isEnglish ? 'Download' : 'Stáhnout'}
+            {language === 'de' ? 'Herunterladen' : isEnglish ? 'Download' : 'Stáhnout'}
           </Button>
           {canEdit && (
             <Button size="sm" variant="ghost" onClick={() => onEdit?.(item)}>
               <Pencil className="w-4 h-4" />
-              {isEnglish ? 'Edit' : 'Upravit'}
+              {language === 'de' ? 'Bearbeiten' : isEnglish ? 'Edit' : 'Upravit'}
             </Button>
           )}
         </div>

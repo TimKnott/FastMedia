@@ -11,10 +11,10 @@ const ShowcaseCarousel = () => {
     <section aria-labelledby="showcase-heading" className="overflow-hidden bg-background py-14">
       <div className="container mx-auto mb-8 flex flex-col items-center gap-4 px-4 text-center">
         <span className="rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-medium uppercase tracking-wider text-accent">
-          {en ? 'Live portfolio' : 'Živé portfolio'}
+          {language === 'de' ? 'Live-Portfolio' : en ? 'Live portfolio' : 'Živé portfolio'}
         </span>
         <h2 id="showcase-heading" className="font-display text-2xl font-bold text-foreground sm:text-3xl">
-          {en ? 'Websites we have built — see them on myname.co.uk' : 'Weby, které jsme vytvořili — prohlédněte si je na myname.co.uk'}
+          {language === 'de' ? 'Unsere Websites – entdecken Sie das Portfolio auf myname.co.uk' : en ? 'Websites we have built — see them on myname.co.uk' : 'Weby, které jsme vytvořili — prohlédněte si je na myname.co.uk'}
         </h2>
         <a
           href={SHOWCASE_HUB_URL}
@@ -22,7 +22,7 @@ const ShowcaseCarousel = () => {
           rel="noopener"
           className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          {en ? 'Visit the showcase' : 'Navštívit ukázky'} <ExternalLink className="h-4 w-4" />
+          {language === 'de' ? 'Portfolio ansehen' : en ? 'Visit the showcase' : 'Navštívit ukázky'} <ExternalLink className="h-4 w-4" />
         </a>
       </div>
 

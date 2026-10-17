@@ -32,6 +32,14 @@ const content = {
     sending: 'Sending…', send: 'Send message', consent: 'By sending this form you agree to our', privacy: 'privacy policy', faqTitle: 'Frequently asked questions',
     success: 'Thank you — your message is on its way. We will reply shortly.', error: 'Something went wrong. Please try again or email support@fastmedia.pro.',
   },
+  de: {
+    seoTitle: 'Kontakt zu FastMedia.Pro – Webdesign für Ihr Unternehmen', seoDescription: 'Fragen Sie FastMedia.Pro nach einer neuen Website, einem Relaunch oder Betreuung. Wir antworten innerhalb eines Arbeitstages.',
+    title: 'Kontaktieren Sie uns', intro: 'Beschreiben Sie Ihr Anliegen. Sie erhalten eine klare Empfehlung und einen transparenten Preis – ohne Verkaufsdruck.', whatsapp: 'Über WhatsApp schreiben', reply: 'Antwort innerhalb eines Arbeitstages',
+    received: 'Nachricht erhalten', receivedBody: 'Ihre Angaben sind angekommen. Wir melden uns in Kürze.', calculator: 'Größeres Website-Projekt im Kalkulator planen →',
+    name: 'Vor- und Nachname', email: 'E-Mail', phone: 'Telefon', company: 'Unternehmen', help: 'Wie können wir Ihnen helfen?', placeholder: 'Beschreiben Sie Ihr Unternehmen, Ihre Wünsche und Ihren Zeitrahmen.',
+    sending: 'Wird gesendet…', send: 'Nachricht senden', consent: 'Mit dem Absenden stimmen Sie unserer', privacy: 'Datenschutzerklärung zu', faqTitle: 'Häufige Fragen',
+    success: 'Vielen Dank – Ihre Nachricht wurde gesendet. Wir melden uns in Kürze.', error: 'Das hat leider nicht funktioniert. Versuchen Sie es erneut oder schreiben Sie an support@fastmedia.pro.',
+  },
 } as const;
 
 const faqs = {
@@ -69,11 +77,19 @@ const faqs = {
     a: 'Absolutely. Send us the address in the form above and we will come back with an honest assessment of what to fix first.',
   },
  ],
+ de: [
+  { q: 'Wie schnell antworten Sie?', a: 'Wir antworten innerhalb eines Arbeitstages. Bei dringenden Anliegen schreiben Sie uns über WhatsApp.' },
+  { q: 'Was kostet eine Website?', a: 'Eine einseitige Website kostet 6.900 Kč einmalig oder 990 Kč monatlich ohne Anzahlung bei 12 Monaten Mindestlaufzeit. Für größere Projekte nutzen Sie den Kalkulator. Die Preise bleiben in tschechischen Kronen.' },
+  { q: 'Wie lange dauert ein Projekt?', a: 'Kleine Paket-Websites werden innerhalb von 10 Arbeitstagen veröffentlicht. Der Zeitrahmen für größere Projekte hängt vom Umfang und den freigegebenen Inhalten ab.' },
+  { q: 'Arbeiten Sie für Unternehmen außerhalb Tschechiens?', a: 'Ja. Wir sitzen in Tschechien und arbeiten aus der Ferne mit Unternehmen weltweit. Besprechen Sie die gewünschte Projektsprache mit uns.' },
+  { q: 'Sind Hosting und Betreuung enthalten?', a: 'Beim einmaligen Paket ist das erste Jahr enthalten, danach kostet Hosting 2.490 Kč jährlich. Beim Monatsabo sind Hosting und die vereinbarte Betreuung während der Laufzeit enthalten. Die Angebotsseite erklärt die Einzelheiten.' },
+  { q: 'Können Sie eine bestehende Website verbessern?', a: 'Ja. Senden Sie uns die Adresse. Wir empfehlen Ihnen, welche Verbesserungen zuerst sinnvoll sind.' },
+ ],
 } as const;
 
 const ContactInner = () => {
   const { language } = useLanguage();
-  const lang = language === 'en' ? 'en' : 'cs';
+  const lang = language;
   const c = content[lang];
   const pageFaqs = faqs[lang];
   const [isSubmitting, setIsSubmitting] = useState(false);

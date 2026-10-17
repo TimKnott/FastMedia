@@ -2,6 +2,8 @@ import { Helmet } from 'react-helmet-async';
 import { usePageSeo } from '@/hooks/usePageSeo';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePublishedSchema } from '@/hooks/usePublishedSchema';
+import { languageLocales, localizedPath, translatedPaths } from '@/lib/publicLanguage';
+import { translatedPageSeo } from '@/lib/publicSeo';
 
 interface SEOHeadProps {
   title: string;
@@ -30,15 +32,15 @@ const SEOHead = ({
   pagePath,
 }: SEOHeadProps) => {
   const { language } = useLanguage();
-  const isEnglish = language === 'en';
+  const localizedSeo = translatedPageSeo(canonical ?? '', language);
   const seo = usePageSeo(pagePath ?? '');
   const { data: schemaBlocks } = usePublishedSchema(pagePath);
 
   // DB values override props when available
-  const effectiveTitle = (pagePath && seo?.title) || title;
-  const effectiveDescription = (pagePath && seo?.description) || description;
-  const effectiveOgTitle = (pagePath && seo?.og_title) || ogTitle;
-  const effectiveOgDescription = (pagePath && seo?.og_description) || ogDescription;
+  const effectiveTitle = localizedSeo?.title || (pagePath && seo?.title) || title;
+  const effectiveDescription = localizedSeo?.description || (pagePath && seo?.description) || description;
+  const effectiveOgTitle = localizedSeo?.title || (pagePath && seo?.og_title) || ogTitle;
+  const effectiveOgDescription = localizedSeo?.description || (pagePath && seo?.og_description) || ogDescription;
   const effectiveOgImage = (pagePath && seo?.og_image) || ogImage;
   const effectiveOgType = (pagePath && seo?.og_type) || ogType;
   const effectiveNoindex = (pagePath && seo?.noindex) || noindex;
@@ -53,7 +55,8 @@ const SEOHead = ({
       ? '/'
       : canonical.replace(/\/+$/, '')
     : undefined;
-  const canonicalUrl = normalizedPath ? `${BASE_URL}${normalizedPath}` : undefined;
+  const canonicalUrl = normalizedPath ? `${BASE_URL}${localizedPath(normalizedPath, language)}` : undefined;
+  const hasTranslations = translatedPaths.some(p => p === normalizedPath);
 
   return (
     <Helmet>
@@ -64,16 +67,15 @@ const SEOHead = ({
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
       {/* Hreflang for multilingual SEO */}
-      {canonicalUrl && <link rel="alternate" hrefLang="cs" href={canonicalUrl} />}
-      {canonicalUrl && <link rel="alternate" hrefLang="en" href={canonicalUrl} />}
-      {canonicalUrl && <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />}
+      {hasTranslations && normalizedPath && (['cs', 'en', 'de'] as const).map(lang => <link key={lang} rel="alternate" hrefLang={languageLocales[lang]} href={`${BASE_URL}${localizedPath(normalizedPath, lang)}`} />)}
+      {hasTranslations && normalizedPath && <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${localizedPath(normalizedPath, 'cs')}`} />}
 
       <meta property="og:title" content={effectiveOgTitle || fullTitle} />
       <meta property="og:description" content={effectiveOgDescription || effectiveDescription} />
       <meta property="og:type" content={effectiveOgType} />
       <meta property="og:site_name" content="FastMedia.Pro" />
-      <meta property="og:locale" content={isEnglish ? 'en_GB' : 'cs_CZ'} />
-      <meta property="og:locale:alternate" content={isEnglish ? 'cs_CZ' : 'en_GB'} />
+      <meta property="og:locale" content={languageLocales[language].replace('-', '_')} />
+      {(['cs', 'en', 'de'] as const).filter(lang => lang !== language).map(lang => <meta key={lang} property="og:locale:alternate" content={languageLocales[lang].replace('-', '_')} />)}
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
       {effectiveOgImage && <meta property="og:image" content={effectiveOgImage} />}
 

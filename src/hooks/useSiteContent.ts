@@ -19,6 +19,8 @@ export const useSiteContent = () => {
   const [content, setContent] = useState<ContentMap>(globalCache[cacheKey] ?? {});
 
   useEffect(() => {
+    let active = true;
+    setContent(globalCache[cacheKey] ?? {});
     if (globalCache[cacheKey] && Object.keys(globalCache[cacheKey]).length > 0) {
       setContent(globalCache[cacheKey]);
       return;
@@ -56,8 +58,9 @@ export const useSiteContent = () => {
     }
 
     fetchPromise[cacheKey].then(() => {
-      setContent(globalCache[cacheKey] ?? {});
+      if (active) setContent(globalCache[cacheKey] ?? {});
     });
+    return () => { active = false; };
   }, [language, isPreview, cacheKey]);
 
   const getContent = useCallback(
