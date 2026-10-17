@@ -149,3 +149,8 @@
 - [x] Browse AI phase 3: explain least-cost authenticated ChatGPT MCP setup and required owner input only; no implementation, auth changes or publishing authorised.
 - [x] Resume widget shop plan and cost review — phased catalogue/intake, payments/access, bounded customer AI and reporting scope; no unsupported numerical credit quote.
 - [ ] Widget shop implementation — BLOCKED: final product prices, monthly allowance rules, refund/renewal terms, Phase 1 spend limit and separate build approval.
+
+## Oct 17 — German translation and discovery
+- [ ] Plan proper German public translations while preserving Czech and English, with indexable language URLs and Germany-focused search metadata.
+- [ ] Implement and verify approved multilingual scope — awaiting plan approval.
+- [ ] German discovery for myname.co.uk and horse/stable site — other projects require their own edits; confirm horse/stable URL.
