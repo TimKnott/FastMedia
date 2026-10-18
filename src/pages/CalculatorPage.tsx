@@ -1,3 +1,4 @@
+import { FAST20_CODE, fast20RemainingMs, pickStore, readFast20 } from '@/lib/fast20Offer';
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -91,7 +92,10 @@ const CalculatorPage = () => {
   const [intentBrief, setIntentBrief] = useState<{ summary: string; intent: Record<string, unknown> } | null>(null);
 
   // Coupon state
-  const [couponInput, setCouponInput] = useState('');
+  const [couponInput, setCouponInput] = useState(() => {
+    try { return (new URLSearchParams(window.location.search).get('coupon') || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 30); } catch { return ''; }
+  });
+  const [fast20Left] = useState(() => { try { return fast20RemainingMs(readFast20(pickStore().store)); } catch { return 0; } });
   const [appliedCoupon, setAppliedCoupon] = useState<{
     code: string;
     description: string | null;
@@ -1846,6 +1850,19 @@ const CalculatorPage = () => {
 
                     <p className="text-xs text-muted-foreground text-center mt-4">{l.canChange}</p>
                   </div>
+
+                  {/* FAST20 reminder, shown immediately above payment when this visitor's 24h offer is active */}
+                  {fast20Left > 0 && appliedCoupon?.code !== FAST20_CODE && (
+                    <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-2 rounded-xl border border-accent/40 bg-accent/5 p-3 text-sm">
+                      <TicketPercent className="w-4 h-4 text-accent shrink-0" />
+                      <span className="flex-1 text-foreground">
+                        {lang === 'cs' ? 'Máte kód FAST20 (20 % na tvorbu webu, bez hostingu)? Zadejte ho do pole pro slevový kód výše před platbou.' : lang === 'de' ? 'Sie haben den Code FAST20 (20 % auf die Website-Erstellung, ohne Hosting)? Geben Sie ihn vor der Zahlung oben in das Gutscheinfeld ein.' : 'Have code FAST20 (20% off website build work, hosting excluded)? Enter it in the discount code field above before paying.'}
+                      </span>
+                      <Button size="sm" variant="outline" onClick={() => setCouponInput(FAST20_CODE)}>
+                        {lang === 'cs' ? 'Vložit FAST20' : lang === 'de' ? 'FAST20 einfügen' : 'Insert FAST20'}
+                      </Button>
+                    </div>
+                  )}
 
                   {/* Export actions */}
                   <div className="flex flex-wrap gap-3 mt-6">
