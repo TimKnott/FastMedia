@@ -45,6 +45,12 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `sidebar-accent-foreground` | `--sidebar-accent-foreground` |
 | `sidebar-border` | `--sidebar-border` |
 | `sidebar-ring` | `--sidebar-ring` |
+| `stage-plan` | `--stage-plan` |
+| `stage-find` | `--stage-find` |
+| `stage-create` | `--stage-create` |
+| `stage-send` | `--stage-send` |
+| `stage-track` | `--stage-track` |
+| `stage-foreground` | `--stage-foreground` |
 
 ## Border Radius
 
