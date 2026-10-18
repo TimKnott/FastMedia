@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  ArrowRight, CalendarDays, CheckCircle2, Clock, Globe2, Horse, Languages,
+  ArrowRight, CalendarDays, CheckCircle2, Clock, Globe2, TreePine, Languages,
   MessageSquare, PhoneOff, Settings2, ShieldCheck, Smartphone, Sparkles,
   BarChart3, BedDouble, Tent, Users, CloudSun, Lock,
 } from 'lucide-react';
