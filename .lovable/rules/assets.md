@@ -70,5 +70,5 @@ The full machine-readable catalog lives in this library's `design-system.json` (
 - `@/design-system/{slug}/assets/case-studies/petpedia-forum.jpg.asset.json` (jpg, R2 pointer)
 - `@/design-system/{slug}/assets/case-studies/petpedia-home.jpg.asset.json` (jpg, R2 pointer)
 - `@/design-system/{slug}/assets/case-studies/petpedia-oracle.jpg.asset.json` (jpg, R2 pointer)
-- …and 274 more — full list in `design-system.json`
+- …and 278 more — full list in `design-system.json`
 

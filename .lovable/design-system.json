@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "3.11.0",
+    "version": "3.12.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -91,7 +91,7 @@
       "roadmap.md": "20be3509e61e5119f4c8c2cd5e364b48",
       "scripts/prerender.ts": "d8be21c19633c9450d30279be599d070",
       "scripts/seo-routes.ts": "5db43d32c4f3d23ffac497c968a40be6",
-      "src/App.tsx": "e3b8acf719f2b860b5a7dc39ed7917a3",
+      "src/App.tsx": "339d29e2c26a1d06a05ccef0ac6f6228",
       "src/assets/blog/blog-bakery.jpg": "c9982fcc8f2c11ef31525d8fa5f1da7c",
       "src/assets/blog/blog-booking-system.jpg": "07b0726b34de8e31642a3c96a0ab5c69",
       "src/assets/blog/blog-branding.jpg": "eece31d9411ab74c2b80105fc809e046",
@@ -147,6 +147,10 @@
       "src/assets/case-studies/standa-custom.jpg.asset.json": "e509a585fa3496bc4fc74612782ae6de",
       "src/assets/case-studies/standa-home.jpg.asset.json": "f68f15f014c98455bce2bf7d0f488832",
       "src/assets/case-studies/standa-tractor.jpg.asset.json": "003c727b58eb7054f0527c5a1ac4a07f",
+      "src/assets/equestrian/guest-stay.jpg": "3bdbf848f550f41cf562bb64c29e2ded",
+      "src/assets/equestrian/hero-trail.jpg": "dee05b293987abbe0e5322c7d875571c",
+      "src/assets/equestrian/riding-lesson.jpg": "55c21f9f54a12c63c9520b1942551387",
+      "src/assets/equestrian/stable-courtyard.jpg": "d8010e0ec97347e93c8543dd2758de42",
       "src/assets/eshop/product-airfryer.jpg": "024dfc7ee3b4141da70cd267cb46f283",
       "src/assets/eshop/product-airpurifier.jpg": "5040785696dfc1f45c6ec0da5c1d27d9",
       "src/assets/eshop/product-bag.jpg": "3ed3fe2ec0f7c99a7e71aa4e25a05b57",
@@ -629,6 +633,7 @@
       "src/pages/Contact.tsx": "53b6c47c501c249926cf049459b143a8",
       "src/pages/CourseDetail.tsx": "7257ba3775d0305f8ffc5c4a09283187",
       "src/pages/Courses.tsx": "b1fb2a23ebe62d5cc8a9eb222865d5cd",
+      "src/pages/EquestrianLanding.tsx": "0b46df77b1cd48272af4868cbee77fc1",
       "src/pages/FeatureDetail.tsx": "f77ae0b30049602bc6ee0766ea7b131b",
       "src/pages/GrantApplication.tsx": "a13683320fcbcd96fa59435fa6d56014",
       "src/pages/GrantContentPage.tsx": "989e63c24120299a77c5edca8b72222a",
@@ -2967,6 +2972,26 @@
       "kind": "image",
       "format": "jpg",
       "pointer": true
+    },
+    {
+      "file": "src/assets/equestrian/guest-stay.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/equestrian/hero-trail.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/equestrian/riding-lesson.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/equestrian/stable-courtyard.jpg",
+      "kind": "image",
+      "format": "jpg"
     },
     {
       "file": "src/assets/eshop/product-airfryer.jpg",
