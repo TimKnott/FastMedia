@@ -109,7 +109,7 @@ const copy = {
     { icon: 'phone', cs: 'Mobilní web na míru, žádná šablona', en: 'A mobile-first custom site, no template', de: 'Individuelle mobile Website, keine Vorlage' },
     { icon: 'settings', cs: 'Centrální správa služeb, personálu a kapacit', en: 'Central management of services, staff and capacity', de: 'Zentrale Verwaltung von Leistungen, Personal und Kapazitäten' },
     { icon: 'chart', cs: 'Přehledy a reporty na jednom místě', en: 'Reports and overviews in one place', de: 'Berichte und Übersichten an einem Ort' },
-  ] as { icon: string } & L3[],
+  ] as ({ icon: string } & L3)[],
   contactTitle: { cs: 'Proberme váš jezdecký web', en: 'Let\'s talk about your equestrian website', de: 'Sprechen wir über Ihre Reit-Website' } as L3,
   seoTitle: {
     cs: 'Weby pro stáje a jezdecké podniky | FastMedia.Pro',
