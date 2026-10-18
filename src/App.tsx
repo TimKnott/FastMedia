@@ -40,6 +40,7 @@ const FeatureDetail = lazy(() => import("./pages/FeatureDetail"));
 const PackageDetail = lazy(() => import("./pages/PackageDetail"));
 const SitemapRedirect = lazy(() => import("./pages/SitemapRedirect"));
 const Showcase = lazy(() => import("./pages/Showcase"));
+const BusinessLanding = lazy(() => import("./pages/BusinessLanding"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
@@ -256,6 +257,7 @@ const App = () => (
             <Route path="/service/:slug" element={<ServiceLanding />} />
             <Route path="/websites-for/:slug" element={<IndustryLanding />} />
             <Route path="/equestrian" element={<EquestrianLanding />} />
+            <Route path="/business" element={<BusinessLanding />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/launch" element={<Launch />} />
             <Route path="/blog" element={<Blog />} />
