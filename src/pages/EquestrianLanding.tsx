@@ -243,7 +243,7 @@ const EquestrianLanding = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(140_30%_8%)] via-[hsl(140_30%_8%)]/70 to-[hsl(140_30%_8%)]/30" />
         <div className="container relative mx-auto max-w-3xl px-4 py-24 md:py-36">
           <p className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[hsl(45_90%_65%)]">
-            <Horse className="h-4 w-4" /> {copy.eyebrow[lang]}
+            <TreePine className="h-4 w-4" /> {copy.eyebrow[lang]}
           </p>
           <h1 className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">{copy.headline[lang]}</h1>
           <p className="mt-6 text-base leading-relaxed text-white/85 sm:text-lg">{copy.intro[lang]}</p>
