@@ -1,3 +1,4 @@
+import { useUserRole, hasMinimumRole } from '@/hooks/useUserRole';
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -153,6 +154,12 @@ const Navbar = () => {
   };
 
 
+  const { role: userRole } = useUserRole();
+  // Campaign landing pages: visible in the menu to real admins only (role read from user_roles; RLS-backed).
+  const campaignLinks = hasMinimumRole(userRole, 'admin') ? [
+    { to: '/business', label: 'Admin: /business' },
+    { to: '/equestrian', label: 'Admin: /equestrian' },
+  ] : [];
   const navLinks: { href: string; label: string; isRoute?: boolean; mobileOnly?: boolean }[] = [
     { href: '#demos', label: t('nav.demos') },
     { href: '#services', label: t('nav.services') },
@@ -172,6 +179,7 @@ const Navbar = () => {
     { href: '#contact', label: t('nav.contact') },
     { href: '/install', label: t('nav.install'), isRoute: true, mobileOnly: true },
     { href: '/admin/login', label: t('nav.admin'), isRoute: true },
+    ...campaignLinks.map(l => ({ href: l.to, label: l.label, isRoute: true })),
   ];
 
   return (
@@ -327,6 +335,7 @@ const Navbar = () => {
             { to: '/courses', label: language === 'de' ? 'Kurse' : (isEnglish ? 'Courses' : 'Kurzy') },
             { to: '/blog', label: 'Blog' },
             { to: '/contact', label: language === 'de' ? 'Kontakt' : (isEnglish ? 'Contact' : 'Kontakt') },
+            ...campaignLinks,
           ].map((l) => (
             <Link
               key={l.to}
