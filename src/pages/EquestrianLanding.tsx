@@ -11,6 +11,7 @@ import SEOHead from '@/components/SEOHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OfferEnquiryForm from '@/components/OfferEnquiryForm';
+import EquestrianMiniSite, { CategoryCards } from '@/components/equestrian/EquestrianMiniSite';
 import { useLanguage } from '@/contexts/LanguageContext';
 import heroTrail from '@/assets/equestrian/hero-trail.jpg';
 import stableCourtyard from '@/assets/equestrian/stable-courtyard.jpg';
@@ -255,6 +256,7 @@ const EquestrianLanding = () => {
               <a href="#demo">{copy.ctaDemo[lang]}</a>
             </Button>
           </div>
+          <CategoryCards lang={lang} />
         </div>
       </header>
 
@@ -461,6 +463,8 @@ const EquestrianLanding = () => {
             </p>
           </div>
         </section>
+
+        <EquestrianMiniSite lang={lang} />
 
         {/* Enquiry */}
         <section id="enquiry" className="container mx-auto px-4 py-16">
