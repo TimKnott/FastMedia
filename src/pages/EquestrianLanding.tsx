@@ -465,7 +465,7 @@ const EquestrianLanding = () => {
         {/* Enquiry */}
         <section id="enquiry" className="container mx-auto px-4 py-16">
           <h2 className="mb-8 text-center font-display text-2xl font-bold sm:text-3xl">{copy.contactTitle[lang]}</h2>
-          <OfferEnquiryForm lang={lang === 'de' ? 'en' : lang} source="Equestrian landing page (/equestrian)" />
+          <OfferEnquiryForm lang={lang} source="Equestrian landing page (/equestrian)" />
         </section>
       </main>
       <Footer />
