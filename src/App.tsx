@@ -62,6 +62,7 @@ const Courses = lazy(() => import("./pages/Courses"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 const IndustryLanding = lazy(() => import("./pages/IndustryLanding"));
+const EquestrianLanding = lazy(() => import("./pages/EquestrianLanding"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 const Launch = lazy(() => import("./pages/Launch"));
 
