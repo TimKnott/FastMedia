@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "3.13.0",
+    "version": "3.14.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -126,7 +126,10 @@
       "src/assets/blog/inline-content-strategy.jpg": "dafc45cea3a3a991d41931ebad40ecba",
       "src/assets/blog/inline-tradesman-digital.jpg": "c8cbcd8247021640d37c18afab1361e5",
       "src/assets/blog/inline-wireframe.jpg": "98f8d2a3b1f7711229ea39286dcd9348",
+      "src/assets/business/ecommerce.jpg": "fa973a1278550f4abd6bf1c2495c61f8",
       "src/assets/business/hero-business.jpg": "04d10a50e3a6e10a9429b093e8a6d233",
+      "src/assets/business/leads.jpg": "571c9ac4f3f8a3802c2dde0ac4e90483",
+      "src/assets/business/process.jpg": "0c77bd91d00e1fda1601543258af7251",
       "src/assets/calculator-preview.jpg": "22b71456cab0bd52dbcae05a8b7d1cb6",
       "src/assets/case-studies/calcurly-finder.jpg.asset.json": "d28e4baf40b7b98c6ac84a9fc547bf75",
       "src/assets/case-studies/calcurly-home.jpg.asset.json": "742fe173e2d7ed8e3fb85f564aa31052",
@@ -613,6 +616,8 @@
       "src/lib/campaignStudio.test.ts": "434f692a3e089087df018d8042974e78",
       "src/lib/campaignStudio.ts": "72290b9f2a937b11fd2bbbde24eb1d57",
       "src/lib/caseStudyPdf.ts": "07a1d70d5e30fb427bbd55c0aa90855c",
+      "src/lib/fast20Offer.test.ts": "4750b00142b7a83642fc267bc5c8ddd0",
+      "src/lib/fast20Offer.ts": "99198a36f4eb8ff6c0bdca2eb013a467",
       "src/lib/geoExport.ts": "32fa524bbaf847392c9ef5eec399ea2b",
       "src/lib/grantTemplatePdf.ts": "5bd6d4df5640707e3779bee18de46dcd",
       "src/lib/offerPricing.ts": "bc835152af64916bcb9beebf545cc3d9",
@@ -628,8 +633,8 @@
       "src/pages/Account.tsx": "00641b161becde5495de8ff7cdcb2096",
       "src/pages/Blog.tsx": "b6d53b03d9d54d0f05a3245cec6addc4",
       "src/pages/BlogArticle.tsx": "5a130a50edbaabb102318aa94b6e2113",
-      "src/pages/BusinessLanding.tsx": "2570516cec19d89d8c1bceed8ba64de3",
-      "src/pages/CalculatorPage.tsx": "43500e213c9e088086d23c7d2bafee22",
+      "src/pages/BusinessLanding.tsx": "fc6c659a224c457bb58cb44b8b7290f7",
+      "src/pages/CalculatorPage.tsx": "41854bac6a2dd0dd791f0374b992bbc1",
       "src/pages/CaseStudies.tsx": "79ed7c5285adc9abdea311f2d48fa4c6",
       "src/pages/CheckoutSuccess.tsx": "766eb30a191a42681947cffa26296dc9",
       "src/pages/ConsultantTereza.tsx": "ce36ef8a679421341dfb88cf3cdd4599",
@@ -2852,7 +2857,22 @@
       "format": "jpg"
     },
     {
+      "file": "src/assets/business/ecommerce.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
       "file": "src/assets/business/hero-business.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/business/leads.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/business/process.jpg",
       "kind": "image",
       "format": "jpg"
     },

@@ -54,7 +54,10 @@ The full machine-readable catalog lives in this library's `design-system.json` (
 - `@/design-system/{slug}/assets/blog/inline-content-strategy.jpg` (jpg)
 - `@/design-system/{slug}/assets/blog/inline-tradesman-digital.jpg` (jpg)
 - `@/design-system/{slug}/assets/blog/inline-wireframe.jpg` (jpg)
+- `@/design-system/{slug}/assets/business/ecommerce.jpg` (jpg)
 - `@/design-system/{slug}/assets/business/hero-business.jpg` (jpg)
+- `@/design-system/{slug}/assets/business/leads.jpg` (jpg)
+- `@/design-system/{slug}/assets/business/process.jpg` (jpg)
 - `@/design-system/{slug}/assets/calculator-preview.jpg` (jpg)
 - `@/design-system/{slug}/assets/case-studies/calcurly-finder.jpg.asset.json` (jpg, R2 pointer)
 - `@/design-system/{slug}/assets/case-studies/calcurly-home.jpg.asset.json` (jpg, R2 pointer)
@@ -67,8 +70,5 @@ The full machine-readable catalog lives in this library's `design-system.json` (
 - `@/design-system/{slug}/assets/case-studies/justice-claim.jpg.asset.json` (jpg, R2 pointer)
 - `@/design-system/{slug}/assets/case-studies/justice-courses.jpg.asset.json` (jpg, R2 pointer)
 - `@/design-system/{slug}/assets/case-studies/justice-directory.jpg.asset.json` (jpg, R2 pointer)
-- `@/design-system/{slug}/assets/case-studies/justice-finder.jpg.asset.json` (jpg, R2 pointer)
-- `@/design-system/{slug}/assets/case-studies/petpedia-forum.jpg.asset.json` (jpg, R2 pointer)
-- `@/design-system/{slug}/assets/case-studies/petpedia-home.jpg.asset.json` (jpg, R2 pointer)
-- …and 279 more — full list in `design-system.json`
+- …and 282 more — full list in `design-system.json`
 
