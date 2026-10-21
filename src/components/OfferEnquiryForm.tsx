@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useFormAbandonment } from '@/hooks/useVisitorSafeguards';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -63,15 +63,22 @@ const copy = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: string }) => {
+const OfferEnquiryForm = ({ lang = 'cs', source, onStart, onSubmitted }: { lang?: Lang; source?: string; onStart?: () => void; onSubmitted?: () => void }) => {
   const t = copy[lang];
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', message: '' });
   const [grant, setGrant] = useState(true);
   const [grantPercent, setGrantPercent] = useState('50');
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const startedRef = useRef(false);
   const abandonment = useFormAbandonment(source ?? 'offer-form', lang);
   abandonment.track(form);
+
+  const handleFirstInteraction = () => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    onStart?.();
+  };
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }));
@@ -103,6 +110,7 @@ const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: strin
       if (error) throw error;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       abandonment.complete();
+      onSubmitted?.();
       setDone(true);
     } catch (err) {
       toast.error(err instanceof Error && err.message ? err.message : t.errGeneric);
@@ -128,7 +136,7 @@ const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: strin
       <CardContent className="p-6 md:p-10">
         <h3 className="text-2xl md:text-3xl font-bold mb-2">{t.title}</h3>
         <p className="text-muted-foreground mb-6">{t.sub}</p>
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={submit} onFocusCapture={handleFirstInteraction} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="offer-name">{t.name}</Label>
