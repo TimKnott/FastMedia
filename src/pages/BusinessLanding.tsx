@@ -173,6 +173,7 @@ const BusinessLanding = () => {
                 <p>{t.reassurance[lang]}</p>
                 <p>{t.monthlyCare[lang]}</p>
                 <p>{t.monthlyEdits[lang]}</p>
+                <p className="pt-2 border-t border-primary-foreground/15">{t.customNote[lang]}</p>
               </div>
               <div className="mt-5 flex flex-col sm:flex-row gap-3">
                 {primaryBtn(t.ctaPrimary[lang], 'hero')}
