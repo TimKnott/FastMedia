@@ -14,12 +14,16 @@ import OfferEnquiryForm from '@/components/OfferEnquiryForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { localizedPath } from '@/lib/publicLanguage';
 import { trackEvent } from '@/lib/trackEvent';
+import { businessSubscription } from '@/lib/businessSubscription';
 import hero from '@/assets/business/hero-business.jpg';
 import processImg from '@/assets/business/process.jpg';
 
 type Lang = 'cs' | 'en' | 'de';
 type L3 = Record<Lang, string>;
 const L = (cs: string, en: string, de: string): L3 => ({ cs, en, de });
+
+const monthlyPrice = businessSubscription.monthlyPriceCents / 100;
+const editingHours = businessSubscription.requestedEditingMinutesPerMonth / 60;
 
 /* ---------- copy (Czech-first) ---------- */
 const t = {
@@ -29,19 +33,23 @@ const t = {
     'Handwerker-Website für 20 €/Monat — mit Online-Buchung | FastMedia.Pro',
   ),
   seoDesc: L(
-    'Profesionální web z oborové šablony s online rezervačním kalendářem za 20 € měsíčně. Pro řemeslníky a služby. Česky, anglicky, německy. Nezávazná poptávka.',
-    'A professional industry-template website with an online booking calendar for €20/month. For trades and service businesses. Czech, English, German. Free enquiry.',
-    'Professionelle Branchen-Website mit Online-Buchungskalender für 20 €/Monat. Für Handwerk und Dienstleistungen. Tschechisch, Englisch, Deutsch. Unverbindliche Anfrage.',
+    'Web ze šablony s rezervacemi a hostingem za 20 € měsíčně. Bez zřizovacího poplatku a poplatku za návrh. Měsíční kontroly a až hodina vyžádaných úprav.',
+    'Template website, booking calendar and hosting for €20/month. No setup or design fee. Monthly checks and up to one hour of customer-requested edits.',
+    'Vorlagen-Website, Buchungskalender und Hosting für 20 €/Monat. Keine Einrichtungs- oder Designgebühr. Monatliche Prüfungen und bis zu eine Stunde gewünschte Änderungen.',
   ),
   eyebrow: L('Pro řemeslníky a služby', 'For trades & services', 'Für Handwerk & Dienstleistungen'),
   h1a: L('Profesionální web pro vaše řemeslo', 'A professional website for your trade', 'Eine professionelle Website für Ihr Handwerk'),
   h1b: L('s online rezervacemi za 20 € měsíčně.', 'with online booking for €20/month.', 'mit Online-Buchung für 20 €/Monat.'),
   heroSub: L(
-    'Postavíme vám web z osvědčené oborové šablony a zákazníci si u vás objednají termín sami — i když zrovna pracujete. Žádná velká počáteční investice, žádné programování z vaší strany.',
-    'We build your site from a proven industry template and customers book a slot themselves — even while you are on a job. No large upfront investment, no programming on your side.',
-    'Wir bauen Ihre Website aus einer bewährten Branchenvorlage, und Kunden buchen ihren Termin selbst — auch während Sie arbeiten. Keine große Anfangsinvestition, kein Programmieren Ihrerseits.',
+    'Váš web z oborové šablony a online rezervační kalendář — s hostingem a měsíční péčí v ceně předplatného.',
+    'Your industry-template website and online booking calendar — with hosting and monthly care included in the subscription.',
+    'Ihre Branchen-Vorlagen-Website mit Online-Buchungskalender — inklusive Hosting und monatlicher Betreuung im Abo.',
   ),
-  ctaPrimary: L('Chci web za 20 € měsíčně', 'I want the €20/month website', 'Ich will die Website für 20 €/Monat'),
+  ctaPrimary: L('Pojďme naplánovat můj web', 'Let’s plan my website', 'Planen wir meine Website'),
+  offerBanner: L(` ${monthlyPrice} € měsíčně. Bez zřizovacího poplatku. Bez poplatku za návrh.`, `€${monthlyPrice}/month. No setup fee. No design fee.`, `${monthlyPrice} €/Monat. Keine Einrichtungsgebühr. Keine Designgebühr.`),
+  reassurance: L('Společně krok za krokem probereme váš nápad i vybranou šablonu, zodpovíme otázky a před spuštěním si ověříme, že web vašemu podnikání vyhovuje.', 'We’ll work through your idea and chosen template together, step by step, answer your questions and make sure you are happy the site fits your business before launch.', 'Wir besprechen Ihre Idee und die gewählte Vorlage Schritt für Schritt, beantworten Ihre Fragen und prüfen vor dem Start gemeinsam, ob die Website zu Ihrem Betrieb passt.'),
+  monthlyCare: L('Každý měsíc proaktivně kontrolujeme, že web běží hladce a je aktuální.', 'Each month, we proactively check that your site runs smoothly and stays up to date.', 'Jeden Monat prüfen wir proaktiv, dass Ihre Website reibungslos läuft und aktuell bleibt.'),
+  monthlyEdits: L(`Každý měsíc můžete požádat o úpravy v rozsahu až ${editingHours} hodinu práce. Nejde o neomezené úpravy ani velké nové funkce.`, `You can request up to ${editingHours} hour of editing work each month. Not unlimited edits or major new features.`, `Sie können jeden Monat bis zu ${editingHours} Stunde Änderungsarbeiten anfragen. Keine unbegrenzten Änderungen oder umfangreichen neuen Funktionen.`),
   ctaDemos: L('Prohlédnout ukázkové weby', 'See the demo websites', 'Demo-Websites ansehen'),
   ctaCalculator: L('Spočítat web na míru', 'Price a bespoke site', 'Individuelle Website berechnen'),
   ctaContact: L('Napsat nám', 'Write to us', 'Schreiben Sie uns'),
@@ -54,8 +62,10 @@ const trust = [
   L('Nejsme plátci DPH', 'We are not VAT registered', 'Nicht umsatzsteuerpflichtig'),
 ];
 
-/* Confirmed vs. to-confirm — deliberately honest split. */
+/* Confirmed service scope; only unresolved agreement details remain below. */
 const included = [
+  { icon: ShieldCheck, t: L('Hosting a měsíční péče', 'Hosting and monthly care', 'Hosting und monatliche Betreuung'), d: t.monthlyCare },
+  { icon: PenSquare, t: L('Až hodina vyžádaných úprav měsíčně', 'Up to one hour of requested edits monthly', 'Bis zu eine Stunde gewünschte Änderungen monatlich'), d: t.monthlyEdits },
   { icon: Sparkles, t: L('Web z oborové šablony', 'Industry-template website', 'Branchen-Vorlagen-Website'), d: L('Osvědčená struktura pro váš obor, upravená na vaši značku, texty a fotky.', 'A proven structure for your trade, adapted to your brand, copy and photos.', 'Bewährte Struktur für Ihre Branche, angepasst an Marke, Texte und Fotos.') },
   { icon: CalendarCheck, t: L('Online rezervační kalendář', 'Online booking calendar', 'Online-Buchungskalender'), d: L('Zákazníci si vybírají volné termíny sami — méně telefonátů a přepisování.', 'Customers pick free slots themselves — fewer phone calls and less back-and-forth.', 'Kunden wählen freie Termine selbst — weniger Anrufe und Hin und Her.') },
   { icon: Smartphone, t: L('Perfektní na mobilu', 'Flawless on mobile', 'Perfekt auf dem Handy'), d: L('Většina vašich zákazníků přijde z telefonu — web je navržený právě pro ně.', 'Most of your customers arrive on a phone — the site is designed for exactly that.', 'Die meisten Ihrer Kunden kommen vom Handy — die Website ist genau dafür gebaut.') },
@@ -63,12 +73,10 @@ const included = [
 ];
 
 const toConfirm = [
-  L('Doména a hosting', 'Domain and hosting', 'Domain und Hosting'),
+  L('Registrace domény', 'Domain registration', 'Domainregistrierung'),
   L('HTTPS zabezpečení (SSL)', 'HTTPS security (SSL)', 'HTTPS-Absicherung (SSL)'),
-  L('Rozsah úprav a podpory v ceně', 'Scope of included edits and support', 'Umfang von Änderungen und Support'),
   L('Limity rezervací (počet služeb, termínů)', 'Booking limits (services, slots)', 'Buchungslimits (Leistungen, Termine)'),
   L('Minimální délka smlouvy a výpověď', 'Minimum term and cancellation', 'Mindestlaufzeit und Kündigung'),
-  L('Případný zřizovací poplatek', 'Any setup fee', 'Mögliche Einrichtungsgebühr'),
 ];
 
 const optional = [
@@ -95,9 +103,11 @@ const demos = [
 ];
 
 const faqs: { q: L3; a: L3 }[] = [
+  { q: L('Jak spolu připravíme web?', 'How will we plan the site together?', 'Wie planen wir die Website gemeinsam?'), a: t.reassurance },
+  { q: L('Jaké úpravy mohu každý měsíc požadovat?', 'What edits can I request each month?', 'Welche Änderungen kann ich monatlich anfragen?'), a: L('Můžete požádat o drobné úpravy textů, fotek či dalších částí webu v rozsahu až jedné hodiny práce měsíčně. Větší nové funkce a práce nad tento rozsah posoudíme a nabídneme zvlášť předem, s vaším souhlasem.', 'You can request small changes to copy, photos or other parts of the site, up to one hour of editing work per month. Major new features and work beyond that allowance are scoped and quoted separately in advance, with your agreement.', 'Sie können kleine Änderungen an Texten, Fotos oder anderen Teilen der Website anfragen, bis zu einer Stunde Arbeit pro Monat. Umfangreiche neue Funktionen und darüber hinausgehende Arbeiten klären und berechnen wir separat vorab, mit Ihrer Zustimmung.') },
   {
     q: L('Co přesně je v ceně 20 € měsíčně?', 'What exactly does €20/month include?', 'Was genau ist in den 20 €/Monat enthalten?'),
-    a: L('Základ tvoří web z oborové šablony s online rezervačním kalendářem. U domény, hostingu, rozsahu úprav a dalších detailů si podmínky potvrdíme písemně ještě před objednávkou — nic neplatíte, dokud nevíte přesně, co dostanete.', 'The core is an industry-template website with an online booking calendar. For the domain, hosting, edit scope and other details we confirm the terms in writing before you order — you pay nothing until you know exactly what you get.', 'Der Kern ist eine Branchen-Vorlagen-Website mit Online-Buchungskalender. Domain, Hosting, Änderungsumfang und weitere Details bestätigen wir schriftlich vor der Bestellung — Sie zahlen nichts, bevor Sie genau wissen, was Sie bekommen.'),
+    a: L('20 € je měsíční cena služby: web z oborové šablony, online rezervační kalendář, hosting, proaktivní měsíční kontroly a až hodina úprav vyžádaných zákazníkem každý měsíc. Bez zřizovacího poplatku a poplatku za návrh. Nejde jen o hosting.', '€20 is the monthly service price: an industry-template website, online booking calendar, hosting, proactive monthly checks and up to one hour of customer-requested editing each month. No setup fee and no design fee. It is not just hosting.', '20 € ist der monatliche Servicepreis: Branchen-Vorlagen-Website, Online-Buchungskalender, Hosting, proaktive monatliche Prüfungen und bis zu eine Stunde vom Kunden gewünschte Änderungen pro Monat. Keine Einrichtungs- oder Designgebühr. Nicht nur Hosting.'),
   },
   {
     q: L('Musím podepsat dlouhou smlouvu?', 'Do I have to sign a long contract?', 'Muss ich einen langen Vertrag unterschreiben?'),
@@ -109,7 +119,7 @@ const faqs: { q: L3; a: L3 }[] = [
   },
   {
     q: L('Je to opravdu 20 €, nebo se cena změní?', 'Is it really €20, or will the price change?', 'Sind es wirklich 20 €, oder ändert sich der Preis?'),
-    a: L('20 € měsíčně je cena předplatného za web ze šablony s rezervacemi. Pokud budete chtít něco navíc (další stránky, e-shop, texty…), dostanete samostatnou nabídku — nic se nepřidává bez vašeho souhlasu.', '€20/month is the subscription price for the template website with booking. If you want anything extra (more pages, an e-shop, copywriting…), you get a separate quote — nothing is added without your consent.', '20 €/Monat ist der Abo-Preis für die Vorlagen-Website mit Buchung. Wenn Sie etwas Zusätzliches wollen (mehr Seiten, Shop, Texte…), erhalten Sie ein separates Angebot — nichts wird ohne Ihre Zustimmung hinzugefügt.'),
+    a: L('20 € měsíčně je cena předplatného za web ze šablony s rezervacemi, hostingem, měsíčními kontrolami a až hodinou vyžádaných úprav. Pokud budete chtít něco navíc (další stránky, e-shop, texty…), dostanete samostatnou nabídku — nic se nepřidává bez vašeho souhlasu.', '€20/month is the subscription price for the template website with booking, hosting, monthly checks and up to one hour of requested edits. If you want anything extra (more pages, an e-shop, copywriting…), you get a separate quote — nothing is added without your consent.', '20 €/Monat ist der Abo-Preis für die Vorlagen-Website mit Buchung, Hosting, monatlichen Prüfungen und bis zu einer Stunde gewünschter Änderungen. Wenn Sie etwas Zusätzliches wollen (mehr Seiten, Shop, Texte…), erhalten Sie ein separates Angebot — nichts wird ohne Ihre Zustimmung hinzugefügt.'),
   },
   {
     q: L('Co když chci něco většího než šablonu?', 'What if I want more than a template?', 'Was, wenn ich mehr als eine Vorlage will?'),
@@ -151,27 +161,33 @@ const BusinessLanding = () => {
       <main>
         {/* 1 HERO */}
         <section className="relative gradient-hero overflow-hidden">
-          <div className="container mx-auto px-4 lg:px-8 py-20 lg:py-28 grid lg:grid-cols-2 gap-14 items-center">
-            <motion.div {...fade}>
+          <div className="container mx-auto px-4 lg:px-8 pt-24 pb-12 lg:pt-28 lg:pb-20 grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+            <div className="lg:col-span-2 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3 text-center text-sm sm:text-base font-semibold text-primary-foreground">{t.offerBanner[lang]}</div>
+            <div>
               <Eyebrow>{t.eyebrow[lang]}</Eyebrow>
-              <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-primary-foreground text-balance">
+              <h1 className="mt-3 font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground text-balance">
                 {t.h1a[lang]} <span className="text-accent">{t.h1b[lang]}</span>
               </h1>
-              <p className="mt-6 text-lg text-primary-foreground/80 max-w-xl">{t.heroSub[lang]}</p>
-              <div className="mt-9 flex flex-col sm:flex-row gap-3">
+              <p className="mt-4 text-base sm:text-lg text-primary-foreground/85 max-w-xl">{t.heroSub[lang]}</p>
+              <div className="mt-4 border-l-2 border-accent pl-4 text-sm text-primary-foreground/90 space-y-2">
+                <p>{t.reassurance[lang]}</p>
+                <p>{t.monthlyCare[lang]}</p>
+                <p>{t.monthlyEdits[lang]}</p>
+              </div>
+              <div className="mt-5 flex flex-col sm:flex-row gap-3">
                 {primaryBtn(t.ctaPrimary[lang], 'hero')}
                 <Button asChild size="lg" variant="outline" className="h-12 px-7 text-base bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
                   <a href="#demos" onClick={() => cta('hero-demos')}>{t.ctaDemos[lang]}</a>
                 </Button>
               </div>
-              <ul className="mt-9 grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+              <ul className="mt-5 grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
                 {trust.map((item) => (
                   <li key={item.en} className="flex items-center gap-2 text-sm text-primary-foreground/85">
                     <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />{item[lang]}
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
             <motion.div {...fade} className="relative">
               <img src={hero} alt={L('Ukázka webu pro řemeslníka na mobilu a počítači', 'A tradesperson website shown on phone and desktop', 'Handwerker-Website auf Handy und Desktop')[lang]} width={1280} height={960} className="rounded-[2rem] w-full object-cover aspect-[4/3] shadow-2xl ring-1 ring-primary-foreground/10" />
               <div className="absolute -bottom-5 left-5 right-5 sm:right-auto rounded-2xl bg-card border border-border/60 shadow-lg px-5 py-4 flex items-center gap-3">
@@ -189,7 +205,7 @@ const BusinessLanding = () => {
               <Eyebrow>{L('Co za to dostanete', 'What you get', 'Was Sie bekommen')[lang]}</Eyebrow>
               <div className="mt-5"><H2>{L('20 € měsíčně. A víte přesně, za co.', '€20 a month. And you know exactly what for.', '20 € im Monat. Und Sie wissen genau, wofür.')[lang]}</H2></div>
             </motion.div>
-            <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {included.map((f) => (
                 <motion.div key={f.t.en} {...fade} className="rounded-3xl bg-card border border-border/60 p-6 shadow-card">
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-accent shadow-glow"><f.icon className="h-6 w-6 text-accent-foreground" /></span>

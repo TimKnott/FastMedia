@@ -52,6 +52,16 @@ export const orgJsonLd = {
 
 const STATIC_ROUTES: RouteSeo[] = [
   {
+    path: '/business',
+    title: 'Web pro řemeslníky za 20 € měsíčně — s online rezervacemi | FastMedia.Pro',
+    description: 'Web ze šablony s rezervacemi a hostingem za 20 € měsíčně. Bez zřizovacího poplatku a poplatku za návrh. Měsíční kontroly a až hodina vyžádaných úprav.',
+    language: 'cs-CZ',
+    changefreq: 'monthly',
+    priority: '0.7',
+    h1: 'Web pro řemeslníky a služby za 20 € měsíčně',
+    contentBlocks: ['Web z oborové šablony, online rezervační kalendář a hosting v měsíční ceně služby. Bez zřizovacího poplatku a poplatku za návrh.', 'Společně projdeme nápad a vybranou šablonu před spuštěním. Každý měsíc proaktivně kontrolujeme hladký chod a aktuálnost webu. Zákazník může požádat o úpravy v rozsahu až jedné hodiny práce měsíčně; nejedná se o neomezené úpravy ani velké nové funkce.', 'Registraci domény, SSL, limity rezervací, minimální délku smlouvy a výpověď potvrdíme před dohodou.'],
+  },
+  {
     path: "/",
     title: "FastMedia.Pro — Websites for Trades & Services",
     description:
