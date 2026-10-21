@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useFormAbandonment } from '@/hooks/useVisitorSafeguards';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -63,15 +63,22 @@ const copy = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const OfferEnquiryForm = ({ lang = 'cs', source }: { lang?: Lang; source?: string }) => {
+const OfferEnquiryForm = ({ lang = 'cs', source, onStart, onSubmitted }: { lang?: Lang; source?: string; onStart?: () => void; onSubmitted?: () => void }) => {
   const t = copy[lang];
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', message: '' });
   const [grant, setGrant] = useState(true);
   const [grantPercent, setGrantPercent] = useState('50');
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const startedRef = useRef(false);
   const abandonment = useFormAbandonment(source ?? 'offer-form', lang);
   abandonment.track(form);
+
+  const handleFirstInteraction = () => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    onStart?.();
+  };
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }));
