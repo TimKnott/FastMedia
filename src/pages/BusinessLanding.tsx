@@ -227,7 +227,7 @@ const BusinessLanding = () => {
               </motion.div>
               <motion.div {...fade} className="rounded-3xl bg-card border border-border/60 p-7 shadow-card">
                 <h3 className="flex items-center gap-2 font-display font-bold text-lg text-foreground"><Sparkles className="h-5 w-5 text-accent" />{L('Volitelná rozšíření navíc', 'Optional add-ons', 'Optionale Erweiterungen')[lang]}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{L('Nejsou součástí předplatného — vždy je nabídneme zvlášť a jen s vaším souhlasem:', 'Not part of the subscription — always quoted separately and only with your consent:', 'Nicht Teil des Abos — immer separat angeboten und nur mit Ihrer Zustimmung:')[lang]}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{L('Nejsou součástí předplatného — každou žádost posoudíme jednotlivě, před začátkem práce dáme férovou nabídku přesně na míru a nic neděláme bez vašeho souhlasu:', 'Not part of the subscription — we review each request individually, quote a fair tailored price before any work starts, and do nothing without your consent:', 'Nicht Teil des Abos — wir prüfen jede Anfrage einzeln, erstellen vor Arbeitsbeginn ein faires, individuelles Angebot und machen nichts ohne Ihre Zustimmung:')[lang]}</p>
                 <ul className="mt-4 space-y-2">
                   {optional.map((item) => (
                     <li key={item.en} className="flex items-start gap-2 text-sm text-foreground"><CheckCircle2 className="h-4 w-4 mt-0.5 text-accent shrink-0" />{item[lang]}</li>
