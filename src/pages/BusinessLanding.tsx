@@ -91,7 +91,7 @@ const demos = [
   { to: '/demo/carpentry', name: L('Truhlářství', 'Carpentry', 'Tischlerei') },
   { to: '/demo/cleaning', name: L('Úklidové služby', 'Cleaning services', 'Reinigung') },
   { to: '/demo/gardening', name: L('Zahradnictví', 'Gardening', 'Gärtnerei') },
-  { to: '/demo/beauty-salon', name: L('Kosmetický salon', 'Beauty salon', 'Kosmetikstudio') },
+  { to: '/demo/beautysalon', name: L('Kosmetický salon', 'Beauty salon', 'Kosmetikstudio') },
 ];
 
 const faqs: { q: L3; a: L3 }[] = [
@@ -176,7 +176,7 @@ const BusinessLanding = () => {
               <img src={hero} alt={L('Ukázka webu pro řemeslníka na mobilu a počítači', 'A tradesperson website shown on phone and desktop', 'Handwerker-Website auf Handy und Desktop')[lang]} width={1280} height={960} className="rounded-[2rem] w-full object-cover aspect-[4/3] shadow-2xl ring-1 ring-primary-foreground/10" />
               <div className="absolute -bottom-5 left-5 right-5 sm:right-auto rounded-2xl bg-card border border-border/60 shadow-lg px-5 py-4 flex items-center gap-3">
                 <CalendarCheck className="h-8 w-8 text-accent shrink-0" />
-                <p className="text-sm font-medium text-foreground">{L('„Zákazník si objednal termín, zatímco jste byli na zakázce.“', '“A customer booked a slot while you were on a job.”', '„Ein Kunde hat gebucht, während Sie beim Kunden waren.“')}</p>
+                <p className="text-sm font-medium text-foreground">{L('„Zákazník si objednal termín, zatímco jste byli na zakázce.“', '“A customer booked a slot while you were on a job.”', '„Ein Kunde hat gebucht, während Sie beim Kunden waren.“')[lang]}</p>
               </div>
             </motion.div>
           </div>
@@ -202,7 +202,7 @@ const BusinessLanding = () => {
             <div className="mt-8 grid lg:grid-cols-2 gap-5">
               <motion.div {...fade} className="rounded-3xl border border-accent/40 bg-accent/5 p-7">
                 <h3 className="flex items-center gap-2 font-display font-bold text-lg text-foreground"><HelpCircle className="h-5 w-5 text-accent" />{L('Co si ověříme před objednávkou', 'What we confirm before you order', 'Was wir vor der Bestellung klären')[lang]}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{L('U těchto bodů dostanete přesné podmínky písemně ještě před platbou — raději pořádně vysvětlit než slibovat naslepo:', 'For these points you receive the exact terms in writing before any payment — we would rather explain properly than promise blindly:', 'Zu diesen Punkten erhalten Sie die genauen Bedingungen schriftlich vor jeder Zahlung — wir erklären lieber gründlich, als blind zu versprechen:')}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{L('U těchto bodů dostanete přesné podmínky písemně ještě před platbou — raději pořádně vysvětlit než slibovat naslepo:', 'For these points you receive the exact terms in writing before any payment — we would rather explain properly than promise blindly:', 'Zu diesen Punkten erhalten Sie die genauen Bedingungen schriftlich vor jeder Zahlung — wir erklären lieber gründlich, als blind zu versprechen:')[lang]}</p>
                 <ul className="mt-4 space-y-2">
                   {toConfirm.map((item) => (
                     <li key={item.en} className="flex items-start gap-2 text-sm text-foreground"><FileText className="h-4 w-4 mt-0.5 text-accent shrink-0" />{item[lang]}</li>
@@ -211,7 +211,7 @@ const BusinessLanding = () => {
               </motion.div>
               <motion.div {...fade} className="rounded-3xl bg-card border border-border/60 p-7 shadow-card">
                 <h3 className="flex items-center gap-2 font-display font-bold text-lg text-foreground"><Sparkles className="h-5 w-5 text-accent" />{L('Volitelná rozšíření navíc', 'Optional add-ons', 'Optionale Erweiterungen')[lang]}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{L('Nejsou součástí předplatného — vždy je nabídneme zvlášť a jen s vaším souhlasem:', 'Not part of the subscription — always quoted separately and only with your consent:', 'Nicht Teil des Abos — immer separat angeboten und nur mit Ihrer Zustimmung:')}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{L('Nejsou součástí předplatného — vždy je nabídneme zvlášť a jen s vaším souhlasem:', 'Not part of the subscription — always quoted separately and only with your consent:', 'Nicht Teil des Abos — immer separat angeboten und nur mit Ihrer Zustimmung:')[lang]}</p>
                 <ul className="mt-4 space-y-2">
                   {optional.map((item) => (
                     <li key={item.en} className="flex items-start gap-2 text-sm text-foreground"><CheckCircle2 className="h-4 w-4 mt-0.5 text-accent shrink-0" />{item[lang]}</li>
@@ -345,7 +345,7 @@ const BusinessLanding = () => {
               <p className="mt-6 text-lg text-primary-foreground/80">{L('Vyplněním formuláře se k ničemu nezavazujete. Odpovíme vám s přesným rozsahem a podmínkami písemně — a teprve potom se rozhodnete.', 'Sending the form commits you to nothing. We reply with the exact scope and terms in writing — and only then do you decide.', 'Das Formular verpflichtet Sie zu nichts. Wir antworten schriftlich mit dem genauen Umfang und den Konditionen — erst dann entscheiden Sie.')[lang]}</p>
               <div className="mt-9 rounded-2xl bg-primary-foreground/5 border border-primary-foreground/10 p-6 space-y-3 text-sm text-primary-foreground/85">
                 <p className="flex items-center gap-2 font-semibold text-primary-foreground"><Building2 className="h-4 w-4 text-accent" />FastMedia.Pro — Timothy Knott</p>
-                <p>{L('IČO 17308551 · Louny 440 01, Ústecký kraj, Česká republika · Nejsme plátci DPH', 'IČO 17308551 · Louny 440 01, Ústí nad Labem Region, Czech Republic · Not VAT registered', 'IČO 17308551 · Louny 440 01, Region Ústí nad Labem, Tschechien · Nicht umsatzsteuerpflichtig')}</p>
+                <p>{L('IČO 17308551 · Louny 440 01, Ústecký kraj, Česká republika · Nejsme plátci DPH', 'IČO 17308551 · Louny 440 01, Ústí nad Labem Region, Czech Republic · Not VAT registered', 'IČO 17308551 · Louny 440 01, Region Ústí nad Labem, Tschechien · Nicht umsatzsteuerpflichtig')[lang]}</p>
                 <p className="flex flex-wrap gap-x-5 gap-y-1">
                   <a href="tel:+420797864432" className="underline underline-offset-4 hover:text-accent">+420 797 864 432</a>
                   <a href="mailto:support@fastmedia.pro" className="underline underline-offset-4 hover:text-accent">support@fastmedia.pro</a>
