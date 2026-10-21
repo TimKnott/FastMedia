@@ -165,7 +165,7 @@ const BusinessLanding = () => {
             <div className="lg:col-span-2 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3 text-center text-sm sm:text-base font-semibold text-primary-foreground">{t.offerBanner[lang]}</div>
             <div>
               <Eyebrow>{t.eyebrow[lang]}</Eyebrow>
-              <h1 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground text-balance">
+              <h1 className="mt-3 font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground text-balance">
                 {t.h1a[lang]} <span className="text-accent">{t.h1b[lang]}</span>
               </h1>
               <p className="mt-4 text-base sm:text-lg text-primary-foreground/85 max-w-xl">{t.heroSub[lang]}</p>
