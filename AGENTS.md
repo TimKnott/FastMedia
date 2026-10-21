@@ -1,5 +1,7 @@
 # Project Architecture Rules
 
+- The business campaign reads its confirmed service scope from `businessSubscription`; this describes the enquiry offer, not checkout pricing, so unrelated payment plans remain unchanged.
+
 - Public language selection and canonical translated URLs use the shared publicLanguage helper; publish language alternatives only for explicitly translated paths to avoid indexing untranslated pages.
 
 - Keep the public launch experience at `/launch`; the homepage may preview it, while press assets remain at `/media-kit`.
