@@ -110,6 +110,7 @@ const OfferEnquiryForm = ({ lang = 'cs', source, onStart, onSubmitted }: { lang?
       if (error) throw error;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       abandonment.complete();
+      onSubmitted?.();
       setDone(true);
     } catch (err) {
       toast.error(err instanceof Error && err.message ? err.message : t.errGeneric);
@@ -135,7 +136,7 @@ const OfferEnquiryForm = ({ lang = 'cs', source, onStart, onSubmitted }: { lang?
       <CardContent className="p-6 md:p-10">
         <h3 className="text-2xl md:text-3xl font-bold mb-2">{t.title}</h3>
         <p className="text-muted-foreground mb-6">{t.sub}</p>
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={submit} onFocusCapture={handleFirstInteraction} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="offer-name">{t.name}</Label>
