@@ -1,8 +1,8 @@
 # Roadmap
 
 ## Oct 21 — Confirmed business subscription
-- [ ] Align the /business first-screen offer, inclusions, FAQ and metadata in CS/EN/DE; preserve other routes and do not publish.
-- [ ] Test confirmed scope and check desktop/mobile offer visibility and enquiry links in preview.
+- [x] Align the /business first-screen offer, inclusions, FAQ and metadata in CS/EN/DE; preserve other routes and do not publish.
+- [x] Test confirmed scope and check desktop/mobile offer visibility and enquiry links in preview; 33 tests pass and automatic build reports OK. Owner to manually submit the enquiry.
 
 ## Voice agent (approved plan 2026-09-24)
 - [x] Publish homepage fixes (ISO 27001 removed, British spellings)
