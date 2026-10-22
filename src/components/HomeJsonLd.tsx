@@ -39,44 +39,6 @@ const HomeJsonLd = () => {
     mainEntity: faqItems,
   };
 
-  const products = [
-    {
-      '@type': 'Product',
-      name: 'Starter',
-      description: t('pricing.starter.desc'),
-      offers: { '@type': 'Offer', price: '15000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
-    },
-    {
-      '@type': 'Product',
-      name: 'Basic',
-      description: t('pricing.basic.desc'),
-      offers: { '@type': 'Offer', price: '25000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
-    },
-    {
-      '@type': 'Product',
-      name: 'Professional',
-      description: t('pricing.pro.desc'),
-      offers: { '@type': 'Offer', price: '45000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
-    },
-    {
-      '@type': 'Product',
-      name: 'Enterprise',
-      description: t('pricing.enterprise.desc'),
-      offers: { '@type': 'Offer', price: '80000', priceCurrency: 'CZK', availability: 'https://schema.org/InStock' },
-    },
-  ];
-
-  const productListSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: t('pricing.title'),
-    itemListElement: products.map((p, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      item: p,
-    })),
-  };
-
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -110,10 +72,6 @@ const HomeJsonLd = () => {
       {isEnabled('home_faq', true) && <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />}
-      {isEnabled('show_pricing', false) && <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productListSchema) }}
       />}
       <script
         type="application/ld+json"
