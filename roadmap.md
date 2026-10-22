@@ -1,10 +1,12 @@
 # Roadmap
 
 ## Oct 22 — Site-side organic and AI search eligibility
-- [ ] Finish connected Search Console URL Inspection reads; user exempted read-only inspection from Build cap. No indexing requests or production changes.
+- [x] Search Console read-only checks: homepage/equestrian/calculator indexed; equestrian declared canonical was homepage at last crawl, Google selected equestrian. Homepage merchant markup errors; business inspection timed out twice, unresolved externally. Sitemap reports zero errors/warnings and 103 submitted URLs. No indexing requests or production changes.
 - [x] Check shared credit cap: stopped further work because recorded project usage cannot isolate protocol or current-turn spending. Oct 21–22 recorded Build usage: FastMedia 27.10, Kone a Staje 243.00; these include unrelated work, so remaining protocol allowance cannot be established.
 - [x] Review current official Google guidance on JavaScript SEO, sitemaps, localized pages and AI features; no special AI eligibility markup or placement guarantee.
-- [ ] Finish independent dynamic-fetch error handling, localized alternate parity and runtime soft-404 checks within newly authorised additional 30 Build credits; stop before exceeding that allowance. Preview only.
+- [x] Isolated dynamic fetch failures; shared published-sibling language alternatives in preview/prerender; missing translations, courses and legal records now noindex. Browser verified real DE/FR translations and missing-page states, campaign canonicals and zero runtime errors.
+- [x] Additional allowance checkpoint: 3.20 Build credits recorded for FastMedia in 09:19–09:25 UTC query; final turn charge not yet available. No paid external or irreversible action.
+- [x] Final checks: 42 tests pass; automatic build OK; clean whitespace diff; 263 route heads and JSON-LD valid, 261 canonical sitemap entries, 13 published translations with reciprocal alternatives. Production HTTP 404 behaviour and business indexing remain unverified; no deployment permitted.
 - [x] Final available checks: 39 targeted tests pass; 263 generated HTML heads/canonicals/JSON-LD validated, 261 canonical sitemap entries; primary sitemap has 248 unique URLs and no uncovered entries; automatic build OK at 09:15:20 UTC, whitespace diff check clean. No publishing, deployment or indexing requests.
 
 ## Oct 21 — Confirmed business subscription
