@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Oct 22 — Site-side organic and AI search eligibility
+- [ ] Verify the new shared 30-Build-credit cap across relevant projects before further work; stop if cumulative cost cannot be reliably established. No publishing, deployment or indexing requests.
 - [ ] Resume final validation with renewed Build-credit approval; read Google Search Central guidance and live URL Inspection only. No indexing requests or deployment.
 - [ ] Audit and repair initial HTML, metadata, sitemap and accurate structured content in preview only.
 - [ ] Run targeted tests and desktop/mobile checks; report Search Console access and submission URLs without submitting or deploying.
