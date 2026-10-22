@@ -37,7 +37,7 @@ export function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
     if (route.path === '/blog') return r.path.startsWith('/blog/');
     if (route.path === '/courses') return r.path.startsWith('/courses/');
     if (route.path.startsWith('/demo/')) return r.path.startsWith('/demo/');
-    return ['/', '/calculator', '/cs/offer', '/cs/contact', '/about', '/case-studies', '/blog', '/courses', '/inquiry'].includes(r.path);
+    return ['/', '/calculator', '/cs/offer', '/cs/contact', '/about', '/case-studies', '/blog', '/courses', '/inquiry'].includes(r.path) || (route.path.startsWith('/l/') && r.path.startsWith('/l/'));
   });
   const paragraphs = route.contentBlocks?.length ? route.contentBlocks : [route.description];
   return `<main data-prerender="fallback" class="container mx-auto max-w-4xl px-6 py-12 bg-background text-foreground">
