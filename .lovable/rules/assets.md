@@ -13,6 +13,7 @@ The full machine-readable catalog lives in this library's `design-system.json` (
 ## Logos
 
 - `@/design-system/{slug}/assets/logo.jpeg` (jpeg)
+- `@/design-system/{slug}/assets/logos/kreativni-cesko.svg` (svg)
 
 ## Videos
 

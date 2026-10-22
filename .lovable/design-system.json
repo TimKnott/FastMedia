@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "3.18.0",
+    "version": "3.19.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -88,9 +88,9 @@
       "public/robots.txt": "91fd5129f0b67ff8429420c9a6473000",
       "public/sitemap.xml": "b4a03f571fb51787e842ebb5b050713e",
       "public/tim-knott.vcf": "2a49c21a990c2f3eacb5e27f558aa4b8",
-      "roadmap.md": "42b82fc4fe5d2cbd7469cc8b9c50909a",
+      "roadmap.md": "65ae1fca6736f82dba4c5063bd7ac790",
       "scripts/prerender.ts": "93f5e581a216de70ca9b98dfdd2f5525",
-      "scripts/seo-html.ts": "ac9180decf513eb475af70f82042386e",
+      "scripts/seo-html.ts": "274e22eb834a29fbe6f278ee577a0057",
       "scripts/seo-routes.ts": "af0df4cb23ed317d4e6179670a9940c9",
       "src/App.tsx": "aa493b3f727d41fa08aae2a334e395e3",
       "src/assets/blog/blog-bakery.jpg": "c9982fcc8f2c11ef31525d8fa5f1da7c",
@@ -185,6 +185,7 @@
       "src/assets/launch-sky-moonlit.jpg": "f2a8611b06441c715b06c2ef44135587",
       "src/assets/launch-sky.jpg": "2d70c087c00b783e8d12a677ff7d185f",
       "src/assets/logo.jpeg": "4170809c71907a76a4124953d35c98e4",
+      "src/assets/logos/kreativni-cesko.svg": "0a4654d69bcb8ddf6b0b1bb12433d3f8",
       "src/assets/offer/case-building.jpg": "b58a5dde0b26d3c0bbeddf1634b9e155",
       "src/assets/offer/case-eshop.jpg": "e28a865b27344a65a3dac0aa2626c418",
       "src/assets/offer/case-plumbing.jpg": "a48eb466a7092ac98dd0f43eb65d5525",
@@ -457,7 +458,7 @@
       "src/components/ExitIntentOffer.tsx": "4a524aa516e11098d44f12b8744aeee4",
       "src/components/FAQJsonLd.tsx": "be7fe905d692969240ce3dc923402c9d",
       "src/components/FAQSection.tsx": "f06b24ba5e390f39ca469e703a7b0742",
-      "src/components/Footer.tsx": "b46e2ad5efc61090c568120292e613db",
+      "src/components/Footer.tsx": "5ce07fe30b5ce9948afa49bc9f58c51f",
       "src/components/HeroSection.tsx": "d82392eab06c0d937287fc8153ad8bed",
       "src/components/HomeDirectAnswer.tsx": "fc8a7dc94a518213d9ef44570c74262d",
       "src/components/HomeJsonLd.test.tsx": "21b7c9ea624f4b94887003b667b963b1",
@@ -631,7 +632,7 @@
       "src/lib/publicSeo.ts": "75fd7a986a2730d85a5b479c28968ef7",
       "src/lib/seoDynamic.test.ts": "3763d5bd16a75d79fdf67d09621c7e8b",
       "src/lib/seoDynamic.ts": "a59273bc7738432b357692082af30364",
-      "src/lib/seoHtml.test.ts": "0f0fb2c6185889d967c743ef78fcc962",
+      "src/lib/seoHtml.test.ts": "42d3cbc4a8eeef8414e75e57884c2a55",
       "src/lib/stripe.ts": "f76ed145fb48bf88f7daf19d0add9471",
       "src/lib/trackEvent.ts": "dc835c193204f1a6a50058dd653ffbab",
       "src/lib/ttsErrors.ts": "a17aa937d5a88f4062ba857582ed335e",
@@ -3174,6 +3175,11 @@
       "file": "src/assets/logo.jpeg",
       "kind": "logo",
       "format": "jpeg"
+    },
+    {
+      "file": "src/assets/logos/kreativni-cesko.svg",
+      "kind": "logo",
+      "format": "svg"
     },
     {
       "file": "src/assets/offer/case-building.jpg",
