@@ -67,7 +67,9 @@ export function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
 }
 
 export function applyToTemplate(template: string, head: string, body: string): string {
-  let html = template.replace(/<title>[\s\S]*?<\/title>/gi, '')
+  // The template's own title carries a data-rh attribute, so the pattern must
+  // allow attributes — otherwise both titles survive and crawlers read the first.
+  let html = template.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, '')
     .replace(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/gi, '')
     .replace(/<meta\b(?=[^>]*\bname=["'](?:description|robots|twitter:[^"']*)["'])[^>]*>/gi, '')
     .replace(/<meta\b(?=[^>]*\bproperty=["']og:[^"']*["'])[^>]*>/gi, '')

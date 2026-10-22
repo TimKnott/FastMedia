@@ -20,6 +20,14 @@ describe('SEO public eligibility rules', () => {
     expect(output.match(/rel="canonical"/g)).toHaveLength(1);
     expect(output).not.toContain('content="old"');
   });
+  it('replaces the template title so only the route title remains', () => {
+    const template = '<html><head><title data-rh="true">FastMedia.Pro — Websites for Trades &amp; Services</title><link data-rh="true" rel="canonical" href="https://www.fastmedia.pro/"></head><body><div id="root"></div></body></html>';
+    const output = applyToTemplate(template, '<title>Weby pro stáje a jezdecké podniky | FastMedia.Pro</title>', '<main>Obsah</main>');
+    const titles = output.match(/<title\b[^>]*>[\s\S]*?<\/title>/gi) ?? [];
+    expect(titles).toHaveLength(1);
+    expect(titles[0]).toContain('Weby pro stáje');
+    expect(output).not.toContain('Websites for Trades');
+  });
   it('keeps campaigns out of public navigation without hiding their own content', () => {
     const routes = ['/business', '/equestrian', '/calculator'].map(path => ({ path, title: path, description: 'Public page' }));
     const html = buildCrawlBody(routes[0], routes);
