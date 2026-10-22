@@ -1,5 +1,8 @@
 # Project Architecture Rules
 
+- SEO initial HTML uses scripts/seo-routes.ts and scripts/seo-html.ts inside the existing prerender step; fallbacks must be accessible to all visitors, mirror real content, and never use bot-specific rendering or invented claims.
+- Keep public/sitemap.xml as the primary static sitemap; the prerender-generated sitemap-content.xml supplements published dynamic content without replacing that mechanism. Lastmod requires a significant page-specific modification timestamp, never generation time.
+
 - The business campaign reads its confirmed service scope from `businessSubscription`; this describes the enquiry offer, not checkout pricing, so unrelated payment plans remain unchanged.
 
 - Public language selection and canonical translated URLs use the shared publicLanguage helper; publish language alternatives only for explicitly translated paths to avoid indexing untranslated pages.

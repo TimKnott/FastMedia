@@ -9,6 +9,7 @@ import { serviceLandings } from "../src/data/serviceLandings.ts";
 import { industryLandings } from "../src/data/industryLandings.ts";
 import { publicSeo } from '../src/lib/publicSeo.ts';
 import { languageLocales } from '../src/lib/publicLanguage.ts';
+import { isIndexablePath } from './seo-html.ts';
 
 export interface RouteSeo {
   path: string;
@@ -52,24 +53,35 @@ export const orgJsonLd = {
 
 const STATIC_ROUTES: RouteSeo[] = [
   {
+    path: '/equestrian', language: 'cs-CZ', title: 'Weby pro stáje a jezdecké podniky | FastMedia.Pro',
+    description: 'Weby na míru pro stáje, jezdecké školy a ubytování. Ilustrativní rezervace a kapacity, plánování funkcí a nezávazná poptávka.',
+    h1: 'Více času s koňmi. Web za vás vyřídí administrativu.', ogImage: OG_IMG,
+    contentBlocks: ['Navrhujeme weby a propojené nástroje na míru stájím, jezdeckým školám a venkovským ubytováním. Péče o koně a rozhodování zůstávají na lidech.', 'Ilustrativní miniweby a kalendář ukazují služby a dostupnost podle personálu, koní, jízdárny, boxů či pokojů. Nejde o skutečný zákaznický web ani ostrý rezervační systém.', 'Kalkulačka času používá vaše zadané hodiny administrativy, hodinovou hodnotu práce a odhad možné úspory. Výsledek je ilustrativní, nikoli zaručená úspora. Propojení kalendářů a marketingových nástrojů závisí na podporované integraci a oprávněních.'],
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Service', name: 'Weby pro jezdecké podniky', url: 'https://www.fastmedia.pro/equestrian', provider: { '@id': 'https://www.fastmedia.pro/#organization' } },
+  },
+  { path: '/launch', title: 'FastMedia launch film and programme | FastMedia.Pro', description: 'Watch the FastMedia launch film and explore the creative programme and official press kit.', contentBlocks: ['Watch the FastMedia launch film and explore the current creative programme.', 'The media kit provides company and press information. Contact us to discuss a website project.'], ogImage: OG_IMG },
+  { path: '/reviews', title: 'Reviews and feedback | FastMedia.Pro', description: 'Read approved feedback where available and submit your experience of FastMedia.Pro. Reviews are moderated before public display.', contentBlocks: ['Read approved feedback where available. Submitted reviews are moderated before public display; no rating or outcome is guaranteed.'], ogImage: OG_IMG },
+  { path: '/partners', title: 'Referral partner programme | FastMedia.Pro', description: 'Learn about the FastMedia.Pro referral partner programme. Registration, rewards and eligibility depend on the published programme rules.', contentBlocks: ['Introduce a business that needs a website through the referral programme when registration is open.', 'Commission rates, eligibility and terms must be confirmed in the programme rules. No reward amount is promised before agreement.'], ogImage: OG_IMG },
+
+  {
     path: '/business',
-    title: 'Web pro řemeslníky za 20 € měsíčně — s online rezervacemi | FastMedia.Pro',
+    title: 'Web s rezervacemi za 20 € měsíčně | FastMedia.Pro',
     description: 'Web ze šablony s rezervacemi a hostingem za 20 € měsíčně. Bez zřizovacího poplatku a poplatku za návrh. Měsíční kontroly a až hodina vyžádaných úprav.',
     language: 'cs-CZ',
     changefreq: 'monthly',
     priority: '0.7',
     h1: 'Web pro řemeslníky a služby za 20 € měsíčně',
-    contentBlocks: ['Web z oborové šablony, online rezervační kalendář a hosting v měsíční ceně služby. Bez zřizovacího poplatku a poplatku za návrh.', 'Společně projdeme nápad a vybranou šablonu před spuštěním. Každý měsíc proaktivně kontrolujeme hladký chod a aktuálnost webu. Zákazník může požádat o úpravy v rozsahu až jedné hodiny práce měsíčně; nejedná se o neomezené úpravy ani velké nové funkce.', 'Registraci domény, SSL, limity rezervací, minimální délku smlouvy a výpověď potvrdíme před dohodou.'],
+    contentBlocks: ['Web z oborové šablony, online rezervační kalendář a hosting v měsíční ceně služby. Bez zřizovacího poplatku a poplatku za návrh.', 'Společně projdeme nápad a vybranou šablonu před spuštěním. Každý měsíc proaktivně kontrolujeme hladký chod a aktuálnost webu. Zákazník může požádat o úpravy v rozsahu až jedné hodiny práce měsíčně; nejedná se o neomezené úpravy ani velké nové funkce.', 'Registraci domény, SSL, limity rezervací, minimální délku smlouvy a výpověď potvrdíme před dohodou.', 'Funkce na míru lze objednat zvlášť: každý požadavek individuálně posoudíme a před zahájením práce nabídneme férovou cenu. Nejsou zahrnuty v měsíční ceně ani v hodině vyžádaných úprav.'],
   },
   {
     path: "/",
     title: "FastMedia.Pro — Websites for Trades & Services",
     description:
-      "FastMedia.Pro builds high-converting websites for tradespeople and service businesses. AI chatbot, online booking, lead capture. 47 templates, live in 10 days.",
+      "Websites for trades and service businesses, booking flows and tailored digital tools. Explore templates or plan your project with FastMedia.Pro.",
     ogImage: OG_IMG,
     changefreq: "weekly",
     priority: "1.0",
-    jsonLd: orgJsonLd,
+    jsonLd: [orgJsonLd, { "@context": "https://schema.org", "@type": "WebSite", name: BRAND, url: "https://www.fastmedia.pro/", inLanguage: ["cs", "en", "de"] }],
     h1: "Bespoke websites, calculators and booking forms, with free EU creative grant help",
     contentBlocks: [
       "FastMedia.Pro builds bespoke websites, interactive price calculators, booking forms and API/CRM integrations for businesses in the Czech Republic and across the EU, in any of the 24 official EU languages.",
@@ -80,14 +92,17 @@ const STATIC_ROUTES: RouteSeo[] = [
     path: "/blog",
     title: "Blog — Marketing and web design tips for trades | FastMedia.Pro",
     description:
-      "Practical SEO, branding and marketing guides for tradespeople and service businesses. Updated weekly with case studies and trends.",
+      "Practical website, SEO and marketing articles for tradespeople and service businesses. Read guidance, examples and planning tips from FastMedia.Pro.",
     ogImage: OG_IMG,
     changefreq: "daily",
     priority: "0.8",
   },
   {
     path: "/calculator",
-    title: "AI Website Calculator — Live quote in 2 minutes | FastMedia.Pro",
+    h1: "Plan your website with the cost calculator",
+    contentBlocks: ["Choose your business type, pages and requested features. The calculator uses the configured modules and their one-off and recurring prices to assemble an illustrative project estimate and proposal PDF.", "For example, a service business can compare a contact website with an online booking option, while a retailer can explore catalogue and payment requirements. Optional AI guidance helps with feature selection; it does not replace review of your requirements.", "Prices and timing are planning estimates, not guarantees of sales, search rankings or project delivery. Confirm scope, integrations, recurring charges and final terms with FastMedia.Pro before agreement. Do not include sensitive customer information in your brief."],
+    jsonLd: { "@context": "https://schema.org", "@type": "WebApplication", name: "FastMedia.Pro Website Cost Calculator", url: "https://www.fastmedia.pro/calculator", applicationCategory: "BusinessApplication", operatingSystem: "Web browser", description: "Configure website modules and compare illustrative one-off and recurring project costs." },
+    title: "Website Cost Calculator | FastMedia.Pro",
     description:
       "Use our AI calculator to scope a new website: pick features, see prices in real time, and download a tailored proposal PDF. No phone call required.",
     ogImage: OG_IMG,
@@ -182,13 +197,13 @@ const STATIC_ROUTES: RouteSeo[] = [
     path: "/case-studies",
     title: "Website Case Studies and Results | FastMedia.Pro",
     description:
-      "Case studies from FastMedia.Pro website projects: enquiry growth, booking numbers, basket values and mobile load times. Each study opens and downloads as a PDF.",
+      "Explore FastMedia.Pro website examples, screenshots and project write-ups. Illustrative examples are labelled; discuss the features relevant to your business.",
     ogImage: OG_IMG,
     changefreq: "weekly",
     priority: "0.8",
-    h1: "Case studies: website projects and the results that followed",
+    h1: "Website examples and project write-ups",
     contentBlocks: [
-      "Each case study covers one project: the business problem, what was built, and the measured outcome - enquiry volume, response time, out-of-hours bookings, basket value and mobile load time.",
+      "Explore the business context, design and features described in each project write-up. Illustrative examples are not evidence of customer outcomes; only confirmed project material should be treated as client work.",
       "Studies span trades, beauty and wellness, e-commerce and construction. Every case study can be opened in the browser as a PDF or downloaded for sharing internally.",
     ],
   },
@@ -266,16 +281,16 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/media-kit",
-    title: "Media Kit — FastMedia.Pro Company Bio, Portfolio & Testimonials",
+    title: "Media Kit — FastMedia.Pro Company and Portfolio",
     description:
-      "The official FastMedia.Pro media kit: company bio, key facts, live website showcases for trades and services, and testimonials from Czech business owners.",
+      "The official FastMedia.Pro media kit: company bio, key facts, live website showcases for trades and services, and press contact information.",
     ogImage: OG_IMG,
     changefreq: "monthly",
     priority: "0.6",
     h1: "FastMedia.Pro at a glance",
     contentBlocks: [
       "FastMedia.Pro is a digital studio designing and running modern, mobile-first, bilingual websites for tradespeople and small businesses in Czechia and worldwide, founded by a British entrepreneur.",
-      "The media kit includes the company bio, key facts, selected live website showcases, client testimonials and the press contact.",
+      "The media kit includes the company bio, key facts, selected live website showcases, project information and the press contact.",
     ],
   },
   {
@@ -297,10 +312,8 @@ const STATIC_ROUTES: RouteSeo[] = [
     priority: "0.5",
     h1: "Install the FastMedia.Pro app",
     contentBlocks: [
-      "FastMedia.Pro works as a Progressive Web App (PWA), which means you can install it on your iPhone, iPad, Android phone or desktop computer straight from the browser — no App Store or Play Store account required. Once installed, the app launches from your home screen in its own window, loads instantly thanks to service-worker caching, and continues to work when your connection drops.",
-      "On iPhone or iPad, open this page in Safari, tap the Share icon (a square with an upward arrow) in the bottom toolbar, scroll down and choose 'Add to Home Screen', then tap 'Add' to confirm. On Android, open the page in Chrome, tap the three-dot menu and select 'Install app' or 'Add to Home screen'. On Windows or macOS, open the site in Chrome, Edge or Brave and click the small install icon at the right edge of the address bar, then confirm to place a desktop shortcut and dock icon.",
-      "The installed app gives you offline access to your saved demos, quotes and dashboards, one-tap access to the AI website calculator, faster page loads because the app shell is served from your device, and a proper native-feeling icon on your home screen. It weighs less than a megabyte, uses no background data, and updates itself silently in the background whenever we release improvements — so you never have to reinstall.",
-      "If installation is not available on your device, you can still bookmark this page and pin it to your home screen; every feature of the site works in a regular browser tab. For help or questions about installing FastMedia.Pro, email support@fastmedia.pro or call +420 797 864 432 and our team will walk you through the exact steps for your phone model.",
+      "Add FastMedia.Pro to your home screen using your browser’s installation option, where supported. On iPhone use Safari’s Share menu; on Android or desktop look for Install app in a compatible browser.",
+      "An internet connection is required for pages and account tools. Installation does not guarantee offline access, instant loading or background updates; browser and device support vary.",
     ],
   },
   {
@@ -348,16 +361,16 @@ function demoRoute(trade: string): RouteSeo {
   return {
     path: `/demo/${trade}`,
     title: `${label} Website Template — Live demo | FastMedia.Pro`,
-    description: `Explore a fully built ${lower} website template with AI chat, booking and lead capture. Get yours live in 10 days.`,
+    description: `Explore an illustrative ${lower} website template. Preview the layout and discuss booking, contact and optional features for your own business.`,
     ogImage: OG_IMG,
     ogType: "website",
     changefreq: "monthly",
     priority: "0.6",
     h1: `${label} website template — live demo`,
     contentBlocks: [
-      `This is a fully working ${lower} website template built by FastMedia.Pro. It includes a mobile-optimised hero, a services section tailored to ${lower} businesses, a project or treatment gallery, transparent pricing, a live booking calendar, an AI chat assistant that answers customer questions around the clock, and a lead-capture form that emails and text-messages every enquiry straight to your phone.`,
-      `The template is designed for independent ${lower} professionals and small teams who want a modern website that ranks well on Google, loads in under two seconds, and turns visitors into paying customers. Every section — copy, colours, images, prices, service list — is editable through a simple back-office dashboard, so you can launch quickly and refine as you grow. GDPR, cookie consent, an XML sitemap and structured schema markup are configured out of the box.`,
-      `You can preview the full ${lower} demo above, then click Get Quote to open the AI website calculator with the ${lower} industry pre-selected. Add or remove the features you need — booking, e-commerce, multilingual content, live chat, video, CRM — and see a live price and timeline before you commit. Typical delivery is ten working days from signed brief to launch, with hosting, security, backups and ongoing SEO monitoring included.`,
+      `This is an illustrative ${lower} website template, not a verified customer website. Preview the layout, sample service information and enquiry journey; sample names, prices and reviews are not evidence of real business results.`,
+      `Choose the pages and functions relevant to your business. Booking, chat, payments and CRM connections depend on the agreed scope and configuration; prototype controls do not establish a live integration.`,
+      `Use Get Quote to discuss this template in the calculator or contact FastMedia.Pro. Final content, delivery, hosting and optional features are agreed before work begins; search rankings, bookings and sales are not guaranteed.`,
     ],
     jsonLd: {
       "@context": "https://schema.org",
@@ -476,23 +489,32 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
       const supabase = createClient(url, anon);
       const { data: posts } = await supabase
         .from("blog_posts")
-        .select("slug, title, excerpt, published_at, og_image_url")
+        .select("slug, title, excerpt, content, author, published_at, hero_image_url")
         .eq("status", "published");
       if (posts) {
         for (const p of posts) {
+          const text = (value: unknown): string => typeof value === 'string' ? value : String((value as Record<string, unknown> | null)?.cs ?? (value as Record<string, unknown> | null)?.en ?? '');
+          const title = text(p.title);
+          const excerpt = text(p.excerpt);
+          const content = p.content as { cs?: { sections?: Array<{ type?: string; text?: string }> }; en?: { sections?: Array<{ type?: string; text?: string }> } } | null;
+          const paragraphs = (content?.cs?.sections ?? content?.en?.sections ?? []).filter(b => b.type === 'paragraph' || b.type === 'heading').map(b => b.text ?? '').filter(Boolean);
           routes.push({
             path: `/blog/${p.slug}`,
-            title: `${p.title} | FastMedia Blog`,
-            description: (p.excerpt ?? "").slice(0, 160) || `Read "${p.title}" on the FastMedia.Pro blog.`,
-            ogImage: p.og_image_url ?? OG_IMG,
+            title: `${title} | FastMedia.Pro`,
+            h1: title, language: "cs-CZ", contentBlocks: [excerpt, ...paragraphs],
+            description: excerpt.slice(0, 160) || `Read "${title}" on the FastMedia.Pro blog.`,
+            ogImage: p.hero_image_url ?? OG_IMG,
             ogType: "article",
-            lastmod: p.published_at ?? undefined,
+            // Publication date is not necessarily the last significant edit.
+            lastmod: undefined,
             changefreq: "monthly",
             priority: "0.6",
             jsonLd: {
               "@context": "https://schema.org",
               "@type": "Article",
-              headline: p.title,
+              headline: title,
+              author: { "@type": "Person", name: p.author || "FastMedia.Pro" },
+              url: `https://www.fastmedia.pro/blog/${p.slug}`,
               datePublished: p.published_at,
               publisher: orgJsonLd,
             },
@@ -500,6 +522,8 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
         }
       }
 
+      const { data: courses } = await supabase.from('courses').select('slug,title_cs,subtitle_cs,intro_cs,learn_cs').eq('is_published', true);
+      for (const c of courses ?? []) routes.push({ path: `/courses/${c.slug}`, title: `${c.title_cs} | FastMedia.Pro`, description: c.subtitle_cs || c.intro_cs.slice(0, 160), h1: c.title_cs, contentBlocks: [c.intro_cs, ...(c.learn_cs ?? [])], language: 'cs-CZ', ogImage: OG_IMG });
       const { data: legal } = await supabase
         .from("legal_documents")
         .select("slug, title, summary");
@@ -536,7 +560,7 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     (r): r is RouteSeo =>
       !!r &&
       typeof r.path === "string" &&
-      r.path.startsWith("/") &&
+      isIndexablePath(r.path) &&
       !r.path.includes("undefined") &&
       typeof r.title === "string" &&
       typeof r.description === "string",

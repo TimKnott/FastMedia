@@ -1,5 +1,9 @@
 # Roadmap
 
+## Oct 22 — Site-side organic and AI search eligibility
+- [ ] Audit and repair initial HTML, metadata, sitemap and accurate structured content in preview only.
+- [ ] Run targeted tests and desktop/mobile checks; report Search Console access and submission URLs without submitting or deploying.
+
 ## Oct 21 — Confirmed business subscription
 - [x] Align the /business first-screen offer, inclusions, FAQ and metadata in CS/EN/DE; preserve other routes and do not publish.
 - [x] Test confirmed scope and check desktop/mobile offer visibility and enquiry links in preview; 33 tests pass and automatic build reports OK. Owner to manually submit the enquiry.

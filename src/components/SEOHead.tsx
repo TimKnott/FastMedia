@@ -4,6 +4,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { usePublishedSchema } from '@/hooks/usePublishedSchema';
 import { languageLocales, localizedPath, translatedPaths } from '@/lib/publicLanguage';
 import { translatedPageSeo } from '@/lib/publicSeo';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 interface SEOHeadProps {
   title: string;
@@ -32,6 +34,10 @@ const SEOHead = ({
   pagePath,
 }: SEOHeadProps) => {
   const { language } = useLanguage();
+  const { pathname } = useLocation();
+  useEffect(() => {
+    document.querySelectorAll('script[data-seo-static]').forEach(node => node.remove());
+  }, [pathname]);
   const localizedSeo = translatedPageSeo(canonical ?? '', language);
   const seo = usePageSeo(pagePath ?? '');
   const { data: schemaBlocks } = usePublishedSchema(pagePath);
@@ -50,13 +56,17 @@ const SEOHead = ({
     : `${effectiveTitle} | FastMedia.Pro`;
   // Normalize: strip trailing slash (except root) to avoid duplicate-content
   // signals — SiteGuru flagged /path and /path/ as separate URLs.
-  const normalizedPath = canonical
-    ? canonical === '/'
+  const resolvedPath = canonical ?? pagePath ?? pathname;
+  const normalizedPath = resolvedPath
+    ? resolvedPath === '/'
       ? '/'
-      : canonical.replace(/\/+$/, '')
+      : resolvedPath.replace(/\/+$/, '')
     : undefined;
   const canonicalUrl = normalizedPath ? `${BASE_URL}${localizedPath(normalizedPath, language)}` : undefined;
   const hasTranslations = translatedPaths.some(p => p === normalizedPath);
+
+  // Static head tags are marked data-rh so Helmet replaces them on navigation.
+  // Server schema describes the initial page only; remove it when React takes over.
 
   return (
     <Helmet>
@@ -74,6 +84,7 @@ const SEOHead = ({
       <meta property="og:description" content={effectiveOgDescription || effectiveDescription} />
       <meta property="og:type" content={effectiveOgType} />
       <meta property="og:site_name" content="FastMedia.Pro" />
+      <html lang={languageLocales[language]} />
       <meta property="og:locale" content={languageLocales[language].replace('-', '_')} />
       {(['cs', 'en', 'de'] as const).filter(lang => lang !== language).map(lang => <meta key={lang} property="og:locale:alternate" content={languageLocales[lang].replace('-', '_')} />)}
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
