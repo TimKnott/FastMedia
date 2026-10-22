@@ -6,6 +6,7 @@
 - The business campaign reads its confirmed service scope from `businessSubscription`; this describes the enquiry offer, not checkout pricing, so unrelated payment plans remain unchanged.
 
 - Public language selection and canonical translated URLs use the shared publicLanguage helper; publish language alternatives only for explicitly translated paths to avoid indexing untranslated pages.
+- Dynamic SEO snapshots isolate each public-content fetch; translated sibling alternatives share one helper in preview and prerender, never guessing an original page's language.
 
 - Keep the public launch experience at `/launch`; the homepage may preview it, while press assets remain at `/media-kit`.
 - Monthly launch themes are selected from the visitor's calendar month so the presentation changes without a scheduled backend job.
