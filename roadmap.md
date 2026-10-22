@@ -1,10 +1,10 @@
 # Roadmap
 
 ## Oct 22 — Site-side organic and AI search eligibility
-- [ ] Verify the new shared 30-Build-credit cap across relevant projects before further work; stop if cumulative cost cannot be reliably established. No publishing, deployment or indexing requests.
-- [ ] Resume final validation with renewed Build-credit approval; read Google Search Central guidance and live URL Inspection only. No indexing requests or deployment.
-- [ ] Audit and repair initial HTML, metadata, sitemap and accurate structured content in preview only.
-- [ ] Run targeted tests and desktop/mobile checks; report Search Console access and submission URLs without submitting or deploying.
+- [x] Check shared credit cap: stopped further work because recorded project usage cannot isolate protocol or current-turn spending. Oct 21–22 recorded Build usage: FastMedia 27.10, Kone a Staje 243.00; these include unrelated work, so remaining protocol allowance cannot be established.
+- [x] Review current official Google guidance on JavaScript SEO, sitemaps, localized pages and AI features; no special AI eligibility markup or placement guarantee.
+- [ ] BLOCKED by unverified shared credit allowance: finish independent dynamic-fetch error handling, localized alternate parity and runtime soft-404 checks; preview changes already include bundled articles, published translations, active custom demos and published-only legal records.
+- [x] Final available checks: 39 targeted tests pass; 263 generated HTML heads/canonicals/JSON-LD validated, 261 canonical sitemap entries; primary sitemap has 248 unique URLs and no uncovered entries; automatic build OK at 09:15:20 UTC, whitespace diff check clean. No publishing, deployment or indexing requests.
 
 ## Oct 21 — Confirmed business subscription
 - [x] Align the /business first-screen offer, inclusions, FAQ and metadata in CS/EN/DE; preserve other routes and do not publish.
