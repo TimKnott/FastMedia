@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Oct 22 — Site-side organic and AI search eligibility
+- [ ] Re-read Google's recorded homepage merchant status and compare live homepage/equestrian metadata with preview; report deployment requirements without publishing or indexing requests.
 - [x] Search Console read-only checks: homepage/equestrian/calculator indexed; equestrian declared canonical was homepage at last crawl, Google selected equestrian. Homepage merchant markup errors; business inspection timed out twice, unresolved externally. Sitemap reports zero errors/warnings and 103 submitted URLs. No indexing requests or production changes.
 - [x] Check shared credit cap: stopped further work because recorded project usage cannot isolate protocol or current-turn spending. Oct 21–22 recorded Build usage: FastMedia 27.10, Kone a Staje 243.00; these include unrelated work, so remaining protocol allowance cannot be established.
 - [x] Review current official Google guidance on JavaScript SEO, sitemaps, localized pages and AI features; no special AI eligibility markup or placement guarantee.
