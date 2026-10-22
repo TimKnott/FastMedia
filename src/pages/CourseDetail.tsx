@@ -64,7 +64,7 @@ const CourseDetail = () => {
   if (!course) {
     return (
       <div className="min-h-screen bg-background">
-        <SEOHead title={t.notFound} description={t.notFound} pagePath="/courses" />
+        <SEOHead title={t.notFound} description={t.notFound} pagePath={`/courses/${slug}`} noindex />
         <Navbar />
         <div className="container mx-auto px-4 py-24">
           <h1 className="font-display text-2xl font-bold">{t.notFound}</h1>

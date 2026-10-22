@@ -69,6 +69,7 @@ const LegalDocument = () => {
         title={`${active?.title || (isEnglish ? 'Legal' : 'Právní dokumenty')} — FastMedia.Pro`}
         description={active?.summary || (isEnglish ? 'Legal documentation for FastMedia.Pro' : 'Právní dokumentace FastMedia.Pro')}
         pagePath={`/legal/${slug}`}
+        noindex={!loading && !active}
       />
       <Navbar />
       <main className="pt-24 pb-16 bg-background min-h-screen">

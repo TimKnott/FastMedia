@@ -11,6 +11,7 @@ import { publicSeo } from '../src/lib/publicSeo.ts';
 import { languageLocales } from '../src/lib/publicLanguage.ts';
 import { isIndexablePath } from './seo-html.ts';
 import { blogPosts } from '../src/data/blogPosts.ts';
+import { safeSeoFetch, languageAlternatives } from '../src/lib/seoDynamic.ts';
 
 export interface RouteSeo {
   path: string;
@@ -499,10 +500,10 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
   if (url && anon) {
     try {
       const supabase = createClient(url, anon);
-      const { data: posts } = await supabase
+      const posts = await safeSeoFetch('articles', () => supabase
         .from("blog_posts")
         .select("slug, title, excerpt, content, author, published_at, hero_image_url")
-        .eq("status", "published");
+        .eq("status", "published"));
       if (posts) {
         for (const p of posts) {
           const text = (value: unknown): string => typeof value === 'string' ? value : String((value as Record<string, unknown> | null)?.cs ?? (value as Record<string, unknown> | null)?.en ?? '');
@@ -534,17 +535,24 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
         }
       }
 
-      const { data: courses } = await supabase.from('courses').select('slug,title_cs,subtitle_cs,intro_cs,learn_cs').eq('is_published', true);
-      for (const c of courses ?? []) routes.push({ path: `/courses/${c.slug}`, title: `${c.title_cs} | FastMedia.Pro`, description: c.subtitle_cs || c.intro_cs.slice(0, 160), h1: c.title_cs, contentBlocks: [c.intro_cs, ...(c.learn_cs ?? [])], language: 'cs-CZ', ogImage: OG_IMG });
-      const { data: languageVersions } = await supabase.from('language_versions')
-        .select('language_code,slug,title,meta_description,content').eq('status', 'published');
+      const courses = await safeSeoFetch('courses', () => supabase.from('courses').select('slug,title_cs,subtitle_cs,intro_cs,learn_cs').eq('is_published', true));
+      for (const c of courses) {
+        if (!c.slug || !c.title_cs) continue;
+        const intro = (c.intro_cs ?? '').replace(/<[^>]*>/g, ' ');
+        routes.push({ path: `/courses/${c.slug}`, title: `${c.title_cs} | FastMedia.Pro`, description: c.subtitle_cs || intro.slice(0, 160) || c.title_cs, h1: c.title_cs, contentBlocks: [intro, ...(c.learn_cs ?? [])], language: 'cs-CZ', ogImage: OG_IMG });
+      }
+      const languageVersions = await safeSeoFetch('translations', () => supabase.from('language_versions')
+        .select('language_code,slug,source_path,title,meta_description,content').eq('status', 'published'));
       for (const row of languageVersions ?? []) {
         const content = row.content as { h1?: string; intro?: string; sections?: Array<{ heading?: string; paragraphs?: string[]; bullets?: string[] }> } | null;
+        if (!row.title || !content?.h1 || !content.intro) continue;
+        const alternates = languageAlternatives(languageVersions, row.source_path);
+        if (!alternates.some(a => a.path === `/l/${row.language_code}/${row.slug}`)) continue;
         routes.push({ path: `/l/${row.language_code}/${row.slug}`, title: row.title, description: row.meta_description || content?.intro || row.title,
-          h1: content?.h1 || row.title, language: row.language_code, ogImage: OG_IMG,
+          h1: content?.h1 || row.title, language: row.language_code, alternates, ogImage: OG_IMG,
           contentBlocks: [content?.intro ?? '', ...(content?.sections ?? []).flatMap(s => [s.heading ?? '', ...(s.paragraphs ?? []), ...(s.bullets ?? [])])].filter(Boolean) });
       }
-      const { data: demos } = await supabase.from('custom_demos').select('trade_id,name,description').eq('is_active', true);
+      const demos = await safeSeoFetch('demos', () => supabase.from('custom_demos').select('trade_id,name,description').eq('is_active', true));
       for (const demo of demos ?? []) {
         if (routes.some(r => r.path === `/demo/${demo.trade_id}`)) continue;
         const name = demo.name as Record<string, string>;
@@ -552,15 +560,17 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
         routes.push({ path: `/demo/${demo.trade_id}`, title: `${name.cs || name.en} — demo | FastMedia.Pro`,
           description: description.cs || description.en, contentBlocks: [description.cs || description.en, 'Ilustrativní demo — ne skutečný zákaznický web. Funkce a propojení se dohodnou podle vašeho projektu.'], language: 'cs-CZ', ogImage: OG_IMG });
       }
-      const { data: legal } = await supabase
+      const legal = await safeSeoFetch('legal documents', () => supabase
         .from("legal_documents")
         .select("slug, title, summary, region")
-        .eq('published', true);
+        .eq('published', true));
       if (legal) {
-        const preferred = [...legal].sort((a, b) => (a.region === 'eu' ? -1 : 1) - (b.region === 'eu' ? -1 : 1));
+        const rank = (region: string) => region === 'eu' ? 0 : region === 'global' ? 1 : 2;
+        const preferred = [...legal].sort((a, b) => rank(a.region) - rank(b.region));
         const seen = new Set<string>();
         for (const l of preferred) {
           if (seen.has(l.slug)) continue;
+          if (!l.slug || !l.title) continue;
           seen.add(l.slug);
           routes.push({
             path: `/legal/${l.slug}`,
