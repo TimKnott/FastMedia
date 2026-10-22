@@ -33,6 +33,7 @@ export function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
     // Campaign routes remain absent from public navigation, as requested.
     .filter(r => !['/business', '/equestrian'].includes(r.path));
   const related = links.filter(r => {
+    if (route.path === '/') return !r.path.startsWith('/blog/');
     if (route.path === '/blog') return r.path.startsWith('/blog/');
     if (route.path === '/courses') return r.path.startsWith('/courses/');
     if (route.path.startsWith('/demo/')) return r.path.startsWith('/demo/');
@@ -45,7 +46,7 @@ export function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
     <p class="text-lg mb-6">${escapeHtml(route.description)}</p>
     ${paragraphs.map(p => `<p class="mb-4">${escapeHtml(p)}</p>`).join('\n')}
     <nav aria-label="${cs ? 'Související stránky' : de ? 'Weitere Seiten' : 'Related pages'}" class="flex flex-wrap gap-4 my-8">${related.map(r => `<a class="underline" href="${escapeHtml(r.path)}">${escapeHtml(r.h1 ?? r.title.split('|')[0])}</a>`).join('\n')}</nav>
-    <p><a href="/calculator">${cs ? 'Naplánovat web v kalkulačce' : de ? 'Website im Kalkulator planen' : 'Plan a website in the calculator'}</a> · <a href="/cs/contact">${cs ? 'Kontakt' : de ? 'Kontakt' : 'Contact'}</a></p>
+    <p><a href="/calculator">${cs ? 'Naplánovat web v kalkulačce' : de ? 'Website im Kalkulator planen' : 'Plan a website in the calculator'}</a> · <a href="${de ? '/de/contact' : cs ? '/cs/contact' : '/en/contact'}">${cs ? 'Kontakt' : de ? 'Kontakt' : 'Contact'}</a></p>
     <p class="mt-4">FastMedia.Pro · Timothy Knott · IČO 17308551 · <a href="mailto:support@fastmedia.pro">support@fastmedia.pro</a></p>
   </main>
   <style>html[data-seo-pending] #root{display:none}body:has([data-prerender="fallback"]) #root{display:none}</style>
