@@ -26,11 +26,9 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const today = new Date().toISOString().split('T')[0];
 
   const urls = indexablePages.map(p => `  <url>
     <loc>${BASE_URL}${p.path}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`).join('\n');

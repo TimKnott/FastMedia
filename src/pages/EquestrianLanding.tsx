@@ -234,7 +234,7 @@ const EquestrianLanding = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={copy.seoTitle[lang]} description={copy.seoDesc[lang]} pagePath="/equestrian" />
+      <SEOHead title={copy.seoTitle[lang]} description={copy.seoDesc[lang]} canonical="/equestrian" pagePath="/equestrian" />
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       <Navbar />
 

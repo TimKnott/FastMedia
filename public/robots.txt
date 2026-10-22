@@ -47,3 +47,4 @@ Disallow: /portal/
 Disallow: /404
 
 Sitemap: https://www.fastmedia.pro/sitemap.xml
+Sitemap: https://www.fastmedia.pro/sitemap-content.xml

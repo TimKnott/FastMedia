@@ -53,14 +53,12 @@ export const sitemapEntries: SitemapEntry[] = [
 
 export const generateSitemapXml = (): string => {
   const BASE_URL = 'https://www.fastmedia.pro';
-  const today = new Date().toISOString().split('T')[0];
 
   const urls = sitemapEntries
     .filter((e) => e.indexable)
     .map(
       (e) => `  <url>
     <loc>${BASE_URL}${e.path}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>${e.changefreq}</changefreq>
     <priority>${e.priority.toFixed(1)}</priority>
   </url>`

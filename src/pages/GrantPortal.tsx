@@ -236,7 +236,7 @@ export default function GrantPortal() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t.seoTitle} description={t.seoDesc} pagePath="/grant-portal" />
+      <SEOHead title={t.seoTitle} description={t.seoDesc} canonical="/grant-portal" pagePath="/grant-portal" noindex />
 
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur border-b border-border">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-3">
