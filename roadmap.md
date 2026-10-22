@@ -1,7 +1,8 @@
 # Roadmap
 
 ## Oct 22 — Site-side organic and AI search eligibility
-- [ ] Report recent production visitors to FastMedia.Pro and the pages they used.
+- [x] Report recent production visitors to FastMedia.Pro and the pages they used.
+- [ ] Add a discreet footer credit link to the owner's Kreativní Česko registration page, using that site's logo and accurate wording.
 - [x] Read-only comparison complete: Google still reports homepage merchant errors from Oct 5; live rendered homepage still has Product/SearchAction, preview does not. Live equestrian canonical remains homepage in raw and rendered HTML; preview canonical is /equestrian. Deployment head generator produces route-specific metadata. Remaining gaps: duplicate rendered OG tags in preview and unrelated homepage SEO override; no production or indexing action.
 - [x] Search Console read-only checks: homepage/equestrian/calculator indexed; equestrian declared canonical was homepage at last crawl, Google selected equestrian. Homepage merchant markup errors; business inspection timed out twice, unresolved externally. Sitemap reports zero errors/warnings and 103 submitted URLs. No indexing requests or production changes.
 - [x] Check shared credit cap: stopped further work because recorded project usage cannot isolate protocol or current-turn spending. Oct 21–22 recorded Build usage: FastMedia 27.10, Kone a Staje 243.00; these include unrelated work, so remaining protocol allowance cannot be established.
