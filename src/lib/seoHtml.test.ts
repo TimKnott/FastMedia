@@ -47,4 +47,9 @@ describe('SEO public eligibility rules', () => {
       for (const match of head.matchAll(/type="application\/ld\+json">([^<]*)<\/script>/g)) expect(() => JSON.parse(match[1])).not.toThrow();
     }
   });
+  it('includes bundled public articles and deduplicates dynamic route slugs', async () => {
+    const routes = await getAllRoutes();
+    expect(routes.some(r => r.path === '/blog/trendy-webdesignu-2026')).toBe(true);
+    expect(new Set(routes.map(r => r.path)).size).toBe(routes.length);
+  });
 });

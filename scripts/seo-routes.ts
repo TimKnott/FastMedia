@@ -10,6 +10,7 @@ import { industryLandings } from "../src/data/industryLandings.ts";
 import { publicSeo } from '../src/lib/publicSeo.ts';
 import { languageLocales } from '../src/lib/publicLanguage.ts';
 import { isIndexablePath } from './seo-html.ts';
+import { blogPosts } from '../src/data/blogPosts.ts';
 
 export interface RouteSeo {
   path: string;
@@ -479,6 +480,17 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     ...industryRoutes,
     ...DEMO_TRADES.map(demoRoute),
     ...featureRoutes,
+    ...blogPosts.map(post => ({
+      path: `/blog/${post.slug}`, title: `${post.title.cs} | FastMedia.Pro`,
+      description: post.excerpt.cs, h1: post.title.cs, language: 'cs-CZ',
+      ogType: 'article' as const, ogImage: OG_IMG,
+      contentBlocks: [post.excerpt.cs, ...post.sections.flatMap(section =>
+        section.type === 'paragraph' || section.type === 'heading' || section.type === 'callout'
+          ? [section.text.cs] : section.type === 'list' ? section.items.map(item => item.cs) : [])],
+      jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: post.title.cs,
+        datePublished: post.date, author: { '@type': 'Person', name: post.author },
+        url: `https://www.fastmedia.pro/blog/${post.slug}`, publisher: orgJsonLd },
+    })),
   ];
 
   // Dynamic content from Supabase (best-effort; failures don't break the build)
@@ -524,11 +536,32 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
 
       const { data: courses } = await supabase.from('courses').select('slug,title_cs,subtitle_cs,intro_cs,learn_cs').eq('is_published', true);
       for (const c of courses ?? []) routes.push({ path: `/courses/${c.slug}`, title: `${c.title_cs} | FastMedia.Pro`, description: c.subtitle_cs || c.intro_cs.slice(0, 160), h1: c.title_cs, contentBlocks: [c.intro_cs, ...(c.learn_cs ?? [])], language: 'cs-CZ', ogImage: OG_IMG });
+      const { data: languageVersions } = await supabase.from('language_versions')
+        .select('language_code,slug,title,meta_description,content').eq('status', 'published');
+      for (const row of languageVersions ?? []) {
+        const content = row.content as { h1?: string; intro?: string; sections?: Array<{ heading?: string; paragraphs?: string[]; bullets?: string[] }> } | null;
+        routes.push({ path: `/l/${row.language_code}/${row.slug}`, title: row.title, description: row.meta_description || content?.intro || row.title,
+          h1: content?.h1 || row.title, language: row.language_code, ogImage: OG_IMG,
+          contentBlocks: [content?.intro ?? '', ...(content?.sections ?? []).flatMap(s => [s.heading ?? '', ...(s.paragraphs ?? []), ...(s.bullets ?? [])])].filter(Boolean) });
+      }
+      const { data: demos } = await supabase.from('custom_demos').select('trade_id,name,description').eq('is_active', true);
+      for (const demo of demos ?? []) {
+        if (routes.some(r => r.path === `/demo/${demo.trade_id}`)) continue;
+        const name = demo.name as Record<string, string>;
+        const description = demo.description as Record<string, string>;
+        routes.push({ path: `/demo/${demo.trade_id}`, title: `${name.cs || name.en} — demo | FastMedia.Pro`,
+          description: description.cs || description.en, contentBlocks: [description.cs || description.en, 'Ilustrativní demo — ne skutečný zákaznický web. Funkce a propojení se dohodnou podle vašeho projektu.'], language: 'cs-CZ', ogImage: OG_IMG });
+      }
       const { data: legal } = await supabase
         .from("legal_documents")
-        .select("slug, title, summary");
+        .select("slug, title, summary, region")
+        .eq('published', true);
       if (legal) {
-        for (const l of legal) {
+        const preferred = [...legal].sort((a, b) => (a.region === 'eu' ? -1 : 1) - (b.region === 'eu' ? -1 : 1));
+        const seen = new Set<string>();
+        for (const l of preferred) {
+          if (seen.has(l.slug)) continue;
+          seen.add(l.slug);
           routes.push({
             path: `/legal/${l.slug}`,
             title: `${l.title} | FastMedia.Pro`,
@@ -556,7 +589,7 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
   }
 
   // Guard: drop any malformed entry so prerendering can never crash on it
-  return routes.filter(
+  return [...new Map(routes.filter(
     (r): r is RouteSeo =>
       !!r &&
       typeof r.path === "string" &&
@@ -564,5 +597,5 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
       !r.path.includes("undefined") &&
       typeof r.title === "string" &&
       typeof r.description === "string",
-  );
+  ).map(route => [route.path, route])).values()];
 }
