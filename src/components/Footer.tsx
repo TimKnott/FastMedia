@@ -8,6 +8,7 @@ import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { localizedPath } from '@/lib/publicLanguage';
 import LearnMoreModal from '@/components/LearnMoreModal';
+import kreativniCeskoLogo from '@/assets/logos/kreativni-cesko.svg';
 
 const Footer = () => {
   const { t, language } = useLanguage();
@@ -180,6 +181,32 @@ const Footer = () => {
           <Link to="/partners" className="text-accent hover:underline font-medium">
             {language === 'de' ? 'Empfehlungspartner werden →' : isEnglish ? 'Become a referral partner →' : 'Stát se partnerem →'}
           </Link>
+        </p>
+
+        {/* Discreet state-register credential */}
+        <p className="pb-8">
+          <a
+            href="https://www.kreativnicesko.cz/cs/galerie-kreativcu/aa2be57a-4b76-4faa-8d45-3a8a606e1918"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex max-w-full flex-wrap items-center gap-2.5 rounded-lg border border-background/10 px-3 py-2 text-xs text-background/60 transition-colors hover:border-accent/40 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <img
+              loading="lazy"
+              decoding="async"
+              src={kreativniCeskoLogo}
+              alt=""
+              aria-hidden="true"
+              className="h-4 w-auto opacity-80 transition-opacity group-hover:opacity-100"
+            />
+            <span>
+              {language === 'de'
+                ? 'Eingetragener tschechischer Betrieb · Kreativregister des Kulturministeriums'
+                : isEnglish
+                  ? 'Registered Czech business · Ministry of Culture creative-professional register'
+                  : 'Registrovaný český podnik · Celostátní galerie kreativců Ministerstva kultury ČR'}
+            </span>
+          </a>
         </p>
 
         {/* Bottom bar */}
