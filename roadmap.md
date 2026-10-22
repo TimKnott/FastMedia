@@ -183,3 +183,5 @@
 - [ ] Owner: set commission rate/terms and open signups under Partner Manager → Rules
 - [ ] Social auto-publishing (RADAAR) — not connected; drafts are manual
 - [ ] Existing tools (Finder, Ad Studio, Prospecting) don't yet prefill from ?campaign= — use "Copy brief"
+
+- [x] Footer Kreativní Česko credit: wording "Oficiálně registrovaný podnik v ČR" / "Officially registered Czech business"

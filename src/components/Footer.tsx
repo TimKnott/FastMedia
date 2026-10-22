@@ -201,10 +201,13 @@ const Footer = () => {
             />
             <span>
               {language === 'de'
-                ? 'Eingetragener tschechischer Betrieb · Kreativregister des Kulturministeriums'
+                ? 'Offiziell registriertes Unternehmen in Tschechien'
                 : isEnglish
-                  ? 'Registered Czech business · Ministry of Culture creative-professional register'
-                  : 'Registrovaný český podnik · Celostátní galerie kreativců Ministerstva kultury ČR'}
+                  ? 'Officially registered Czech business'
+                  : 'Oficiálně registrovaný podnik v ČR'}
+            </span>
+            <span className="sr-only">
+              {language === 'de' ? ' (Kreativní Česko, öffnet in neuem Tab)' : isEnglish ? ' (Kreativní Česko, opens in a new tab)' : ' (Kreativní Česko, otevře se v nové kartě)'}
             </span>
           </a>
         </p>
