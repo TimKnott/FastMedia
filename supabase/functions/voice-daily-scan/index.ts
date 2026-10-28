@@ -1,4 +1,5 @@
 import { hasValidJobToken } from '../_shared/require-admin.ts';
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 // Daily website health scan for FastMedia.Pro.
 // Checks key public pages load correctly, stores a report, and emails the
 // admin a summary. Callable only by pg_cron (CRON_SECRET) or the service role.
@@ -7,7 +8,6 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 const SITE = 'https://www.fastmedia.pro';
-const ADMIN_EMAIL = Deno.env.get('OWNER_NOTIFICATION_EMAIL') ?? Deno.env.get('NOTIFICATION_EMAIL') ?? 'support@fastmedia.pro';
 
 const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
 
@@ -69,11 +69,11 @@ Deno.serve(async (req) => {
   const isMonday = new Date().getUTCDay() === 1;
   let emailed = false;
   if (issues.length > 0 || isMonday) {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-app-email`, {
+    const results = await Promise.all(ALERT_RECIPIENTS.map((to) => fetch(`${SUPABASE_URL}/functions/v1/send-app-email`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${SERVICE_ROLE}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: ADMIN_EMAIL,
+        to,
         subject: issues.length === 0
           ? `FastMedia weekly site scan: all ${checked} pages healthy`
           : `FastMedia site scan: ${issues.length} issue(s) found`,
@@ -83,8 +83,8 @@ Deno.serve(async (req) => {
             : '<p>No action needed.</p>'
         }<p style="color:#888">FastMedia.Pro voice agent · daily scan</p>`,
       }),
-    });
-    emailed = res.ok;
+    })));
+    emailed = results.every((r) => r.ok);
     if (report?.id) await sb.from('voice_scan_reports').update({ emailed }).eq('id', report.id);
   }
 

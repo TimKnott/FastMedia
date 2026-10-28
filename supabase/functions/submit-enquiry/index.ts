@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -136,11 +137,10 @@ Deno.serve(async (req) => {
     return json({ success: true, id: inserted.id, partial: true, emailStatus: 'skipped' })
   }
 
-  const owner = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL')
   let emailStatus = 'skipped'
   let emailMessageId: string | null = null
 
-  if (owner) {
+  for (const owner of ALERT_RECIPIENTS) {
     try {
       const res = await fetch(`${supabaseUrl}/functions/v1/send-app-email`, {
         method: 'POST',
@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           templateName: 'contact-enquiry',
           recipientEmail: owner,
-          idempotencyKey: `enquiry-${inserted.id}`,
+          idempotencyKey: `enquiry-${inserted.id}-${owner}`,
           templateData: {
             kind, name: safeName, email: safeEmail, phone, company, message: safeMessage, details, enquiryId: inserted.id,
           },
@@ -159,7 +159,7 @@ Deno.serve(async (req) => {
       })
       const result = await res.json().catch(() => ({}))
       if (res.ok && result?.success !== false) {
-        emailStatus = 'queued'
+        if (emailStatus !== 'failed') emailStatus = 'queued'
         emailMessageId = result?.messageId ?? result?.message_id ?? null
       } else {
         emailStatus = 'failed'
@@ -169,8 +169,6 @@ Deno.serve(async (req) => {
       emailStatus = 'failed'
       console.error('Enquiry notification threw', err)
     }
-  } else {
-    console.error('No PRIVATE_FORWARD_EMAIL / NOTIFICATION_EMAIL configured')
   }
 
   await supabase
