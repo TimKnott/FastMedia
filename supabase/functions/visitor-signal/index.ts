@@ -2,6 +2,7 @@
 // forms and high-value visitor alerts. Writes with the service role (the table
 // is staff-read-only) and alerts the team for high-value signals.
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.ts'
 
 const corsHeaders = {
@@ -10,7 +11,6 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const ALERT_TO = Deno.env.get('OUTREACH_ALERT_EMAIL') ?? 'support@fastmedia.pro'
 const KINDS = ['exit_intent', 'form_abandoned', 'high_value']
 const str = (v: unknown, max = 300) => (typeof v === 'string' ? v.trim().slice(0, max) : null)
 
@@ -120,12 +120,12 @@ Deno.serve(async (req) => {
         `<pre>${JSON.stringify(record.payload).slice(0, 1200)}</pre>`,
         '<p><a href="https://www.fastmedia.pro/admin/prospecting">Open the prospecting desk</a></p>',
       ].join('')
-      const alert = await sendViaGmail(
-        ALERT_TO,
+      const sends = await Promise.all(ALERT_RECIPIENTS.map((to) => sendViaGmail(
+        to,
         `Visitor alert: ${record.name ?? record.email ?? 'anonymous'} on ${record.page_path}`,
         lines,
-      )
-      if (alert.sent) {
+      )))
+      if (sends.some((a) => a.sent)) {
         await supabase
           .from('visitor_signals')
           .update({ alerted_at: new Date().toISOString() })

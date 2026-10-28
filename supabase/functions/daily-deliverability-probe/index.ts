@@ -1,7 +1,9 @@
 import { hasValidJobToken } from '../_shared/require-admin.ts';
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 // Daily deliverability probe: sends a probe through the outbound pipeline,
 // waits for the queue to process it, gathers 24h send stats + failures, then
-// emails an admin report to NOTIFICATION_EMAIL.
+// emails an admin report to every ALERT_RECIPIENTS address.
 // Callable only by pg_cron (CRON_SECRET header) or the service role.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import {
@@ -83,16 +85,9 @@ Deno.serve(async (req) => {
 
   const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
   const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-  const NOTIFICATION_EMAIL = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL');
-  if (!NOTIFICATION_EMAIL) {
-    return new Response(JSON.stringify({ error: 'NOTIFICATION_EMAIL not set' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-  const probeRecipient = 'support@fastmedia.pro';
+  const [probeRecipient, ...copyRecipients] = ALERT_RECIPIENTS;
   const probeId = `probe_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   const startedAt = Date.now();
 
@@ -131,6 +126,14 @@ Deno.serve(async (req) => {
   if (!probeMessageId && !probeError) {
     probeError = 'Probe did not return a messageId; delivery cannot be verified';
   }
+
+  // Copies of the probe to the other alert addresses (not tracked for latency).
+  await Promise.all(copyRecipients.map((to) => fetch(`${SUPABASE_URL}/functions/v1/send-app-email`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${SERVICE_ROLE}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ templateName: 'deliverability-test', recipientEmail: to, idempotencyKey: `${probeId}-${to}`,
+      templateData: { probeId, triggeredBy: 'daily-deliverability-probe', triggeredAt: new Date().toISOString(), note: 'Automated daily probe (copy)' } }),
+  }).then((r) => r.text()).catch(() => null)));
 
   // 2) Poll email_send_log for the probe's OWN terminal row (~45s max).
   //    Matching is strictly by message_id — unrelated rows can never leak in.
@@ -218,7 +221,6 @@ Deno.serve(async (req) => {
   // 5) Send admin report
   const reportPayload = {
     templateName: 'deliverability-daily-report',
-    recipientEmail: NOTIFICATION_EMAIL,
     idempotencyKey: `deliverability-report-${new Date().toISOString().slice(0, 10)}`,
     templateData: {
       probeId,
@@ -239,15 +241,17 @@ Deno.serve(async (req) => {
 
   let reportError: string | null = null;
   try {
+    for (const to of ALERT_RECIPIENTS) {
     const res = await fetch(`${SUPABASE_URL}/functions/v1/send-app-email`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${SERVICE_ROLE}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(reportPayload),
+      body: JSON.stringify({ ...reportPayload, recipientEmail: to, idempotencyKey: `${reportPayload.idempotencyKey}-${to}` }),
     });
     if (!res.ok) reportError = `HTTP ${res.status}: ${(await res.text()).slice(0, 500)}`;
+    }
   } catch (e) {
     reportError = e instanceof Error ? e.message : String(e);
   }

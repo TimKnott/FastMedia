@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { ALERT_RECIPIENTS } from "../_shared/alert-recipients.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,15 +11,6 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const NOTIFICATION_EMAIL = Deno.env.get("OWNER_NOTIFICATION_EMAIL") || Deno.env.get("PRIVATE_FORWARD_EMAIL") || Deno.env.get("NOTIFICATION_EMAIL");
-    if (!NOTIFICATION_EMAIL) {
-      console.error("NOTIFICATION_EMAIL is not configured");
-      return new Response(JSON.stringify({ error: "Notification config missing" }), {
-        status: 503,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     // Verify internal call via service role
     const authHeader = req.headers.get("Authorization");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -100,7 +92,7 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           from: "FastMedia.Pro <noreply@fastmedia.pro>",
-          to: [NOTIFICATION_EMAIL],
+          to: [...ALERT_RECIPIENTS],
           subject,
           text: body,
         }),
@@ -121,7 +113,7 @@ serve(async (req) => {
     }
 
     // Fallback: log notification (no email provider configured yet)
-    console.log(`[NOTIFICATION] To: ${NOTIFICATION_EMAIL}`);
+    console.log(`[NOTIFICATION] To: ${ALERT_RECIPIENTS.join(', ')}`);
     console.log(`[NOTIFICATION] Subject: ${subject}`);
     console.log(`[NOTIFICATION] Body: ${body}`);
 

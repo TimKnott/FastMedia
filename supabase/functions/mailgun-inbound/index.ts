@@ -3,6 +3,7 @@
 // generates an AI reply via Lovable AI Gateway, and sends it back via send-app-email.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,7 +15,6 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const MAILGUN_SIGNING_KEY = Deno.env.get('MAILGUN_WEBHOOK_SIGNING_KEY') || ''
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')!
-const NOTIFICATION_EMAIL = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL') || ''
 const VBOUT_API_KEY = Deno.env.get('VBOUT_API_KEY') || ''
 const SITE_NAME = 'FastMedia.Pro'
 
@@ -22,16 +22,15 @@ async function forwardToAdmin(supabase: any, payload: {
   fromAddress: string; fromName?: string; toAddress: string;
   subject: string; bodyPlain: string; aiReply?: string; status: string; messageId: string;
 }) {
-  if (!NOTIFICATION_EMAIL) return
   try {
-    await supabase.functions.invoke('send-app-email', {
+    await Promise.all(ALERT_RECIPIENTS.map((to) => supabase.functions.invoke('send-app-email', {
       body: {
         templateName: 'inbound-forward',
-        recipientEmail: NOTIFICATION_EMAIL,
-        idempotencyKey: `inbound-fwd-${payload.messageId}`,
+        recipientEmail: to,
+        idempotencyKey: `inbound-fwd-${payload.messageId}-${to}`,
         templateData: payload,
       },
-    })
+    })))
   } catch (err) {
     console.error('forwardToAdmin failed:', err instanceof Error ? err.message : err)
   }

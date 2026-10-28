@@ -4,6 +4,7 @@
 // Triggered by pg_cron daily at 06:00 UTC, or on-demand via supabase.functions.invoke().
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { ALERT_RECIPIENTS } from "../_shared/alert-recipients.ts";
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 
 const corsHeaders = {
@@ -421,7 +422,7 @@ Deno.serve(async (req) => {
           </div>`;
         const form = new FormData();
         form.append("from", `FastMedia SEO Monitor <seo@${domain}>`);
-        form.append("to", "timknott2011@gmail.com");
+        form.append("to", ALERT_RECIPIENTS.join(","));
         form.append("subject", `[SEO ALERT] ${trulyNew.length} new high-severity issue${trulyNew.length > 1 ? "s" : ""} — health ${healthScore}/100`);
         form.append("html", html);
         form.append("h:Reply-To", "support@fastmedia.pro");

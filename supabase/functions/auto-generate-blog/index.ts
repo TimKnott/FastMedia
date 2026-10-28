@@ -2,13 +2,13 @@
 // Saves as draft with approval_status='pending_review', emails admin, and triggers TTS.
 // Public (no JWT) – callable from pg_cron and from authenticated admin via seo-run-now.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const NOTIFY_TO = 'support@fastmedia.pro';
 const SITE_URL = 'https://www.fastmedia.pro';
 
 const TOPIC_POOL = [
@@ -86,9 +86,8 @@ async function sendEmail(subject: string, bodyPlain: string) {
   const url = Deno.env.get('SUPABASE_URL');
   const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!url || !key) return { skipped: true };
-  const to = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL') || NOTIFY_TO;
   try {
-    const res = await fetch(`${url}/functions/v1/send-app-email`, {
+    const all = await Promise.all(ALERT_RECIPIENTS.map((to) => fetch(`${url}/functions/v1/send-app-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
       body: JSON.stringify({
@@ -103,8 +102,8 @@ async function sendEmail(subject: string, bodyPlain: string) {
           status: 'automated',
         },
       }),
-    });
-    return { ok: res.ok, status: res.status };
+    })));
+    return { ok: all.every((r) => r.ok), status: all[0].status };
   } catch (e) {
     console.error('auto-generate-blog admin email failed:', e);
     return { ok: false };

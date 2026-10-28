@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { ALERT_RECIPIENTS } from "../_shared/alert-recipients.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -336,11 +337,14 @@ serve(async (req) => {
     };
 
 
-    const adminEmail = Deno.env.get("OWNER_NOTIFICATION_EMAIL") || Deno.env.get("PRIVATE_FORWARD_EMAIL") || Deno.env.get("NOTIFICATION_EMAIL") || "support@fastmedia.pro";
+    const sendToAdmins = async (templateName: string, key: string, data: Record<string, any>) => {
+      const rs = await Promise.all(ALERT_RECIPIENTS.map((to) => sendEmail(templateName, to, `${key}-${to}`, data)));
+      return rs.find((r) => !r.ok) ?? rs[0];
+    };
     const intakeSummary = body.intentSummary || aiAnalysis?.summary || null;
 
     // Always: notify admin a new lead is ready for review
-    await sendEmail("lead-notification", adminEmail, `lead-notify-${lead.id}`, {
+    await sendToAdmins("lead-notification", `lead-notify-${lead.id}`, {
       name: body.name.trim(),
       email: body.email.trim().toLowerCase(),
       trade: body.trade,
@@ -472,7 +476,7 @@ This is a working draft — no payment is due until you have approved the final 
           });
 
           // Admin: notify the draft is ready for internal review (correct URL)
-          await sendEmail("client-stage-update", adminEmail, `stage-admin-draft-${project.id}`, {
+          await sendToAdmins("client-stage-update", `stage-admin-draft-${project.id}`, {
             audience: "admin",
             stage: "draft_created",
             projectName: project.name,

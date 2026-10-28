@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
 import { renderTemplateEmail, sendTemplateEmail } from '../_shared/transactional-email-templates/send-email.ts'
 import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.ts'
@@ -106,8 +107,8 @@ Deno.serve(async (req) => {
 
   let effectiveRecipient = template.to || recipientEmail
   if (!privileged && OWNER_NOTIFICATION_TEMPLATES.has(templateName)) {
-    const owner = Deno.env.get('OWNER_NOTIFICATION_EMAIL') || Deno.env.get('PRIVATE_FORWARD_EMAIL') || Deno.env.get('NOTIFICATION_EMAIL')
-    if (owner) effectiveRecipient = owner
+    // Public callers may only reach the fixed alert addresses.
+    effectiveRecipient = (ALERT_RECIPIENTS as readonly string[]).includes(recipientEmail) ? recipientEmail : ALERT_RECIPIENTS[0]
   }
 
   if (!effectiveRecipient) {
