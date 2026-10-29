@@ -1,6 +1,5 @@
 import { hasValidJobToken } from '../_shared/require-admin.ts';
 import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
-import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 // Daily deliverability probe: sends a probe through the outbound pipeline,
 // waits for the queue to process it, gathers 24h send stats + failures, then
 // emails an admin report to every ALERT_RECIPIENTS address.
