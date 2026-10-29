@@ -2,7 +2,7 @@
   "meta": {
     "name": "FastMedia Web Development with Inovation",
     "package": "@ws-etidphpqmb0um71gcfk2/faf4a9b8-8a61-403f-9d1f-15d5029793d2",
-    "version": "3.21.0",
+    "version": "3.22.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -848,7 +848,7 @@
       "supabase/functions/calculator-ai/index.ts": "b4ae1346c29e678144fa74264bf80ed1",
       "supabase/functions/case-study-file/index.ts": "087621e57b44ca0f903cb24c48e4969d",
       "supabase/functions/create-checkout/index.ts": "88f895f47726a4580a5f6784d0497f89",
-      "supabase/functions/daily-deliverability-probe/index.ts": "22b1d681bd0e0df8066843ac32f0e016",
+      "supabase/functions/daily-deliverability-probe/index.ts": "3d44f297f1f59119a92c0b07312e3c7e",
       "supabase/functions/daily-deliverability-probe/probe_test.ts": "ccbf269ca3431a4d18e348cfe5ad66c4",
       "supabase/functions/embed-codes/index.ts": "cc236d167ac16b91887268d454e062ae",
       "supabase/functions/finder/index.ts": "4c47e092e73c18b3bd78354e2b6707a7",
