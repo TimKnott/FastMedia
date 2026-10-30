@@ -668,7 +668,7 @@ const AdminProspecting = () => {
           <TabsTrigger value="approval">Message approvals ({pendingMessages.length})</TabsTrigger>
           <TabsTrigger value="visitors">Visitor safeguards ({signals.length})</TabsTrigger>
           <TabsTrigger value="audit">Audit trail</TabsTrigger>
-          <TabsTrigger value="test">Test mode</TabsTrigger>
+          <TabsTrigger value="test">Sending pace &amp; test mode</TabsTrigger>
           <TabsTrigger value="linkedin">LinkedIn (GetSales)</TabsTrigger>
           <TabsTrigger value="import">Paste a list</TabsTrigger>
         </TabsList>
