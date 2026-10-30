@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Bold, Italic, List, Link2, Image as ImageIcon, MousePointerClick, Monitor, Smartphone, Heading2, Eraser } from 'lucide-react';
+import { Bold, Italic, List, Link2, Image as ImageIcon, MousePointerClick, Monitor, Smartphone, Heading2, Eraser, Underline, ListOrdered, AlignLeft, AlignCenter, Minus, Undo2, Redo2, Palette, Pilcrow } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -82,13 +82,22 @@ export const EmailVisualEditor = forwardRef<EmailVisualEditorHandle, EmailVisual
         <div className="flex flex-wrap items-center gap-1 border-b border-border p-1">
           {preview === 'edit' && (
             <>
+              {tool('Undo', <Undo2 className="h-4 w-4" />, () => run('undo'))}
+              {tool('Redo', <Redo2 className="h-4 w-4" />, () => run('redo'))}
               {tool('Bold', <Bold className="h-4 w-4" />, () => run('bold'))}
               {tool('Italic', <Italic className="h-4 w-4" />, () => run('italic'))}
+              {tool('Underline', <Underline className="h-4 w-4" />, () => run('underline'))}
               {tool('Heading', <Heading2 className="h-4 w-4" />, () => run('formatBlock', 'h3'))}
+              {tool('Paragraph', <Pilcrow className="h-4 w-4" />, () => run('formatBlock', 'p'))}
               {tool('Bullet list', <List className="h-4 w-4" />, () => run('insertUnorderedList'))}
+              {tool('Numbered list', <ListOrdered className="h-4 w-4" />, () => run('insertOrderedList'))}
+              {tool('Align left', <AlignLeft className="h-4 w-4" />, () => run('justifyLeft'))}
+              {tool('Align centre', <AlignCenter className="h-4 w-4" />, () => run('justifyCenter'))}
+              {tool('Brand colour', <Palette className="h-4 w-4" />, () => run('foreColor', '#e8553f'))}
               {tool('Link', <Link2 className="h-4 w-4" />, addLink)}
               {tool('Image', <ImageIcon className="h-4 w-4" />, addImage)}
               {tool('Button', <MousePointerClick className="h-4 w-4" />, addButton)}
+              {tool('Divider', <Minus className="h-4 w-4" />, () => run('insertHTML', '<hr style="border:none;border-top:1px solid #dddddd;margin:16px 0" />'))}
               {tool('Clear formatting', <Eraser className="h-4 w-4" />, () => run('removeFormat'))}
             </>
           )}
