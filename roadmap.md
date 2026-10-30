@@ -185,3 +185,5 @@
 - [ ] Existing tools (Finder, Ad Studio, Prospecting) don't yet prefill from ?campaign= — use "Copy brief"
 
 - [x] Footer Kreativní Česko credit: wording "Oficiálně registrovaný podnik v ČR" / "Officially registered Czech business"
+
+- [ ] Pick email tool for AI-drafted campaign emails (~300/day) to existing leads; review before send
