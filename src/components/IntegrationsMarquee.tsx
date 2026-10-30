@@ -31,7 +31,7 @@ const IntegrationsMarquee = () => {
         {ROWS.map((row, i) => (
           <div key={i} className="flex w-max fm-marq" style={{ ['--d' as string]: `${36 + i * 8}s`, animationDirection: i % 2 ? 'reverse' : 'normal' }}>
             {[...row, ...row].map((name, j) => (
-              <span key={j} aria-hidden={j >= row.length} className="mx-2 inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-card-foreground shadow-sm">
+              <span key={j} aria-hidden={j >= row.length} className="mx-1.5 sm:mx-2 inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-border bg-card px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-medium text-card-foreground shadow-sm">
                 <span className="h-2 w-2 rounded-full bg-accent" />{name}
               </span>
             ))}

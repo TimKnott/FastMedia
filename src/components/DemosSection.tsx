@@ -45,7 +45,7 @@ const DemosSection = ({ limit }: { limit?: number }) => {
         </motion.div>
 
         {/* Demos Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {list.map((trade, index) => (
             <motion.div
               key={trade.id}
@@ -67,15 +67,15 @@ const DemosSection = ({ limit }: { limit?: number }) => {
                 </div>
                 <div className={`absolute inset-0 ${trade.gradient} opacity-75 group-hover:opacity-85 transition-opacity`} />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/20 to-transparent" />
-                <div className="relative p-6 h-48 flex flex-col justify-between">
-                  <span className="text-5xl drop-shadow-lg">{trade.icon}</span>
+                <div className="relative p-4 sm:p-6 h-36 sm:h-48 flex flex-col justify-between">
+                  <span className="text-3xl sm:text-5xl drop-shadow-lg">{trade.icon}</span>
                   <div>
-                    <h3 className="text-primary-foreground font-display font-bold text-xl mb-2 drop-shadow-md">
+                    <h3 className="text-primary-foreground font-display font-bold text-base sm:text-xl leading-tight mb-1 sm:mb-2 drop-shadow-md">
                       {t(trade.nameKey)}
                     </h3>
-                    <div className="flex items-center gap-2 text-primary-foreground/90 text-sm font-medium group-hover:text-primary-foreground transition-colors">
+                    <div className="flex items-center gap-1 sm:gap-2 text-primary-foreground/90 text-xs sm:text-sm font-medium group-hover:text-primary-foreground transition-colors">
                       {t('demos.explore')}
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </div>
