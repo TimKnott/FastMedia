@@ -64,6 +64,20 @@
       "when": 1791821513853,
       "tag": "0008_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793372723858,
+      "tag": "0009_email_studio",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793372736465,
+      "tag": "0010_outreach_videos_storage_policies",
+      "breakpoints": true
     }
   ]
 }

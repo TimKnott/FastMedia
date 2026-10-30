@@ -1599,6 +1599,45 @@ export type Database = {
         }
         Relationships: []
       }
+      email_templates: {
+        Row: {
+          body_html: string
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_favourite: boolean
+          language: string
+          name: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          body_html?: string
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_favourite?: boolean
+          language?: string
+          name: string
+          subject?: string
+          updated_at?: string
+        }
+        Update: {
+          body_html?: string
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_favourite?: boolean
+          language?: string
+          name?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_unsubscribe_tokens: {
         Row: {
           created_at: string
@@ -3295,6 +3334,36 @@ export type Database = {
           test_mode?: boolean
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      outreach_videos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          cta_url: string
+          id: string
+          storage_path: string
+          thumbnail_url: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          cta_url?: string
+          id?: string
+          storage_path: string
+          thumbnail_url?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          cta_url?: string
+          id?: string
+          storage_path?: string
+          thumbnail_url?: string | null
+          title?: string
         }
         Relationships: []
       }
@@ -5123,6 +5192,70 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      video_links: {
+        Row: {
+          created_at: string
+          id: string
+          prospect_id: string | null
+          recipient_label: string | null
+          token: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prospect_id?: string | null
+          recipient_label?: string | null
+          token?: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prospect_id?: string | null
+          recipient_label?: string | null
+          token?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_links_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_views: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          link_id: string
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          link_id: string
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          link_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_views_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "video_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       visitor_signals: {
         Row: {
