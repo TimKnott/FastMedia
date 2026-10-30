@@ -69,7 +69,7 @@ export const translations: Translations = {
     de: 'Entdecken Sie voll funktionsfähige Website-Demos für bestimmte Branchen. Jede Demo zeigt reales Layout, Funktionen und Design.',
   },
   'demos.explore': { cs: 'Prozkoumat', en: 'Explore', de: 'Entdecken' },
-  'demos.all.title': { cs: 'Prohlédněte si všech {n} ukázek podle oboru →', en: 'Explore all {n} industry demos →', de: 'Alle {n} Branchen-Demos ansehen →' },
+  'demos.all.title': { cs: 'Prohlédněte si všech {n} ukázek podle oboru', en: 'Explore all {n} industry demos', de: 'Alle {n} Branchen-Demos ansehen' },
   'demos.all.sub': { cs: 'Od instalatérů a květinářství po veterináře a účetní – živé ukázky s online rezervací.', en: 'From plumbers and florists to vets and accountants – live previews with online booking.', de: 'Vom Installateur und Floristen bis zu Tierärzten und Steuerberatern – Live-Vorschauen mit Online-Buchung.' },
   'demos.all.cta': { cs: 'Všechny ukázky', en: 'All demos', de: 'Alle Demos' },
 
