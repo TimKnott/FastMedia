@@ -242,6 +242,52 @@ function ComposePanel({ subject, setSubject, html, setHtml }: { subject: string;
   );
 }
 
+async function callSheets(body: Record<string, string>) {
+  const { data, error } = await supabase.functions.invoke('sheets-import', { body });
+  if (error) {
+    let msg = error.message;
+    if (error instanceof FunctionsHttpError) { try { const j = await error.context.json(); msg = j.status === 404 ? 'Sheet not found — check the link.' : j.status === 403 ? 'Your connected Google account cannot open this sheet.' : j.error ?? msg; } catch { /* keep */ } }
+    throw new Error(msg);
+  }
+  return data;
+}
+
+function SheetPicker({ onLoad }: { onLoad: (tsv: string) => void }) {
+  const [link, setLink] = useState(() => localStorage.getItem('fm-studio-sheet') ?? '');
+  const [info, setInfo] = useState<{ title: string; tabs: string[] } | null>(null);
+  const [tab, setTab] = useState('');
+  const [busy, setBusy] = useState(false);
+  const run = async (fn: () => Promise<void>) => { setBusy(true); try { await fn(); } catch (e) { toast({ title: 'Google Sheets', description: (e as Error).message, variant: 'destructive' }); } finally { setBusy(false); } };
+  const openSheet = () => run(async () => {
+    const d = await callSheets({ action: 'tabs', sheet: link });
+    localStorage.setItem('fm-studio-sheet', link);
+    setInfo(d); setTab(d.tabs[0] ?? '');
+  });
+  const loadTab = () => run(async () => {
+    const d = await callSheets({ action: 'rows', sheet: link, tab });
+    onLoad(d.tsv); toast({ title: `Loaded ${d.rows} rows from “${tab}”` });
+  });
+  return (
+    <Card><CardHeader><CardTitle className="text-sm">Use a Google Sheet</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-xs text-muted-foreground">Paste the sheet link (the first row must be headers). Read-only — nothing in your sheet is changed.</p>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Input aria-label="Google Sheets link" value={link} onChange={(e) => { setLink(e.target.value); setInfo(null); }} placeholder="https://docs.google.com/spreadsheets/d/…" />
+          <Button variant="outline" onClick={openSheet} disabled={busy || !link.trim()}>{busy && !info ? <Loader2 className="h-4 w-4 animate-spin" /> : null}Open sheet</Button>
+        </div>
+        {info && (
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <span className="text-sm font-medium">{info.title}</span>
+            <select aria-label="Sheet tab" className="rounded-md border border-input bg-background px-2 py-2 text-sm" value={tab} onChange={(e) => setTab(e.target.value)}>
+              {info.tabs.map((t) => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <Button onClick={loadTab} disabled={busy || !tab}>{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}Load rows</Button>
+          </div>
+        )}
+      </CardContent></Card>
+  );
+}
+
 function MergePanel({ subject, html }: { subject: string; html: string }) {
   const [raw, setRaw] = useState('');
   const table = useMemo(() => parseTable(raw), [raw]);
@@ -272,6 +318,7 @@ function MergePanel({ subject, html }: { subject: string; html: string }) {
 
   return (
     <div className="space-y-4">
+      <SheetPicker onLoad={setRaw} />
       <Card><CardContent className="space-y-3 pt-6">
         <div className="flex flex-wrap items-center gap-2">
           <Label htmlFor="merge-file" className="cursor-pointer inline-flex items-center gap-2 rounded-md border border-input px-3 py-2 text-sm"><Upload className="h-4 w-4" />Upload CSV</Label>
