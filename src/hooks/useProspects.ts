@@ -89,6 +89,14 @@ export interface OutreachSettings {
   getsales_sender_id: string | null;
   getsales_automation_id: string | null;
   discovery_enabled: boolean;
+  send_daily_cap: number;
+  send_hourly_cap: number;
+  send_min_gap_minutes: number;
+  send_max_gap_minutes: number;
+  send_window_start_minute: number;
+  send_window_end_minute: number;
+  send_weekdays_only: boolean;
+  next_send_at: string | null;
   discovery_trades: string[];
   discovery_regions: string[];
   discovery_cursor: number;
