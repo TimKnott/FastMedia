@@ -71,6 +71,13 @@
       "when": 1793372723858,
       "tag": "0009_email_studio",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793372736465,
+      "tag": "0010_outreach_videos_storage_policies",
+      "breakpoints": true
     }
   ]
 }
