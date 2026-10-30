@@ -14,6 +14,8 @@ import ShowcaseCarousel from '@/components/ShowcaseCarousel';
 import { lazy } from 'react';
 import LazySection from '@/components/LazySection';
 const AutomationSection = lazy(() => import('@/components/AutomationSection'));
+const IntegrationsMarquee = lazy(() => import('@/components/IntegrationsMarquee'));
+const EngineDiagram = lazy(() => import('@/components/EngineDiagram'));
 const DemosSection = lazy(() => import('@/components/DemosSection'));
 const CalculatorShowcase = lazy(() => import('@/components/CalculatorShowcase'));
 const ServicesSection = lazy(() => import('@/components/ServicesSection'));
@@ -51,10 +53,12 @@ const Index = () => {
           <ShowcaseCarousel />
           {on('home_promo') && <PromoBanner variant="compact" />}
           <HomeDirectAnswer />
+          <LazySection><IntegrationsMarquee /></LazySection>
           {on('home_why') && <WhyFastMediaSection />}
           {on('home_certifications') && <LazySection><CertificationsSection /></LazySection>}
           {on('home_automation') && <LazySection><AutomationSection /></LazySection>}
-          {on('home_demos') && <LazySection><DemosSection /></LazySection>}
+          {on('home_demos') && <LazySection><DemosSection limit={4} /></LazySection>}
+          <LazySection><EngineDiagram /></LazySection>
           {on('home_calculator') && <LazySection><CalculatorShowcase /></LazySection>}
           {on('home_services') && <LazySection><ServicesSection /></LazySection>}
           {on('home_promo') && <PromoBanner variant="full" />}

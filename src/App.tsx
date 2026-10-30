@@ -44,6 +44,7 @@ const BusinessLanding = lazy(() => import("./pages/BusinessLanding"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Account = lazy(() => import("./pages/Account"));
 const OfferLanding = lazy(() => import("./pages/OfferLanding"));
+const DemosPage = lazy(() => import("./pages/DemosPage"));
 const GrantGuide = lazy(() => import("./pages/GrantGuide"));
 const GrantWizard = lazy(() => import("./pages/GrantWizard"));
 const GrantEligibility = lazy(() => import("./pages/GrantEligibility"));
@@ -235,6 +236,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/offer" element={<OfferLanding />} />
+            <Route path="/demos" element={<DemosPage />} />
             {['cs', 'en', 'de'].map(lang => <Route key={`${lang}-offer`} path={`/${lang}/offer`} element={<OfferLanding />} />)}
             {['cs', 'en', 'de'].map(lang => <Route key={`${lang}-contact`} path={`/${lang}/contact`} element={<Contact />} />)}
             <Route path="/grants" element={<GrantGuide />} />
