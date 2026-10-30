@@ -7,7 +7,10 @@ import { ArrowRight } from 'lucide-react';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
 
-const DemosSection = () => {
+const FEATURED = ['plumbing','electrical','beautysalon','catering'];
+
+const DemosSection = ({ limit }: { limit?: number }) => {
+  const list = limit ? [...trades].sort((a, b) => (FEATURED.includes(b.id) ? 1 : 0) - (FEATURED.includes(a.id) ? 1 : 0)).slice(0, limit) : trades;
   const { t } = useLanguage();
   const { getContent, invalidate } = useSiteContent();
 
@@ -43,7 +46,7 @@ const DemosSection = () => {
 
         {/* Demos Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trades.map((trade, index) => (
+          {list.map((trade, index) => (
             <motion.div
               key={trade.id}
               initial={{ opacity: 0, y: 30 }}
@@ -81,6 +84,17 @@ const DemosSection = () => {
             </motion.div>
           ))}
         </div>
+        {limit && (
+          <Link to="/demos" className="mt-10 group flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-accent/40 bg-gradient-to-r from-primary to-accent/80 p-6 sm:p-8 shadow-card hover:shadow-glow transition-shadow">
+            <div className="text-center sm:text-left">
+              <p className="text-primary-foreground font-display font-bold text-xl sm:text-2xl">{t('demos.all.title').replace('{n}', String(trades.length))}</p>
+              <p className="text-primary-foreground/85 text-sm mt-1">{t('demos.all.sub')}</p>
+            </div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-background text-foreground px-5 py-3 font-semibold text-sm">
+              {t('demos.all.cta')} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </Link>
+        )}
       </div>
     </section>
   );
