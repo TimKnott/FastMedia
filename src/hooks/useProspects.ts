@@ -47,6 +47,7 @@ export interface OutreachMessage {
   step: number;
   subject: string;
   body: string;
+  body_html: string | null;
   language: string;
   status: string;
   proposed_at: string | null;

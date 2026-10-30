@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { EmailVisualEditor, plainTextToEmailHtml } from '@/components/admin/EmailVisualEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -369,7 +370,7 @@ const AdminProspecting = () => {
     setReviewing(prospect);
     setDraftEdits(
       Object.fromEntries(
-        messagesFor(prospect.id).map((m) => [m.id, { subject: m.subject, body: m.body, when: toLocalInput(m.proposed_at) }]),
+        messagesFor(prospect.id).map((m) => [m.id, { subject: m.subject, body: m.body_html || plainTextToEmailHtml(m.body), when: toLocalInput(m.proposed_at) }]),
       ),
     );
   };
@@ -380,17 +381,17 @@ const AdminProspecting = () => {
       const opener = messagesFor(prospect.id).find((m) => m.step === 1);
       if (opener) {
         const edit = draftEdits[opener.id];
-        if (edit && (edit.subject !== opener.subject || edit.body !== opener.body)) {
+        if (edit && (edit.subject !== opener.subject || edit.body !== (opener.body_html || plainTextToEmailHtml(opener.body)))) {
           await callAgent({
             action: 'approve_message',
             message_id: opener.id,
             subject: edit.subject,
-            body: edit.body,
+            body_html: edit.body,
             send_now: true,
           });
           refresh();
           setReviewing(null);
-          toast({ title: 'Opener approved and sent' });
+          toast({ title: 'Opener approved and queued', description: 'It leaves at the next free slot in business hours.' });
           return;
         }
       }
@@ -398,11 +399,8 @@ const AdminProspecting = () => {
       refresh();
       setReviewing(null);
       toast({
-        title: result.opener_sent ? 'Opener sent' : 'Approved, but the opener did not go out',
-        description: result.opener_sent
-          ? `Follow-ups waiting for your approval: ${result.awaiting_approval}`
-          : String(result.reason ?? 'Check the connected mailbox'),
-        variant: result.opener_sent ? undefined : 'destructive',
+        title: 'Opener approved and queued',
+        description: `It leaves at the next free slot in business hours. Follow-ups waiting for approval: ${result.awaiting_approval}`,
       });
     } catch (error) {
       toast({ title: 'Approval failed', description: String(error).slice(0, 220), variant: 'destructive' });
@@ -429,17 +427,16 @@ const AdminProspecting = () => {
           action: 'approve_message',
           message_id: message.id,
           subject: edit?.subject,
-          body: edit?.body,
+          body_html: edit?.body,
           scheduled_at: edit?.when ? new Date(edit.when).toISOString() : null,
           send_now: decision === 'send',
         });
         toast({
-          title: decision === 'send' ? (result.sent ? 'Sent' : 'Approved, but it did not go out') : 'Approved and scheduled',
+          title: decision === 'send' ? 'Approved and queued' : 'Approved and scheduled',
           description:
             decision === 'send'
-              ? String(result.reason ?? '')
-              : `Sends ${new Date(String(result.scheduled_at)).toLocaleString()}`,
-          variant: decision === 'send' && !result.sent ? 'destructive' : undefined,
+              ? 'It leaves at the next free slot in business hours.'
+              : `Sends ${new Date(String(result.scheduled_at)).toLocaleString()} (or the next free slot after it)`,
         });
       }
       refresh();
@@ -882,7 +879,7 @@ const AdminProspecting = () => {
               const edit =
                 draftEdits[message.id] ?? {
                   subject: message.subject,
-                  body: message.body,
+                  body: message.body_html || plainTextToEmailHtml(message.body),
                   when: toLocalInput(message.proposed_at),
                 };
               return (
@@ -900,10 +897,11 @@ const AdminProspecting = () => {
                       value={edit.subject}
                       onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, subject: e.target.value } })}
                     />
-                    <Textarea
-                      rows={8}
+                    <EmailVisualEditor
                       value={edit.body}
-                      onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, body: e.target.value } })}
+                      onChange={(html) =>
+                        setDraftEdits((prev) => ({ ...prev, [message.id]: { ...(prev[message.id] ?? edit), body: html } }))
+                      }
                     />
                     <div className="flex flex-wrap items-end gap-3">
                       <div>
@@ -935,7 +933,7 @@ const AdminProspecting = () => {
                         ) : (
                           <Send className="w-4 h-4 mr-2" />
                         )}
-                        Send now
+                        Send at next free slot
                       </Button>
                       <Button
                         variant="ghost"
@@ -1426,7 +1424,7 @@ const AdminProspecting = () => {
           <DialogHeader>
             <DialogTitle>{reviewing?.company}</DialogTitle>
             <DialogDescription>
-              Approving sends the opener now. The follow-ups then wait in Message approvals, where you set their wording and
+              Approving puts the opener in the paced queue (one email every few minutes, business hours only). The follow-ups then wait in Message approvals, where you set their wording and
               timing before each one can send.
             </DialogDescription>
           </DialogHeader>
@@ -1436,7 +1434,7 @@ const AdminProspecting = () => {
                 const edit =
                   draftEdits[message.id] ?? {
                     subject: message.subject,
-                    body: message.body,
+                    body: message.body_html || plainTextToEmailHtml(message.body),
                     when: toLocalInput(message.proposed_at),
                   };
                 return (
@@ -1448,10 +1446,11 @@ const AdminProspecting = () => {
                       value={edit.subject}
                       onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, subject: e.target.value } })}
                     />
-                    <Textarea
-                      rows={8}
+                    <EmailVisualEditor
                       value={edit.body}
-                      onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, body: e.target.value } })}
+                      onChange={(html) =>
+                        setDraftEdits((prev) => ({ ...prev, [message.id]: { ...(prev[message.id] ?? edit), body: html } }))
+                      }
                     />
                     {message.step > 1 && (
                       <div className="flex flex-wrap items-end gap-2">
