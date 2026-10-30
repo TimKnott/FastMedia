@@ -153,6 +153,20 @@ const STATIC_ROUTES: RouteSeo[] = [
     ],
   },
   {
+    path: "/demos",
+    title: "Industry Website Demos | FastMedia.Pro",
+    description:
+      "Live demo websites for trades, services, health and hospitality businesses, each with online booking and enquiry forms. Pick your industry and explore.",
+    ogImage: OG_IMG,
+    changefreq: "monthly",
+    priority: "0.7",
+    h1: "Industry website demos",
+    contentBlocks: [
+      "Browse live demo websites for plumbers, electricians, salons, caterers, florists, vets, accountants and many more industries.",
+      "Each demo shows the layout, services, gallery, opening hours and booking or enquiry forms a FastMedia.Pro website can include.",
+    ],
+  },
+  {
     path: "/grants",
     title: "Czech Digitalisation Grants for a New Website | FastMedia.Pro",
     description:
