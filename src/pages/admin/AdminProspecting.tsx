@@ -1093,6 +1093,77 @@ const AdminProspecting = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
+                <CalendarClock className="w-4 h-4" />
+                Sending pace (protects your mailbox)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Approved emails leave one at a time, Prague business hours only, with a random gap between each. Start low
+                (about 10–15 a day in week one, 20–30 in week two) and raise the daily limit slowly. Hard ceiling: 100 a day.
+              </p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {(
+                  [
+                    ['send_daily_cap', 'Emails per day', settings?.send_daily_cap ?? 25],
+                    ['send_hourly_cap', 'Emails per hour', settings?.send_hourly_cap ?? 8],
+                    ['send_min_gap_minutes', 'Min. gap (minutes)', settings?.send_min_gap_minutes ?? 4],
+                    ['send_max_gap_minutes', 'Max. gap (minutes)', settings?.send_max_gap_minutes ?? 7],
+                  ] as const
+                ).map(([key, label, value]) => (
+                  <div key={key} className="space-y-1">
+                    <Label htmlFor={key} className="text-xs text-muted-foreground">{label}</Label>
+                    <Input
+                      id={key}
+                      type="number"
+                      min={1}
+                      defaultValue={value}
+                      onBlur={(e) => {
+                        const n = Math.max(1, Math.round(Number(e.target.value) || 0));
+                        if (n !== value) saveSettings({ [key]: n });
+                      }}
+                    />
+                  </div>
+                ))}
+                {(
+                  [
+                    ['send_window_start_minute', 'Start time', settings?.send_window_start_minute ?? 540],
+                    ['send_window_end_minute', 'End time', settings?.send_window_end_minute ?? 990],
+                  ] as const
+                ).map(([key, label, value]) => (
+                  <div key={key} className="space-y-1">
+                    <Label htmlFor={key} className="text-xs text-muted-foreground">{label} (Prague)</Label>
+                    <Input
+                      id={key}
+                      type="time"
+                      defaultValue={`${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`}
+                      onBlur={(e) => {
+                        const [h, m] = e.target.value.split(':').map(Number);
+                        const n = (h || 0) * 60 + (m || 0);
+                        if (n !== value) saveSettings({ [key]: n });
+                      }}
+                    />
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 pt-5 col-span-2">
+                  <Switch
+                    id="send_weekdays_only"
+                    checked={settings?.send_weekdays_only !== false}
+                    onCheckedChange={(v) => saveSettings({ send_weekdays_only: v })}
+                  />
+                  <Label htmlFor="send_weekdays_only">Weekdays only</Label>
+                </div>
+              </div>
+              {settings?.next_send_at && (
+                <p className="text-xs text-muted-foreground">
+                  Next email may leave from {new Date(settings.next_send_at).toLocaleTimeString()}.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
                 <FlaskConical className="w-4 h-4" />
                 Test mode
               </CardTitle>
