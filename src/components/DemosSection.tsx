@@ -7,7 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import EditableText from '@/components/EditableText';
 import { useSiteContent } from '@/hooks/useSiteContent';
 
-const FEATURED = ['plumber','electrician','restaurant','beauty'];
+const FEATURED = ['plumbing','electrical','beautysalon','catering'];
 
 const DemosSection = ({ limit }: { limit?: number }) => {
   const list = limit ? [...trades].sort((a, b) => (FEATURED.includes(b.id) ? 1 : 0) - (FEATURED.includes(a.id) ? 1 : 0)).slice(0, limit) : trades;
