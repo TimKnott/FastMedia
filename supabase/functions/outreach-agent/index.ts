@@ -18,6 +18,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts'
 import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.ts'
 import { generateJson } from '../_shared/ai-json.ts'
+import { canSendNow, clampPacing, nextGapMinutes, pragueParts, type PacingSettings } from '../_shared/send-pacing.ts'
+import { htmlToPlainText, sanitizeEmailHtml } from '../_shared/email-html.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -48,6 +50,8 @@ interface Settings {
   discovery_cursor: number
   discovery_spend_date: string | null
   discovery_spend_credits: number
+  pacing: PacingSettings
+  next_send_at: string | null
 }
 
 /** Hard daily cap on AI credits spent by lead discovery (user request: free-tier sized). */
@@ -67,6 +71,8 @@ const DEFAULT_SETTINGS: Settings = {
   discovery_cursor: 0,
   discovery_spend_date: null,
   discovery_spend_credits: 0,
+  pacing: clampPacing({}),
+  next_send_at: null,
 }
 
 const json = (body: unknown, status = 200) =>
@@ -90,6 +96,16 @@ async function loadSettings(db: Db): Promise<Settings> {
     discovery_cursor: Number(data.discovery_cursor) || 0,
     discovery_spend_date: data.discovery_spend_date ?? null,
     discovery_spend_credits: Number(data.discovery_spend_credits) || 0,
+    pacing: clampPacing({
+      dailyCap: data.send_daily_cap,
+      hourlyCap: data.send_hourly_cap,
+      minGapMinutes: data.send_min_gap_minutes,
+      maxGapMinutes: data.send_max_gap_minutes,
+      windowStartMinute: data.send_window_start_minute,
+      windowEndMinute: data.send_window_end_minute,
+      weekdaysOnly: data.send_weekdays_only,
+    }),
+    next_send_at: data.next_send_at ?? null,
   }
 }
 
@@ -134,6 +150,11 @@ function htmlFromText(body: string, footer: string) {
     .map((p) => `<p style="margin:0 0 14px">${p.replace(/\n/g, '<br/>').replace(/</g, '&lt;')}</p>`)
     .join('')
   return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1c1c1c">${paragraphs}<p style="margin:22px 0 0;font-size:12px;color:#6b7280">${footer}</p></div>`
+}
+
+function emailShell(inner: string, notice: string, footer: string) {
+  const noticeHtml = notice ? `<p style="margin:14px 0 0;font-size:12px;color:#6b7280">${notice.replace(/</g, '&lt;').trim()}</p>` : ''
+  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1c1c1c;max-width:600px">${inner}${noticeHtml}<p style="margin:22px 0 0;font-size:12px;color:#6b7280">${footer}</p></div>`
 }
 
 const footerFor = (language: string) =>
@@ -365,7 +386,9 @@ async function sendMessage(
     ? `\n\n---\nTest mode: this message was routed to the test inbox instead of ${prospect.email}.`
     : ''
   const bodyText = `${message.body}${notice}`
-  const html = htmlFromText(bodyText, footerFor(message.language ?? 'en'))
+  const html = message.body_html
+    ? emailShell(sanitizeEmailHtml(message.body_html), notice, footerFor(message.language ?? 'en'))
+    : htmlFromText(bodyText, footerFor(message.language ?? 'en'))
   const result = await sendViaGmail(recipient, subject, html, bodyText)
   const now = new Date().toISOString()
 
@@ -432,7 +455,13 @@ async function runApprove(db: Db, actor: Actor, prospectId: string) {
     .eq('id', opener.id)
   await logEvent(db, actor, 'approved', { prospectId, messageId: opener.id, step: 1 })
 
-  const send = await sendMessage(db, actor, prospect, { ...opener, status: 'approved' }, settings)
+  // Opener joins the paced queue: it leaves at the next free slot inside business hours.
+  await db
+    .from('outreach_messages')
+    .update({ status: 'scheduled', scheduled_at: now.toISOString(), proposed_at: now.toISOString(), error_message: null })
+    .eq('id', opener.id)
+  await logEvent(db, actor, 'queued', { prospectId, messageId: opener.id, step: 1 })
+  const send = { sent: false, reason: 'queued' as string | undefined }
 
   // Follow-ups wait for their own approval — nothing sends automatically.
   const dayOffsets = [settings.follow_up_days_step2, settings.follow_up_days_step3]
@@ -455,9 +484,10 @@ async function runApprove(db: Db, actor: Actor, prospectId: string) {
     })
   }
 
-  await db.from('prospects').update({ status: send.sent ? 'sequencing' : 'approved' }).eq('id', prospectId)
+  await db.from('prospects').update({ status: 'sequencing' }).eq('id', prospectId)
   return {
     prospect_id: prospectId,
+    queued: true,
     opener_sent: send.sent,
     reason: send.reason ?? null,
     awaiting_approval: Math.max(0, steps.length - 1),
@@ -469,7 +499,7 @@ async function runApprove(db: Db, actor: Actor, prospectId: string) {
 async function approveMessage(
   db: Db,
   actor: Actor,
-  args: { messageId: string; subject?: string; body?: string; scheduledAt?: string | null; sendNow?: boolean },
+  args: { messageId: string; subject?: string; body?: string; bodyHtml?: string; scheduledAt?: string | null; sendNow?: boolean },
 ) {
   const { data: message, error } = await db.from('outreach_messages').select('*').eq('id', args.messageId).single()
   if (error || !message) throw new Error('message_not_found')
@@ -485,8 +515,15 @@ async function approveMessage(
   if (typeof args.subject === 'string' && args.subject.trim() && args.subject !== message.subject) {
     edits.subject = args.subject.trim().slice(0, 200)
   }
-  if (typeof args.body === 'string' && args.body.trim() && args.body !== message.body) {
+  if (typeof args.bodyHtml === 'string' && args.bodyHtml.trim()) {
+    const clean = sanitizeEmailHtml(args.bodyHtml)
+    if (clean !== message.body_html) {
+      edits.body_html = clean
+      edits.body = htmlToPlainText(clean).slice(0, 6000)
+    }
+  } else if (typeof args.body === 'string' && args.body.trim() && args.body !== message.body) {
     edits.body = args.body.trim().slice(0, 6000)
+    edits.body_html = null
   }
   if (Object.keys(edits).length > 0) {
     await db
@@ -504,21 +541,22 @@ async function approveMessage(
   const merged = { ...message, ...edits }
 
   if (args.sendNow) {
+    // "Send now" means "next free slot" — it still respects the daily cap, hours and spacing.
     await db
       .from('outreach_messages')
-      .update({ status: 'approved', approved_by: actor.id, approved_at: now })
+      .update({ status: 'scheduled', scheduled_at: now, proposed_at: now, approved_by: actor.id, approved_at: now, error_message: null })
       .eq('id', message.id)
     await logEvent(db, actor, 'approved', {
       prospectId: prospect.id,
       messageId: message.id,
       step: message.step,
-      details: { send_now: true },
+      details: { queued_next_slot: true },
     })
-    const result = await sendMessage(db, actor, prospect, { ...merged, status: 'approved' }, settings)
-    if (result.sent && prospect.status !== 'sequencing') {
+    if (prospect.status !== 'sequencing') {
       await db.from('prospects').update({ status: 'sequencing' }).eq('id', prospect.id)
     }
-    return { message_id: message.id, sent: result.sent, reason: result.reason ?? null, test_mode: settings.test_mode }
+    void merged
+    return { message_id: message.id, queued: true, sent: false, reason: null, test_mode: settings.test_mode }
   }
 
   const when = args.scheduledAt || message.proposed_at || new Date(Date.now() + 86400000).toISOString()
@@ -690,18 +728,46 @@ async function detectReplies(db: Db, actor: Actor) {
 }
 
 /** Only messages a human individually approved and scheduled are sent here. */
+async function pacingCounts(db: Db, now: Date) {
+  const since = new Date(now.getTime() - 26 * 3600000).toISOString()
+  const { data } = await db
+    .from('outreach_messages')
+    .select('sent_at')
+    .eq('status', 'sent')
+    .eq('test_mode', false)
+    .gte('sent_at', since)
+  const today = pragueParts(now).dayKey
+  const hourAgo = now.getTime() - 3600000
+  let sentToday = 0
+  let sentLastHour = 0
+  for (const row of data ?? []) {
+    const t = new Date(row.sent_at as string)
+    if (pragueParts(t).dayKey === today) sentToday += 1
+    if (t.getTime() >= hourAgo) sentLastHour += 1
+  }
+  return { sentToday, sentLastHour }
+}
+
+/** Sends at most ONE approved email per call, only when the pacing rules allow it. */
 async function sendDueFollowUps(db: Db, actor: Actor, settings: Settings) {
+  const now = new Date()
+  if (!settings.test_mode) {
+    const counts = await pacingCounts(db, now)
+    const decision = canSendNow(now, settings.pacing, counts, settings.next_send_at ? new Date(settings.next_send_at) : null)
+    if (!decision.send) return 0
+  }
   const { data: due } = await db
     .from('outreach_messages')
     .select('*')
     .eq('status', 'scheduled')
     .not('approved_at', 'is', null)
-    .lte('scheduled_at', new Date().toISOString())
+    .lte('scheduled_at', now.toISOString())
     .order('scheduled_at')
-    .limit(25)
+    .limit(5)
 
   let sent = 0
   for (const message of due ?? []) {
+    if (sent >= 1) break
     const { data: prospect } = await db.from('prospects').select('*').eq('id', message.prospect_id).single()
     if (!prospect) continue
     if (
@@ -722,7 +788,17 @@ async function sendDueFollowUps(db: Db, actor: Actor, settings: Settings) {
       continue
     }
     const result = await sendMessage(db, actor, prospect, message, settings)
-    if (result.sent) sent += 1
+    if (result.sent) {
+      sent += 1
+      const gap = nextGapMinutes(settings.pacing)
+      await db
+        .from('outreach_settings')
+        .update({ next_send_at: new Date(Date.now() + gap * 60000).toISOString() })
+        .eq('id', 1)
+    } else {
+      // A failed/suppressed message should not block the queue; move on to the next one.
+      continue
+    }
   }
   return sent
 }
@@ -990,6 +1066,7 @@ Deno.serve(async (req) => {
           messageId,
           subject: typeof body?.subject === 'string' ? body.subject : undefined,
           body: typeof body?.body === 'string' ? body.body : undefined,
+          bodyHtml: typeof body?.body_html === 'string' ? body.body_html : undefined,
           scheduledAt: typeof body?.scheduled_at === 'string' ? body.scheduled_at : null,
           sendNow: body?.send_now === true,
         }),
@@ -1025,6 +1102,20 @@ Deno.serve(async (req) => {
     }
     if (action === 'discover_weekly') {
       return json(await runWeeklyDiscovery(db, actor))
+    }
+    if (action === 'drip') {
+      const settings = await loadSettings(db)
+      return json({ ok: true, sent: await sendDueFollowUps(db, actor, settings), test_mode: settings.test_mode })
+    }
+    if (action === 'queue_status') {
+      const settings = await loadSettings(db)
+      const counts = await pacingCounts(db, new Date())
+      const { count } = await db
+        .from('outreach_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'scheduled')
+        .lte('scheduled_at', new Date().toISOString())
+      return json({ ...counts, waiting: count ?? 0, pacing: settings.pacing, next_send_at: settings.next_send_at })
     }
     if (action === 'tick') {
       const settings = await loadSettings(db)
