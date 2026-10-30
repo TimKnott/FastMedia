@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { EmailVisualEditor, plainTextToEmailHtml } from '@/components/admin/EmailVisualEditor';
+import { EmailStudio } from '@/components/admin/outreach/EmailStudio';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -671,7 +672,10 @@ const AdminProspecting = () => {
           <TabsTrigger value="test">Sending pace &amp; test mode</TabsTrigger>
           <TabsTrigger value="linkedin">LinkedIn (GetSales)</TabsTrigger>
           <TabsTrigger value="import">Paste a list</TabsTrigger>
+          <TabsTrigger value="studio">Email studio</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="studio"><EmailStudio /></TabsContent>
 
         <TabsContent value="queue" className="space-y-4">
           <div className="relative max-w-sm">
