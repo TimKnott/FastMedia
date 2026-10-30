@@ -3118,6 +3118,7 @@ export type Database = {
           approved_at: string | null
           approved_by: string | null
           body: string
+          body_html: string | null
           cancelled_at: string | null
           cancelled_by: string | null
           created_at: string
@@ -3145,6 +3146,7 @@ export type Database = {
           approved_at?: string | null
           approved_by?: string | null
           body: string
+          body_html?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
           created_at?: string
@@ -3172,6 +3174,7 @@ export type Database = {
           approved_at?: string | null
           approved_by?: string | null
           body?: string
+          body_html?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
           created_at?: string
@@ -3221,6 +3224,14 @@ export type Database = {
           getsales_list_id: string | null
           getsales_sender_id: string | null
           id: number
+          next_send_at: string | null
+          send_daily_cap: number
+          send_hourly_cap: number
+          send_max_gap_minutes: number
+          send_min_gap_minutes: number
+          send_weekdays_only: boolean
+          send_window_end_minute: number
+          send_window_start_minute: number
           simulate_visitors: boolean
           test_inbox: string | null
           test_mode: boolean
@@ -3242,6 +3253,14 @@ export type Database = {
           getsales_list_id?: string | null
           getsales_sender_id?: string | null
           id?: number
+          next_send_at?: string | null
+          send_daily_cap?: number
+          send_hourly_cap?: number
+          send_max_gap_minutes?: number
+          send_min_gap_minutes?: number
+          send_weekdays_only?: boolean
+          send_window_end_minute?: number
+          send_window_start_minute?: number
           simulate_visitors?: boolean
           test_inbox?: string | null
           test_mode?: boolean
@@ -3263,6 +3282,14 @@ export type Database = {
           getsales_list_id?: string | null
           getsales_sender_id?: string | null
           id?: number
+          next_send_at?: string | null
+          send_daily_cap?: number
+          send_hourly_cap?: number
+          send_max_gap_minutes?: number
+          send_min_gap_minutes?: number
+          send_weekdays_only?: boolean
+          send_window_end_minute?: number
+          send_window_start_minute?: number
           simulate_visitors?: boolean
           test_inbox?: string | null
           test_mode?: boolean

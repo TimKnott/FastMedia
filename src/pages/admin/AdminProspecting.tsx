@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { EmailVisualEditor, plainTextToEmailHtml } from '@/components/admin/EmailVisualEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -369,7 +370,7 @@ const AdminProspecting = () => {
     setReviewing(prospect);
     setDraftEdits(
       Object.fromEntries(
-        messagesFor(prospect.id).map((m) => [m.id, { subject: m.subject, body: m.body, when: toLocalInput(m.proposed_at) }]),
+        messagesFor(prospect.id).map((m) => [m.id, { subject: m.subject, body: m.body_html || plainTextToEmailHtml(m.body), when: toLocalInput(m.proposed_at) }]),
       ),
     );
   };
@@ -380,17 +381,17 @@ const AdminProspecting = () => {
       const opener = messagesFor(prospect.id).find((m) => m.step === 1);
       if (opener) {
         const edit = draftEdits[opener.id];
-        if (edit && (edit.subject !== opener.subject || edit.body !== opener.body)) {
+        if (edit && (edit.subject !== opener.subject || edit.body !== (opener.body_html || plainTextToEmailHtml(opener.body)))) {
           await callAgent({
             action: 'approve_message',
             message_id: opener.id,
             subject: edit.subject,
-            body: edit.body,
+            body_html: edit.body,
             send_now: true,
           });
           refresh();
           setReviewing(null);
-          toast({ title: 'Opener approved and sent' });
+          toast({ title: 'Opener approved and queued', description: 'It leaves at the next free slot in business hours.' });
           return;
         }
       }
@@ -398,11 +399,8 @@ const AdminProspecting = () => {
       refresh();
       setReviewing(null);
       toast({
-        title: result.opener_sent ? 'Opener sent' : 'Approved, but the opener did not go out',
-        description: result.opener_sent
-          ? `Follow-ups waiting for your approval: ${result.awaiting_approval}`
-          : String(result.reason ?? 'Check the connected mailbox'),
-        variant: result.opener_sent ? undefined : 'destructive',
+        title: 'Opener approved and queued',
+        description: `It leaves at the next free slot in business hours. Follow-ups waiting for approval: ${result.awaiting_approval}`,
       });
     } catch (error) {
       toast({ title: 'Approval failed', description: String(error).slice(0, 220), variant: 'destructive' });
@@ -429,17 +427,16 @@ const AdminProspecting = () => {
           action: 'approve_message',
           message_id: message.id,
           subject: edit?.subject,
-          body: edit?.body,
+          body_html: edit?.body,
           scheduled_at: edit?.when ? new Date(edit.when).toISOString() : null,
           send_now: decision === 'send',
         });
         toast({
-          title: decision === 'send' ? (result.sent ? 'Sent' : 'Approved, but it did not go out') : 'Approved and scheduled',
+          title: decision === 'send' ? 'Approved and queued' : 'Approved and scheduled',
           description:
             decision === 'send'
-              ? String(result.reason ?? '')
-              : `Sends ${new Date(String(result.scheduled_at)).toLocaleString()}`,
-          variant: decision === 'send' && !result.sent ? 'destructive' : undefined,
+              ? 'It leaves at the next free slot in business hours.'
+              : `Sends ${new Date(String(result.scheduled_at)).toLocaleString()} (or the next free slot after it)`,
         });
       }
       refresh();
@@ -671,7 +668,7 @@ const AdminProspecting = () => {
           <TabsTrigger value="approval">Message approvals ({pendingMessages.length})</TabsTrigger>
           <TabsTrigger value="visitors">Visitor safeguards ({signals.length})</TabsTrigger>
           <TabsTrigger value="audit">Audit trail</TabsTrigger>
-          <TabsTrigger value="test">Test mode</TabsTrigger>
+          <TabsTrigger value="test">Sending pace &amp; test mode</TabsTrigger>
           <TabsTrigger value="linkedin">LinkedIn (GetSales)</TabsTrigger>
           <TabsTrigger value="import">Paste a list</TabsTrigger>
         </TabsList>
@@ -882,7 +879,7 @@ const AdminProspecting = () => {
               const edit =
                 draftEdits[message.id] ?? {
                   subject: message.subject,
-                  body: message.body,
+                  body: message.body_html || plainTextToEmailHtml(message.body),
                   when: toLocalInput(message.proposed_at),
                 };
               return (
@@ -900,10 +897,11 @@ const AdminProspecting = () => {
                       value={edit.subject}
                       onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, subject: e.target.value } })}
                     />
-                    <Textarea
-                      rows={8}
+                    <EmailVisualEditor
                       value={edit.body}
-                      onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, body: e.target.value } })}
+                      onChange={(html) =>
+                        setDraftEdits((prev) => ({ ...prev, [message.id]: { ...(prev[message.id] ?? edit), body: html } }))
+                      }
                     />
                     <div className="flex flex-wrap items-end gap-3">
                       <div>
@@ -935,7 +933,7 @@ const AdminProspecting = () => {
                         ) : (
                           <Send className="w-4 h-4 mr-2" />
                         )}
-                        Send now
+                        Send at next free slot
                       </Button>
                       <Button
                         variant="ghost"
@@ -1092,6 +1090,77 @@ const AdminProspecting = () => {
         </TabsContent>
 
         <TabsContent value="test" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <CalendarClock className="w-4 h-4" />
+                Sending pace (protects your mailbox)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Approved emails leave one at a time, Prague business hours only, with a random gap between each. Start low
+                (about 10–15 a day in week one, 20–30 in week two) and raise the daily limit slowly. Hard ceiling: 100 a day.
+              </p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {(
+                  [
+                    ['send_daily_cap', 'Emails per day', settings?.send_daily_cap ?? 25],
+                    ['send_hourly_cap', 'Emails per hour', settings?.send_hourly_cap ?? 8],
+                    ['send_min_gap_minutes', 'Min. gap (minutes)', settings?.send_min_gap_minutes ?? 4],
+                    ['send_max_gap_minutes', 'Max. gap (minutes)', settings?.send_max_gap_minutes ?? 7],
+                  ] as const
+                ).map(([key, label, value]) => (
+                  <div key={key} className="space-y-1">
+                    <Label htmlFor={key} className="text-xs text-muted-foreground">{label}</Label>
+                    <Input
+                      id={key}
+                      type="number"
+                      min={1}
+                      defaultValue={value}
+                      onBlur={(e) => {
+                        const n = Math.max(1, Math.round(Number(e.target.value) || 0));
+                        if (n !== value) saveSettings({ [key]: n });
+                      }}
+                    />
+                  </div>
+                ))}
+                {(
+                  [
+                    ['send_window_start_minute', 'Start time', settings?.send_window_start_minute ?? 540],
+                    ['send_window_end_minute', 'End time', settings?.send_window_end_minute ?? 990],
+                  ] as const
+                ).map(([key, label, value]) => (
+                  <div key={key} className="space-y-1">
+                    <Label htmlFor={key} className="text-xs text-muted-foreground">{label} (Prague)</Label>
+                    <Input
+                      id={key}
+                      type="time"
+                      defaultValue={`${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`}
+                      onBlur={(e) => {
+                        const [h, m] = e.target.value.split(':').map(Number);
+                        const n = (h || 0) * 60 + (m || 0);
+                        if (n !== value) saveSettings({ [key]: n });
+                      }}
+                    />
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 pt-5 col-span-2">
+                  <Switch
+                    id="send_weekdays_only"
+                    checked={settings?.send_weekdays_only !== false}
+                    onCheckedChange={(v) => saveSettings({ send_weekdays_only: v })}
+                  />
+                  <Label htmlFor="send_weekdays_only">Weekdays only</Label>
+                </div>
+              </div>
+              {settings?.next_send_at && (
+                <p className="text-xs text-muted-foreground">
+                  Next email may leave from {new Date(settings.next_send_at).toLocaleTimeString()}.
+                </p>
+              )}
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
@@ -1426,7 +1495,7 @@ const AdminProspecting = () => {
           <DialogHeader>
             <DialogTitle>{reviewing?.company}</DialogTitle>
             <DialogDescription>
-              Approving sends the opener now. The follow-ups then wait in Message approvals, where you set their wording and
+              Approving puts the opener in the paced queue (one email every few minutes, business hours only). The follow-ups then wait in Message approvals, where you set their wording and
               timing before each one can send.
             </DialogDescription>
           </DialogHeader>
@@ -1436,7 +1505,7 @@ const AdminProspecting = () => {
                 const edit =
                   draftEdits[message.id] ?? {
                     subject: message.subject,
-                    body: message.body,
+                    body: message.body_html || plainTextToEmailHtml(message.body),
                     when: toLocalInput(message.proposed_at),
                   };
                 return (
@@ -1448,10 +1517,11 @@ const AdminProspecting = () => {
                       value={edit.subject}
                       onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, subject: e.target.value } })}
                     />
-                    <Textarea
-                      rows={8}
+                    <EmailVisualEditor
                       value={edit.body}
-                      onChange={(e) => setDraftEdits({ ...draftEdits, [message.id]: { ...edit, body: e.target.value } })}
+                      onChange={(html) =>
+                        setDraftEdits((prev) => ({ ...prev, [message.id]: { ...(prev[message.id] ?? edit), body: html } }))
+                      }
                     />
                     {message.step > 1 && (
                       <div className="flex flex-wrap items-end gap-2">
