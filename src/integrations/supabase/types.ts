@@ -5873,6 +5873,7 @@ export type Database = {
         Args: { _email: string; _kind: string; _reason: string }
         Returns: undefined
       }
+      repository_verify_roles: { Args: never; Returns: Json }
       repository_verify_safeguards: { Args: never; Returns: Json }
       serve_ad: {
         Args: { _domain: string; _zone: string }

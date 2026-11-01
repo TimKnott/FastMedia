@@ -113,6 +113,13 @@
       "when": 1793555111428,
       "tag": "0015_lead_repository_explicit_read_only_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1793555124988,
+      "tag": "0016_lead_repository_role_boundary_verification",
+      "breakpoints": true
     }
   ]
 }
