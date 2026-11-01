@@ -4,6 +4,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 import { generateJson } from '../_shared/ai-json.ts';
 import { sendViaGmail } from '../_shared/gmail-fallback.ts';
+import { suppressionGate } from '../_shared/suppression-gate.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -235,7 +236,8 @@ async function noteInFlowlu(leadId: number, title: string, text: string) {
 async function sendLeadEmail(leadId: number, to: string, subject: string, text: string) {
   to = to.trim().toLowerCase();
   const { data: suppressed, error: suppressionError } = await sb.from('suppressed_emails').select('id').eq('email', to).maybeSingle();
-  if (suppressionError || suppressed) return { sent: false, blocked: true, error: suppressionError ? 'suppression_check_failed' : 'globally_suppressed', logged: false };
+  const gate = suppressionGate(!!suppressed, !!suppressionError);
+  if (gate.blocked) return { sent: false, blocked: true, error: gate.reason, logged: false };
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}</div>`;
   const sent = await sendViaGmail(to, subject, html, text);
   let logged = false; let logError: string | null = null;
