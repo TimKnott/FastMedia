@@ -141,6 +141,13 @@
       "when": 1793563735621,
       "tag": "0019_outreach_queue_private_runtime_config",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1793563767864,
+      "tag": "0020_outreach_queue_rollback_diagnostic",
+      "breakpoints": true
     }
   ]
 }

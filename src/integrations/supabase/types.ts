@@ -5869,6 +5869,7 @@ export type Database = {
       outreach_acquire_worker: { Args: { _token: string }; Returns: boolean }
       outreach_dispatch_queue: { Args: never; Returns: undefined }
       outreach_release_worker: { Args: { _token: string }; Returns: undefined }
+      outreach_verify_queue: { Args: never; Returns: Json }
       publish_scheduled_blog_posts: { Args: never; Returns: number }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
