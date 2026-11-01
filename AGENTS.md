@@ -1,5 +1,7 @@
 # Project Architecture Rules
 
+- Lead Repository tables and validated admin RPCs are isolated from enquiry/prospect sending tables; source CSV fields remain private JSON provenance, global objections write to suppressed_emails, and campaigns/recipients stay constrained to DRY_RUN/HOLD with NULL sent_at so email validity cannot activate sending.
+
 - SEO initial HTML uses scripts/seo-routes.ts and scripts/seo-html.ts inside the existing prerender step; fallbacks must be accessible to all visitors, mirror real content, and never use bot-specific rendering or invented claims.
 - Keep public/sitemap.xml as the primary static sitemap; the prerender-generated sitemap-content.xml supplements published dynamic content without replacing that mechanism. Lastmod requires a significant page-specific modification timestamp, never generation time.
 

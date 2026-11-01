@@ -2787,6 +2787,259 @@ export type Database = {
           },
         ]
       }
+      lead_repository_campaigns: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          message: Json
+          name: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          message?: Json
+          name: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          message?: Json
+          name?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      lead_repository_emails: {
+        Row: {
+          campaign_status: string
+          compliance_status: string
+          created_at: string
+          email: string
+          id: string
+          lead_id: string
+          review: Json
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_rows: Json
+          validation_status: string
+        }
+        Insert: {
+          campaign_status?: string
+          compliance_status?: string
+          created_at?: string
+          email: string
+          id?: string
+          lead_id: string
+          review?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_rows?: Json
+          validation_status?: string
+        }
+        Update: {
+          campaign_status?: string
+          compliance_status?: string
+          created_at?: string
+          email?: string
+          id?: string
+          lead_id?: string
+          review?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_rows?: Json
+          validation_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_repository_emails_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "lead_repository_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_repository_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json
+          entity_id: string | null
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      lead_repository_leads: {
+        Row: {
+          company: string
+          country: string
+          created_at: string
+          id: string
+          industry: string
+          lead_key: string
+          linkedin_url: string
+          location: string
+          person_name: string
+          segment: string
+          source_rows: Json
+        }
+        Insert: {
+          company?: string
+          country?: string
+          created_at?: string
+          id?: string
+          industry?: string
+          lead_key: string
+          linkedin_url?: string
+          location?: string
+          person_name?: string
+          segment?: string
+          source_rows?: Json
+        }
+        Update: {
+          company?: string
+          country?: string
+          created_at?: string
+          id?: string
+          industry?: string
+          lead_key?: string
+          linkedin_url?: string
+          location?: string
+          person_name?: string
+          segment?: string
+          source_rows?: Json
+        }
+        Relationships: []
+      }
+      lead_repository_objections: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          email: string
+          id: string
+          kind: string
+          reason: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          kind: string
+          reason: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          kind?: string
+          reason?: string
+        }
+        Relationships: []
+      }
+      lead_repository_recipients: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          decision: Json
+          email: string
+          email_id: string | null
+          id: string
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          decision: Json
+          email: string
+          email_id?: string | null
+          id?: string
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          decision?: Json
+          email?: string
+          email_id?: string | null
+          id?: string
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_repository_recipients_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "lead_repository_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_repository_recipients_email_id_fkey"
+            columns: ["email_id"]
+            isOneToOne: false
+            referencedRelation: "lead_repository_emails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_repository_reviews: {
+        Row: {
+          actor_id: string
+          created_at: string
+          email_id: string | null
+          id: string
+          review: Json
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          email_id?: string | null
+          id?: string
+          review: Json
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          email_id?: string | null
+          id?: string
+          review?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_repository_reviews_email_id_fkey"
+            columns: ["email_id"]
+            isOneToOne: false
+            referencedRelation: "lead_repository_emails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_score_history: {
         Row: {
           created_at: string
@@ -5594,6 +5847,34 @@ export type Database = {
         }
         Returns: string
       }
+      repository_assert_admin: { Args: never; Returns: undefined }
+      repository_dry_run: {
+        Args: { _email_ids: string[]; _message: Json; _name: string }
+        Returns: string
+      }
+      repository_export: { Args: never; Returns: Json }
+      repository_import: {
+        Args: { _filename: string; _kind: string; _rows: Json }
+        Returns: Json
+      }
+      repository_list: {
+        Args: { _filters: Json; _page: number }
+        Returns: Json
+      }
+      repository_reasons: {
+        Args: { _email_id: string; _message: Json }
+        Returns: Json
+      }
+      repository_review: {
+        Args: { _email_id: string; _review: Json }
+        Returns: undefined
+      }
+      repository_suppress: {
+        Args: { _email: string; _kind: string; _reason: string }
+        Returns: undefined
+      }
+      repository_verify_roles: { Args: never; Returns: Json }
+      repository_verify_safeguards: { Args: never; Returns: Json }
       serve_ad: {
         Args: { _domain: string; _zone: string }
         Returns: {

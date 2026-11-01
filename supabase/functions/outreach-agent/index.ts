@@ -20,6 +20,7 @@ import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.
 import { generateJson } from '../_shared/ai-json.ts'
 import { canSendNow, clampPacing, nextGapMinutes, pragueParts, type PacingSettings } from '../_shared/send-pacing.ts'
 import { htmlToPlainText, sanitizeEmailHtml } from '../_shared/email-html.ts'
+import { suppressionGate } from '../_shared/suppression-gate.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -361,11 +362,13 @@ async function sendMessage(
   const recipient = testMode ? settings.test_inbox || REPLY_TO : prospect.email
 
   if (!testMode) {
-    const { data: suppressed } = await db
+    const { data: suppressed, error: suppressionError } = await db
       .from('suppressed_emails')
       .select('id')
-      .eq('email', String(prospect.email).toLowerCase())
+      .eq('email', String(prospect.email).trim().toLowerCase())
       .maybeSingle()
+    const gate = suppressionGate(!!suppressed, !!suppressionError)
+    if (suppressionError) return { sent: false, reason: gate.reason ?? 'suppression_check_failed' }
     if (suppressed) {
       await db.from('outreach_messages').update({ status: 'skipped', error_message: 'suppressed' }).eq('id', message.id)
       await db
