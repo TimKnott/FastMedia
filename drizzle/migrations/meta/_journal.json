@@ -92,6 +92,13 @@
       "when": 1793554824877,
       "tag": "0012_lead_repository_search_and_review_history",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1793555047203,
+      "tag": "0013_lead_repository_rollback_verification",
+      "breakpoints": true
     }
   ]
 }
