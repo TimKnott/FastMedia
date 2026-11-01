@@ -12,6 +12,7 @@ interface Translations {
 }
 
 export const translations: Translations = {
+  'leadRepository.title': { cs: 'Databáze kontaktů', en: 'Lead Repository', de: 'Kontaktarchiv' },
   // Navigation
   'nav.home': { cs: 'Domů', en: 'Home', de: 'Startseite' },
   'nav.demos': { cs: 'Ukázky', en: 'Demos', de: 'Demos' },
