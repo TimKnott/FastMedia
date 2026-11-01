@@ -108,7 +108,7 @@ export default function AdminLeadRepository() {
       setActive(null); toast.success(text('saved'));
     });
   }
-  const dropdown = (id: string, value: string, choices: string[], update: (value: string) => void, labels = true) => <div className="space-y-2"><Label htmlFor={id}>{text(id)}</Label><Select value={value || 'all'} onValueChange={v=>update(v==='all'?'':v)}><SelectTrigger id={id}><SelectValue /></SelectTrigger><SelectContent>{choices.map(c=><SelectItem key={c} value={c}>{labels ? text(c) : c}</SelectItem>)}</SelectContent></Select></div>;
+  const dropdown = (id: string, value: string, choices: string[], update: (value: string) => void, labels = true) => <div className="space-y-2"><Label htmlFor={id}>{text(id)}</Label><Select value={value || 'all'} onValueChange={v=>update(v==='all'?'':v)}><SelectTrigger id={id}><SelectValue /></SelectTrigger><SelectContent>{choices.map(c=><SelectItem key={c} value={c}>{labels || c==='all' ? text(c) : c}</SelectItem>)}</SelectContent></Select></div>;
   const updateFilter = (key:string,value:string) => setFilters(f=>({...f,[key]:value}));
   return <div className="space-y-6 max-w-7xl mx-auto">
     <header className="flex flex-wrap items-start justify-between gap-4"><div><div className="flex items-center gap-3"><Database className="w-7 h-7 text-primary"/><h1 className="text-2xl font-heading font-bold">{text('title')}</h1></div><p className="text-muted-foreground mt-2">{text('subtitle')}</p></div><Badge variant="outline" className="gap-2"><ShieldCheck className="w-4 h-4"/>CRM / HOLD</Badge></header>
@@ -118,7 +118,7 @@ export default function AdminLeadRepository() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">{['search','company','industry','location'].map(key=><div key={key} className="space-y-2"><Label htmlFor={`filter-${key}`}>{text(key)}</Label><div className="relative">{key==='search'&&<Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground"/>}<Input id={`filter-${key}`} className={key==='search'?'pl-9':''} value={filters[key]??''} onChange={e=>updateFilter(key,e.target.value)}/></div></div>)}
           {dropdown('segment',filters.segment,['all','owner','founder'],v=>updateFilter('segment',v))}
           <div className="space-y-2"><Label htmlFor="validation">{text('validation')}</Label><Input id="validation" value={filters.validation??''} onChange={e=>updateFilter('validation',e.target.value)}/></div>
-          {dropdown('compliance',filters.compliance,['all','UNASSESSED','REVIEWED','SUPPRESSED'],v=>updateFilter('compliance',v),false)}
+          {dropdown('compliance',filters.compliance,['all','UNASSESSED','REVIEWED','SUPPRESSED'],v=>updateFilter('compliance',v))}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{list.data?.total??0} · {text('leads')} / {Object.keys(selection).length} · {text('selected')}</p><Button variant="outline" disabled={busy} onClick={()=>{if(!window.confirm(text('exportConfirm')))return; void run(async()=>{const {data,error}=await supabase.rpc('repository_export');if(error)throw error;const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='private-lead-repository.json';a.click();URL.revokeObjectURL(url);});}}><Download className="w-4 h-4 mr-2"/>{text('export')}</Button></div>
         {list.error && <p role="alert" className="text-destructive">{list.error.message}</p>}
@@ -132,7 +132,7 @@ export default function AdminLeadRepository() {
         {dropdown('kind',kind,['leads','emails','compliance_review'],v=>setKind(v as ImportKind),false)}
         <div className="space-y-2"><Label htmlFor="csv-file">{text('file')}</Label><Input id="csv-file" type="file" accept=".csv,text/csv" onChange={e=>{setFile(e.target.files?.[0]??null);setResult(null);}}/></div>
         <Button disabled={busy||!file} onClick={()=>void importFile()}><Upload className="w-4 h-4 mr-2"/>{busy?text('loading'):text('importAction')}</Button>
-        {result&&<div role="status" className="bg-muted p-4 rounded-md space-y-3"><p>{result.imported_or_provenance_updated} imported / provenance updated · {result.skipped} skipped · {result.errors.length} errors</p>{result.errors.map((e,i)=><p key={i} className="text-sm text-destructive">CSV row {e.row}: {e.reason}</p>)}</div>}
+        {result&&<div role="status" className="bg-muted p-4 rounded-md space-y-3"><p>{text('imported')}: {result.imported_or_provenance_updated} · {text('skipped')}: {result.skipped} · {text('errors')}: {result.errors.length}</p>{result.errors.map((e,i)=><p key={i} className="text-sm text-destructive">{text('csvRow')} {e.row}: {e.reason}</p>)}</div>}
       </TabsContent>
       <TabsContent value="campaigns" className="space-y-5"><div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2"><Label htmlFor="campaign-name">{text('campaignName')}</Label><Input id="campaign-name" value={campaignName} onChange={e=>setCampaignName(e.target.value)}/></div>
