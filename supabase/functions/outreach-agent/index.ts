@@ -15,18 +15,13 @@
 //
 // Nothing is ever sent without a human approving that exact message.
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts'
 import { gmailFallbackAvailable, sendViaGmail } from '../_shared/gmail-fallback.ts'
 import { generateJson } from '../_shared/ai-json.ts'
 import { canSendNow, clampPacing, nextGapMinutes, pragueParts, type PacingSettings } from '../_shared/send-pacing.ts'
 import { htmlToPlainText, sanitizeEmailHtml } from '../_shared/email-html.ts'
 import { suppressionGate } from '../_shared/suppression-gate.ts'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-cron-secret',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-}
 
 const REPLY_TO = Deno.env.get('OUTREACH_REPLY_TO') ?? 'support@fastmedia.pro'
 const SITE = 'https://www.fastmedia.pro'
@@ -83,8 +78,8 @@ const json = (body: unknown, status = 200) =>
   })
 
 async function loadSettings(db: Db): Promise<Settings> {
-  const { data } = await db.from('outreach_settings').select('*').eq('id', 1).maybeSingle()
-  if (!data) return DEFAULT_SETTINGS
+  const { data, error } = await db.from('outreach_settings').select('*').eq('id', 1).maybeSingle()
+  if (error || !data) throw new Error('pacing_settings_unavailable')
   return {
     test_mode: !!data.test_mode,
     test_inbox: data.test_inbox || REPLY_TO,
@@ -733,12 +728,13 @@ async function detectReplies(db: Db, actor: Actor) {
 /** Only messages a human individually approved and scheduled are sent here. */
 async function pacingCounts(db: Db, now: Date) {
   const since = new Date(now.getTime() - 26 * 3600000).toISOString()
-  const { data } = await db
+  const { data, error } = await db
     .from('outreach_messages')
     .select('sent_at')
     .eq('status', 'sent')
     .eq('test_mode', false)
     .gte('sent_at', since)
+  if (error) throw new Error('pacing_counts_unavailable')
   const today = pragueParts(now).dayKey
   const hourAgo = now.getTime() - 3600000
   let sentToday = 0
@@ -753,6 +749,19 @@ async function pacingCounts(db: Db, now: Date) {
 
 /** Sends at most ONE approved email per call, only when the pacing rules allow it. */
 async function sendDueFollowUps(db: Db, actor: Actor, settings: Settings) {
+  const token = crypto.randomUUID()
+  const { data: acquired, error: leaseError } = await db.rpc('outreach_acquire_worker', { _token: token })
+  if (leaseError) throw new Error('queue_lock_unavailable')
+  if (!acquired) return 0
+  try {
+    // Reload inside the shared lease: concurrent approval/cron callers cannot use stale caps or gap.
+    return await dispatchDueMessage(db, actor, await loadSettings(db))
+  } finally {
+    await db.rpc('outreach_release_worker', { _token: token })
+  }
+}
+
+async function dispatchDueMessage(db: Db, actor: Actor, settings: Settings) {
   const now = new Date()
   if (!settings.test_mode) {
     const counts = await pacingCounts(db, now)
@@ -764,6 +773,7 @@ async function sendDueFollowUps(db: Db, actor: Actor, settings: Settings) {
     .select('*')
     .eq('status', 'scheduled')
     .not('approved_at', 'is', null)
+    .is('dispatch_claimed_at', null)
     .lte('scheduled_at', now.toISOString())
     .order('scheduled_at')
     .limit(5)
@@ -790,17 +800,27 @@ async function sendDueFollowUps(db: Db, actor: Actor, settings: Settings) {
       })
       continue
     }
+    // Claim before provider dispatch. An uncertain/crashed request is never retried automatically.
+    const { data: claimed, error: claimError } = await db.from('outreach_messages')
+      .update({ dispatch_claimed_at: new Date().toISOString() })
+      .eq('id', message.id).eq('status', 'scheduled').is('dispatch_claimed_at', null)
+      .select('id').maybeSingle()
+    if (claimError) throw new Error('dispatch_claim_failed')
+    if (!claimed) continue
+    const gap = nextGapMinutes(settings.pacing)
+    const { error: reserveError } = await db.from('outreach_settings')
+      .update({ next_send_at: new Date(Date.now() + gap * 60000).toISOString() }).eq('id', 1)
+    if (reserveError) throw new Error('pacing_reservation_failed')
     const result = await sendMessage(db, actor, prospect, message, settings)
     if (result.sent) {
       sent += 1
-      const gap = nextGapMinutes(settings.pacing)
       await db
         .from('outreach_settings')
         .update({ next_send_at: new Date(Date.now() + gap * 60000).toISOString() })
         .eq('id', 1)
     } else {
-      // A failed/suppressed message should not block the queue; move on to the next one.
-      continue
+      // Keep the reserved gap even for failed attempts; never burst through the queue.
+      break
     }
   }
   return sent
@@ -1109,6 +1129,15 @@ Deno.serve(async (req) => {
     if (action === 'drip') {
       const settings = await loadSettings(db)
       return json({ ok: true, sent: await sendDueFollowUps(db, actor, settings), test_mode: settings.test_mode })
+    }
+    if (action === 'verify_queue') {
+      if (!actor.id) return unauthorizedResponse(corsHeaders)
+      const userDb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
+      })
+      const { data, error } = await userDb.rpc('outreach_verify_queue')
+      if (error) throw new Error(error.message)
+      return json({ ok: true, verification: data, sent: 0 })
     }
     if (action === 'queue_status') {
       const settings = await loadSettings(db)

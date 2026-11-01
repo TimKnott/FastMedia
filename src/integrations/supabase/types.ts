@@ -3418,6 +3418,7 @@ export type Database = {
           cancelled_by: string | null
           created_at: string
           delivered_to: string | null
+          dispatch_claimed_at: string | null
           edited_at: string | null
           edited_by: string | null
           error_message: string | null
@@ -3446,6 +3447,7 @@ export type Database = {
           cancelled_by?: string | null
           created_at?: string
           delivered_to?: string | null
+          dispatch_claimed_at?: string | null
           edited_at?: string | null
           edited_by?: string | null
           error_message?: string | null
@@ -3474,6 +3476,7 @@ export type Database = {
           cancelled_by?: string | null
           created_at?: string
           delivered_to?: string | null
+          dispatch_claimed_at?: string | null
           edited_at?: string | null
           edited_by?: string | null
           error_message?: string | null
@@ -3502,6 +3505,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      outreach_queue_config: {
+        Row: {
+          endpoint: string
+          id: number
+        }
+        Insert: {
+          endpoint: string
+          id?: number
+        }
+        Update: {
+          endpoint?: string
+          id?: number
+        }
+        Relationships: []
       }
       outreach_settings: {
         Row: {
@@ -3620,6 +3638,24 @@ export type Database = {
           storage_path?: string
           thumbnail_url?: string | null
           title?: string
+        }
+        Relationships: []
+      }
+      outreach_worker_lease: {
+        Row: {
+          expires_at: string | null
+          id: number
+          token: string | null
+        }
+        Insert: {
+          expires_at?: string | null
+          id?: number
+          token?: string | null
+        }
+        Update: {
+          expires_at?: string | null
+          id?: number
+          token?: string | null
         }
         Relationships: []
       }
@@ -5830,6 +5866,10 @@ export type Database = {
         }
         Returns: number
       }
+      outreach_acquire_worker: { Args: { _token: string }; Returns: boolean }
+      outreach_dispatch_queue: { Args: never; Returns: undefined }
+      outreach_release_worker: { Args: { _token: string }; Returns: undefined }
+      outreach_verify_queue: { Args: never; Returns: Json }
       publish_scheduled_blog_posts: { Args: never; Returns: number }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }

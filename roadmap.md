@@ -1,5 +1,8 @@
 # Roadmap
 
+## Nov 1 — Prospecting queue timing
+- [x] Repair queue spacing/caps and prompt next-slot wake: service-only worker lease, conditional message claim, fail-closed counts/settings, approval wake and bounded minute cron with drain unschedule. Retired old five-minute job 111; hourly maintenance remains. 27 regressions passed; live rollback diagnostic verified wake/arm/drain/concurrency with no committed requests or emails. Current queue empty; caps 25/day and 8/hour, 4–7minute gaps, Prague weekday 09:00–16:30.
+
 ## Nov 1 — Lead Repository
 - [x] Admin-only repository, lossless repeat-import workflow, review/history, global objections, dry-run campaigns and audited private export. Desktop/mobile CS/EN/DE checked; 30 tests and automatic build pass. Rollback-only DB tests verify deduplication, UTF-8, HOLD, Czech gate and suppression retention. Anonymous/direct writes denied; existing editor denied and super-admin allowed. Other role accounts unavailable for signed-in checks.
 - [ ] Import the three supplied datasets — BLOCKED: leads, emails and compliance_review CSV attachments are not present in either upload mount.
