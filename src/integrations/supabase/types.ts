@@ -3506,6 +3506,21 @@ export type Database = {
           },
         ]
       }
+      outreach_queue_config: {
+        Row: {
+          endpoint: string
+          id: number
+        }
+        Insert: {
+          endpoint: string
+          id?: number
+        }
+        Update: {
+          endpoint?: string
+          id?: number
+        }
+        Relationships: []
+      }
       outreach_settings: {
         Row: {
           discovery_cursor: number
