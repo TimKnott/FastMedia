@@ -3008,6 +3008,38 @@ export type Database = {
           },
         ]
       }
+      lead_repository_reviews: {
+        Row: {
+          actor_id: string
+          created_at: string
+          email_id: string | null
+          id: string
+          review: Json
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          email_id?: string | null
+          id?: string
+          review: Json
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          email_id?: string | null
+          id?: string
+          review?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_repository_reviews_email_id_fkey"
+            columns: ["email_id"]
+            isOneToOne: false
+            referencedRelation: "lead_repository_emails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_score_history: {
         Row: {
           created_at: string
@@ -5823,6 +5855,10 @@ export type Database = {
       repository_export: { Args: never; Returns: Json }
       repository_import: {
         Args: { _filename: string; _kind: string; _rows: Json }
+        Returns: Json
+      }
+      repository_list: {
+        Args: { _filters: Json; _page: number }
         Returns: Json
       }
       repository_reasons: {
