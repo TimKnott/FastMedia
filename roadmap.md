@@ -4,6 +4,7 @@
 - [x] Admin-only repository, lossless repeat-import workflow, review/history, global objections, dry-run campaigns and audited private export. Desktop/mobile CS/EN/DE checked; 30 tests and automatic build pass. Rollback-only DB tests verify deduplication, UTF-8, HOLD, Czech gate and suppression retention. Anonymous/direct writes denied; existing editor denied and super-admin allowed. Other role accounts unavailable for signed-in checks.
 - [ ] Import the three supplied datasets — BLOCKED: leads, emails and compliance_review CSV attachments are not present in either upload mount.
 - [ ] Existing marketing sender suppression fixes take effect in production — BLOCKED: flowlu-admin/outreach-agent code changes are saved but not deployed; no deployment performed in this task.
+- [ ] Recipient-facing repository unsubscribe endpoint — not implemented; all repository sending remains disabled, with manual admin objection processing available.
 
 ## Oct 22 — Site-side organic and AI search eligibility
 - [x] Report recent production visitors to FastMedia.Pro and the pages they used.
