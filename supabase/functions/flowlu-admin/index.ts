@@ -233,6 +233,9 @@ async function noteInFlowlu(leadId: number, title: string, text: string) {
 }
 
 async function sendLeadEmail(leadId: number, to: string, subject: string, text: string) {
+  to = to.trim().toLowerCase();
+  const { data: suppressed, error: suppressionError } = await sb.from('suppressed_emails').select('id').eq('email', to).maybeSingle();
+  if (suppressionError || suppressed) return { sent: false, blocked: true, error: suppressionError ? 'suppression_check_failed' : 'globally_suppressed', logged: false };
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}</div>`;
   const sent = await sendViaGmail(to, subject, html, text);
   let logged = false; let logError: string | null = null;
@@ -243,7 +246,7 @@ async function sendLeadEmail(leadId: number, to: string, subject: string, text: 
     const keep = ['replied', 'won', 'lost'].includes(l?.pipeline_stage ?? '');
     await sb.from('flowlu_leads').update({ emails_sent: (l?.emails_sent ?? 0) + 1, last_contact_at: new Date().toISOString(), ...(keep ? {} : { pipeline_stage: 'sent' }) }).eq('id', leadId);
   }
-  return { sent: sent.sent, error: sent.error ?? logError, logged };
+  return { sent: sent.sent, blocked: false, error: sent.error ?? logError, logged };
 }
 
 const STAGES = ['scored', 'drafted', 'sent', 'replied', 'no_reply', 'won', 'lost'];
@@ -383,10 +386,10 @@ Deno.serve(async (req) => {
       const text = String(body.body ?? '').trim().slice(0, 20000);
       if (!leadId || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || !subject || !text) return json({ error: 'Lead, valid recipient, subject and message are required' }, 400);
       const r = await sendLeadEmail(leadId, to, subject, text);
-      const row = { flowlu_lead_id: leadId, to_email: to, subject, body: text, status: r.sent ? 'sent' : 'failed', error: r.error, flowlu_logged: r.logged, sent_at: r.sent ? new Date().toISOString() : null };
+      const row = { flowlu_lead_id: leadId, to_email: to, subject, body: text, status: r.sent ? 'sent' : r.blocked ? 'draft' : 'failed', error: r.error, flowlu_logged: r.logged, sent_at: r.sent ? new Date().toISOString() : null };
       if (body.reply_id) await sb.from('flowlu_lead_replies').update(row).eq('id', String(body.reply_id));
       else await sb.from('flowlu_lead_replies').insert(row);
-      return json({ ok: r.sent, flowlu_logged: r.logged, error: r.error, url: `https://${account()}.flowlu.com/crm/lead/view/${leadId}` }, r.sent ? 200 : 502);
+      return json({ ok: r.sent, blocked: r.blocked, flowlu_logged: r.logged, error: r.error, url: `https://${account()}.flowlu.com/crm/lead/view/${leadId}` }, r.sent ? 200 : r.blocked ? 409 : 502);
     }
     if (action === 'draft_sequence') {
       const leadId = Number(body.lead_id);
@@ -422,8 +425,8 @@ Deno.serve(async (req) => {
           await sb.from('flowlu_lead_sequences').update({ status: 'cancelled', error: l?.contact_email ? 'Stopped: lead replied or closed' : 'No email on lead' }).eq('id', s.id); skipped++; continue;
         }
         const r = await sendLeadEmail(s.flowlu_lead_id, l.contact_email, s.subject, s.body);
-        await sb.from('flowlu_lead_sequences').update(r.sent ? { status: 'sent', sent_at: new Date().toISOString(), error: null } : { status: 'failed', error: r.error }).eq('id', s.id);
-        if (r.sent) { sent++; await sb.from('flowlu_lead_replies').insert({ flowlu_lead_id: s.flowlu_lead_id, to_email: l.contact_email, subject: s.subject, body: s.body, status: 'sent', flowlu_logged: r.logged, sent_at: new Date().toISOString() }); } else failed++;
+        await sb.from('flowlu_lead_sequences').update(r.sent ? { status: 'sent', sent_at: new Date().toISOString(), error: null } : { status: r.blocked ? 'cancelled' : 'failed', error: r.error }).eq('id', s.id);
+        if (r.sent) { sent++; await sb.from('flowlu_lead_replies').insert({ flowlu_lead_id: s.flowlu_lead_id, to_email: l.contact_email, subject: s.subject, body: s.body, status: 'sent', flowlu_logged: r.logged, sent_at: new Date().toISOString() }); } else if (r.blocked) skipped++; else failed++;
       }
       // Leads whose final step went out 7+ days ago with no reply → no_reply
       const { data: finals } = await sb.from('flowlu_lead_sequences').select('flowlu_lead_id').eq('step', 3).eq('status', 'sent').lte('sent_at', new Date(Date.now() - 7 * 86400000).toISOString());

@@ -361,11 +361,12 @@ async function sendMessage(
   const recipient = testMode ? settings.test_inbox || REPLY_TO : prospect.email
 
   if (!testMode) {
-    const { data: suppressed } = await db
+    const { data: suppressed, error: suppressionError } = await db
       .from('suppressed_emails')
       .select('id')
-      .eq('email', String(prospect.email).toLowerCase())
+      .eq('email', String(prospect.email).trim().toLowerCase())
       .maybeSingle()
+    if (suppressionError) return { sent: false, reason: 'suppression_check_failed' }
     if (suppressed) {
       await db.from('outreach_messages').update({ status: 'skipped', error_message: 'suppressed' }).eq('id', message.id)
       await db
