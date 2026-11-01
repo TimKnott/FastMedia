@@ -1,5 +1,9 @@
 # Roadmap
 
+## Nov 1 — Lead Repository
+- [ ] Admin-only repository, provenance-preserving idempotent CSV import, review and global suppression workflow, dry-run campaigns, audit logs and verified access safeguards.
+- [ ] Import the three supplied datasets — BLOCKED: leads, emails and compliance_review CSV attachments are not present in either upload mount.
+
 ## Oct 22 — Site-side organic and AI search eligibility
 - [x] Report recent production visitors to FastMedia.Pro and the pages they used.
 - [x] Add a discreet footer credit link to the owner's Kreativní Česko registration page, using that site's logo and accurate wording. — built and browser-verified in CS/EN/DE; live only after publish.
