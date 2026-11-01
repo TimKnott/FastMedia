@@ -1,5 +1,8 @@
 # Roadmap
 
+## Nov 1 — Prospecting queue timing
+- [ ] Repair queue spacing/caps and prompt next-slot wake; verify active scheduling with no emails sent during tests.
+
 ## Nov 1 — Lead Repository
 - [x] Admin-only repository, lossless repeat-import workflow, review/history, global objections, dry-run campaigns and audited private export. Desktop/mobile CS/EN/DE checked; 30 tests and automatic build pass. Rollback-only DB tests verify deduplication, UTF-8, HOLD, Czech gate and suppression retention. Anonymous/direct writes denied; existing editor denied and super-admin allowed. Other role accounts unavailable for signed-in checks.
 - [ ] Import the three supplied datasets — BLOCKED: leads, emails and compliance_review CSV attachments are not present in either upload mount.
