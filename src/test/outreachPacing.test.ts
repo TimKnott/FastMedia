@@ -44,6 +44,15 @@ describe('outreach pacing', () => {
       reason: 'gap',
     });
   });
+  it('enforces the configured eight-per-hour cap', () => {
+    expect(canSendNow(fridayTenPrague, DEFAULT_PACING, { sentToday: 8, sentLastHour: 8 }, null)).toEqual({send:false,reason:'hourly_cap'});
+    expect(canSendNow(fridayTenPrague, DEFAULT_PACING, { sentToday: 8, sentLastHour: 7 }, null)).toEqual({send:true});
+  });
+  it('allows the next slot exactly when its four-minute gap expires', () => {
+    const slot = new Date(fridayTenPrague.getTime() + 4 * 60000);
+    expect(canSendNow(new Date(slot.getTime()-1), DEFAULT_PACING, {sentToday:1,sentLastHour:1},slot)).toEqual({send:false,reason:'gap'});
+    expect(canSendNow(slot, DEFAULT_PACING, {sentToday:1,sentLastHour:1},slot)).toEqual({send:true});
+  });
 
   it('spaces emails 4 to 7 minutes apart', () => {
     expect(nextGapMinutes(DEFAULT_PACING, () => 0)).toBe(4);
