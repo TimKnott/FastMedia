@@ -16,13 +16,14 @@ Searchable, server-paginated contacts; owner/founder, company, industry, locatio
 - `AGENTS.md`, `roadmap.md`, author-owned verification notes; automatically refreshed database types.
 
 ## Database changes
-Applied additive migrations `0011`–`0016` in `drizzle/migrations/`:
+Applied additive migrations `0011`–`0017` in `drizzle/migrations/`:
 - Protected repository model and admin mutation functions.
 - Server-side filtering/pagination and review history.
 - Rollback-only safeguard diagnostic.
 - Existing global suppression reason compatibility (`complaint` for objections, `unsubscribe` for unsubscribe; evidence kept separately).
 - Explicit removal of inherited anonymous/direct-write grants.
 - Role-boundary diagnostic using existing accounts, with attempted synthetic writes rolled back.
+- Linked imported compliance evidence, unassessed defaults and objection timestamp preservation on subsequent review.
 
 Tables: `lead_repository_leads`, `lead_repository_emails`, `lead_repository_campaigns`, `lead_repository_recipients`, `lead_repository_events`, `lead_repository_objections`, `lead_repository_reviews`.
 
@@ -34,7 +35,7 @@ Every table: RLS enabled; authenticated admin-minimum read policy plus restricti
 Actual supplied dataset import: **0 leads, 0 email rows**. Files named leads, emails and compliance_review are absent from both upload mounts. Skipped/error counts for those absent files are **not applicable**, not a completed empty import. Actual CSV headers and source export dates need inspection when reattached. All columns of an imported row remain in private provenance JSON; searchable-field mapping may need adjustment to the actual normalized headers.
 
 ## Verification
-- 30 targeted tests passed (14 repository/suppression, 7 Email Studio, 9 pacing/sanitizer).
+- 32 targeted tests passed (16 repository/suppression, 7 Email Studio, 9 pacing/sanitizer).
 - Automatic build: OK.
 - Signed-out browser redirects to admin login; signed-in super-admin page, import controls and CS/EN/DE render correctly. Desktop 1280×1800 and mobile 390×844 checked; no horizontal page overflow or runtime errors.
 - Database rollback-only diagnostic: stable lead/email deduplication, Czech UTF-8/all-field preservation, valid-email HOLD defaults, Czech permission gate, activation/send-timestamp rejection, global suppression and suppression survival after lead deletion all passed. No diagnostic rows persisted.
@@ -46,3 +47,5 @@ Actual supplied dataset import: **0 leads, 0 email rows**. Files named leads, em
 Legal reviewer must document lawful processing, national electronic-marketing permission, consent/customer-exception evidence, privacy notice, effective opt-out route and retention duration. Recording review is not a legal guarantee or permission to send. Existing-customer exception scope must be specifically documented.
 
 Saved Flowlu/outreach suppression fixes still require a separately authorised function deployment before they protect the production senders. Repository sending remains disabled. No emails, Gmail connections, new jobs, public endpoints, site publishing or function deployment performed.
+
+Recipient-facing one-click unsubscribe is not implemented for repository campaigns; manual admin objection/unsubscribe recording is implemented. A signed-token public opt-out endpoint must be implemented and verified before any future sending feature is considered. All sending remains hard-disabled regardless of review values.

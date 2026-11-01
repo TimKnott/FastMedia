@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { parseRepositoryCsv, normalizeRepositoryEmail } from '@/lib/leadRepository';
 import { suppressionGate } from '../../supabase/functions/_shared/suppression-gate';
 const migration = readFileSync('drizzle/migrations/0011_lead_repository_protected_review.sql','utf8');
+const complianceMigration = readFileSync('drizzle/migrations/0017_lead_repository_imported_compliance_evidence.sql','utf8');
 describe('repository import',()=>{
   it('preserves Czech characters and every source field',()=>{
     const rows=parseRepositoryCsv('\uFEFFlead_key,person_name,company,extra\r\nk1,Jiří Šťastný,"Česká, s.r.o.","line 1\nline 2"');
@@ -13,6 +14,11 @@ describe('repository import',()=>{
   it('normalizes email case and whitespace',()=>expect(normalizeRepositoryEmail(' OWNER@EXAMPLE.CZ ')).toBe('owner@example.cz'));
 });
 describe('repository database enforcement',()=>{
+  it('links imported compliance rows without treating them as manual approval',()=>{
+    expect(complianceMigration).toContain("WHERE source->>'kind'='compliance_review'");
+    expect(complianceMigration).toContain("'lawful_basis','unassessed','channel_permission','unassessed'");
+  });
+  it('preserves objection timestamps when a later review is recorded',()=>expect(complianceMigration).toContain("WHERE key IN ('objected_at','unsubscribed_at')"));
   it('enforces HOLD regardless of imported validation',()=>expect(migration).toContain("CHECK (campaign_status='HOLD')"));
   it('enforces dry-run campaigns',()=>expect(migration).toContain("CHECK(status='DRY_RUN')"));
   it('cannot record a real send timestamp',()=>expect(migration).toContain('CHECK(sent_at IS NULL)'));

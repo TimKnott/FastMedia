@@ -2821,6 +2821,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          imported_compliance: Json
           lead_id: string
           review: Json
           reviewed_at: string | null
@@ -2834,6 +2835,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          imported_compliance?: Json
           lead_id: string
           review?: Json
           reviewed_at?: string | null
@@ -2847,6 +2849,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          imported_compliance?: Json
           lead_id?: string
           review?: Json
           reviewed_at?: string | null
