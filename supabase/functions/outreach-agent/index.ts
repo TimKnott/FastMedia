@@ -1130,6 +1130,15 @@ Deno.serve(async (req) => {
       const settings = await loadSettings(db)
       return json({ ok: true, sent: await sendDueFollowUps(db, actor, settings), test_mode: settings.test_mode })
     }
+    if (action === 'verify_queue') {
+      if (!actor.id) return unauthorizedResponse(corsHeaders)
+      const userDb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
+      })
+      const { data, error } = await userDb.rpc('outreach_verify_queue')
+      if (error) throw new Error(error.message)
+      return json({ ok: true, verification: data, sent: 0 })
+    }
     if (action === 'queue_status') {
       const settings = await loadSettings(db)
       const counts = await pacingCounts(db, new Date())
