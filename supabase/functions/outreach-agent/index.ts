@@ -22,6 +22,8 @@ import { generateJson } from '../_shared/ai-json.ts'
 import { canSendNow, clampPacing, nextGapMinutes, pragueParts, type PacingSettings } from '../_shared/send-pacing.ts'
 import { htmlToPlainText, sanitizeEmailHtml } from '../_shared/email-html.ts'
 import { suppressionGate } from '../_shared/suppression-gate.ts'
+import { checkMarketingEligibility } from '../_shared/legal-eligibility.ts'
+import { marketingFooter, unsubscribeUrlFor } from '../_shared/marketing-footer.ts'
 
 const REPLY_TO = Deno.env.get('OUTREACH_REPLY_TO') ?? 'support@fastmedia.pro'
 const SITE = 'https://www.fastmedia.pro'
@@ -377,23 +379,38 @@ async function sendMessage(
       })
       return { sent: false, reason: 'suppressed' }
     }
-    const legal = await checkMarketingEligibility(db, prospect.email)
-    if (!legal.allowed) {
-      await db.from('outreach_messages').update({ status: 'skipped', error_message: `legal_block: ${legal.reasons.join(' | ')}`.slice(0, 1000) }).eq('id', message.id)
-      await logEvent(db, actor, 'skipped_legal', { prospectId: prospect.id, messageId: message.id, step: message.step, details: { reasons: legal.reasons } })
-      return { sent: false, reason: 'legal_block', reasons: legal.reasons }
-    }
   }
 
   const subject = testMode ? `[TEST → ${prospect.email}] ${message.subject}` : message.subject
   const notice = testMode
     ? `\n\n---\nTest mode: this message was routed to the test inbox instead of ${prospect.email}.`
     : ''
-  const bodyText = `${message.body}${notice}`
-  const html = message.body_html
-    ? emailShell(sanitizeEmailHtml(message.body_html), notice, footerFor(message.language ?? 'en'))
-    : htmlFromText(bodyText, footerFor(message.language ?? 'en'))
-  const result = await sendViaGmail(recipient, subject, html, bodyText)
+  let footerHtml = footerFor(message.language ?? 'en')
+  let footerText = footerHtml
+  let headers: Record<string, string> = {}
+  if (!testMode) {
+    let url: string
+    try { url = await unsubscribeUrlFor(db, prospect.email) } catch (e) {
+      await db.from('outreach_messages').update({ status: 'skipped', error_message: `legal_block: ${(e as Error).message}` }).eq('id', message.id)
+      return { sent: false, reason: 'legal_block', reasons: [(e as Error).message] }
+    }
+    const f = marketingFooter(message.language ?? 'en', url)
+    footerHtml = f.html; footerText = f.text; headers = f.headers
+  }
+  const bodyText = `${message.body}${notice}\n\n${footerText}`
+  const inner = message.body_html ? sanitizeEmailHtml(message.body_html) : null
+  const html = inner ? emailShell(inner, notice, '%%FOOTER%%') : htmlFromText(`${message.body}${notice}`, '%%FOOTER%%')
+  const finalHtml = html.replace('%%FOOTER%%', footerHtml)
+  if (!testMode) {
+    // Final gate on the exact rendered message, immediately before dispatch.
+    const legal = await checkMarketingEligibility(db, prospect.email, { html: finalHtml, text: bodyText })
+    if (!legal.allowed) {
+      await db.from('outreach_messages').update({ status: 'skipped', error_message: `legal_block: ${legal.reasons.join(' | ')}`.slice(0, 1000) }).eq('id', message.id)
+      await logEvent(db, actor, 'skipped_legal', { prospectId: prospect.id, messageId: message.id, step: message.step, details: { reasons: legal.reasons } })
+      return { sent: false, reason: 'legal_block', reasons: legal.reasons }
+    }
+  }
+  const result = await sendViaGmail(recipient, subject, finalHtml, bodyText, headers)
   const now = new Date().toISOString()
 
   await db
@@ -856,9 +873,19 @@ async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
       : `Hello${signal.name ? ` ${signal.name}` : ''},\n\nI noticed you started a form on our site and did not finish it. If it is easier, reply to this email and I will finish it for you.\n\nInstant price guide: ${SITE}/calculator\nRecent work: ${SITE}/case-studies\n\nKind regards,\nTim Knott, FastMedia.Pro`
 
     if (!gmailFallbackAvailable()) break
+    let recHtml = htmlFromText(body, footerFor(signal.language))
+    let recText = body
+    let recHeaders: Record<string, string> = {}
     if (!settings.test_mode) {
-      // Recovery mail is promotional: same legal gate as campaigns.
-      const legal = await checkMarketingEligibility(db, signal.email)
+      // Recovery mail is promotional: same legal gate as campaigns, on the final rendered message.
+      let legal: { allowed: boolean; reasons: string[] }
+      try {
+        const f = marketingFooter(signal.language, await unsubscribeUrlFor(db, signal.email))
+        recHtml = htmlFromText(body, '%%FOOTER%%').replace('%%FOOTER%%', f.html)
+        recText = `${body}\n\n${f.text}`
+        recHeaders = f.headers
+        legal = await checkMarketingEligibility(db, signal.email, { html: recHtml, text: recText })
+      } catch (e) { legal = { allowed: false, reasons: [(e as Error).message] } }
       if (!legal.allowed) {
         await db.from('visitor_signals').update({ recovery_status: 'skipped' }).eq('id', signal.id)
         await logEvent(db, actor, 'skipped_legal', { details: { signalId: signal.id, reasons: legal.reasons } })
@@ -867,7 +894,7 @@ async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
     }
     const recipient = settings.test_mode ? settings.test_inbox || REPLY_TO : signal.email
     const finalSubject = settings.test_mode ? `[TEST → ${signal.email}] ${subject}` : subject
-    const result = await sendViaGmail(recipient, finalSubject, htmlFromText(body, footerFor(signal.language)), body)
+    const result = await sendViaGmail(recipient, finalSubject, recHtml, recText, recHeaders)
     await db
       .from('visitor_signals')
       .update({

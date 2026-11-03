@@ -7,10 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
-import { CONTACT_TYPES, EMAIL_ROUTES, previewDecision, toPermissionRow, type PermissionForm } from '@/lib/permissionManager';
+import { CONTACT_TYPES, EMAIL_ROUTES, hasUnsavedChanges, previewDecision, toPermissionRow, type PermissionForm } from '@/lib/permissionManager';
 
 type Row = Record<string, any>;
-const TEXT = ['country', 'gdpr_lawful_basis', 'consent_at', 'consent_sender', 'consent_source', 'consent_scope', 'consent_revoked_at', 'customer_sale_ref', 'customer_collected_at', 'customer_sender', 'objection_at', 'country_assessment_ref'];
+const TEXT = ['country', 'gdpr_lawful_basis', 'consent_at', 'consent_sender', 'consent_source', 'consent_scope', 'consent_method', 'consent_text_version', 'consent_proof_ref', 'consent_revoked_at', 'customer_sale_ref', 'customer_collected_at', 'customer_sender', 'objection_at', 'country_assessment_ref'];
 const BOOL = ['customer_similar_products', 'customer_optout_offered_at_collection'];
 const label = (k: string) => k.replace(/_/g, ' ');
 
@@ -51,9 +51,14 @@ export function PermissionManager() {
     const row = toPermissionRow(form);
     if (!row.email || !String(row.email).includes('@')) return toast({ title: 'Enter a valid email', variant: 'destructive' });
     setBusy(true);
-    const { data, error } = await supabase.from('marketing_permissions').upsert(row as any, { onConflict: 'email' }).select().single();
+    // Existing records: optimistic concurrency on updated_at so a parallel edit is never overwritten.
+    const res = current
+      ? await supabase.from('marketing_permissions').update(row as any).eq('id', current.id).eq('updated_at', current.updated_at).select().maybeSingle()
+      : await supabase.from('marketing_permissions').insert(row as any).select().single();
     setBusy(false);
-    if (error) return toast({ title: 'Save failed', description: error.message, variant: 'destructive' });
+    const { data, error } = res;
+    if (error) return toast({ title: 'Save failed', description: error.code === '23505' ? 'A record for this email already exists — search for it.' : error.message, variant: 'destructive' });
+    if (!data) { toast({ title: 'Changed by someone else', description: 'Reloaded the latest version; re-apply your edits.', variant: 'destructive' }); await load(); return; }
     toast({ title: 'Saved — review cleared', description: 'Evidence changed, so a human review is required again.' });
     await load(); await open(data);
   };
@@ -63,13 +68,15 @@ export function PermissionManager() {
     if (!confirm('Confirm you have personally reviewed the evidence for this address. Your account and the time will be recorded.')) return;
     setBusy(true);
     // The database trigger overwrites reviewer and time with the signed-in admin and now().
-    const { data, error } = await supabase.from('marketing_permissions').update({ legal_review_at: new Date().toISOString() }).eq('id', current.id).select().single();
+    const { data, error } = await supabase.from('marketing_permissions').update({ legal_review_at: new Date().toISOString() }).eq('id', current.id).eq('updated_at', current.updated_at).select().maybeSingle();
     setBusy(false);
+    if (!error && !data) { toast({ title: 'Record changed', description: 'Reload and review the latest evidence.', variant: 'destructive' }); await load(); return; }
     if (error) return toast({ title: 'Review failed', description: error.message, variant: 'destructive' });
     await load(); await open(data);
   };
 
-  const decision = previewDecision(current ?? (form.email ? null : null), suppressed, lookupFailed);
+  const decision = previewDecision(current, suppressed, lookupFailed);
+  const dirty = hasUnsavedChanges(current, form);
   const set = (k: string, v: string | boolean | null) => setForm((f) => ({ ...f, [k]: v }));
 
   return (
@@ -96,7 +103,8 @@ export function PermissionManager() {
         <Card>
           <CardHeader><CardTitle className="text-base flex items-center gap-2">Decision {decision.allowed ? <Badge>Eligible</Badge> : <Badge variant="destructive">Blocked</Badge>}</CardTitle></CardHeader>
           <CardContent>
-            {!current && <p className="text-xs text-muted-foreground mb-1">Unsaved record — shown as the server would treat it today.</p>}
+            <p className="text-xs text-muted-foreground mb-1">Decision for the saved record (preflight; the server re-checks the final email before any send).</p>
+            {dirty && <p className="text-xs text-destructive mb-1">Unsaved changes — not reflected below. Saving clears the review.</p>}
             <ul className="list-disc pl-5 text-sm space-y-1">{decision.reasons.map((r) => <li key={r}>{r}</li>)}</ul>
             {current && <p className="text-xs text-muted-foreground mt-2">Review: {current.legal_review_at ? `${new Date(current.legal_review_at).toLocaleString()} by ${current.legal_review_by}` : 'none'}</p>}
           </CardContent>
@@ -113,7 +121,7 @@ export function PermissionManager() {
             <div className="sm:col-span-2"><Label>Notes</Label><Textarea value={String(form.notes ?? '')} onChange={(e) => set('notes', e.target.value)} /></div>
             <div className="sm:col-span-2 flex gap-2">
               <Button onClick={save} disabled={busy}>Save evidence</Button>
-              <Button variant="outline" onClick={review} disabled={busy || !current || !!current.legal_review_at}>Mark reviewed by me</Button>
+              <Button variant="outline" onClick={review} disabled={busy || !current || !!current.legal_review_at || dirty}>Mark reviewed by me</Button>
             </div>
           </CardContent>
         </Card>

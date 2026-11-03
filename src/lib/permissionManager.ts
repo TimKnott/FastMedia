@@ -5,7 +5,7 @@ export const EMAIL_ROUTES = ['none', 'consent', 'existing_customer'] as const;
 
 export type PermissionForm = Record<string, string | boolean | null>;
 
-const EVIDENCE_KEYS = ['email', 'country', 'contact_type', 'gdpr_lawful_basis', 'email_route', 'consent_at', 'consent_text', 'consent_source', 'consent_sender', 'consent_scope', 'consent_revoked_at', 'customer_sale_ref', 'customer_collected_at', 'customer_sender', 'customer_similar_products', 'customer_optout_offered_at_collection', 'objection_at', 'country_assessment_ref', 'notes'] as const;
+const EVIDENCE_KEYS = ['email', 'country', 'contact_type', 'gdpr_lawful_basis', 'email_route', 'consent_at', 'consent_text', 'consent_source', 'consent_sender', 'consent_scope', 'consent_method', 'consent_text_version', 'consent_proof_ref', 'consent_revoked_at', 'customer_sale_ref', 'customer_collected_at', 'customer_sender', 'customer_similar_products', 'customer_optout_offered_at_collection', 'objection_at', 'country_assessment_ref', 'notes'] as const;
 
 /** Builds the row to save. Any evidence edit clears the review, so a human must re-review it. */
 export function toPermissionRow(f: PermissionForm) {
@@ -26,4 +26,11 @@ export function toPermissionRow(f: PermissionForm) {
 /** Same shared fail-closed gate the server enforces; display only — it never grants permission. */
 export function previewDecision(p: Partial<MarketingPermission> | null, suppressed: boolean, lookupFailed = false) {
   return evaluateMarketingEligibility(p as MarketingPermission | null, { suppressed, lookupFailed, footerHasOptOut: true });
+}
+
+/** True when the form differs from the saved record (ignoring server-managed fields). */
+export function hasUnsavedChanges(saved: Record<string, unknown> | null, form: PermissionForm) {
+  if (!saved) return Object.values(form).some((v) => v !== '' && v !== null && v !== 'unknown' && v !== 'none');
+  const a = toPermissionRow(saved as PermissionForm), b = toPermissionRow(form);
+  return JSON.stringify(a) !== JSON.stringify(b);
 }

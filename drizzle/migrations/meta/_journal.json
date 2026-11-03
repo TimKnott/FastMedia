@@ -155,6 +155,13 @@
       "when": 1793717801437,
       "tag": "0021_marketing_permissions_gate",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1793718637116,
+      "tag": "0022_permission_evidence_and_review_reset",
+      "breakpoints": true
     }
   ]
 }

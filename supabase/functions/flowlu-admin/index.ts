@@ -6,6 +6,7 @@ import { generateJson } from '../_shared/ai-json.ts';
 import { sendViaGmail } from '../_shared/gmail-fallback.ts';
 import { checkMarketingEligibility } from '../_shared/legal-eligibility.ts';
 import { suppressionGate } from '../_shared/suppression-gate.ts';
+import { marketingFooter, unsubscribeUrlFor } from '../_shared/marketing-footer.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -239,8 +240,16 @@ async function sendLeadEmail(leadId: number, to: string, subject: string, text: 
   const { data: suppressed, error: suppressionError } = await sb.from('suppressed_emails').select('id').eq('email', to).maybeSingle();
   const gate = suppressionGate(!!suppressed, !!suppressionError);
   if (gate.blocked) return { sent: false, blocked: true, error: gate.reason, logged: false };
-  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}</div>`;
-  const sent = await sendViaGmail(to, subject, html, text);
+  // Lead emails are promotional: final legal gate on the exact rendered message, fail closed.
+  let html: string, fullText: string, headers: Record<string, string>;
+  try {
+    const f = marketingFooter('cs', await unsubscribeUrlFor(sb, to));
+    html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}<p style="margin-top:20px;font-size:12px;color:#6b7280">${f.html}</p></div>`;
+    fullText = `${text}\n\n${f.text}`; headers = f.headers;
+  } catch (e) { return { sent: false, blocked: true, error: `Legal block: ${(e as Error).message}`, logged: false }; }
+  const legal = await checkMarketingEligibility(sb, to, { html, text: fullText });
+  if (!legal.allowed) return { sent: false, blocked: true, error: `Legal block: ${legal.reasons.join(' | ')}`.slice(0, 1000), logged: false };
+  const sent = await sendViaGmail(to, subject, html, fullText, headers);
   let logged = false; let logError: string | null = null;
   if (sent.sent) {
     try { await noteInFlowlu(leadId, 'Email sent from FastMedia back office', `To: ${to}\nSubject: ${subject}\n\n${text}`); logged = true; }
