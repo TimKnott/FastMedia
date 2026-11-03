@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PermissionManager } from '@/components/admin/outreach/PermissionManager';
 import { EmailVisualEditor } from '@/components/admin/EmailVisualEditor';
 import { toast } from '@/hooks/use-toast';
 import { Copy, HelpCircle, Languages, Loader2, Play, Save, Star, Trash2, Upload, Video, X } from 'lucide-react';
@@ -80,12 +81,14 @@ export function EmailStudio() {
           <TabsTrigger value="compose">3 · Write &amp; adapt</TabsTrigger>
           <TabsTrigger value="merge">4 · Personalise</TabsTrigger>
           <TabsTrigger value="video">5 · Video</TabsTrigger>
+          <TabsTrigger value="permissions">6 · Permissions</TabsTrigger>
         </TabsList>
         <TabsContent value="guide"><GuidePanel onUse={useTemplate} /></TabsContent>
         <TabsContent value="templates"><TemplatesPanel saved={saved} reload={loadSaved} onUse={useTemplate} subject={subject} html={html} /></TabsContent>
         <TabsContent value="compose"><ComposePanel subject={subject} setSubject={setSubject} html={html} setHtml={setHtml} /></TabsContent>
         <TabsContent value="merge"><MergePanel subject={subject} html={html} /></TabsContent>
         <TabsContent value="video"><VideoPanel onInsert={(url) => { setHtml((h) => h + `<p><a href="${url}">▶ Watch the video</a></p>`); setTab('compose'); }} /></TabsContent>
+        <TabsContent value="permissions"><PermissionManager /></TabsContent>
       </Tabs>
     </div>
   );
