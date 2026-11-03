@@ -6,7 +6,7 @@ const reviewed = { legal_review_by: "admin", legal_review_at: "2026-11-01" };
 const consent: MarketingPermission = {
   email: "a@firma.cz", country: "CZ", contact_type: "explicit_opt_in", gdpr_lawful_basis: "consent",
   email_route: "consent", consent_at: "2026-10-01", consent_text: "I agree to FastMedia.Pro news",
-  consent_source: "https://www.fastmedia.pro/newsletter", consent_sender: "FastMedia.Pro", consent_scope: "web services news", ...reviewed,
+  consent_source: "https://www.fastmedia.pro/newsletter", consent_sender: "FastMedia.Pro", consent_scope: "web services news", consent_method: "web form checkbox", consent_text_version: "v1", consent_proof_ref: "form-log-1", ...reviewed,
 };
 
 describe("promotional email legal gate", () => {
