@@ -377,6 +377,12 @@ async function sendMessage(
       })
       return { sent: false, reason: 'suppressed' }
     }
+    const legal = await checkMarketingEligibility(db, prospect.email)
+    if (!legal.allowed) {
+      await db.from('outreach_messages').update({ status: 'skipped', error_message: `legal_block: ${legal.reasons.join(' | ')}`.slice(0, 1000) }).eq('id', message.id)
+      await logEvent(db, actor, 'skipped_legal', { prospectId: prospect.id, messageId: message.id, step: message.step, details: { reasons: legal.reasons } })
+      return { sent: false, reason: 'legal_block', reasons: legal.reasons }
+    }
   }
 
   const subject = testMode ? `[TEST → ${prospect.email}] ${message.subject}` : message.subject
@@ -508,6 +514,10 @@ async function approveMessage(
   if (prospect.unsubscribed_at || prospect.status === 'suppressed') throw new Error('prospect_not_contactable')
 
   const settings = await loadSettings(db)
+  if (!settings.test_mode) {
+    const legal = await checkMarketingEligibility(db, prospect.email)
+    if (!legal.allowed) throw new Error(`legal_block: ${legal.reasons.join(' | ')}`)
+  }
   const now = new Date().toISOString()
   const edits: Record<string, unknown> = {}
   if (typeof args.subject === 'string' && args.subject.trim() && args.subject !== message.subject) {
@@ -846,6 +856,15 @@ async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
       : `Hello${signal.name ? ` ${signal.name}` : ''},\n\nI noticed you started a form on our site and did not finish it. If it is easier, reply to this email and I will finish it for you.\n\nInstant price guide: ${SITE}/calculator\nRecent work: ${SITE}/case-studies\n\nKind regards,\nTim Knott, FastMedia.Pro`
 
     if (!gmailFallbackAvailable()) break
+    if (!settings.test_mode) {
+      // Recovery mail is promotional: same legal gate as campaigns.
+      const legal = await checkMarketingEligibility(db, signal.email)
+      if (!legal.allowed) {
+        await db.from('visitor_signals').update({ recovery_status: 'skipped' }).eq('id', signal.id)
+        await logEvent(db, actor, 'skipped_legal', { details: { signalId: signal.id, reasons: legal.reasons } })
+        continue
+      }
+    }
     const recipient = settings.test_mode ? settings.test_inbox || REPLY_TO : signal.email
     const finalSubject = settings.test_mode ? `[TEST → ${signal.email}] ${subject}` : subject
     const result = await sendViaGmail(recipient, finalSubject, htmlFromText(body, footerFor(signal.language)), body)

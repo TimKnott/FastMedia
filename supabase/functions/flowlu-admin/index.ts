@@ -4,6 +4,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 import { generateJson } from '../_shared/ai-json.ts';
 import { sendViaGmail } from '../_shared/gmail-fallback.ts';
+import { checkMarketingEligibility } from '../_shared/legal-eligibility.ts';
 import { suppressionGate } from '../_shared/suppression-gate.ts';
 
 const corsHeaders = {
@@ -426,6 +427,9 @@ Deno.serve(async (req) => {
         if (!l?.contact_email || ['replied', 'won', 'lost'].includes(l.pipeline_stage)) {
           await sb.from('flowlu_lead_sequences').update({ status: 'cancelled', error: l?.contact_email ? 'Stopped: lead replied or closed' : 'No email on lead' }).eq('id', s.id); skipped++; continue;
         }
+        // Sequences are promotional follow-ups: legal gate re-checked immediately before send.
+        const legal = await checkMarketingEligibility(sb, l.contact_email);
+        if (!legal.allowed) { await sb.from('flowlu_lead_sequences').update({ status: 'cancelled', error: `Legal block: ${legal.reasons.join(' | ')}`.slice(0, 1000) }).eq('id', s.id); skipped++; continue; }
         const r = await sendLeadEmail(s.flowlu_lead_id, l.contact_email, s.subject, s.body);
         await sb.from('flowlu_lead_sequences').update(r.sent ? { status: 'sent', sent_at: new Date().toISOString(), error: null } : { status: r.blocked ? 'cancelled' : 'failed', error: r.error }).eq('id', s.id);
         if (r.sent) { sent++; await sb.from('flowlu_lead_replies').insert({ flowlu_lead_id: s.flowlu_lead_id, to_email: l.contact_email, subject: s.subject, body: s.body, status: 'sent', flowlu_logged: r.logged, sent_at: new Date().toISOString() }); } else if (r.blocked) skipped++; else failed++;
@@ -461,6 +465,9 @@ Deno.serve(async (req) => {
       const leadId = Number(body.lead_id);
       const { data: l } = await sb.from('flowlu_leads').select('contact_email').eq('id', leadId).maybeSingle();
       if (!l?.contact_email) return json({ error: 'This lead has no email address' }, 400);
+      { const { data: ll } = await sb.from('flowlu_leads').select('contact_email').eq('id', leadId).maybeSingle();
+        const legal = ll?.contact_email ? await checkMarketingEligibility(sb, ll.contact_email) : { allowed: false, reasons: ['No email on lead.'] };
+        if (!legal.allowed) return json({ ok: false, error: 'legal_block', reasons: legal.reasons }, 422); }
       const { data: upd } = await sb.from('flowlu_lead_sequences').update({ status: 'approved' }).eq('flowlu_lead_id', leadId).eq('status', 'draft').select('id');
       return json({ ok: true, approved: upd?.length ?? 0 });
     }

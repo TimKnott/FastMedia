@@ -3282,6 +3282,114 @@ export type Database = {
         }
         Relationships: []
       }
+      marketing_permission_audit: {
+        Row: {
+          actor: string | null
+          created_at: string
+          email: string
+          id: number
+          new_row: Json | null
+          old_row: Json | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          email: string
+          id?: never
+          new_row?: Json | null
+          old_row?: Json | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          email?: string
+          id?: never
+          new_row?: Json | null
+          old_row?: Json | null
+        }
+        Relationships: []
+      }
+      marketing_permissions: {
+        Row: {
+          consent_at: string | null
+          consent_revoked_at: string | null
+          consent_scope: string | null
+          consent_sender: string | null
+          consent_source: string | null
+          consent_text: string | null
+          contact_type: string
+          country: string | null
+          country_assessment_ref: string | null
+          created_at: string
+          customer_collected_at: string | null
+          customer_optout_offered_at_collection: boolean | null
+          customer_sale_ref: string | null
+          customer_sender: string | null
+          customer_similar_products: boolean | null
+          email: string
+          email_route: string
+          gdpr_lawful_basis: string
+          id: string
+          legal_review_at: string | null
+          legal_review_by: string | null
+          notes: string | null
+          objection_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          consent_at?: string | null
+          consent_revoked_at?: string | null
+          consent_scope?: string | null
+          consent_sender?: string | null
+          consent_source?: string | null
+          consent_text?: string | null
+          contact_type?: string
+          country?: string | null
+          country_assessment_ref?: string | null
+          created_at?: string
+          customer_collected_at?: string | null
+          customer_optout_offered_at_collection?: boolean | null
+          customer_sale_ref?: string | null
+          customer_sender?: string | null
+          customer_similar_products?: boolean | null
+          email: string
+          email_route?: string
+          gdpr_lawful_basis?: string
+          id?: string
+          legal_review_at?: string | null
+          legal_review_by?: string | null
+          notes?: string | null
+          objection_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          consent_at?: string | null
+          consent_revoked_at?: string | null
+          consent_scope?: string | null
+          consent_sender?: string | null
+          consent_source?: string | null
+          consent_text?: string | null
+          contact_type?: string
+          country?: string | null
+          country_assessment_ref?: string | null
+          created_at?: string
+          customer_collected_at?: string | null
+          customer_optout_offered_at_collection?: boolean | null
+          customer_sale_ref?: string | null
+          customer_sender?: string | null
+          customer_similar_products?: boolean | null
+          email?: string
+          email_route?: string
+          gdpr_lawful_basis?: string
+          id?: string
+          legal_review_at?: string | null
+          legal_review_by?: string | null
+          notes?: string | null
+          objection_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       module_requests: {
         Row: {
           admin_notes: string | null

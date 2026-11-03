@@ -196,3 +196,4 @@
 - [x] Footer Kreativní Česko credit: wording "Oficiálně registrovaný podnik v ČR" / "Officially registered Czech business"
 
 - [ ] Pick email tool for AI-drafted campaign emails (~300/day) to existing leads; review before send
+- [ ] Email Studio upgrade (remaining, needs new budget): admin UI to record marketing permissions + preflight/exclusion report; AI-credit-only enrichment workflow with provenance/caps; template versioning; deliverability checklist; dashboard counts; deploy updated senders after approval.
