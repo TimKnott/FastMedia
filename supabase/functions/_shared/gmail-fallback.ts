@@ -24,6 +24,7 @@ export async function sendViaGmail(
   subject: string,
   html: string,
   text?: string,
+  extraHeaders: Record<string, string> = {},
 ): Promise<GmailFallbackResult> {
   const lovableKey = Deno.env.get('LOVABLE_API_KEY')
   const connectionKey = Deno.env.get('GOOGLE_MAIL_API_KEY')
@@ -33,6 +34,7 @@ export async function sendViaGmail(
   const raw = [
     `To: ${to}`,
     `Subject: ${headerValue(subject)}`,
+    ...Object.entries(extraHeaders).filter(([k, v]) => /^[A-Za-z-]+$/.test(k) && !/[\r\n]/.test(v)).map(([k, v]) => `${k}: ${v}`),
     'MIME-Version: 1.0',
     `Content-Type: multipart/alternative; boundary="${boundary}"`,
     '',
