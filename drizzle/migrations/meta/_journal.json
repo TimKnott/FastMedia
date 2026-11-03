@@ -148,6 +148,13 @@
       "when": 1793563767864,
       "tag": "0020_outreach_queue_rollback_diagnostic",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1793717801437,
+      "tag": "0021_marketing_permissions_gate",
+      "breakpoints": true
     }
   ]
 }
