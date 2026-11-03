@@ -860,7 +860,7 @@ async function recoverAbandonedForms(db: Db, actor: Actor, settings: Settings) {
       // Recovery mail is promotional: same legal gate as campaigns.
       const legal = await checkMarketingEligibility(db, signal.email)
       if (!legal.allowed) {
-        await db.from('visitor_signals').update({ recovery_status: 'blocked' }).eq('id', signal.id)
+        await db.from('visitor_signals').update({ recovery_status: 'skipped' }).eq('id', signal.id)
         await logEvent(db, actor, 'skipped_legal', { details: { signalId: signal.id, reasons: legal.reasons } })
         continue
       }
