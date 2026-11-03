@@ -18,3 +18,4 @@
 - Campaign Studio stages/tool mapping live in src/lib/campaignStudio.ts and reuse existing admin pages; external send/publish is only ever recorded after explicit approval, never triggered automatically.
 - Public partner signup/referral go through validated security-definer RPCs (register_partner, submit_referral, get_partner_programme_public); partner tables stay admin-only.
 - Cold-email studio (src/components/admin/outreach, src/lib/emailStudio.ts) only drafts and copies emails; sending stays in the approval-gated outreach queue so nothing goes out unapproved. Personal videos are served via the public video-view function with signed URLs from a private bucket.
+- Promotional email legality is enforced server-side by supabase/functions/_shared/legal-eligibility.ts against marketing_permissions (append-only audited) at approval and immediately before every send; it fails closed so public/enriched data never becomes permission.
