@@ -20,6 +20,9 @@ export interface MarketingPermission {
   consent_sender?: string | null;
   consent_scope?: string | null;
   consent_revoked_at?: string | null;
+  consent_method?: string | null;        // how it was captured (form checkbox, signed paper...)
+  consent_text_version?: string | null;  // version of the consent wording shown
+  consent_proof_ref?: string | null;     // proof of the affirmative action (form log id, confirmation email id)
   customer_sale_ref?: string | null;
   customer_collected_at?: string | null;
   customer_sender?: string | null;
@@ -60,7 +63,7 @@ export function evaluateMarketingEligibility(
   const route = p.email_route ?? 'none';
   if (route === 'consent') {
     if (p.consent_revoked_at) r.push('Consent was revoked.');
-    for (const [k, label] of [['consent_at', 'consent time'], ['consent_text', 'consent wording'], ['consent_source', 'consent source'], ['consent_scope', 'consent scope']] as const) {
+    for (const [k, label] of [['consent_at', 'consent time'], ['consent_text', 'consent wording'], ['consent_source', 'consent source'], ['consent_scope', 'consent purpose/scope'], ['consent_method', 'capture method'], ['consent_text_version', 'consent wording version'], ['consent_proof_ref', 'proof of affirmative action']] as const) {
       if (!has(p[k])) r.push(`Consent evidence missing: ${label}.`);
     }
     if ((p.consent_sender ?? '') !== SENDER_ENTITY) r.push('Consent was not given to this sender.');
@@ -77,17 +80,49 @@ export function evaluateMarketingEligibility(
 
 export const normaliseEmail = (e: string) => String(e ?? '').trim().toLowerCase();
 
-/** Loads permission + suppression for one address and evaluates it. Any lookup error blocks. */
+/** Path every unsubscribe link must use; the token is checked against email_unsubscribe_tokens. */
+export const UNSUBSCRIBE_PATH = '/functions/v1/marketing-unsubscribe';
+export const SENDER_ID_MARKERS = ['FastMedia.Pro', '17308551'];
+
+/** Inspects the FINAL rendered message (after template + personalisation), never a flag. */
+export function validateRenderedMarketingMessage(html: string, text: string): GateResult {
+  const r: string[] = [];
+  const h = String(html ?? ''), t = String(text ?? '');
+  for (const m of SENDER_ID_MARKERS) {
+    if (!h.includes(m) || !t.includes(m)) r.push(`Rendered message lacks sender identification (${m}).`);
+  }
+  const esc = UNSUBSCRIBE_PATH.replace(/[/.]/g, '\\$&');
+  const hrefRe = new RegExp(`href=["']https://[^"'\\s]+${esc}\\?token=[A-Za-z0-9_-]{16,}["']`, 'i');
+  const textRe = new RegExp(`https://\\S+${esc}\\?token=[A-Za-z0-9_-]{16,}`, 'i');
+  if (!hrefRe.test(h)) r.push('Rendered HTML has no working unsubscribe link.');
+  if (!textRe.test(t)) r.push('Rendered plain text has no unsubscribe link.');
+  return { allowed: r.length === 0, reasons: r };
+}
+
+const envGet = (k: string): string | undefined =>
+  // deno-lint-ignore no-explicit-any
+  (globalThis as any).Deno?.env?.get?.(k);
+
+/**
+ * Final gate immediately before a promotional send: permission + suppression + the actual rendered
+ * footer + a confirmed-live unsubscribe endpoint. Without `rendered` it is an approval preflight only.
+ */
 // deno-lint-ignore no-explicit-any
-export async function checkMarketingEligibility(db: any, email: string, footerHasOptOut = true): Promise<GateResult> {
+export async function checkMarketingEligibility(db: any, email: string, rendered?: { html: string; text: string }): Promise<GateResult> {
   const addr = normaliseEmail(email);
   const [perm, sup] = await Promise.all([
     db.from('marketing_permissions').select('*').eq('email', addr).maybeSingle(),
     db.from('suppressed_emails').select('id').ilike('email', addr).limit(1),
   ]);
-  return evaluateMarketingEligibility(perm.data ?? null, {
+  const footer = rendered ? validateRenderedMarketingMessage(rendered.html, rendered.text) : { allowed: true, reasons: [] };
+  const base = evaluateMarketingEligibility(perm.data ?? null, {
     suppressed: (sup.data?.length ?? 0) > 0,
     lookupFailed: !!perm.error || !!sup.error,
-    footerHasOptOut,
+    footerHasOptOut: footer.allowed,
   });
+  const reasons = [...base.reasons, ...footer.reasons];
+  if (rendered && envGet('MARKETING_UNSUBSCRIBE_LIVE') !== 'true') {
+    reasons.push('Unsubscribe endpoint is not confirmed live (MARKETING_UNSUBSCRIBE_LIVE). Promotional sending is held.');
+  }
+  return { allowed: reasons.length === 0, reasons };
 }
