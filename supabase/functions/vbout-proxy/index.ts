@@ -190,10 +190,9 @@ Deno.serve(async (req) => {
         const { campaignId } = params;
         if (!campaignId)
           return json({ error: "campaignId required" }, 400);
-        const data = await vboutPost("emailmarketing/sendcampaign.json", {
-          id: campaignId,
-        });
-        return json(data);
+        // Held: Vbout list sends cannot be checked per recipient against the legal gate,
+        // suppression list or rendered unsubscribe footer, so this route fails closed.
+        return json({ error: "Vbout campaign sending is disabled: recipients cannot be checked against the legal eligibility gate. Use the approval-gated outreach queue." }, 403);
       }
 
       default:

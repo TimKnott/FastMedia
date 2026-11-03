@@ -56,6 +56,13 @@ Deno.serve(async (req) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to)) return json({ error: 'A valid recipient is required.' }, 400)
   if (!message) return json({ error: 'The reply cannot be empty.' }, 400)
 
+  // Reply-only route: it may answer a message the person sent us, never start promotional contact.
+  if (!inboundId) return json({ error: 'Replies must reference a received message. Use the approval-gated outreach queue for marketing.' }, 422)
+  const { data: inbound } = await admin.from('inbound_emails').select('from_address').eq('id', inboundId).maybeSingle()
+  if (!inbound || !String(inbound.from_address).toLowerCase().includes(to.toLowerCase())) {
+    return json({ error: 'Recipient does not match the sender of the referenced message.' }, 422)
+  }
+
   const raw = [
     `To: ${to}`,
     `Subject: ${headerValue(subject || 'Re: your message to FastMedia.Pro')}`,
