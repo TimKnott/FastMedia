@@ -3312,11 +3312,14 @@ export type Database = {
       marketing_permissions: {
         Row: {
           consent_at: string | null
+          consent_method: string | null
+          consent_proof_ref: string | null
           consent_revoked_at: string | null
           consent_scope: string | null
           consent_sender: string | null
           consent_source: string | null
           consent_text: string | null
+          consent_text_version: string | null
           contact_type: string
           country: string | null
           country_assessment_ref: string | null
@@ -3338,11 +3341,14 @@ export type Database = {
         }
         Insert: {
           consent_at?: string | null
+          consent_method?: string | null
+          consent_proof_ref?: string | null
           consent_revoked_at?: string | null
           consent_scope?: string | null
           consent_sender?: string | null
           consent_source?: string | null
           consent_text?: string | null
+          consent_text_version?: string | null
           contact_type?: string
           country?: string | null
           country_assessment_ref?: string | null
@@ -3364,11 +3370,14 @@ export type Database = {
         }
         Update: {
           consent_at?: string | null
+          consent_method?: string | null
+          consent_proof_ref?: string | null
           consent_revoked_at?: string | null
           consent_scope?: string | null
           consent_sender?: string | null
           consent_source?: string | null
           consent_text?: string | null
+          consent_text_version?: string | null
           contact_type?: string
           country?: string | null
           country_assessment_ref?: string | null
