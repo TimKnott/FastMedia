@@ -15,7 +15,7 @@ describe('permission manager mapping', () => {
     expect(d.allowed).toBe(false);
   });
   it('blocks when suppressed even with full consent', () => {
-    const p = { email: 'a@b.cz', country: 'CZ', contact_type: 'explicit_opt_in' as const, gdpr_lawful_basis: 'consent', email_route: 'consent' as const, consent_at: 't', consent_text: 'x', consent_source: 's', consent_scope: 'news', consent_sender: 'FastMedia.Pro', legal_review_by: 'u', legal_review_at: 't' };
+    const p = { email: 'a@b.cz', country: 'CZ', contact_type: 'explicit_opt_in' as const, gdpr_lawful_basis: 'consent', email_route: 'consent' as const, consent_at: 't', consent_text: 'x', consent_source: 's', consent_scope: 'news', consent_sender: 'FastMedia.Pro', consent_method: 'form', consent_text_version: 'v1', consent_proof_ref: 'p', legal_review_by: 'u', legal_review_at: 't' };
     expect(previewDecision(p, false).allowed).toBe(true);
     expect(previewDecision(p, true).allowed).toBe(false);
     expect(previewDecision(null, false).allowed).toBe(false);
