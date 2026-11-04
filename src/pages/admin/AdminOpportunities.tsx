@@ -161,7 +161,6 @@ function Detail({ id }: { id: string }) {
     const { error } = await supabase.from('opportunity_outcomes').insert({ opportunity_id: id, outcome: oc.outcome, value_cents: cents, currency: cents ? oc.currency : null, note: oc.note || null, actor_id: u.user?.id });
     toast({ title: error ? 'Could not record outcome' : 'Outcome recorded', description: error?.message }); load();
   };
-  const prompt = `Assess this ${kindLabel(o.kind).toLowerCase()} for FastMedia.pro (web development agency). Use only these facts; say what is unknown.\nTitle: ${o.title}\nCompany: ${o.company ?? 'unknown'}\nCountry: ${o.country ?? 'unknown'}\nService need: ${o.service_need ?? 'unknown'}\nSource (${o.source_type}): ${o.source_url}\nPosted: ${o.posted_at ?? 'unknown'}; deadline: ${o.deadline_at ?? 'none'}\nEvidence: ${list(o.evidence).join(' | ') || 'none'}\nRisks: ${list(o.risks).join(' | ') || 'none'}\nSuggest scope, deliverables, risks and a short proposal outline. Do not assume a purchase.`;
   const breakdown = o.score_breakdown as ScoreResult | undefined;
   return (
     <div className="space-y-4 p-4">
