@@ -49,9 +49,10 @@ export const oppChatGptUrl = (o: Opp) => {
   return `https://chatgpt.com/?q=${encodeURIComponent(`FastMedia.pro (web agency, Czech-based, British English) item. Use only these facts.\nTitle: ${o.title}\nSource: ${o.source_url}\nEvidence: ${list(o.evidence).join(' | ') || 'none'}\nPublic contact route: ${o.public_contact_route ?? 'not recorded'}\nRecommended next action: ${next}${com}\nAssess fit, check the pricing logic and draft the next step. Do not assume a purchase.`)}`;
 };
 /** Facts for ONE opportunity; commercial lines/benchmarks only when present. */
+type Bm = { label?: string; kind?: string; date?: string; url?: string };
 export const oppFacts = (o: Opp): Record<string, unknown> => {
   const q = hasCommercial(o) ? computeQuote(o.commercial) : null;
-  const bms = (o.commercial?.benchmarks ?? []).filter((b: any) => safeHttpUrl(b?.url)).map((b: any) => `${b.label} (${b.kind}, ${b.date}): ${safeHttpUrl(b.url)}`);
+  const bms = (o.commercial?.benchmarks ?? []).filter((b: Bm) => safeHttpUrl(b?.url)).map((b: Bm) => `${b.label} (${b.kind}, ${b.date}): ${safeHttpUrl(b.url)}`);
   return {
     Title: o.title, Type: kindLabel(o.kind), Company: o.company ?? 'unknown', Country: o.country ?? 'unknown',
     'Service need': o.service_need ?? 'unknown', Source: safeHttpUrl(o.source_url) ?? 'invalid or missing (do not use)', 'Source type': o.source_type,
@@ -161,7 +162,6 @@ function Detail({ id }: { id: string }) {
     const { error } = await supabase.from('opportunity_outcomes').insert({ opportunity_id: id, outcome: oc.outcome, value_cents: cents, currency: cents ? oc.currency : null, note: oc.note || null, actor_id: u.user?.id });
     toast({ title: error ? 'Could not record outcome' : 'Outcome recorded', description: error?.message }); load();
   };
-  const prompt = `Assess this ${kindLabel(o.kind).toLowerCase()} for FastMedia.pro (web development agency). Use only these facts; say what is unknown.\nTitle: ${o.title}\nCompany: ${o.company ?? 'unknown'}\nCountry: ${o.country ?? 'unknown'}\nService need: ${o.service_need ?? 'unknown'}\nSource (${o.source_type}): ${o.source_url}\nPosted: ${o.posted_at ?? 'unknown'}; deadline: ${o.deadline_at ?? 'none'}\nEvidence: ${list(o.evidence).join(' | ') || 'none'}\nRisks: ${list(o.risks).join(' | ') || 'none'}\nSuggest scope, deliverables, risks and a short proposal outline. Do not assume a purchase.`;
   const breakdown = o.score_breakdown as ScoreResult | undefined;
   return (
     <div className="space-y-4 p-4">
@@ -183,7 +183,6 @@ function Detail({ id }: { id: string }) {
           <p>Suggested deliverables: {list(o.deliverables).join(', ') || '—'}</p>
           <p>Evidence:</p><ul className="list-disc pl-5">{list(o.evidence).map((e, i) => <li key={i}>{e}</li>)}{!list(o.evidence).length && <li>None recorded</li>}</ul>
           <p>Risks: {list(o.risks).join(', ') || 'none recorded'}</p>
-          <a className="text-primary underline" target="_blank" rel="noopener noreferrer" title="Open ChatGPT with only this record's facts" href={`https://chatgpt.com/?q=${encodeURIComponent(prompt)}`}>Ask ChatGPT</a>
           <AiActions className="pt-2" kind="opportunity" name={o.title} facts={oppFacts(o)} />
         </CardContent></Card>
         <Card><CardHeader><CardTitle className="text-base">Score {o.priority_score}/100</CardTitle></CardHeader><CardContent className="text-xs text-muted-foreground">
@@ -357,7 +356,6 @@ function ItemLine({ r }: { r: Opp }) {
       <span className="text-xs text-muted-foreground">{r.priority_score} · {kindLabel(r.kind)}{r.deadline_at ? ` · deadline ${r.deadline_at.slice(0, 10)}` : ''}</span>
       {src && <a className="text-xs text-primary underline" href={src} target="_blank" rel="noopener noreferrer" title="Open the original source">source</a>}
       {cHref && <a className="text-xs text-primary underline" href={cHref} target="_blank" rel="noopener noreferrer" title="Published business contact route">contact</a>}
-      <a className="text-xs text-primary underline" href={oppChatGptUrl(r)} target="_blank" rel="noopener noreferrer" title="Ask ChatGPT about this item only">Ask ChatGPT</a>
       <AiActions className="w-full py-1" kind="opportunity" name={r.title} facts={oppFacts(r)} />
       {(() => { const a = adjusted(r); return a.q ? (
         <div className="w-full whitespace-pre-line rounded border border-border p-2 text-xs text-muted-foreground">
