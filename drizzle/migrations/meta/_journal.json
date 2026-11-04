@@ -169,6 +169,13 @@
       "when": 1793802822305,
       "tag": "0023_opportunity_intelligence",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793802861184,
+      "tag": "0024_opportunity_import_fix_skip_var",
+      "breakpoints": true
     }
   ]
 }
