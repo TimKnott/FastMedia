@@ -93,6 +93,7 @@ const AdminStoryStudio = lazy(() => import("./pages/admin/AdminStoryStudio"));
 const AdminAdStudio = lazy(() => import("./pages/admin/AdminAdStudio"));
 const AdminLeadScraper = lazy(() => import("./pages/admin/AdminLeadScraper"));
 const AdminFinder = lazy(() => import("./pages/admin/AdminFinder"));
+const AdminToolsHub = lazy(() => import("./pages/admin/AdminToolsHub"));
 const AdminCampaignStudio = lazy(() => import("./pages/admin/AdminCampaignStudio"));
 const AdminPartners = lazy(() => import("./pages/admin/AdminPartners"));
 const Partners = lazy(() => import("./pages/Partners"));
@@ -367,6 +368,7 @@ const App = () => (
               <Route path="story-studio" element={<ProtectedRoute minRole="admin"><AdminStoryStudio /></ProtectedRoute>} />
               <Route path="lead-scraper" element={<ProtectedRoute minRole="admin"><AdminLeadScraper /></ProtectedRoute>} />
               <Route path="finder" element={<ProtectedRoute minRole="admin"><AdminFinder /></ProtectedRoute>} />
+              <Route path="tools" element={<AdminToolsHub />} />
               <Route path="campaign-studio" element={<ProtectedRoute minRole="admin"><AdminCampaignStudio /></ProtectedRoute>} />
               <Route path="partners" element={<ProtectedRoute minRole="admin"><AdminPartners /></ProtectedRoute>} />
               <Route path="design-system" element={<ProtectedRoute minRole="admin"><DesignSystemShowcase /></ProtectedRoute>} />

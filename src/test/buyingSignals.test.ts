@@ -113,3 +113,10 @@ describe('opportunity dashboard helpers', () => {
     expect(q).toContain('Title: Shop'); expect(q).toContain('https://a.cz/x'); expect(q).toContain('need eshop');
   });
 });
+
+describe('admin tools hub', () => {
+  it('route exists and brand links to it', () => {
+    expect(readFileSync('src/App.tsx', 'utf8')).toMatch(/path="tools" element={<AdminToolsHub \/>}/);
+    expect(readFileSync('src/components/admin/AdminSidebar.tsx', 'utf8')).toMatch(/<Link to="\/admin\/tools"/);
+  });
+});
