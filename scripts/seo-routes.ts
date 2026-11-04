@@ -11,7 +11,7 @@ import { publicSeo } from '../src/lib/publicSeo.ts';
 import { languageLocales } from '../src/lib/publicLanguage.ts';
 import { isIndexablePath } from './seo-html.ts';
 import { blogPosts } from '../src/data/blogPosts.ts';
-import { safeSeoFetch, languageAlternatives } from '../src/lib/seoDynamic.ts';
+import { safeSeoFetch, languageAlternatives, pickSeoText } from '../src/lib/seoDynamic.ts';
 
 export interface RouteSeo {
   path: string;
@@ -520,15 +520,17 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
         .eq("status", "published"));
       if (posts) {
         for (const p of posts) {
-          const text = (value: unknown): string => typeof value === 'string' ? value : String((value as Record<string, unknown> | null)?.cs ?? (value as Record<string, unknown> | null)?.en ?? '');
-          const title = text(p.title);
-          const excerpt = text(p.excerpt);
-          const content = p.content as { cs?: { sections?: Array<{ type?: string; text?: string }> }; en?: { sections?: Array<{ type?: string; text?: string }> } } | null;
-          const paragraphs = (content?.cs?.sections ?? content?.en?.sections ?? []).filter(b => b.type === 'paragraph' || b.type === 'heading').map(b => b.text ?? '').filter(Boolean);
+          const picked = pickSeoText(p.title);
+          const title = picked.text;
+          const excerpt = pickSeoText(p.excerpt, picked.key).text;
+          const content = p.content as Record<string, { sections?: Array<{ type?: string; text?: string }> } | undefined> | null;
+          const sections = content?.[picked.key]?.sections?.length ? content[picked.key]!.sections! : (content?.cs?.sections ?? content?.en?.sections ?? []);
+          const paragraphs = sections.filter(b => b.type === 'paragraph' || b.type === 'heading').map(b => b.text ?? '').filter(Boolean);
+          if (!title) continue;
           routes.push({
             path: `/blog/${p.slug}`,
             title: `${title} | FastMedia.Pro`,
-            h1: title, language: "cs-CZ", contentBlocks: [excerpt, ...paragraphs],
+            h1: title, language: picked.language, contentBlocks: [excerpt, ...paragraphs],
             description: excerpt.slice(0, 160) || `Read "${title}" on the FastMedia.Pro blog.`,
             ogImage: p.hero_image_url ?? OG_IMG,
             ogType: "article",

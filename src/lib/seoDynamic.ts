@@ -20,3 +20,16 @@ export async function safeSeoFetch<T>(label: string, fetchRows: () => PromiseLik
     return [];
   }
 }
+const SEO_TEXT_ORDER = [['cs', 'cs-CZ'], ['en', 'en-GB'], ['de', 'de-DE']] as const;
+
+/** First non-empty localized string (cs → en → de); empty strings never count as a value. */
+export function pickSeoText(value: unknown, prefer?: string): { text: string; key: 'cs' | 'en' | 'de'; language: string } {
+  if (typeof value === 'string') return { text: value.trim(), key: 'cs', language: 'cs-CZ' };
+  const record = (value ?? {}) as Record<string, unknown>;
+  const order = prefer ? [...SEO_TEXT_ORDER].sort((a) => (a[0] === prefer ? -1 : 0)) : SEO_TEXT_ORDER;
+  for (const [key, language] of order) {
+    const text = typeof record[key] === 'string' ? (record[key] as string).trim() : '';
+    if (text) return { text, key, language };
+  }
+  return { text: '', key: 'cs', language: 'cs-CZ' };
+}
