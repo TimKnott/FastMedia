@@ -1,3 +1,4 @@
+import { seoTitleOverride } from '@/data/seoTitleOverrides';
 import { fitTitle } from '@/lib/seoTitle';
 import { Helmet } from 'react-helmet-async';
 import { usePageSeo } from '@/hooks/usePageSeo';
@@ -52,7 +53,6 @@ const SEOHead = ({
   const effectiveOgType = (pagePath && seo?.og_type) || ogType;
   const effectiveNoindex = (pagePath && seo?.noindex) || noindex;
 
-  const fullTitle = fitTitle(effectiveTitle);
   // Normalize: strip trailing slash (except root) to avoid duplicate-content
   // signals — SiteGuru flagged /path and /path/ as separate URLs.
   const resolvedPath = canonical ?? pagePath ?? pathname;
@@ -61,6 +61,7 @@ const SEOHead = ({
       ? '/'
       : resolvedPath.replace(/\/+$/, '')
     : undefined;
+  const fullTitle = fitTitle(seoTitleOverride(normalizedPath ?? pathname, effectiveTitle));
   const canonicalUrl = normalizedPath ? `${BASE_URL}${localizedPath(normalizedPath, language)}` : undefined;
   const hasTranslations = translatedPaths.some(p => p === normalizedPath);
 
