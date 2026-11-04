@@ -13,6 +13,7 @@ import { parseImport, validateRows, prepareForImport, sha256, type PreviewRow } 
 import { SignalBreakdown } from '@/components/admin/BuyingSignalPanel';
 import type { ScoreResult } from '@/lib/buyingSignals';
 import { computeQuote, commercialPriority, commercialSummary, fmtMoney, DEFAULT_PACKAGES, type Commercial } from '@/lib/commercialScope';
+import { benchmarksFor } from '@/lib/marketBenchmarks';
 
 const hasCommercial = (o: Opp) => !!o.commercial && Object.keys(o.commercial).length > 0;
 export const adjusted = (o: Opp) => {
@@ -291,11 +292,30 @@ function CommercialCard({ o, onSaved }: { o: Opp; onSaved: () => void }) {
             <p>Labour + fixed {fmtMoney(q.base_cents, cur)} + contingency {fmtMoney(q.contingency_cents, cur)} = walk-away floor <b className="text-foreground">{fmtMoney(q.floor_cents, cur)}</b></p>
             <p>Competitive {fmtMoney(q.competitive_cents, cur)} · <b className="text-foreground">Recommended opening {fmtMoney(q.recommended_cents, cur)}</b> (floor × (1 + {parsed?.margin_pct ?? '?'}% margin)) · Premium {fmtMoney(q.premium_cents, cur)}</p>
             <p>Buyer stated budget (kept separate): {parsed?.buyer_budget_cents != null ? fmtMoney(parsed.buyer_budget_cents, cur) : 'not stated'}</p>
-            <p>Market evidence: {q.benchmark.valid} valid of {q.benchmark.count} benchmarks · pricing confidence <b className="text-foreground">{q.confidence}</b></p>
+            <p>Market evidence: {q.benchmark.valid} used of {q.benchmark.count} benchmarks · pricing confidence <b className="text-foreground">{q.confidence}</b>{q.benchmark.hourly_low != null && <> · observed {fmtMoney(q.benchmark.hourly_low, cur)}–{fmtMoney(q.benchmark.hourly_high, cur)}/h</>}</p>
             {parsed?.fx && <p>FX: 1 {cur} = {parsed.fx.rate} {parsed.fx.to} (<a className="text-primary underline" href={safeHttpUrl(parsed.fx.source_url) ?? '#'} target="_blank" rel="noopener noreferrer">{parsed.fx.date}</a>)</p>}
             {q.notes.map((n) => <p key={n} className="italic">{n}</p>)}
             <p>Priority after commercial check: <b className="text-foreground">{adj.score}</b> — {adj.reason}</p>
           </>)}
+        </div>
+        <div className="space-y-2 text-xs lg:col-span-2">
+          <p className="font-medium text-foreground">Public market benchmarks — buyer country {o.country ?? 'not recorded'}</p>
+          {!benchmarksFor(o.country).length && <p className="text-muted-foreground">No cited public benchmark stored for this country. Add your own with a source URL and date, or leave pricing confidence insufficient.</p>}
+          {benchmarksFor(o.country).map((b) => {
+            const added = !!parsed?.benchmarks?.some((x) => x.url === b.url && x.label === b.label);
+            return (
+              <div key={b.label} className="rounded-md border border-border p-2 text-muted-foreground">
+                <p className="text-foreground">{b.label}</p>
+                <p><span className="rounded bg-muted px-1">Evidence: {b.kind.replace('_', ' ')}</span> · {fmtMoney(b.low_cents, b.currency)}{b.high_cents !== b.low_cents && <>–{fmtMoney(b.high_cents, b.currency)}</>} per {b.unit} · Period: {b.period} · Published/updated {b.date} · Retrieved {b.retrieved}</p>
+                <p className="italic">{b.note}</p>
+                <a className="text-primary underline" href={b.url} target="_blank" rel="noopener noreferrer">{b.source}</a>
+                <Button size="sm" variant="outline" className="ml-2 h-7" disabled={!parsed || added}
+                  onClick={() => { const { country, period, retrieved, source, note, ...core } = b; setText(JSON.stringify({ ...parsed, benchmarks: [...(parsed?.benchmarks ?? []), core] }, null, 2)); }}
+                  title="Copy this cited benchmark into the scope (then Save scope)">{added ? 'Added' : 'Add to quote'}</Button>
+              </div>
+            );
+          })}
+          <p className="text-muted-foreground">Labels: <b>Evidence</b> = copied from the cited page; <b>Estimate</b> = FastMedia calculation from your rates and hours. Benchmarks never set your price automatically.</p>
         </div>
       </CardContent></Card>
   );

@@ -47,3 +47,20 @@ describe('commercial scoping', () => {
     expect(commercialPriority(80, 'high', computeQuote({ ...base, no_bid_reason: 'credentials' })).score).toBe(10);
   });
 });
+
+import { benchmarksFor } from '@/lib/marketBenchmarks';
+describe('country benchmarks', () => {
+  it('every stored benchmark is cited and dated', () => {
+    for (const b of [...benchmarksFor('DE'), ...benchmarksFor('CZ')]) { expect(b.url).toMatch(/^https:\/\//); expect(b.date).toMatch(/^\d{4}-\d{2}-\d{2}$/); }
+  });
+  it('day rates convert to hourly at 8h and monthly wages are context only', () => {
+    const q = computeQuote({ currency: 'EUR', margin_pct: 20, packages: [{ name: 'Build', role: 'dev', tier: 'standard', hours: 10 }], rates_cents: { dev: 5000 }, benchmarks: benchmarksFor('DE') });
+    expect(q.benchmark.hourly_low).toBe(4163); expect(q.benchmark.hourly_high).toBe(8575); expect(q.confidence).toBe('low');
+    const cz = computeQuote({ currency: 'CZK', margin_pct: 20, packages: [{ name: 'Build', role: 'dev', tier: 'standard', hours: 10 }], rates_cents: { dev: 5000 }, benchmarks: benchmarksFor('CZ') });
+    expect(cz.benchmark.valid).toBe(0); expect(cz.confidence).toBe('insufficient');
+  });
+  it('other-currency benchmarks are not used', () => {
+    const q = computeQuote({ currency: 'CZK', margin_pct: 20, packages: [{ name: 'B', role: 'dev', tier: 'standard', hours: 1 }], rates_cents: { dev: 1 }, benchmarks: benchmarksFor('DE') });
+    expect(q.benchmark.valid).toBe(0);
+  });
+});
