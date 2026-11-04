@@ -21,3 +21,4 @@
 - Promotional email legality is enforced server-side by supabase/functions/_shared/legal-eligibility.ts against marketing_permissions (append-only audited) at approval and immediately before every send; it fails closed so public/enriched data never becomes permission.
 - Opportunity Intelligence (opportunity_* tables) is admin-only and isolated from prospects/leads/outreach; rows enter only through the validated opportunity_import RPC with a mandatory source URL, and buying-signal scores come from the deterministic src/lib/buyingSignals.ts rules (priority/fit, never purchase probability).
 - Admin tool guidance uses src/components/admin/AdminHelp.tsx (InfoTip/HelpLabel tooltips on hover+focus, dismissible HowToUse panel remembered per tool) so tools share one onboarding pattern.
+- SEO titles pass through src/lib/fitTitle (seoTitle.ts) in SEOHead and prerender so the brand suffix is dropped rather than exceeding 65 chars; database titles are never rewritten in code.
