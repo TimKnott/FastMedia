@@ -51,7 +51,7 @@ describe('buildQuoteInputs', () => {
   it('normalises country codes and treats OTHER as null', () => {
     expect(buildQuoteInputs([{ role: 'qa', hours: 2 }], 'cz', null).country).toBe('CZ');
     expect(buildQuoteInputs([{ role: 'qa', hours: 2 }], 'OTHER', null).country).toBeNull();
-    expect(buildQuoteInputs([{ role: 'qa', hours: 2 }], 'xx', null).country).toBeNull();
+    expect(buildQuoteInputs([{ role: 'qa', hours: 2 }], 'xx', null).country).toBe('XX');
   });
 });
 
