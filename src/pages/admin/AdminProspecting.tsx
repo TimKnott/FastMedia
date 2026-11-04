@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import BuyingSignalPanel from '@/components/admin/BuyingSignalPanel';
-import { safeHttpUrl, safeMailto, distinctSourceUrl, isDirectoryListing, prospectChatGptUrl } from '@/lib/prospectLinks';
+import { safeHttpUrl, safeMailto, distinctSourceUrl, isDirectoryListing, prospectFacts } from '@/lib/prospectLinks';
+import AiActions from '@/components/admin/AiActions';
+import { analyseProspect } from '@/lib/buyingSignals';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -756,11 +758,7 @@ const AdminProspecting = () => {
                                   <a href={src} {...ext} className="text-primary hover:underline">{src}</a>
                                 </p>
                               )}
-                              <Button asChild size="sm" variant="outline" className="mt-2 h-7 text-xs">
-                                <a href={prospectChatGptUrl(prospect, src)} {...ext} aria-label={`Ask ChatGPT about ${prospect.company} (opens in a new tab)`}>
-                                  Ask ChatGPT
-                                </a>
-                              </Button>
+<AiActions className="mt-2" kind="prospect" name={prospect.company} facts={prospectFacts(prospect, src, (() => { const r = analyseProspect(prospect).result; return r.confidence === 'not_assessed' ? { 'Fit score': 'not assessed' } : { 'Fit score (priority, not purchase probability)': `${r.score}/100, confidence ${r.confidence}`, 'Signal type': r.intent }; })())} />
                             </>
                           );
                         })()}

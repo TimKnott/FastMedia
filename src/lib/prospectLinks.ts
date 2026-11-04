@@ -52,18 +52,23 @@ export const chatGptUrl = (intro: string, facts: Record<string, unknown>): strin
   return `https://chatgpt.com/?q=${encodeURIComponent(prompt.slice(0, 6000))}`;
 };
 
-export const prospectChatGptUrl = (p: {
+export type ProspectInput = {
   company: string; contact_name: string | null; email: string; website: string | null;
   region: string | null; trade: string | null; language?: string; source: string; notes: string | null;
   research?: { summary?: string; signals?: string[]; hooks?: string[]; pain_points?: string[]; industry?: string } | null;
-}, sourceUrl: string | null = null) =>
+};
+
+/** Facts for ONE prospect. Unsafe URLs are dropped, never passed on. */
+export const prospectFacts = (p: ProspectInput, sourceUrl: string | null = null, extra: Record<string, unknown> = {}) => ({
+  Company: p.company, Contact: p.contact_name, 'Public email': p.email, Language: p.language || 'cs',
+  'Website / listing': safeHttpUrl(p.website), 'Original source': safeHttpUrl(sourceUrl),
+  Region: p.region, Trade: p.trade ?? p.research?.industry, 'Research summary': p.research?.summary,
+  Signals: p.research?.signals, 'Pain points': p.research?.pain_points, Hooks: p.research?.hooks,
+  Notes: p.notes, 'Source label': p.source, ...extra,
+});
+
+export const prospectChatGptUrl = (p: ProspectInput, sourceUrl: string | null = null) =>
   chatGptUrl(
     `I run FastMedia.Pro, a web-design agency. Assess this business as a prospect and help me draft a short, polite, personalised first outreach email in the prospect's language (${p.language || 'cs'}), then give an English explanation and translation. Flag anything that must be checked before contacting them, including whether I have a lawful basis to send marketing email.`,
-    {
-      Company: p.company, Contact: p.contact_name, Email: p.email,
-      'Website / listing': safeHttpUrl(p.website), 'Original source': sourceUrl,
-      Region: p.region, Trade: p.trade ?? p.research?.industry, 'Research summary': p.research?.summary,
-      Signals: p.research?.signals, 'Pain points': p.research?.pain_points, Hooks: p.research?.hooks,
-      Notes: p.notes, 'Source label': p.source,
-    },
+    prospectFacts(p, sourceUrl),
   );

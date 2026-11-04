@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { safeHttpUrl } from '@/lib/prospectLinks';
+import AiActions from '@/components/admin/AiActions';
 import { parseImport, validateRows, prepareForImport, sha256, type PreviewRow } from '@/lib/opportunityImport';
 import { SignalBreakdown } from '@/components/admin/BuyingSignalPanel';
 import type { ScoreResult } from '@/lib/buyingSignals';
@@ -46,6 +47,21 @@ export const oppChatGptUrl = (o: Opp) => {
   const bms = (o.commercial?.benchmarks ?? []).filter((b: any) => b?.url).map((b: any) => `${b.label} (${b.kind}, ${b.date}): ${b.url}`).join(' | ');
   const com = q ? `\nCommercial estimate (FastMedia assumptions, not market facts):\n${commercialSummary(o.commercial, q)}\nLines: ${q.lines.map((l) => `${l.name} ${l.hours}h × ${fmtMoney(l.rate_cents, o.commercial.currency)}`).join('; ')}\nBenchmarks: ${bms || 'none'}` : '';
   return `https://chatgpt.com/?q=${encodeURIComponent(`FastMedia.pro (web agency, Czech-based, British English) item. Use only these facts.\nTitle: ${o.title}\nSource: ${o.source_url}\nEvidence: ${list(o.evidence).join(' | ') || 'none'}\nPublic contact route: ${o.public_contact_route ?? 'not recorded'}\nRecommended next action: ${next}${com}\nAssess fit, check the pricing logic and draft the next step. Do not assume a purchase.`)}`;
+};
+/** Facts for ONE opportunity; commercial lines/benchmarks only when present. */
+export const oppFacts = (o: Opp): Record<string, unknown> => {
+  const q = hasCommercial(o) ? computeQuote(o.commercial) : null;
+  const bms = (o.commercial?.benchmarks ?? []).filter((b: any) => safeHttpUrl(b?.url)).map((b: any) => `${b.label} (${b.kind}, ${b.date}): ${safeHttpUrl(b.url)}`);
+  return {
+    Title: o.title, Type: kindLabel(o.kind), Company: o.company ?? 'unknown', Country: o.country ?? 'unknown',
+    'Service need': o.service_need ?? 'unknown', Source: safeHttpUrl(o.source_url) ?? 'invalid or missing (do not use)', 'Source type': o.source_type,
+    Posted: o.posted_at ?? 'unknown', Deadline: o.deadline_at, Evidence: list(o.evidence).length ? list(o.evidence) : 'none recorded',
+    Risks: list(o.risks), 'Public contact route': o.public_contact_route ?? 'not recorded', 'Fit reason': o.fit_reason,
+    'Priority/fit score (not purchase probability)': o.priority_score != null ? `${o.priority_score}/100` : null,
+    'Commercial estimate (FastMedia assumptions, not market facts)': q ? commercialSummary(o.commercial, q) : null,
+    'Quote lines': q ? q.lines.map((l) => `${l.name} ${l.hours}h × ${fmtMoney(l.rate_cents, o.commercial.currency)}`) : null,
+    'Cited benchmarks': bms,
+  };
 };
 const sel = 'h-9 rounded-md border border-input bg-background px-2 text-sm';
 
@@ -110,6 +126,7 @@ function Inbox() {
               <Badge variant="outline">{r.status}</Badge>
               <span className="font-semibold text-foreground" title="Priority/fit score 0–100, not a purchase probability">{r.priority_score}</span>
             </div>
+            <AiActions className="w-full" kind="opportunity" name={r.title} facts={oppFacts(r)} />
           </CardContent></Card>
         ))}
       </div>
@@ -167,6 +184,7 @@ function Detail({ id }: { id: string }) {
           <p>Evidence:</p><ul className="list-disc pl-5">{list(o.evidence).map((e, i) => <li key={i}>{e}</li>)}{!list(o.evidence).length && <li>None recorded</li>}</ul>
           <p>Risks: {list(o.risks).join(', ') || 'none recorded'}</p>
           <a className="text-primary underline" target="_blank" rel="noopener noreferrer" title="Open ChatGPT with only this record's facts" href={`https://chatgpt.com/?q=${encodeURIComponent(prompt)}`}>Ask ChatGPT</a>
+          <AiActions className="pt-2" kind="opportunity" name={o.title} facts={oppFacts(o)} />
         </CardContent></Card>
         <Card><CardHeader><CardTitle className="text-base">Score {o.priority_score}/100</CardTitle></CardHeader><CardContent className="text-xs text-muted-foreground">
           {breakdown?.breakdown ? <SignalBreakdown result={breakdown} /> : <p>No breakdown stored.</p>}
@@ -340,6 +358,7 @@ function ItemLine({ r }: { r: Opp }) {
       {src && <a className="text-xs text-primary underline" href={src} target="_blank" rel="noopener noreferrer" title="Open the original source">source</a>}
       {cHref && <a className="text-xs text-primary underline" href={cHref} target="_blank" rel="noopener noreferrer" title="Published business contact route">contact</a>}
       <a className="text-xs text-primary underline" href={oppChatGptUrl(r)} target="_blank" rel="noopener noreferrer" title="Ask ChatGPT about this item only">Ask ChatGPT</a>
+      <AiActions className="w-full py-1" kind="opportunity" name={r.title} facts={oppFacts(r)} />
       {(() => { const a = adjusted(r); return a.q ? (
         <div className="w-full whitespace-pre-line rounded border border-border p-2 text-xs text-muted-foreground">
           {commercialSummary(r.commercial, a.q)}{'\n'}Priority after commercial check: {a.score} ({a.reason})
