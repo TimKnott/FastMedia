@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import BuyingSignalPanel from '@/components/admin/BuyingSignalPanel';
 import { safeHttpUrl, safeMailto, distinctSourceUrl, isDirectoryListing, prospectChatGptUrl } from '@/lib/prospectLinks';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -785,6 +786,7 @@ const AdminProspecting = () => {
                           </ul>
                         )}
                         {prospect.notes && <p className="mt-1 text-xs italic break-words">Note: {prospect.notes}</p>}
+                        <BuyingSignalPanel prospect={prospect} />
                         <Input
                           className="mt-2 h-8 text-xs"
                           placeholder="LinkedIn profile address (optional)"
