@@ -22,3 +22,4 @@
 - Opportunity Intelligence (opportunity_* tables) is admin-only and isolated from prospects/leads/outreach; rows enter only through the validated opportunity_import RPC with a mandatory source URL, and buying-signal scores come from the deterministic src/lib/buyingSignals.ts rules (priority/fit, never purchase probability).
 - Admin tool guidance uses src/components/admin/AdminHelp.tsx (InfoTip/HelpLabel tooltips on hover+focus, dismissible HowToUse panel remembered per tool) so tools share one onboarding pattern.
 - SEO titles pass through fitTitle in src/lib/seoTitle.ts in SEOHead and prerender so the brand suffix is dropped rather than exceeding 65 chars; database titles are never rewritten in code.
+- Per-record AI help uses src/components/admin/AiActions.tsx with task prompts from src/lib/aiActions.ts, fed only that record's facts (prospectFacts/oppFacts); links open ChatGPT and never call AI or send anything.
