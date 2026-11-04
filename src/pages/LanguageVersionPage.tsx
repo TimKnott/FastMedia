@@ -60,6 +60,13 @@ export default function LanguageVersionPage() {
               </section>
             ))}
             <Button asChild size="lg"><Link to="/contact">{content.cta_label}</Link></Button>
+            {languageAlternatives(siblings, data.source_path).length > 1 && (
+              <nav aria-label="Languages" className="flex flex-wrap gap-3 border-t border-border pt-6 text-sm">
+                {languageAlternatives(siblings, data.source_path).filter(a => a.language !== 'x-default').map(a => (
+                  <Link key={a.path} to={a.path} hrefLang={a.language} className="underline text-muted-foreground hover:text-foreground">{a.language.toUpperCase()}</Link>
+                ))}
+              </nav>
+            )}
           </article>
         )}
       </main>
