@@ -207,3 +207,5 @@
 - [ ] Per-opportunity authored research notes table, tooltips across rest of Prospecting, briefing email delivery — deferred (budget).
 - [x] Commercial scoping/quote calculator per opportunity (hours by role, sourced benchmarks, floor/competitive/recommended/premium, conservative priority adjustment) in detail + digest + ChatGPT prompt.
 - [ ] Live market-benchmark research per opportunity — needs real records; enter sourced benchmarks per item (no rates assumed).
+- [x] Admin tools hub: read-only tool health + "Needs your approval" list.
+- [ ] Central "Update everything" orchestrator + run ledger — deferred (no safely testable per-module update contract; several module jobs spend AI credits or contact people).
