@@ -176,6 +176,13 @@
       "when": 1793802861184,
       "tag": "0024_opportunity_import_fix_skip_var",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1793803071937,
+      "tag": "0025_opportunity_revoke_anon",
+      "breakpoints": true
     }
   ]
 }

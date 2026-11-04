@@ -1,0 +1,2 @@
+REVOKE ALL ON public.opportunities, public.opportunity_import_batches, public.opportunity_outcomes, public.opportunity_events FROM anon;
+REVOKE ALL ON FUNCTION public.opportunity_log_event(), public.opportunity_outcome_event() FROM PUBLIC, anon, authenticated;
