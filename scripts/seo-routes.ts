@@ -1,3 +1,4 @@
+import { fitTitle } from '../src/lib/seoTitle.ts';
 import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '../src/lib/orgSchema.ts';
 // Single source of truth for routes the prerender script writes per-page HTML for.
 // Dynamic routes (blog articles, legal docs, custom demos) are fetched at
@@ -187,7 +188,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/eugrants",
-    title: "Creative Voucher Regional Partners in All 14 Czech Regions | FastMedia.Pro",
+    title: "Creative Voucher Partners in All 14 Czech Regions | FastMedia.Pro",
     description:
       "An interactive map of the regional innovation partners administering Kreativni vouchery in all 14 Czech regions, from ICUK and SIC to JIC, MSIC and TIC Zlin.",
     ogImage: OG_IMG,
@@ -201,7 +202,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/grant-process",
-    title: "Creative Vouchers: Application Process, Deadlines, Documents | FastMedia.Pro",
+    title: "Creative Voucher Process, Deadlines & Documents | FastMedia.Pro",
     description:
       "How a Kreativni vouchery application runs step by step: the seven phases of a call, the deadlines you cannot miss, and every document needed for the application and final accounting.",
     ogImage: OG_IMG,
@@ -244,7 +245,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/eu-creative-grant",
-    title: "EU Creative Grant for Websites: Free Help to Apply | FastMedia.Pro",
+    title: "EU Creative Grant for Websites: Help to Apply | FastMedia.Pro",
     description: "How Czech businesses can use the creative voucher to fund up to 85% of a bespoke website, capped at 150,000 CZK. Free course, business plan and AI prompts.",
     ogImage: OG_IMG,
     changefreq: "monthly",
@@ -254,7 +255,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/grant-business-plan",
-    title: "Creative Voucher Business Plan Template & AI Prompts | FastMedia.Pro",
+    title: "Creative Voucher Business Plan & AI Prompts | FastMedia.Pro",
     description: "A free pro-forma business plan and application draft for the Czech creative voucher, with copy-ready AI prompts to write it in any language.",
     ogImage: OG_IMG,
     changefreq: "monthly",
@@ -264,7 +265,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/eu-language-websites",
-    title: "Websites in Every EU Language, Written for Each Market | FastMedia.Pro",
+    title: "Websites in Every EU Language, Per Market | FastMedia.Pro",
     description: "FastMedia.Pro builds full language versions of your website in any of the 24 official EU languages, written for each market rather than just translated.",
     ogImage: OG_IMG,
     changefreq: "monthly",
@@ -288,7 +289,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/grant-application",
-    title: "Creative Voucher Application Pack — Forms & Declarations | FastMedia",
+    title: "Creative Voucher Application Forms Pack | FastMedia.Pro",
     description:
       "Complete the Kreativni vouchery application pack: business details, project scope, 85/15 budget breakdown, de minimis and declarations. We return submission-ready documents.",
     ogImage: OG_IMG,
@@ -618,6 +619,8 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     const original = routes.find(route => route.path === base);
     if (original) Object.assign(original, { title: versions.cs.title, description: versions.cs.description, h1: versions.cs.title.split('|')[0].trim(), contentBlocks: versions.cs.content, language: 'cs-CZ', alternates });
   }
+
+  for (const route of routes) route.title = fitTitle(route.title);
 
   // Guard: drop any malformed entry so prerendering can never crash on it
   return [...new Map(routes.filter(
