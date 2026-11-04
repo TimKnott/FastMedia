@@ -382,7 +382,7 @@ function demoRoute(trade: string): RouteSeo {
   const lower = label.toLowerCase();
   return {
     path: `/demo/${trade}`,
-    title: `${label} Website Template — Live demo | FastMedia.Pro`,
+    title: `${label} Website Demo | FastMedia.Pro`,
     description: `Explore an illustrative ${lower} website template. Preview the layout and discuss booking, contact and optional features for your own business.`,
     ogImage: OG_IMG,
     ogType: "website",
