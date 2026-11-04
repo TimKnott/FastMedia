@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import logo from '@/assets/logo.jpeg';
 import {
   LayoutDashboard,
   FileText,
@@ -68,6 +69,7 @@ export interface MenuItem {
 }
 
 export const mainItems: MenuItem[] = [
+  { titleKey: 'All admin tools', url: '/admin/tools', icon: LayoutDashboard, minRole: 'editor' },
   { titleKey: 'Opportunities', url: '/admin/opportunities', icon: TrendingUp, minRole: 'admin' },
   { titleKey: 'Prospecting desk', url: '/admin/prospecting', icon: Send, minRole: 'admin' },
   { titleKey: 'Find leads', url: '/admin/prospecting?find=1', icon: Search, minRole: 'admin' },
@@ -221,21 +223,17 @@ const AdminSidebar = () => {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
-            <Shield className="w-5 h-5 text-primary-foreground" />
-          </div>
+        <Link to="/admin/tools" title="Back to all admin tools" aria-label="FastMedia.Pro — all admin tools" className="flex items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <img src={logo} alt="" className="w-9 h-9 rounded-lg object-cover flex-shrink-0" />
           {!collapsed && (
             <div className="overflow-hidden">
-              <p className="font-display font-semibold text-sm text-sidebar-foreground truncate">
-                FastMedia.Pro
-              </p>
+              <p className="font-display font-semibold text-sm text-sidebar-foreground truncate">FastMedia.Pro</p>
               <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 mt-0.5">
                 {roleLabelMap[role ?? ''] ?? 'Loading…'}
               </Badge>
             </div>
           )}
-        </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
