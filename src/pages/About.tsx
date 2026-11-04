@@ -103,9 +103,11 @@ const About = () => {
               <Card className="p-6">
                 <h2 className="text-xl font-bold mb-3 flex items-center gap-2"><Globe2 className="w-5 h-5 text-primary" />{en ? 'Areas served' : 'Kde působíme'}</h2>
                 <p className="text-sm text-muted-foreground">
-                  {en
-                    ? 'Louny and the Ústí nad Labem Region in person; the whole Czech Republic and EU remotely. Websites can be delivered in any official EU language.'
-                    : 'Osobně Louny a Ústecký kraj; celá Česká republika a EU na dálku. Weby dodáme v jakémkoli úředním jazyce EU.'}
+                  {language === 'de'
+                    ? 'Persönlich in Louny und der Region Ústí nad Labem; in ganz Tschechien und der EU aus der Ferne. Websites liefern wir in jeder EU-Amtssprache. Außerdem arbeiten wir aus der Ferne mit Unternehmen in englischsprachigen Märkten, darunter Großbritannien, die USA, Kanada und Australien.'
+                    : en
+                    ? 'Louny and the Ústí nad Labem Region in person; the whole Czech Republic and EU remotely. Websites can be delivered in any official EU language. We also work remotely with businesses in English-speaking markets, including the UK, US, Canada and Australia.'
+                    : 'Osobně Louny a Ústecký kraj; celá Česká republika a EU na dálku. Weby dodáme v jakémkoli úředním jazyce EU. Na dálku spolupracujeme také s firmami v anglicky mluvících zemích, včetně Velké Británie, USA, Kanady a Austrálie.'}
                 </p>
               </Card>
             </div>
