@@ -70,7 +70,7 @@ const StickyCTABar = () => {
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           className="fixed bottom-0 left-0 right-0 z-[60] pointer-events-none"
         >
-          <div className="container mx-auto px-4 pb-4 flex justify-center pointer-events-auto">
+          <div className="container mx-auto pl-4 pr-24 md:px-24 pb-4 flex justify-center pointer-events-auto">
             <div className="relative bg-card/95 backdrop-blur-lg border border-border shadow-2xl rounded-2xl overflow-hidden">
               {/* Collapse toggle */}
               <button

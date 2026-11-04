@@ -58,7 +58,7 @@ const SuperAdminInboxBadge = () => {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 24, scale: 0.9 }}
         transition={{ type: 'spring', stiffness: 240, damping: 20 }}
-        className="fixed bottom-6 left-6 z-[60]"
+        className="fixed bottom-20 left-6 z-[60]"
         role="alert"
         aria-live="polite"
       >
