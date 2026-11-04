@@ -1,3 +1,4 @@
+import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '@/lib/orgSchema';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAllSiteSettings } from '@/hooks/useSiteSettings';
 
@@ -28,7 +29,8 @@ const HomeJsonLd = () => {
     taxID: "17308551",
     identifier: { "@type": "PropertyValue", propertyID: "IČO", value: "17308551" },
     address: { "@type": "PostalAddress", addressLocality: "Louny", postalCode: "440 01", addressRegion: "Ústecký kraj", addressCountry: "CZ" },
-    areaServed: [{ "@type": "Country", name: "Czech Republic" }, { "@type": "Place", name: "European Union" }],
+    areaServed: ORG_AREA_SERVED,
+  subjectOf: ORG_PORTFOLIO,
     knowsLanguage: ["bg","hr","cs","da","nl","en","et","fi","fr","de","el","hu","ga","it","lv","lt","mt","pl","pt","ro","sk","sl","es","sv"],
     contactPoint: { "@type": "ContactPoint", telephone: "+420797864432", email: "support@fastmedia.pro", contactType: "sales", availableLanguage: ["cs", "en"] },
   }, description: t('hero.subtitle') };

@@ -1,3 +1,4 @@
+import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '@/lib/orgSchema';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -33,10 +34,8 @@ const About = () => {
         addressRegion: 'Ústecký kraj',
         addressCountry: 'CZ',
       },
-      areaServed: [
-        { '@type': 'Country', name: 'Czech Republic' },
-        { '@type': 'Place', name: 'European Union' },
-      ],
+      areaServed: ORG_AREA_SERVED,
+      subjectOf: ORG_PORTFOLIO,
     },
   };
 

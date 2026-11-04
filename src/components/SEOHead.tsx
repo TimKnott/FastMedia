@@ -1,3 +1,4 @@
+import { fitTitle } from '@/lib/seoTitle';
 import { Helmet } from 'react-helmet-async';
 import { usePageSeo } from '@/hooks/usePageSeo';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -51,9 +52,7 @@ const SEOHead = ({
   const effectiveOgType = (pagePath && seo?.og_type) || ogType;
   const effectiveNoindex = (pagePath && seo?.noindex) || noindex;
 
-  const fullTitle = effectiveTitle.includes('FastMedia')
-    ? effectiveTitle
-    : `${effectiveTitle} | FastMedia.Pro`;
+  const fullTitle = fitTitle(effectiveTitle);
   // Normalize: strip trailing slash (except root) to avoid duplicate-content
   // signals — SiteGuru flagged /path and /path/ as separate URLs.
   const resolvedPath = canonical ?? pagePath ?? pathname;
@@ -78,7 +77,7 @@ const SEOHead = ({
 
       {/* Hreflang for multilingual SEO */}
       {hasTranslations && normalizedPath && (['cs', 'en', 'de'] as const).map(lang => <link key={lang} rel="alternate" hrefLang={languageLocales[lang]} href={`${BASE_URL}${localizedPath(normalizedPath, lang)}`} />)}
-      {hasTranslations && normalizedPath && <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${localizedPath(normalizedPath, 'cs')}`} />}
+      {hasTranslations && normalizedPath && <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${localizedPath(normalizedPath, 'en')}`} />}
 
       <meta property="og:title" content={effectiveOgTitle || fullTitle} />
       <meta property="og:description" content={effectiveOgDescription || effectiveDescription} />
