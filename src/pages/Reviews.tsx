@@ -53,7 +53,7 @@ export default function Reviews() {
         title={en ? 'Client reviews | FastMedia.Pro' : 'Recenze klientů | FastMedia.Pro'}
         description={en ? 'Read genuine reviews from FastMedia.Pro clients and leave your own star rating.' : 'Přečtěte si skutečné recenze klientů FastMedia.Pro a napište vlastní hodnocení.'}
         pagePath="/reviews"
-        noindex
+        noindex={isLoading || reviews.length === 0}
       />
       <Navbar />
       <main className="container mx-auto px-4 lg:px-8 pt-28 pb-20 max-w-5xl">

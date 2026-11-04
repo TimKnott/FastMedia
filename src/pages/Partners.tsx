@@ -74,7 +74,8 @@ const Partners = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={t.title} description={t.intro} />
+      {/* Hidden from search until the programme is open with published terms. */}
+      <SEOHead title={t.title} description={t.intro} noindex={!(programme?.is_open && programme.terms?.trim())} />
       <Navbar />
       <main className="container mx-auto px-4 pt-28 pb-16 max-w-5xl space-y-8">
         <header className="space-y-3">

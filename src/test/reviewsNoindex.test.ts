@@ -8,6 +8,10 @@ describe("/reviews is hidden from search", () => {
     expect(xml).not.toContain("<loc>https://www.fastmedia.pro/reviews</loc>");
     expect(xml).toContain("<loc>https://www.fastmedia.pro/feature/reviews</loc>");
   });
+  it("/partners is absent from the static sitemap until terms exist", () => {
+    const xml = readFileSync("public/sitemap.xml", "utf8");
+    expect(xml).not.toContain("<loc>https://www.fastmedia.pro/partners</loc>");
+  });
   it("prerenders with robots noindex", () => {
     const head = buildHead({ path: "/reviews", title: "t", description: "d", noindex: true });
     expect(head).toContain('name="robots" content="noindex, follow"');
