@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { safeHttpUrl, safeMailto, distinctSourceUrl, isDirectoryListing, prospectChatGptUrl } from '@/lib/prospectLinks';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -722,14 +723,46 @@ const AdminProspecting = () => {
                   <Card key={prospect.id}>
                     <CardContent className="pt-6 grid gap-3 lg:grid-cols-12">
                       <div className="lg:col-span-3 min-w-0">
-                        <h3 className="font-semibold text-foreground break-words">{prospect.company}</h3>
-                        <p className="text-sm text-muted-foreground break-words">
-                          {prospect.contact_name ? `${prospect.contact_name} · ` : ''}
-                          {prospect.email}
-                        </p>
-                        {prospect.website && (
-                          <p className="text-xs text-muted-foreground break-words">{prospect.website}</p>
-                        )}
+                        {(() => {
+                          const site = safeHttpUrl(prospect.website);
+                          const mail = safeMailto(prospect.email);
+                          const src = distinctSourceUrl(prospect.research, site);
+                          const ext = { target: '_blank', rel: 'noopener noreferrer' } as const;
+                          return (
+                            <>
+                              <h3 className="font-semibold text-foreground break-words">
+                                {site ? (
+                                  <a href={site} {...ext} className="hover:text-primary hover:underline" aria-label={`Open ${prospect.company} website in a new tab`}>
+                                    {prospect.company}
+                                  </a>
+                                ) : prospect.company}
+                              </h3>
+                              <p className="text-sm text-muted-foreground break-words">
+                                {prospect.contact_name ? `${prospect.contact_name} · ` : ''}
+                                {mail ? <a href={mail} className="text-primary hover:underline">{prospect.email}</a> : prospect.email}
+                              </p>
+                              {site ? (
+                                <p className="text-xs break-words">
+                                  <span className="text-muted-foreground">{isDirectoryListing(site) ? 'Listing: ' : 'Website: '}</span>
+                                  <a href={site} {...ext} className="text-primary hover:underline">{site}</a>
+                                </p>
+                              ) : prospect.website ? (
+                                <p className="text-xs text-muted-foreground break-words">{prospect.website}</p>
+                              ) : null}
+                              {src && (
+                                <p className="text-xs break-words">
+                                  <span className="text-muted-foreground">Original source: </span>
+                                  <a href={src} {...ext} className="text-primary hover:underline">{src}</a>
+                                </p>
+                              )}
+                              <Button asChild size="sm" variant="outline" className="mt-2 h-7 text-xs">
+                                <a href={prospectChatGptUrl(prospect, src)} {...ext} aria-label={`Ask ChatGPT about ${prospect.company} (opens in a new tab)`}>
+                                  Ask ChatGPT
+                                </a>
+                              </Button>
+                            </>
+                          );
+                        })()}
                       </div>
                       <div className="lg:col-span-2 text-sm text-muted-foreground">
                         <Badge variant="outline">{prospect.source}</Badge>
