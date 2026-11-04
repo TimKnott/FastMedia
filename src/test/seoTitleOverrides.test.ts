@@ -13,6 +13,21 @@ describe('SEO title overrides', () => {
     expect(new Set(finals).size).toBe(31);
     for (const t of finals) expect(t.length).toBeLessThanOrEqual(65);
   });
+  it('every one of the 31 paths resolves from its original title (with or without brand suffix)', () => {
+    for (const p of paths) {
+      const o = SEO_TITLE_OVERRIDES[p];
+      expect(seoTitleOverride(p, o.original)).toBe(o.seo);
+      expect(seoTitleOverride(p + '/', `${o.original} | FastMedia.Pro`)).toBe(o.seo);
+      expect(o.seo.length).toBeLessThanOrEqual(65);
+    }
+    expect(paths.filter(p => p.startsWith('/blog/'))).toHaveLength(26);
+    expect(paths.filter(p => p.startsWith('/l/'))).toHaveLength(5);
+  });
+  it('runtime heads wire the override (blog via SEOHead, translated pages via LanguageVersionPage)', async () => {
+    const fs = await import('node:fs');
+    expect(fs.readFileSync('src/components/SEOHead.tsx', 'utf8')).toMatch(/fitTitle\(seoTitleOverride\(/);
+    expect(fs.readFileSync('src/pages/LanguageVersionPage.tsx', 'utf8')).toMatch(/fitTitle\(seoTitleOverride\(`\/l\/\$\{lang\}\/\$\{slug\}`, data\.title\)\)/);
+  });
   it('applies only while the stored title matches', () => {
     const p = paths[0];
     expect(seoTitleOverride(p, 'Some other language title')).toBe('Some other language title');

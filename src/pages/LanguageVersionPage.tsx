@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { languageAlternatives } from '@/lib/seoDynamic';
+import { seoTitleOverride } from '@/data/seoTitleOverrides';
+import { fitTitle } from '@/lib/seoTitle';
 
 export default function LanguageVersionPage() {
   const { lang = '', '*': rest = '' } = useParams();
@@ -33,7 +35,7 @@ export default function LanguageVersionPage() {
       <Navbar />
       {data && content && (
         <Helmet htmlAttributes={{ lang }}>
-          <title>{data.title}</title>
+          <title>{fitTitle(seoTitleOverride(`/l/${lang}/${slug}`, data.title))}</title>
           <meta name="description" content={data.meta_description || content.intro || data.title} />
           <link rel="canonical" href={url} />
           {languageAlternatives(siblings, data.source_path).map(alternate => <link key={alternate.path} rel="alternate" hrefLang={alternate.language} href={`https://www.fastmedia.pro${alternate.path}`} />)}
