@@ -12,6 +12,19 @@ import { safeHttpUrl } from '@/lib/prospectLinks';
 import { parseImport, validateRows, prepareForImport, sha256, type PreviewRow } from '@/lib/opportunityImport';
 import { SignalBreakdown } from '@/components/admin/BuyingSignalPanel';
 import type { ScoreResult } from '@/lib/buyingSignals';
+import { computeQuote, commercialPriority, commercialSummary, fmtMoney, DEFAULT_PACKAGES, type Commercial } from '@/lib/commercialScope';
+
+const hasCommercial = (o: Opp) => !!o.commercial && Object.keys(o.commercial).length > 0;
+export const adjusted = (o: Opp) => {
+  const q = hasCommercial(o) ? computeQuote(o.commercial as Commercial) : null;
+  return { q, ...commercialPriority(o.priority_score, o.score_breakdown?.confidence ?? 'low', q) };
+};
+const TEMPLATE: Commercial = {
+  currency: 'EUR', contingency_pct: 15, margin_pct: undefined, fixed_costs_cents: 0, weeks: undefined, buyer_budget_cents: null,
+  packages: DEFAULT_PACKAGES.map((name) => ({ name, role: name === 'Integrations' ? 'integration_specialist' : 'web_developer', tier: name === 'Integrations' ? 'specialist' : 'standard', hours: 0 })),
+  rates_cents: { web_developer: 0, integration_specialist: 0 },
+  benchmarks: [{ label: '', kind: 'advertised_rate', url: '', date: '', low_cents: undefined, high_cents: undefined, unit: 'hour' }],
+};
 
 type Opp = Record<string, any>;
 const STATUSES = ['new', 'reviewing', 'qualified', 'proposal_sent', 'won', 'lost', 'archived', 'rejected'];
@@ -28,7 +41,10 @@ export const groupKey = (r: Opp, f: string): string =>
   f === 'tier' ? topTier(r) : f === 'method' ? `${r.source_type} · ${r.discovery_method}` : String(r[f] ?? 'not recorded');
 export const oppChatGptUrl = (o: Opp) => {
   const next = o.kind === 'active_buyer_request' ? 'Verify the request is still open, then prepare a tailored proposal outline.' : 'Verify the hypothesis against the source before any contact.';
-  return `https://chatgpt.com/?q=${encodeURIComponent(`FastMedia.pro (web agency) item. Use only these facts.\nTitle: ${o.title}\nSource: ${o.source_url}\nEvidence: ${list(o.evidence).join(' | ') || 'none'}\nPublic contact route: ${o.public_contact_route ?? 'not recorded'}\nRecommended next action: ${next}\nAssess fit and draft the next step. Do not assume a purchase.`)}`;
+  const q = hasCommercial(o) ? computeQuote(o.commercial) : null;
+  const bms = (o.commercial?.benchmarks ?? []).filter((b: any) => b?.url).map((b: any) => `${b.label} (${b.kind}, ${b.date}): ${b.url}`).join(' | ');
+  const com = q ? `\nCommercial estimate (FastMedia assumptions, not market facts):\n${commercialSummary(o.commercial, q)}\nLines: ${q.lines.map((l) => `${l.name} ${l.hours}h × ${fmtMoney(l.rate_cents, o.commercial.currency)}`).join('; ')}\nBenchmarks: ${bms || 'none'}` : '';
+  return `https://chatgpt.com/?q=${encodeURIComponent(`FastMedia.pro (web agency, Czech-based, British English) item. Use only these facts.\nTitle: ${o.title}\nSource: ${o.source_url}\nEvidence: ${list(o.evidence).join(' | ') || 'none'}\nPublic contact route: ${o.public_contact_route ?? 'not recorded'}\nRecommended next action: ${next}${com}\nAssess fit, check the pricing logic and draft the next step. Do not assume a purchase.`)}`;
 };
 const sel = 'h-9 rounded-md border border-input bg-background px-2 text-sm';
 
@@ -172,6 +188,7 @@ function Detail({ id }: { id: string }) {
           {!outcomes.length && <p className="text-muted-foreground">Not recorded.</p>}
         </CardContent></Card>
       </div>
+      <CommercialCard o={o} onSaved={load} />
       <Card><CardHeader><CardTitle className="text-base">History</CardTitle></CardHeader><CardContent className="text-xs text-muted-foreground">
         {events.map((e) => <p key={e.id}>{new Date(e.created_at).toLocaleString()} · {e.action} {e.details?.changed ? `(${e.details.changed.join(', ')})` : ''}</p>)}
       </CardContent></Card>
@@ -245,6 +262,45 @@ function Methods() {
   );
 }
 
+function CommercialCard({ o, onSaved }: { o: Opp; onSaved: () => void }) {
+  const { toast } = useToast();
+  const [text, setText] = useState(JSON.stringify(hasCommercial(o) ? o.commercial : TEMPLATE, null, 2));
+  let parsed: Commercial | null = null; let err = '';
+  try { parsed = JSON.parse(text); } catch (e) { err = 'Invalid JSON'; }
+  const q = parsed ? computeQuote(parsed) : null; const cur = parsed?.currency ?? '';
+  const adj = commercialPriority(o.priority_score, o.score_breakdown?.confidence ?? 'low', q);
+  const save = async () => {
+    const { error } = await supabase.from('opportunities').update({ commercial: parsed as any }).eq('id', o.id);
+    toast({ title: error ? 'Save failed' : 'Commercial scope saved', description: error?.message }); onSaved();
+  };
+  return (
+    <Card><CardHeader><CardTitle className="text-base">Commercial scoping & quote (estimates, not promises)</CardTitle></CardHeader>
+      <CardContent className="grid gap-4 lg:grid-cols-2">
+        <div className="space-y-2">
+          <p className="text-xs text-muted-foreground">Enter work packages (hours, role, standard/specialist), your hourly rate per role (FastMedia assumption), contingency %, target margin %, buyer's stated budget, weeks, and sourced benchmarks (url, date, kind: advertised_rate | awarded_value | salary_derived | estimate). Amounts in cents of the buyer's currency. Set no_bid_reason for disqualifying credentials or deadlines.</p>
+          <Textarea aria-label="Commercial scope JSON" className="h-80 font-mono text-xs" value={text} onChange={(e) => setText(e.target.value)} />
+          {err && <p className="text-xs text-destructive">{err}</p>}
+          <Button disabled={!parsed} onClick={save} title="Save the scoping inputs to this record">Save scope</Button>
+        </div>
+        <div className="space-y-1 text-xs text-muted-foreground">
+          {q && (<>
+            {!q.ok && <p className="text-destructive">Incomplete — missing: {q.missing.join(', ')}</p>}
+            <table className="w-full"><thead className="sticky top-0 bg-background"><tr className="text-left"><th>Package</th><th>Role</th><th title="standard web/content vs specialist integration/architecture">Tier</th><th>Hours</th><th title="FastMedia rate assumption">Rate</th><th>Cost</th></tr></thead>
+              <tbody>{q.lines.map((l) => <tr key={l.name + l.role} className="border-t border-border"><td>{l.name}</td><td>{l.role}</td><td>{l.tier}</td><td>{l.hours}</td><td>{fmtMoney(l.rate_cents, cur)}</td><td>{fmtMoney(l.cost_cents, cur)}</td></tr>)}</tbody></table>
+            <p>Total hours {q.hours.total} ({q.hours.standard} standard / {q.hours.specialist} specialist) · blended {fmtMoney(q.blended_rate_cents, cur)}/h</p>
+            <p>Labour + fixed {fmtMoney(q.base_cents, cur)} + contingency {fmtMoney(q.contingency_cents, cur)} = walk-away floor <b className="text-foreground">{fmtMoney(q.floor_cents, cur)}</b></p>
+            <p>Competitive {fmtMoney(q.competitive_cents, cur)} · <b className="text-foreground">Recommended opening {fmtMoney(q.recommended_cents, cur)}</b> (floor × (1 + {parsed?.margin_pct ?? '?'}% margin)) · Premium {fmtMoney(q.premium_cents, cur)}</p>
+            <p>Buyer stated budget (kept separate): {parsed?.buyer_budget_cents != null ? fmtMoney(parsed.buyer_budget_cents, cur) : 'not stated'}</p>
+            <p>Market evidence: {q.benchmark.valid} valid of {q.benchmark.count} benchmarks · pricing confidence <b className="text-foreground">{q.confidence}</b></p>
+            {parsed?.fx && <p>FX: 1 {cur} = {parsed.fx.rate} {parsed.fx.to} (<a className="text-primary underline" href={safeHttpUrl(parsed.fx.source_url) ?? '#'} target="_blank" rel="noopener noreferrer">{parsed.fx.date}</a>)</p>}
+            {q.notes.map((n) => <p key={n} className="italic">{n}</p>)}
+            <p>Priority after commercial check: <b className="text-foreground">{adj.score}</b> — {adj.reason}</p>
+          </>)}
+        </div>
+      </CardContent></Card>
+  );
+}
+
 function useAll() {
   const [rows, setRows] = useState<Opp[] | null>(null);
   useEffect(() => { supabase.from('opportunities').select('*').limit(5000).then(({ data }) => setRows(data ?? [])); }, []);
@@ -264,6 +320,11 @@ function ItemLine({ r }: { r: Opp }) {
       {src && <a className="text-xs text-primary underline" href={src} target="_blank" rel="noopener noreferrer" title="Open the original source">source</a>}
       {cHref && <a className="text-xs text-primary underline" href={cHref} target="_blank" rel="noopener noreferrer" title="Published business contact route">contact</a>}
       <a className="text-xs text-primary underline" href={oppChatGptUrl(r)} target="_blank" rel="noopener noreferrer" title="Ask ChatGPT about this item only">Ask ChatGPT</a>
+      {(() => { const a = adjusted(r); return a.q ? (
+        <div className="w-full whitespace-pre-line rounded border border-border p-2 text-xs text-muted-foreground">
+          {commercialSummary(r.commercial, a.q)}{'\n'}Priority after commercial check: {a.score} ({a.reason})
+          {(r.commercial.benchmarks ?? []).filter((b: any) => safeHttpUrl(b?.url)).map((b: any, i: number) => <a key={i} className="ml-2 text-primary underline" href={safeHttpUrl(b.url)!} target="_blank" rel="noopener noreferrer" title={`${b.kind}, ${b.date}`}>{b.label || 'benchmark'}</a>)}
+        </div>) : null; })()}
     </li>
   );
 }
@@ -321,7 +382,7 @@ function Digest() {
   const rows = useAll();
   if (!rows) return <div className="p-4"><Header title="Daily briefing" /></div>;
   const since = Date.now() - 86400000;
-  const top = [...rows].filter((r) => !['archived', 'rejected', 'won', 'lost'].includes(r.status)).sort((a, b) => b.priority_score - a.priority_score).slice(0, 5);
+  const top = [...rows].filter((r) => !['archived', 'rejected', 'won', 'lost'].includes(r.status)).sort((a, b) => adjusted(b).score - adjusted(a).score).slice(0, 5);
   const fresh = rows.filter((r) => new Date(r.created_at).getTime() >= since && !top.includes(r)).slice(0, 8);
   const sections: [string, Opp[]][] = [['Top picks', top], ['New in last 24 h', fresh], ['Follow-ups due', rows.filter(isDue).slice(0, 8)]];
   return (
