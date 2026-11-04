@@ -211,6 +211,13 @@
       "when": 1793809665185,
       "tag": "0029_fix_quote_status_volatile",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1793811557746,
+      "tag": "0030_migration",
+      "breakpoints": true
     }
   ]
 }

@@ -52,13 +52,21 @@ describe('every promotional send route checks the final rendered message before 
     expect(gated).toBeLessThan(s.indexOf('const result = await sendViaGmail(recipient, subject, finalHtml'));
     expect(s.indexOf("checkMarketingEligibility(db, signal.email, { html: recHtml")).toBeLessThan(s.indexOf('sendViaGmail(recipient, finalSubject, recHtml'));
   });
-  it('flowlu-admin manual reply and sequences share the gated sendLeadEmail', () => {
+  it('flowlu-admin replies skip the marketing gate only for verified enquiries; suppression always applies', () => {
     const s = fn('flowlu-admin/index.ts');
-    const body = s.slice(s.indexOf('async function sendLeadEmail'), s.indexOf('async function sendLeadEmail') + 2000);
-    expect(body.indexOf('checkMarketingEligibility(sb, to, { html')).toBeGreaterThan(0);
-    expect(body.indexOf('checkMarketingEligibility(sb, to, { html')).toBeLessThan(body.indexOf('sendViaGmail('));
+    const start = s.indexOf('async function sendLeadEmail');
+    const body = s.slice(start, s.indexOf('\nasync function ', start + 1) > 0 ? s.indexOf('\nasync function ', start + 1) : s.indexOf('const STAGES', start));
+    const suppression = body.indexOf("from('suppressed_emails')");
+    const replyBranch = body.indexOf("if (mode === 'reply')");
+    expect(suppression).toBeGreaterThan(0);
+    expect(suppression).toBeLessThan(replyBranch);
+    // An unverified "reply" falls back to the full promotional gate.
+    expect(body).toMatch(/if \(!\(await leadHasContactedUs\(leadId, to\)\)\) mode = 'promotional';/);
+    const gate = body.indexOf('checkMarketingEligibility(sb, to, { html');
+    expect(gate).toBeGreaterThan(replyBranch);
+    expect(gate).toBeLessThan(body.lastIndexOf('sendViaGmail('));
     // Only other dispatch is the owner-inbox test copy.
-    expect((s.match(/sendViaGmail\(/g) ?? []).length).toBe(2); // test step + sendLeadEmail
+    expect((s.match(/sendViaGmail\(/g) ?? []).length).toBe(3); // test step + verified reply + gated promotional
     expect(s).toMatch(/const to = 'timknott@fastmedia\.pro';\s*\n\s*const html[^\n]*\n\s*const r = await sendViaGmail\(to/);
   });
   it('manual Gmail is reply-only and Vbout list sends are held', () => {
