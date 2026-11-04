@@ -183,7 +183,6 @@ function Detail({ id }: { id: string }) {
           <p>Suggested deliverables: {list(o.deliverables).join(', ') || '—'}</p>
           <p>Evidence:</p><ul className="list-disc pl-5">{list(o.evidence).map((e, i) => <li key={i}>{e}</li>)}{!list(o.evidence).length && <li>None recorded</li>}</ul>
           <p>Risks: {list(o.risks).join(', ') || 'none recorded'}</p>
-          <a className="text-primary underline" target="_blank" rel="noopener noreferrer" title="Open ChatGPT with only this record's facts" href={`https://chatgpt.com/?q=${encodeURIComponent(prompt)}`}>Ask ChatGPT</a>
           <AiActions className="pt-2" kind="opportunity" name={o.title} facts={oppFacts(o)} />
         </CardContent></Card>
         <Card><CardHeader><CardTitle className="text-base">Score {o.priority_score}/100</CardTitle></CardHeader><CardContent className="text-xs text-muted-foreground">
@@ -357,7 +356,6 @@ function ItemLine({ r }: { r: Opp }) {
       <span className="text-xs text-muted-foreground">{r.priority_score} · {kindLabel(r.kind)}{r.deadline_at ? ` · deadline ${r.deadline_at.slice(0, 10)}` : ''}</span>
       {src && <a className="text-xs text-primary underline" href={src} target="_blank" rel="noopener noreferrer" title="Open the original source">source</a>}
       {cHref && <a className="text-xs text-primary underline" href={cHref} target="_blank" rel="noopener noreferrer" title="Published business contact route">contact</a>}
-      <a className="text-xs text-primary underline" href={oppChatGptUrl(r)} target="_blank" rel="noopener noreferrer" title="Ask ChatGPT about this item only">Ask ChatGPT</a>
       <AiActions className="w-full py-1" kind="opportunity" name={r.title} facts={oppFacts(r)} />
       {(() => { const a = adjusted(r); return a.q ? (
         <div className="w-full whitespace-pre-line rounded border border-border p-2 text-xs text-muted-foreground">
