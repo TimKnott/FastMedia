@@ -72,7 +72,7 @@ const DEPARTMENTS: { name: string; desc: string; accent: string; urls: string[] 
     urls: ['/admin/opportunities', '/admin/prospecting', '/admin/prospecting?find=1', '/admin/finder', '/admin/lead-scraper', '/admin/lead-repository', '/admin/leads-hub'] },
   { name: 'Pipeline & follow-ups', desc: 'Enquiries, quotes, CRM and clients', accent: 'border-l-accent',
     urls: ['/admin/pipeline', '/admin/flowlu-leads', '/admin/flowlu', '/admin/leads', '/admin/enquiries', '/admin/quote-requests', '/admin/offer-leads', '/admin/grant-follow-up', '/admin/inbox', '/admin/clients', '/admin/client-projects', '/admin/tracker', '/admin/bookings', '/admin/voice-agent'] },
-  { name: 'Campaigns & marketing', desc: 'Campaign Studio, ads, email and partners', accent: 'border-l-secondary',
+  { name: 'Campaigns & marketing', desc: 'Campaign Studio, ads, email and partners', accent: 'border-l-destructive/60',
     urls: ['/admin/campaign-studio', '/admin/partners', '/admin/ad-studio', '/admin/ad-compliance', '/admin/video-studio', '/admin/story-studio', '/admin/newsletter', '/admin/vbout', '/admin/emails', '/admin/email-dashboard', '/admin/email-deliverability', '/admin/email-queue', '/admin/lead-emails', '/admin/ads', '/admin/reviews'] },
   { name: 'SEO & visibility', desc: 'Search, AI visibility and language versions', accent: 'border-l-primary',
     urls: ['/admin/seo', '/admin/seo-insights', '/admin/seo-health', '/admin/geo', '/admin/sitemap', '/admin/backlinks', '/admin/language-versions'] },

@@ -99,7 +99,7 @@ export const mainItems: MenuItem[] = [
   { titleKey: 'Email Dashboard', url: '/admin/email-dashboard', icon: Inbox, minRole: 'admin' },
   { titleKey: 'Email Deliverability', url: '/admin/email-deliverability', icon: Send, minRole: 'admin' },
   { titleKey: 'Lead Emails', url: '/admin/lead-emails', icon: Search, minRole: 'admin' },
-  { titleKey: 'admin.client_projects', url: '/admin/client-projects', icon: FolderKanban, minRole: 'editor' },
+  { titleKey: 'Client projects', url: '/admin/client-projects', icon: FolderKanban, minRole: 'editor' },
   { titleKey: 'Voice agent', url: '/admin/voice-agent', icon: Phone, minRole: 'admin' },
   { titleKey: 'Flowlu CRM', url: '/admin/flowlu', icon: Phone, minRole: 'admin' },
   { titleKey: 'Language versions', url: '/admin/language-versions', icon: Map, minRole: 'admin' },
