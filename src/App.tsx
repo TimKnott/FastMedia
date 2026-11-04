@@ -118,6 +118,7 @@ const AdminCaseStudies = lazy(() => import("./pages/admin/AdminCaseStudies"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
 const AdminLeadsHub = lazy(() => import("./pages/admin/AdminLeadsHub"));
 const AdminLeadRepository = lazy(() => import("./pages/admin/AdminLeadRepository"));
+const AdminOpportunities = lazy(() => import("./pages/admin/AdminOpportunities"));
 const AdminFlowluLeads = lazy(() => import("./pages/admin/AdminFlowluLeads"));
 const AdminBacklinks = lazy(() => import("./pages/admin/AdminBacklinks"));
 const AdminAds = lazy(() => import("./pages/admin/AdminAds"));
@@ -344,6 +345,8 @@ const App = () => (
               <Route path="leads" element={<AdminLeads />} />
               <Route path="leads-hub" element={<ProtectedRoute minRole="admin"><AdminLeadsHub /></ProtectedRoute>} />
               <Route path="lead-repository" element={<ProtectedRoute minRole="admin"><AdminLeadRepository /></ProtectedRoute>} />
+              <Route path="opportunities" element={<ProtectedRoute minRole="admin"><AdminOpportunities /></ProtectedRoute>} />
+              <Route path="opportunities/:id" element={<ProtectedRoute minRole="admin"><AdminOpportunities /></ProtectedRoute>} />
               <Route path="flowlu-leads" element={<ProtectedRoute minRole="admin"><AdminFlowluLeads /></ProtectedRoute>} />
               <Route path="pipeline" element={<ProtectedRoute minRole="admin"><AdminPipeline /></ProtectedRoute>} />
               <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />

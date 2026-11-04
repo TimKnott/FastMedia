@@ -197,3 +197,8 @@
 
 - [ ] Pick email tool for AI-drafted campaign emails (~300/day) to existing leads; review before send
 - [ ] Email Studio upgrade (remaining, needs new budget): admin UI to record marketing permissions + preflight/exclusion report; AI-credit-only enrichment workflow with provenance/caps; template versioning; deliverability checklist; dashboard counts; deploy updated senders after approval.
+
+## Nov 4 — Opportunity Intelligence MVP (cap 19 credits)
+- [x] Admin-only /admin/opportunities inbox, detail, import (JSON/CSV preview, validation, dedupe), manual outcomes, methods view; audit events.
+- [x] Conservative buying-signal panel on Prospecting desk (no data changes).
+- [ ] Daily digest page — deferred to save budget.
