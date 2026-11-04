@@ -215,7 +215,7 @@ const Navbar = () => {
           {/* Right side */}
           <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 ml-auto">
             {/* Quick contact actions - desktop only */}
-            <div className="hidden md:flex items-center gap-1.5 mr-1">
+            <div className="hidden lg:flex items-center gap-1.5 mr-1">
               <a
                 href="https://wa.me/447926400060"
                 target="_blank"
@@ -317,7 +317,7 @@ const Navbar = () => {
             <LanguageSwitcher />
 
             {/* CTA Button - hidden on mobile, visible sm+ */}
-            <a href="#contact" onClick={(e) => handleHashClick(e, '#contact')} className="hidden sm:block">
+            <a href="#contact" onClick={(e) => handleHashClick(e, "#contact")} className="hidden lg:block">
               <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity">
                 {t('nav.book')}
               </Button>

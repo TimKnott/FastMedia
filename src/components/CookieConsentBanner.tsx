@@ -59,7 +59,7 @@ const CookieConsentBanner = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed bottom-4 left-4 right-24 lg:left-auto lg:right-24 lg:max-w-md z-[70] bg-card border border-border rounded-2xl shadow-2xl p-5"
+          className="fixed bottom-32 left-4 right-24 lg:left-auto lg:right-24 lg:max-w-md z-[70] bg-card border border-border rounded-2xl shadow-2xl p-5"
         >
           <button
             onClick={() => handleConsent(false)}
