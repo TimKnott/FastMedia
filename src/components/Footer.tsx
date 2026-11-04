@@ -41,6 +41,13 @@ const Footer = () => {
     { href: '/reviews', label: language === 'de' ? 'Bewertungen' : (isEnglish ? 'Reviews' : 'Recenze') },
     { href: '/launch', label: language === 'de' ? 'Start' : (isEnglish ? 'Launch' : 'Start') },
     { href: '/install', label: t('nav.install') },
+    { href: '/offer', label: language === 'de' ? 'Angebot' : (isEnglish ? 'Offer' : 'Nabídka') },
+    { href: '/case-studies', label: language === 'de' ? 'Projektbeispiele' : (isEnglish ? 'Case studies' : 'Případové studie') },
+    { href: '/courses', label: language === 'de' ? 'Kurse' : (isEnglish ? 'Courses' : 'Kurzy') },
+    { href: '/grant-eligibility', label: t('nav.grant_rules') },
+    { href: '/eugrants', label: t('nav.grant_hubs') },
+    { href: '/eu-creative-grant', label: language === 'de' ? 'EU-Kreativförderung' : (isEnglish ? 'EU creative grant' : 'Kreativní vouchery') },
+    { href: '/eu-language-websites', label: language === 'de' ? 'Websites in EU-Sprachen' : (isEnglish ? 'EU language websites' : 'Weby v jazycích EU') },
   ];
 
   return (

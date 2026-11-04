@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard, CreditCard, UserCircle2, Loader2, LogOut, Shield } from 'lucide-react';
+import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard, CreditCard, UserCircle2, Loader2, LogOut, Shield, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -160,26 +160,39 @@ const Navbar = () => {
     { to: '/business', label: 'Admin: /business' },
     { to: '/equestrian', label: 'Admin: /equestrian' },
   ] : [];
-  const navLinks: { href: string; label: string; isRoute?: boolean; mobileOnly?: boolean }[] = [
+  const L = (cs: string, en: string, de: string) => (language === 'de' ? de : isEnglish ? en : cs);
+  // Grouped main menu (desktop dropdowns + mobile sections). Full link list lives in the footer.
+  const menuGroups: { label: string; items: { to: string; label: string }[] }[] = [
+    { label: L('Služby', 'Services', 'Leistungen'), items: [
+      { to: '/offer', label: L('Nabídka', 'Offer', 'Angebot') },
+      { to: '/calculator', label: L('Kalkulačka', 'Calculator', 'Kalkulator') },
+      { to: '/eu-language-websites', label: L('Weby v jazycích EU', 'EU language websites', 'Websites in EU-Sprachen') },
+      { to: '/consultant/tereza', label: t('nav.consultant') },
+      { to: '/inquiry', label: t('nav.inquiry') },
+    ] },
+    { label: L('Reference', 'Our work', 'Referenzen'), items: [
+      { to: '/case-studies', label: L('Případové studie', 'Case studies', 'Projektbeispiele') },
+      { to: '/reviews', label: L('Recenze', 'Reviews', 'Bewertungen') },
+    ] },
+    { label: L('Granty', 'Grants', 'Förderung'), items: [
+      { to: '/grant-wizard', label: L('Žádost o grant', 'Grant wizard', 'Förderanfrage') },
+      { to: '/grant-eligibility', label: L('Podmínky grantu', 'Grant rules', 'Förderbedingungen') },
+      { to: '/eugrants', label: L('Mapa krajů', 'Grant hubs map', 'Regionale Förderstellen') },
+      { to: '/eu-creative-grant', label: L('Kreativní vouchery', 'EU creative grant', 'EU-Kreativförderung') },
+    ] },
+    { label: L('Zdroje', 'Learn', 'Wissen'), items: [
+      { to: '/courses', label: L('Kurzy', 'Courses', 'Kurse') },
+      { to: '/blog', label: 'Blog' },
+    ] },
+    { label: L('Kontakt', 'Contact', 'Kontakt'), items: [{ to: '/contact', label: L('Kontakt', 'Contact', 'Kontakt') }] },
+    ...(campaignLinks.length ? [{ label: 'Admin', items: campaignLinks }] : []),
+  ];
+  const pageAnchors = [
     { href: '#demos', label: t('nav.demos') },
     { href: '#services', label: t('nav.services') },
     { href: '#reviews', label: t('nav.reviews') },
     ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
     { href: '#faq', label: t('nav.faq') },
-    { href: '/offer', label: t('nav.offer'), isRoute: true },
-    { href: '/case-studies', label: language === 'de' ? 'Projektbeispiele' : (isEnglish ? 'Case studies' : 'Případové studie'), isRoute: true },
-    { href: '/courses', label: language === 'de' ? 'Kurse' : (isEnglish ? 'Courses' : 'Kurzy'), isRoute: true },
-    { href: '/blog', label: 'Blog', isRoute: true },
-    { href: '/consultant/tereza', label: t('nav.consultant'), isRoute: true },
-    { href: '/calculator', label: t('nav.calculator'), isRoute: true },
-    { href: '/inquiry', label: t('nav.inquiry'), isRoute: true },
-    { href: '/grant-wizard', label: t('nav.grant'), isRoute: true },
-    { href: '/grant-eligibility', label: t('nav.grant_rules'), isRoute: true },
-    { href: '/eugrants', label: t('nav.grant_hubs'), isRoute: true, mobileOnly: true },
-    { href: '#contact', label: t('nav.contact') },
-    { href: '/install', label: t('nav.install'), isRoute: true, mobileOnly: true },
-    { href: '/admin/login', label: t('nav.admin'), isRoute: true },
-    ...campaignLinks.map(l => ({ href: l.to, label: l.label, isRoute: true })),
   ];
 
   return (
@@ -321,29 +334,25 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Desktop quick links row — makes the key pages reachable without opening the menu */}
-        <div className="hidden md:flex items-center gap-1 flex-wrap pb-2 -mt-1">
-          {[
-            { to: '/offer', label: language === 'de' ? 'Angebot' : (isEnglish ? 'Offer' : 'Nabídka') },
-            { to: '/case-studies', label: language === 'de' ? 'Projektbeispiele' : (isEnglish ? 'Case studies' : 'Případové studie') },
-            { to: '/grant-wizard', label: language === 'de' ? 'Förderanfrage' : (isEnglish ? 'Grant wizard' : 'Žádost o grant') },
-            { to: '/grant-eligibility', label: language === 'de' ? 'Förderbedingungen' : (isEnglish ? 'Grant rules' : 'Podmínky grantu') },
-            { to: '/eugrants', label: language === 'de' ? 'Regionale Förderstellen' : (isEnglish ? 'Grant hubs map' : 'Mapa krajů') },
-            { to: '/eu-creative-grant', label: language === 'de' ? 'EU-Kreativförderung' : (isEnglish ? 'EU creative grant' : 'Kreativní vouchery') },
-            { to: '/eu-language-websites', label: language === 'de' ? 'Websites in EU-Sprachen' : (isEnglish ? 'EU language websites' : 'Weby v jazycích EU') },
-            { to: '/calculator', label: language === 'de' ? 'Kalkulator' : (isEnglish ? 'Calculator' : 'Kalkulačka') },
-            { to: '/courses', label: language === 'de' ? 'Kurse' : (isEnglish ? 'Courses' : 'Kurzy') },
-            { to: '/blog', label: 'Blog' },
-            { to: '/contact', label: language === 'de' ? 'Kontakt' : (isEnglish ? 'Contact' : 'Kontakt') },
-            ...campaignLinks,
-          ].map((l) => (
-            <Link
-              key={l.to}
-              to={localizedPath(l.to, language)}
-              className="px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors"
-            >
-              {l.label}
+        {/* Desktop menu row — grouped into short dropdowns; every page is also in the footer */}
+        <div className="hidden md:flex items-center gap-1 pb-2 -mt-1">
+          {menuGroups.map((g) => g.items.length === 1 ? (
+            <Link key={g.label} to={localizedPath(g.items[0].to, language)} className="px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors">
+              {g.label}
             </Link>
+          ) : (
+            <DropdownMenu key={g.label}>
+              <DropdownMenuTrigger className="flex items-center gap-1 px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors data-[state=open]:text-accent">
+                {g.label}<ChevronDown className="w-3.5 h-3.5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {g.items.map((l) => (
+                  <DropdownMenuItem key={l.to} asChild>
+                    <Link to={localizedPath(l.to, language)}>{l.label}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           ))}
         </div>
       </div>
@@ -401,28 +410,29 @@ const Navbar = () => {
                 </span>
                 <ThemeToggle />
               </div>
-              {navLinks.map((link) =>
-                link.isRoute ? (
-                  <Link
-                    key={link.href}
-                    to={localizedPath(link.href, language)}
-                    onClick={() => setIsOpen(false)}
-                    className={`block py-2 font-medium hover:text-accent transition-colors ${link.mobileOnly ? 'text-accent flex items-center gap-2' : 'text-foreground'}`}
-                  >
-                    {link.mobileOnly && <Download className="w-4 h-4" />}
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={(e) => handleHashClick(e, link.href)}
-                    className="block py-2 text-foreground font-medium hover:text-accent transition-colors"
-                  >
+              <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-border pt-2">
+                {pageAnchors.map((link) => (
+                  <a key={link.href} href={link.href} onClick={(e) => handleHashClick(e, link.href)} className="py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors">
                     {link.label}
                   </a>
-                )
-              )}
+                ))}
+              </div>
+              {menuGroups.map((g) => (
+                <div key={g.label} className="border-t border-border pt-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{g.label}</p>
+                  <div className="grid grid-cols-2 gap-x-4">
+                    {g.items.map((l) => (
+                      <Link key={l.to} to={localizedPath(l.to, language)} onClick={() => setIsOpen(false)} className="block py-2 font-medium text-foreground hover:text-accent transition-colors">
+                        {l.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div className="flex flex-wrap gap-x-4 border-t border-border pt-2">
+                <Link to={localizedPath('/install', language)} onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-accent"><Download className="w-4 h-4" />{t('nav.install')}</Link>
+                <Link to="/admin/login" onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground hover:text-accent"><Shield className="w-4 h-4" />{t('nav.admin')}</Link>
+              </div>
 
 
               {/* Quick actions row */}
