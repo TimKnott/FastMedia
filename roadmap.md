@@ -202,3 +202,6 @@
 - [x] Admin-only /admin/opportunities inbox, detail, import (JSON/CSV preview, validation, dedupe), manual outcomes, methods view; audit events.
 - [x] Conservative buying-signal panel on Prospecting desk (no data changes).
 - [ ] Daily digest page — deferred to save budget.
+- [x] Opportunity dashboard (clickable tiles/bars → filtered inbox), attention panel, on-screen daily briefing with per-item ChatGPT links, tooltips, sidebar reorder (HR moved down).
+- [ ] Denisa opportunity_researcher role — BLOCKED: no account for denisa2013@gmail.com exists.
+- [ ] Per-opportunity authored research notes table, tooltips across rest of Prospecting, briefing email delivery — deferred (budget).

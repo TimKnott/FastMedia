@@ -69,6 +69,8 @@ export interface MenuItem {
 
 export const mainItems: MenuItem[] = [
   { titleKey: 'Opportunities', url: '/admin/opportunities', icon: TrendingUp, minRole: 'admin' },
+  { titleKey: 'Prospecting desk', url: '/admin/prospecting', icon: Send, minRole: 'admin' },
+  { titleKey: 'Find leads', url: '/admin/prospecting?find=1', icon: Search, minRole: 'admin' },
   { titleKey: 'leadRepository.title', url: '/admin/lead-repository', icon: Users, minRole: 'admin' },
   { titleKey: 'Leads hub', url: '/admin/leads-hub', icon: Target, minRole: 'admin' },
   { titleKey: 'Flowlu leads', url: '/admin/flowlu-leads', icon: Target, minRole: 'admin' },
@@ -95,10 +97,7 @@ export const mainItems: MenuItem[] = [
   { titleKey: 'Email Dashboard', url: '/admin/email-dashboard', icon: Inbox, minRole: 'admin' },
   { titleKey: 'Email Deliverability', url: '/admin/email-deliverability', icon: Send, minRole: 'admin' },
   { titleKey: 'Lead Emails', url: '/admin/lead-emails', icon: Search, minRole: 'admin' },
-  { titleKey: 'admin.hr', url: '/admin/hr', icon: UserCog, minRole: 'admin' },
   { titleKey: 'admin.client_projects', url: '/admin/client-projects', icon: FolderKanban, minRole: 'editor' },
-  { titleKey: 'Prospecting desk', url: '/admin/prospecting', icon: Send, minRole: 'admin' },
-  { titleKey: 'Find leads', url: '/admin/prospecting?find=1', icon: Search, minRole: 'admin' },
   { titleKey: 'Voice agent', url: '/admin/voice-agent', icon: Phone, minRole: 'admin' },
   { titleKey: 'Flowlu CRM', url: '/admin/flowlu', icon: Phone, minRole: 'admin' },
   { titleKey: 'Language versions', url: '/admin/language-versions', icon: Map, minRole: 'admin' },
@@ -106,6 +105,7 @@ export const mainItems: MenuItem[] = [
   { titleKey: 'Ad server', url: '/admin/ads', icon: Receipt, minRole: 'admin' },
   { titleKey: 'Reviews', url: '/admin/reviews', icon: Search, minRole: 'admin' },
   { titleKey: 'Showcase', url: '/admin/showcase', icon: Eye, minRole: 'admin' },
+  { titleKey: 'admin.hr', url: '/admin/hr', icon: UserCog, minRole: 'admin' },
 ];
 
 export const contentItems: MenuItem[] = [

@@ -96,3 +96,20 @@ describe('routes and DB boundaries (static)', () => {
     expect(sql).not.toMatch(/INSERT INTO (public\.)?(prospects|outreach_|leads)/);
   });
 });
+
+import { groupKey, topTier, oppChatGptUrl } from '@/pages/admin/AdminOpportunities';
+describe('opportunity dashboard helpers', () => {
+  const o = { id: '1', title: 'Shop', kind: 'active_buyer_request', source_url: 'https://a.cz/x', source_type: 'forum_post', discovery_method: 'manual_import', evidence: ['need eshop'], public_contact_route: null, score_breakdown: { breakdown: [{ tier: 'inferred', points: 5 }, { tier: 'tender', points: 30 }] } };
+  it('top tier picks strongest recorded tier, else not_assessed', () => {
+    expect(topTier(o)).toBe('tender');
+    expect(topTier({ score_breakdown: {} })).toBe('not_assessed');
+  });
+  it('groups missing fields as not recorded', () => {
+    expect(groupKey(o, 'country')).toBe('not recorded');
+    expect(groupKey(o, 'method')).toBe('forum_post · manual_import');
+  });
+  it('ChatGPT link contains only this item', () => {
+    const q = decodeURIComponent(oppChatGptUrl(o));
+    expect(q).toContain('Title: Shop'); expect(q).toContain('https://a.cz/x'); expect(q).toContain('need eshop');
+  });
+});

@@ -30,7 +30,7 @@ export default function BuyingSignalPanel({ prospect }: Props) {
   const { result } = analyseProspect(prospect);
   return (
     <details className="mt-2 rounded border border-border p-2 text-xs">
-      <summary className="cursor-pointer text-foreground">
+      <summary className="cursor-pointer text-foreground" title="Show evidence, hypotheses, offer fit and score reasons">
         Buying signals: {result.confidence === 'not_assessed' ? 'Not assessed · low confidence' : `${result.score} · ${result.confidence}`}
       </summary>
       <div className="mt-1"><SignalBreakdown result={result} /></div>
