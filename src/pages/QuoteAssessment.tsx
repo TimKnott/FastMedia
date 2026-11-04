@@ -131,7 +131,7 @@ const safeHttpUrl = (u?: string | null) => (u && /^https?:\/\/\S+$/.test(u) ? u 
 
 export default function QuoteAssessment() {
   const { language } = useLanguage();
-  const t = (T as Record<string, typeof T.cs>)[language] ?? T.cs;
+  const t = (T as unknown as Record<string, typeof T.cs>)[language] ?? T.cs;
   const roleLabel = (r: string) => (ROLE_LABELS[r] ? ROLE_LABELS[r][language] ?? ROLE_LABELS[r].en : r);
 
   const [authed, setAuthed] = useState<boolean | null>(null);
@@ -183,11 +183,11 @@ export default function QuoteAssessment() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({ email, password, options: { email_redirect_to: window.location.origin + '/quote-assessment' } });
+        const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + '/quote-assessment' } });
         if (error) throw error;
         setAuthMsg(t.authNote);
       } else {
-        const { error } = await supabase.auth.signInWithOtp({ email, options: { email_redirect_to: window.location.origin + '/quote-assessment' } });
+        const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + '/quote-assessment' } });
         if (error) throw error;
         setAuthMsg(t.authNote);
       }
@@ -202,7 +202,7 @@ export default function QuoteAssessment() {
     setBusy(true); setError(null);
     try {
       const inputs = { ...buildQuoteInputs(lines, country === 'OTHER' ? null : country, weeks), title: title.trim() || null };
-      const { data, error: rpcError } = await supabase.rpc('quote_run', { _inputs: inputs });
+      const { data, error: rpcError } = await supabase.rpc('quote_run', { _inputs: inputs as any });
       if (rpcError) { setError(rpcError.message); return; }
       const r = data as QuoteResult;
       if (r?.reason === 'auth_required') { setAuthed(false); return; }

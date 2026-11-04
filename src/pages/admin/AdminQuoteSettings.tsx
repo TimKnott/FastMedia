@@ -122,20 +122,23 @@ export default function AdminQuoteSettings() {
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                {QUOTE_ROLES.map((role) => (
-                  <div key={role} className="space-y-1">
-                    <HelpLabel htmlFor={`qs-rate-${role}`} help={`Internal hourly rate for ${ROLE_LABELS[role]} in ${currency}, stored in cents and never shown publicly.`}>
-                      {ROLE_LABELS[role]} rate ({currency}/h)
-                    </HelpLabel>
-                    <Input
-                      id={`qs-rate-${role}`}
-                      inputMode="decimal"
-                      value={rates[role] ?? ''}
-                      onChange={(e) => setRates((r) => ({ ...r, [role]: e.target.value }))}
-                      placeholder="not configured"
-                    />
-                  </div>
-                ))}
+                {QUOTE_ROLES.map((role) => {
+                  const roleLabelText = `${ROLE_LABELS[role]} rate (${currency}/h)`;
+                  return (
+                    <div key={role} className="space-y-1">
+                      <HelpLabel htmlFor={`qs-rate-${role}`} help={`Internal hourly rate for ${ROLE_LABELS[role]} in ${currency}, stored in cents and never shown publicly.`}>
+                        {roleLabelText}
+                      </HelpLabel>
+                      <Input
+                        id={`qs-rate-${role}`}
+                        inputMode="decimal"
+                        value={rates[role] ?? ''}
+                        onChange={(e) => setRates((r) => ({ ...r, [role]: e.target.value }))}
+                        placeholder="not configured"
+                      />
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="flex flex-wrap items-center gap-3">

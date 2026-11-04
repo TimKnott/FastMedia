@@ -29,7 +29,7 @@ export function parseWeeks(raw: unknown): number | null {
  * Builds the JSON inputs for the quote_run RPC: merges duplicate roles, drops
  * zero/invalid hours, normalises the ISO country code (OTHER -> null) and clamps weeks.
  */
-export function buildQuoteInputs(lines: QuoteLine[], country: string | null, weeks: number | null): QuoteInputs {
+export function buildQuoteInputs(lines: QuoteLine[], country: string | null, weeks: unknown): QuoteInputs {
   const merged = new Map<string, QuoteLine>();
   for (const l of lines ?? []) {
     const role = String(l?.role ?? '').trim();
