@@ -31,7 +31,7 @@ export function buildHead(route: RouteSeo): string {
     `<title data-rh="true">${escText(route.title)}</title>`,
     `<meta data-rh="true" name="description" content="${escAttr(route.description)}" />`,
     `<link data-rh="true" rel="canonical" href="${escAttr(canonical)}" />`,
-    `<meta data-rh="true" name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />`,
+    `<meta data-rh="true" name="robots" content="${route.noindex ? "noindex, follow" : "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"}" />`,
     `<meta data-rh="true" property="og:title" content="${escAttr(route.title)}" />`,
     `<meta data-rh="true" property="og:description" content="${escAttr(route.description)}" />`,
     `<meta data-rh="true" property="og:url" content="${escAttr(canonical)}" />`,
@@ -125,7 +125,7 @@ async function main() {
   }
 
   // Supplemental sitemap uses the existing prerender mechanism; the primary static sitemap is retained.
-  const entries = routes.filter(r => isIndexablePath(r.path) && canonicalPath(r.path) === r.path);
+  const entries = routes.filter(r => !r.noindex && isIndexablePath(r.path) && canonicalPath(r.path) === r.path);
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries.map(r => `<url><loc>${BASE_URL}${escText(r.path)}</loc>${r.lastmod && !Number.isNaN(Date.parse(r.lastmod)) ? `<lastmod>${escText(r.lastmod)}</lastmod>` : ""}</url>`).join("\n")}</urlset>`;
   writeFileSync(join(DIST, "sitemap-content.xml"), sitemap);
 

@@ -489,11 +489,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.fastmedia.pro/reviews</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://www.fastmedia.pro/demo/womeninbusiness</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

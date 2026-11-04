@@ -29,7 +29,7 @@ export function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
   const language = route.language ?? 'en-GB';
   const cs = language.startsWith('cs');
   const de = language.startsWith('de');
-  const links = allRoutes.filter(r => isIndexablePath(r.path) && canonicalPath(r.path) === r.path && r.path !== route.path)
+  const links = allRoutes.filter(r => !r.noindex && isIndexablePath(r.path) && canonicalPath(r.path) === r.path && r.path !== route.path)
     // Campaign routes remain absent from public navigation, as requested.
     .filter(r => !['/business', '/equestrian'].includes(r.path));
   const related = links.filter(r => {
