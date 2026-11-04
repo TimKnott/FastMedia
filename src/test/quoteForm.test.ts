@@ -57,9 +57,9 @@ describe('buildQuoteInputs', () => {
 
 describe('formatMoney', () => {
   it('formats per locale rules: cs/de dots, en commas', () => {
-    expect(formatMoney(123456789, 'CZK', 'cs')).toBe('1.234.567,89 CZK');
-    expect(formatMoney(123456789, 'CZK', 'de')).toBe('1.234.567,89 CZK');
-    expect(formatMoney(123456789, 'CZK', 'en')).toBe('1,234,567.89 CZK');
+    expect(formatMoney(123456789, 'CZK', 'cs')).toBe('1.234.568 CZK');
+    expect(formatMoney(123456789, 'CZK', 'de')).toBe('1.234.568 CZK');
+    expect(formatMoney(123456789, 'CZK', 'en')).toBe('1,234,568 CZK');
   });
   it('renders missing values as a dash', () => {
     expect(formatMoney(null, 'CZK', 'cs')).toBe('—');

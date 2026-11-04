@@ -42,12 +42,12 @@ export function buildQuoteInputs(lines: QuoteLine[], country: string | null, wee
   return { packages: [...merged.values()], country: /^[A-Z]{2}$/.test(c) ? c : null, weeks: parseWeeks(weeks) };
 }
 
-const LOCALES: Record<string, string> = { cs: 'cs-CZ', de: 'de-DE', en: 'en-GB' };
-
 /** Formats minor units (cents) per the project's locale rule: cs/de use dot thousands separators, en commas. */
 export function formatMoney(cents: number | null | undefined, currency: string | null | undefined, lang: string): string {
   if (cents == null) return '—';
-  const value = cents / 100;
-  const amount = value.toLocaleString(LOCALES[lang] ?? 'cs-CZ', { maximumFractionDigits: 0 });
-  return currency ? `${amount} ${currency}` : amount;
+  const whole = Math.round(cents / 100);
+  const sep = lang === 'en' ? ',' : '.';
+  const grouped = String(Math.abs(whole)).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+  const sign = whole < 0 ? '−' : '';
+  return currency ? `${sign}${grouped} ${currency}` : `${sign}${grouped}`;
 }
