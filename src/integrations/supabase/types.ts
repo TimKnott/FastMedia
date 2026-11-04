@@ -4553,6 +4553,129 @@ export type Database = {
         }
         Relationships: []
       }
+      quote_assessments: {
+        Row: {
+          created_at: string
+          id: string
+          inputs: Json
+          result: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inputs: Json
+          result?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inputs?: Json
+          result?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quote_benchmarks: {
+        Row: {
+          country: string
+          created_at: string
+          currency: string
+          date: string
+          high_cents: number | null
+          id: string
+          kind: string
+          label: string
+          low_cents: number | null
+          note: string | null
+          period: string | null
+          source: string | null
+          unit: string
+          url: string
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          currency?: string
+          date: string
+          high_cents?: number | null
+          id?: string
+          kind: string
+          label: string
+          low_cents?: number | null
+          note?: string | null
+          period?: string | null
+          source?: string | null
+          unit: string
+          url: string
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          currency?: string
+          date?: string
+          high_cents?: number | null
+          id?: string
+          kind?: string
+          label?: string
+          low_cents?: number | null
+          note?: string | null
+          period?: string | null
+          source?: string | null
+          unit?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      quote_credits: {
+        Row: {
+          balance: number
+          created_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quote_rate_card: {
+        Row: {
+          contingency_pct: number
+          currency: string
+          id: number
+          margin_pct: number | null
+          rates: Json
+          updated_at: string
+        }
+        Insert: {
+          contingency_pct?: number
+          currency?: string
+          id?: number
+          margin_pct?: number | null
+          rates?: Json
+          updated_at?: string
+        }
+        Update: {
+          contingency_pct?: number
+          currency?: string
+          id?: number
+          margin_pct?: number | null
+          rates?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       recurring_invoices: {
         Row: {
           booking_id: string | null
@@ -6272,6 +6395,28 @@ export type Database = {
       outreach_release_worker: { Args: { _token: string }; Returns: undefined }
       outreach_verify_queue: { Args: never; Returns: Json }
       publish_scheduled_blog_posts: { Args: never; Returns: number }
+      quote_compute: {
+        Args: {
+          v_contingency: number
+          v_country: string
+          v_currency: string
+          v_inputs: Json
+          v_margin: number
+          v_rates: Json
+        }
+        Returns: Json
+      }
+      quote_run: { Args: { _inputs: Json }; Returns: Json }
+      quote_save_rate_card: {
+        Args: {
+          _contingency_pct: number
+          _currency: string
+          _margin_pct: number
+          _rates: Json
+        }
+        Returns: Json
+      }
+      quote_status: { Args: never; Returns: Json }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {

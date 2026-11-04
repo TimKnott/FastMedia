@@ -128,6 +128,8 @@ const AdminVoiceAgent = lazy(() => import("./pages/admin/AdminVoiceAgent"));
 const AdminAccounting = lazy(() => import("./pages/admin/AdminAccounting"));
 const AdminEmails = lazy(() => import("./pages/admin/AdminEmails"));
 const AdminEmailQueue = lazy(() => import("./pages/admin/AdminEmailQueue"));
+const QuoteAssessment = lazy(() => import("./pages/QuoteAssessment"));
+const AdminQuoteSettings = lazy(() => import("./pages/admin/AdminQuoteSettings"));
 const AdminEmailDashboard = lazy(() => import("./pages/admin/AdminEmailDashboard"));
 const AdminInboxPage = lazy(() => import("./pages/admin/AdminInbox"));
 const AdminEmailDeliverability = lazy(() => import("./pages/admin/AdminEmailDeliverability"));
@@ -335,6 +337,7 @@ const App = () => (
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/checkout/return" element={<CheckoutSuccess />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/quote-assessment" element={<QuoteAssessment />} />
             {/* Private client review portal — branded slug masks the token. Both shapes work. */}
             <Route path="/portal/:slug/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
             <Route path="/portal/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
@@ -348,6 +351,7 @@ const App = () => (
               <Route path="lead-repository" element={<ProtectedRoute minRole="admin"><AdminLeadRepository /></ProtectedRoute>} />
               <Route path="opportunities" element={<ProtectedRoute minRole="admin"><AdminOpportunities /></ProtectedRoute>} />
               <Route path="opportunities/:id" element={<ProtectedRoute minRole="admin"><AdminOpportunities /></ProtectedRoute>} />
+              <Route path="quote-settings" element={<ProtectedRoute minRole="admin"><AdminQuoteSettings /></ProtectedRoute>} />
               <Route path="flowlu-leads" element={<ProtectedRoute minRole="admin"><AdminFlowluLeads /></ProtectedRoute>} />
               <Route path="pipeline" element={<ProtectedRoute minRole="admin"><AdminPipeline /></ProtectedRoute>} />
               <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
