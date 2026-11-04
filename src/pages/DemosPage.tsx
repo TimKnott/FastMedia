@@ -14,7 +14,7 @@ const DemosPage = () => {
       <SEOHead title={title} description={description} canonical="/demos" pagePath="/demos" ogType="website" />
       <Navbar />
       <main className="pt-16">
-        <h1 className="container mx-auto px-4 pt-10 text-center font-heading text-3xl font-bold text-foreground md:text-4xl">
+        <h1 className="container mx-auto px-4 pt-10 text-center font-display text-3xl font-bold text-foreground md:text-4xl">
           {heading}
         </h1>
         <DemosSection />
