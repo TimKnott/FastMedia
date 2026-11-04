@@ -1,4 +1,4 @@
-import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '../src/lib/orgSchema';
+import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '../src/lib/orgSchema.ts';
 // Single source of truth for routes the prerender script writes per-page HTML for.
 // Dynamic routes (blog articles, legal docs, custom demos) are fetched at
 // build time via the anon Supabase key.
