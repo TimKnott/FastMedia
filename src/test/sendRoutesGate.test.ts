@@ -66,7 +66,7 @@ describe('every promotional send route checks the final rendered message before 
     expect(gate).toBeGreaterThan(replyBranch);
     expect(gate).toBeLessThan(body.lastIndexOf('sendViaGmail('));
     // Only other dispatch is the owner-inbox test copy.
-    expect((s.match(/sendViaGmail\(/g) ?? []).length).toBe(2); // test step + sendLeadEmail
+    expect((s.match(/sendViaGmail\(/g) ?? []).length).toBe(3); // test step + verified reply + gated promotional
     expect(s).toMatch(/const to = 'timknott@fastmedia\.pro';\s*\n\s*const html[^\n]*\n\s*const r = await sendViaGmail\(to/);
   });
   it('manual Gmail is reply-only and Vbout list sends are held', () => {
