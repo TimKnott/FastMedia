@@ -38,10 +38,13 @@ const AdminLeadScraper = () => {
     setSites((data as Site[]) ?? []);
     if (!siteId && data?.length) setSiteId(data[0].id);
   };
+  const activeSite = useRef('');
+  activeSite.current = siteId;
   const loadLeads = async () => {
-    if (!siteId) return;
-    const { data } = await supabase.from('scraped_leads').select('*').eq('site_id', siteId).order('created_at', { ascending: false }).limit(500);
-    setLeads((data as Lead[]) ?? []);
+    const id = siteId;
+    if (!id) return;
+    const { data } = await supabase.from('scraped_leads').select('*').eq('site_id', id).order('created_at', { ascending: false }).limit(500);
+    if (activeSite.current === id) setLeads((data as Lead[]) ?? []); // ignore late results from a previous profile
   };
   useEffect(() => { loadSites(); }, []);
   useEffect(() => {
