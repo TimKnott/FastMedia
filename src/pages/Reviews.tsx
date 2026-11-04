@@ -39,7 +39,7 @@ export default function Reviews() {
       return;
     }
     setSending(true);
-    const { error } = await (supabase as any).from('client_reviews').insert({ ...parsed.data, company: parsed.data.company ?? null });
+    const { error } = await supabase.from('client_reviews').insert({ ...parsed.data, company: parsed.data.company ?? null });
     setSending(false);
     if (error) return toast.error(en ? 'Sorry, something went wrong. Please try again.' : 'Omlouváme se, něco se pokazilo. Zkuste to znovu.');
     setDone(true);
