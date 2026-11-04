@@ -3,6 +3,7 @@ Allow: /
 Disallow: /showcase/
 Disallow: /admin/
 Disallow: /portal/
+Disallow: /quote-assessment
 Disallow: /404
 
 User-agent: Bingbot
@@ -10,6 +11,7 @@ Allow: /
 Disallow: /showcase/
 Disallow: /admin/
 Disallow: /portal/
+Disallow: /quote-assessment
 Disallow: /404
 
 User-agent: Twitterbot
@@ -44,6 +46,7 @@ Allow: /
 Disallow: /showcase/
 Disallow: /admin/
 Disallow: /portal/
+Disallow: /quote-assessment
 Disallow: /404
 
 Sitemap: https://www.fastmedia.pro/sitemap.xml

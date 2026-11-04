@@ -36,7 +36,6 @@ const Footer = () => {
     { href: '/websites-for/small-service-businesses', label: language === 'de' ? 'Websites für kleine Unternehmen' : (isEnglish ? 'Websites for small businesses' : 'Weby pro malé firmy') },
     { href: '/contact', label: language === 'de' ? 'Kontakt' : (isEnglish ? 'Contact' : 'Kontakt') },
     { href: '/quote-request', label: language === 'de' ? 'Angebot anfordern' : (isEnglish ? 'Request a quote' : 'Nezávazná nabídka') },
-    { href: '/quote-assessment', label: language === 'de' ? 'Preiskalkulation' : (isEnglish ? 'Quote assessment' : 'Cenová kalkulace') },
     { href: '/grant-wizard', label: t('nav.grant') },
     { href: '/media-kit', label: language === 'de' ? 'Presseunterlagen' : (isEnglish ? 'Press kit' : 'Tiskový kit') },
     { href: '/reviews', label: language === 'de' ? 'Bewertungen' : (isEnglish ? 'Reviews' : 'Recenze') },

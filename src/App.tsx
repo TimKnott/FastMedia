@@ -337,7 +337,7 @@ const App = () => (
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/checkout/return" element={<CheckoutSuccess />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/quote-assessment" element={<QuoteAssessment />} />
+            <Route path="/quote-assessment" element={<ProtectedRoute minRole="super_admin"><QuoteAssessment /></ProtectedRoute>} />
             {/* Private client review portal — branded slug masks the token. Both shapes work. */}
             <Route path="/portal/:slug/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
             <Route path="/portal/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />

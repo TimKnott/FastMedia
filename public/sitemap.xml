@@ -951,19 +951,4 @@
   <url>
     <loc>https://www.fastmedia.pro/legal/imprint</loc>
   </url>
-  <url>
-    <loc>https://www.fastmedia.pro/cs/quote-assessment</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.fastmedia.pro/en/quote-assessment</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.fastmedia.pro/de/quote-assessment</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
 </urlset>
