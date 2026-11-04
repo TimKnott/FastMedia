@@ -20,6 +20,7 @@ import {
   History,
   Search,
   Send,
+  Coins,
   Code2,
   Receipt,
   UserCog,
@@ -71,6 +72,7 @@ export interface MenuItem {
 export const mainItems: MenuItem[] = [
   { titleKey: 'All admin tools', url: '/admin/tools', icon: LayoutDashboard, minRole: 'editor' },
   { titleKey: 'Opportunities', url: '/admin/opportunities', icon: TrendingUp, minRole: 'admin' },
+  { titleKey: 'Public quote rates', url: '/admin/quote-settings', icon: Coins, minRole: 'admin' },
   { titleKey: 'Prospecting desk', url: '/admin/prospecting', icon: Send, minRole: 'admin' },
   { titleKey: 'Find leads', url: '/admin/prospecting?find=1', icon: Search, minRole: 'admin' },
   { titleKey: 'leadRepository.title', url: '/admin/lead-repository', icon: Users, minRole: 'admin' },
