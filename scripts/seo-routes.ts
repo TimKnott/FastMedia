@@ -1,3 +1,4 @@
+import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '../src/lib/orgSchema';
 // Single source of truth for routes the prerender script writes per-page HTML for.
 // Dynamic routes (blog articles, legal docs, custom demos) are fetched at
 // build time via the anon Supabase key.
@@ -50,7 +51,8 @@ export const orgJsonLd = {
   taxID: "17308551",
   identifier: { "@type": "PropertyValue", propertyID: "IČO", value: "17308551" },
   address: { "@type": "PostalAddress", addressLocality: "Louny", postalCode: "440 01", addressRegion: "Ústecký kraj", addressCountry: "CZ" },
-  areaServed: [{ "@type": "Country", name: "Czech Republic" }, { "@type": "Place", name: "European Union" }],
+  areaServed: ORG_AREA_SERVED,
+  subjectOf: ORG_PORTFOLIO,
   knowsLanguage: ["bg","hr","cs","da","nl","en","et","fi","fr","de","el","hu","ga","it","lv","lt","mt","pl","pt","ro","sk","sl","es","sv"],
   contactPoint: { "@type": "ContactPoint", telephone: "+420797864432", email: "support@fastmedia.pro", contactType: "sales", availableLanguage: ["cs", "en"] },
 };
@@ -608,7 +610,7 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
 
   for (const [base, versions] of Object.entries(publicSeo)) {
     const alternates = (['cs', 'en', 'de'] as const).map(language => ({ language: languageLocales[language], path: `/${language}${base}` }));
-    alternates.push({ language: 'x-default', path: `/cs${base}` });
+    alternates.push({ language: 'x-default', path: `/en${base}` });
     for (const language of ['cs', 'en', 'de'] as const) {
       const content = versions[language];
       routes.push({ path: `/${language}${base}`, title: content.title, description: content.description, h1: content.title.split('|')[0].trim(), contentBlocks: content.content, language: languageLocales[language], alternates, ogImage: OG_IMG, changefreq: 'monthly', priority: '0.7' });

@@ -78,7 +78,7 @@ const SEOHead = ({
 
       {/* Hreflang for multilingual SEO */}
       {hasTranslations && normalizedPath && (['cs', 'en', 'de'] as const).map(lang => <link key={lang} rel="alternate" hrefLang={languageLocales[lang]} href={`${BASE_URL}${localizedPath(normalizedPath, lang)}`} />)}
-      {hasTranslations && normalizedPath && <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${localizedPath(normalizedPath, 'cs')}`} />}
+      {hasTranslations && normalizedPath && <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${localizedPath(normalizedPath, 'en')}`} />}
 
       <meta property="og:title" content={effectiveOgTitle || fullTitle} />
       <meta property="og:description" content={effectiveOgDescription || effectiveDescription} />
