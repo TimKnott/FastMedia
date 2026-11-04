@@ -79,7 +79,7 @@ export function computeQuote(c: Commercial): Quote {
   if (confidence === 'insufficient') notes.push('No observed market benchmark — range widened (±30 %) and pricing confidence is insufficient.');
   const competitive = Math.max(floor, Math.round(recommended * (1 - spread)));
   const premium = Math.round(recommended * (1 + spread));
-  if (bm.some((b) => b.kind === 'salary_derived')) notes.push('Includes salary-derived benchmarks (adjusted, not market quotes).');
+  if (valid.some((b) => b.kind === 'salary_derived')) notes.push('Includes salary-derived benchmarks (adjusted, not market quotes).');
   if (c.buyer_budget_cents != null && c.buyer_budget_cents < floor) notes.push('Stated buyer budget is below the walk-away floor — reduce scope or decline.');
   const total = sumH();
   return {
