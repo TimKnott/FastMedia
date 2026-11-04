@@ -3543,6 +3543,211 @@ export type Database = {
         }
         Relationships: []
       }
+      opportunities: {
+        Row: {
+          batch_id: string | null
+          company: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          deadline_at: string | null
+          deliverables: Json
+          discovery_method: string
+          evidence: Json
+          fit_reason: string | null
+          follow_up_at: string | null
+          id: string
+          kind: string
+          notes: string | null
+          posted_at: string | null
+          priority_score: number
+          public_contact_route: string | null
+          retrieved_at: string | null
+          risks: Json
+          score_breakdown: Json
+          service_need: string | null
+          source_type: string
+          source_url: string
+          source_url_norm: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          batch_id?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          deadline_at?: string | null
+          deliverables?: Json
+          discovery_method?: string
+          evidence?: Json
+          fit_reason?: string | null
+          follow_up_at?: string | null
+          id?: string
+          kind: string
+          notes?: string | null
+          posted_at?: string | null
+          priority_score?: number
+          public_contact_route?: string | null
+          retrieved_at?: string | null
+          risks?: Json
+          score_breakdown?: Json
+          service_need?: string | null
+          source_type?: string
+          source_url: string
+          source_url_norm: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          batch_id?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          deadline_at?: string | null
+          deliverables?: Json
+          discovery_method?: string
+          evidence?: Json
+          fit_reason?: string | null
+          follow_up_at?: string | null
+          id?: string
+          kind?: string
+          notes?: string | null
+          posted_at?: string | null
+          priority_score?: number
+          public_contact_route?: string | null
+          retrieved_at?: string | null
+          risks?: Json
+          score_breakdown?: Json
+          service_need?: string | null
+          source_type?: string
+          source_url?: string
+          source_url_norm?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "opportunity_import_batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunity_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json
+          id: string
+          opportunity_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          opportunity_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          opportunity_id?: string | null
+        }
+        Relationships: []
+      }
+      opportunity_import_batches: {
+        Row: {
+          accepted: number
+          created_at: string
+          created_by: string | null
+          errors: Json
+          file_hash: string
+          filename: string
+          id: string
+          row_count: number
+          skipped: number
+        }
+        Insert: {
+          accepted?: number
+          created_at?: string
+          created_by?: string | null
+          errors?: Json
+          file_hash: string
+          filename: string
+          id?: string
+          row_count?: number
+          skipped?: number
+        }
+        Update: {
+          accepted?: number
+          created_at?: string
+          created_by?: string | null
+          errors?: Json
+          file_hash?: string
+          filename?: string
+          id?: string
+          row_count?: number
+          skipped?: number
+        }
+        Relationships: []
+      }
+      opportunity_outcomes: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          currency: string | null
+          id: string
+          note: string | null
+          occurred_at: string
+          opportunity_id: string
+          outcome: string
+          value_cents: number | null
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          opportunity_id: string
+          outcome: string
+          value_cents?: number | null
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          opportunity_id?: string
+          outcome?: string
+          value_cents?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_outcomes_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       outreach_events: {
         Row: {
           action: string
@@ -6054,6 +6259,10 @@ export type Database = {
           source_queue: string
         }
         Returns: number
+      }
+      opportunity_import: {
+        Args: { _filename: string; _hash: string; _rows: Json }
+        Returns: Json
       }
       outreach_acquire_worker: { Args: { _token: string }; Returns: boolean }
       outreach_dispatch_queue: { Args: never; Returns: undefined }

@@ -162,6 +162,13 @@
       "when": 1793718637116,
       "tag": "0022_permission_evidence_and_review_reset",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793802822305,
+      "tag": "0023_opportunity_intelligence",
+      "breakpoints": true
     }
   ]
 }
