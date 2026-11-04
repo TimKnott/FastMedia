@@ -1,3 +1,4 @@
+import { seoTitleOverride } from '../src/data/seoTitleOverrides.ts';
 import { fitTitle } from '../src/lib/seoTitle.ts';
 import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '../src/lib/orgSchema.ts';
 // Single source of truth for routes the prerender script writes per-page HTML for.
@@ -620,7 +621,7 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     if (original) Object.assign(original, { title: versions.cs.title, description: versions.cs.description, h1: versions.cs.title.split('|')[0].trim(), contentBlocks: versions.cs.content, language: 'cs-CZ', alternates });
   }
 
-  for (const route of routes) route.title = fitTitle(route.title);
+  for (const route of routes) route.title = fitTitle(seoTitleOverride(route.path, route.title));
 
   // Guard: drop any malformed entry so prerendering can never crash on it
   return [...new Map(routes.filter(
