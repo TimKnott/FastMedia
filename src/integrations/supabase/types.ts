@@ -3546,6 +3546,7 @@ export type Database = {
       opportunities: {
         Row: {
           batch_id: string | null
+          commercial: Json
           company: string | null
           country: string | null
           created_at: string
@@ -3575,6 +3576,7 @@ export type Database = {
         }
         Insert: {
           batch_id?: string | null
+          commercial?: Json
           company?: string | null
           country?: string | null
           created_at?: string
@@ -3604,6 +3606,7 @@ export type Database = {
         }
         Update: {
           batch_id?: string | null
+          commercial?: Json
           company?: string | null
           country?: string | null
           created_at?: string

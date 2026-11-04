@@ -205,3 +205,5 @@
 - [x] Opportunity dashboard (clickable tiles/bars → filtered inbox), attention panel, on-screen daily briefing with per-item ChatGPT links, tooltips, sidebar reorder (HR moved down).
 - [ ] Denisa opportunity_researcher role — BLOCKED: no account for denisa2013@gmail.com exists.
 - [ ] Per-opportunity authored research notes table, tooltips across rest of Prospecting, briefing email delivery — deferred (budget).
+- [x] Commercial scoping/quote calculator per opportunity (hours by role, sourced benchmarks, floor/competitive/recommended/premium, conservative priority adjustment) in detail + digest + ChatGPT prompt.
+- [ ] Live market-benchmark research per opportunity — needs real records; enter sourced benchmarks per item (no rates assumed).

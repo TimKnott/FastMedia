@@ -183,6 +183,13 @@
       "when": 1793803071937,
       "tag": "0025_opportunity_revoke_anon",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1793803295941,
+      "tag": "0026_opportunity_commercial_scope",
+      "breakpoints": true
     }
   ]
 }
