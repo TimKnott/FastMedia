@@ -49,9 +49,10 @@ export const oppChatGptUrl = (o: Opp) => {
   return `https://chatgpt.com/?q=${encodeURIComponent(`FastMedia.pro (web agency, Czech-based, British English) item. Use only these facts.\nTitle: ${o.title}\nSource: ${o.source_url}\nEvidence: ${list(o.evidence).join(' | ') || 'none'}\nPublic contact route: ${o.public_contact_route ?? 'not recorded'}\nRecommended next action: ${next}${com}\nAssess fit, check the pricing logic and draft the next step. Do not assume a purchase.`)}`;
 };
 /** Facts for ONE opportunity; commercial lines/benchmarks only when present. */
+type Bm = { label?: string; kind?: string; date?: string; url?: string };
 export const oppFacts = (o: Opp): Record<string, unknown> => {
   const q = hasCommercial(o) ? computeQuote(o.commercial) : null;
-  const bms = (o.commercial?.benchmarks ?? []).filter((b: any) => safeHttpUrl(b?.url)).map((b: any) => `${b.label} (${b.kind}, ${b.date}): ${safeHttpUrl(b.url)}`);
+  const bms = (o.commercial?.benchmarks ?? []).filter((b: Bm) => safeHttpUrl(b?.url)).map((b: Bm) => `${b.label} (${b.kind}, ${b.date}): ${safeHttpUrl(b.url)}`);
   return {
     Title: o.title, Type: kindLabel(o.kind), Company: o.company ?? 'unknown', Country: o.country ?? 'unknown',
     'Service need': o.service_need ?? 'unknown', Source: safeHttpUrl(o.source_url) ?? 'invalid or missing (do not use)', 'Source type': o.source_type,
