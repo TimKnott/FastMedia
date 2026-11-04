@@ -40,7 +40,7 @@ const AdminToolbar = () => {
   if (!isSuperAdmin) return null;
 
   return (
-    <div className="fixed top-28 right-6 z-[100] flex items-center gap-2 bg-card/95 backdrop-blur-lg border border-border rounded-2xl shadow-xl px-4 py-3">
+    <div className="fixed bottom-72 right-6 z-[100] flex items-center gap-2 bg-card/95 backdrop-blur-lg border border-border rounded-2xl shadow-xl px-4 py-3">
       {/* Preview toggle */}
       <TooltipProvider>
         <Tooltip>

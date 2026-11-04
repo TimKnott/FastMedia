@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
     const siteId = str(b.site_id, 60);
     const industry = str(b.industry, 160);
     const extra = str(b.extra, 300);
-    const count = Math.min(Math.max(Number(b.count) || 10, 3), 20);
+    const count = Math.min(Math.max(Number(b.count) || 10, 3), 100);
     const radius = Math.min(Math.max(Number(b.radius_km) || 30, 1), 500);
     if (!siteId || !industry) return json({ ok: false, error: 'Choose a website and enter an industry.' }, 400);
 
