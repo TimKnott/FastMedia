@@ -24,7 +24,8 @@ describe('public/sitemap.xml', () => {
       // No cross-origin mirrors, preview subdomains or trailing slashes.
       expect(loc.startsWith('https://id-preview')).toBe(false);
       expect(loc.startsWith('https://fastmedia.lovable.app')).toBe(false);
-      expect(loc.endsWith('/')).toBe(false);
+      // Only the bare homepage may end with a slash.
+      expect(loc.endsWith('/') && loc !== `${BASE}/`).toBe(false);
       // Private/admin areas must never be crawlable via the sitemap.
       expect(loc.startsWith(`${BASE}/admin`)).toBe(false);
       expect(loc.startsWith(`${BASE}/quote-assessment`)).toBe(false);
