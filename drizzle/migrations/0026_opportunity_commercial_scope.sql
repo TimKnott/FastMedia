@@ -1,0 +1,2 @@
+ALTER TABLE public.opportunities ADD COLUMN IF NOT EXISTS commercial jsonb NOT NULL DEFAULT '{}'::jsonb;
+COMMENT ON COLUMN public.opportunities.commercial IS 'Admin-entered scoping: work packages (hours by role), rate assumptions, sourced benchmarks, buyer stated budget (cents), currency, contingency/margin. Estimates only.';
