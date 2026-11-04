@@ -1,4 +1,66 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+
+/** Read-only freshness per module (latest record time). No jobs are triggered from here. */
+const HEALTH: { label: string; table: string; url: string }[] = [
+  { label: 'Opportunities', table: 'opportunities', url: '/admin/opportunities' },
+  { label: 'Prospecting', table: 'prospects', url: '/admin/prospecting' },
+  { label: 'Outreach queue', table: 'outreach_messages', url: '/admin/prospecting' },
+  { label: 'Lead Repository', table: 'lead_repository_events', url: '/admin/lead-repository' },
+  { label: 'Flowlu sync', table: 'flowlu_sync_log', url: '/admin/flowlu' },
+  { label: 'Website enquiries', table: 'contact_enquiries', url: '/admin/enquiries' },
+  { label: 'Blog', table: 'blog_posts', url: '/admin/blog-manage' },
+];
+
+export const APPROVALS: { item: string; who: 'You' | 'System' }[] = [
+  { item: 'Denisa: create her account (denisa2013@gmail.com) so a limited Opportunities-only role can be assigned', who: 'You' },
+  { item: 'Enter FastMedia hourly rates per role and target margin for quotes (none are assumed)', who: 'You' },
+  { item: 'Import first sourced opportunities file (JSON/CSV)', who: 'You' },
+  { item: 'Set partner commission terms', who: 'You' },
+  { item: 'Publish the site when ready (preview-only changes are not live)', who: 'You' },
+  { item: 'Deploy saved suppression/unsubscribe changes for outreach and Flowlu senders (needs your go-ahead)', who: 'You' },
+  { item: 'Supply missing Lead Repository CSV files', who: 'You' },
+  { item: 'Confirm whether briefing email delivery should be set up', who: 'You' },
+  { item: 'Central "Update everything" orchestrator with run ledger — designed, not built; each module still updates from its own page', who: 'System' },
+];
+
+function HealthPanel() {
+  const [rows, setRows] = useState<Record<string, string | null | 'error'>>({});
+  const load = () => HEALTH.forEach(async (h) => {
+    const { data, error } = await supabase.from(h.table as any).select('created_at').order('created_at', { ascending: false }).limit(1);
+    setRows((r) => ({ ...r, [h.table]: error ? 'error' : (data?.[0] as any)?.created_at ?? null }));
+  });
+  useEffect(load, []);
+  return (
+    <section className="space-y-2">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-lg font-semibold">Tool health</h2>
+        <Button size="sm" variant="outline" onClick={load} title="Re-read the latest record time for each tool (read-only, runs no jobs)">Refresh status</Button>
+      </div>
+      <p className="text-xs text-muted-foreground">Latest record per tool. A single "Update everything" action is not available yet — run updates from each tool.</p>
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {HEALTH.map((h) => { const v = rows[h.table]; return (
+          <Link key={h.table} to={h.url} title={`Open ${h.label}`}><Card className="hover:bg-muted/50"><CardContent className="p-3 text-sm">
+            <p className="font-medium">{h.label}</p>
+            <p className="text-xs text-muted-foreground">{v === undefined ? 'Checking…' : v === 'error' ? 'Status unavailable' : v ? `Last record ${new Date(v).toLocaleString()}` : 'No records yet'}</p>
+          </CardContent></Card></Link>); })}
+      </div>
+    </section>
+  );
+}
+
+function ApprovalsPanel() {
+  return (
+    <section className="space-y-2">
+      <h2 className="font-display text-lg font-semibold">Needs your approval / action</h2>
+      <ul className="space-y-1 text-sm">
+        {APPROVALS.map((a) => <li key={a.item} className="flex gap-2"><span className="w-16 shrink-0 text-xs text-muted-foreground">{a.who === 'You' ? 'You' : 'Pending'}</span><span>{a.item}</span></li>)}
+      </ul>
+    </section>
+  );
+}
 import { Card, CardContent } from '@/components/ui/card';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -36,6 +98,7 @@ export default function AdminToolsHub() {
         <h1 className="font-display text-2xl font-bold">Admin tools</h1>
         <p className="text-sm text-muted-foreground">Every back-office tool you can use, grouped by department. Most important revenue tools first.</p>
       </div>
+      {hasMinRole('admin') && <><ApprovalsPanel /><HealthPanel /></>}
       {groups.map((g) => {
         const items = g.items.filter((i) => hasMinRole(i.minRole));
         if (!items.length) return null;
