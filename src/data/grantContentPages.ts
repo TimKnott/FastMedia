@@ -29,7 +29,7 @@ export const grantPages: GrantPage[] = [
     updated: UPDATED,
     copy: {
       en: {
-        seoTitle: 'EU Creative Grant for Websites: Free Help to Apply | FastMedia.Pro',
+        seoTitle: 'EU Creative Grant for Websites: Help to Apply | FastMedia.Pro',
         seoDesc: 'How Czech businesses can use the creative voucher (Kreativní vouchery) to fund up to 85% of a bespoke website, capped at 150,000 CZK. Free course, business plan and AI prompts.',
         kicker: 'EU creative grant · Kreativní vouchery',
         h1: 'EU creative grant for websites: how to get up to 85% funded',
@@ -76,7 +76,7 @@ export const grantPages: GrantPage[] = [
     updated: UPDATED,
     copy: {
       en: {
-        seoTitle: 'Creative Voucher Business Plan Template & AI Prompts | FastMedia.Pro',
+        seoTitle: 'Creative Voucher Business Plan & AI Prompts | FastMedia.Pro',
         seoDesc: 'A free pro-forma business plan and application draft for the Czech creative voucher, with copy-ready AI prompts to write it in any language.',
         kicker: 'Free tools',
         h1: 'Business plan template and AI prompts for the creative voucher',
@@ -121,7 +121,7 @@ export const grantPages: GrantPage[] = [
     updated: UPDATED,
     copy: {
       en: {
-        seoTitle: 'Websites in Every EU Language, Written for Each Market | FastMedia.Pro',
+        seoTitle: 'Websites in Every EU Language, Per Market | FastMedia.Pro',
         seoDesc: 'FastMedia.Pro builds full language versions of your website in any of the 24 official EU languages, written for each market rather than just translated.',
         kicker: 'All 24 EU languages',
         h1: 'Websites in every official EU language, not just translations',
