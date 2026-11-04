@@ -428,15 +428,15 @@ function featureRoute(id: string): RouteSeo | null {
     ],
     jsonLd: {
       "@context": "https://schema.org",
-      "@type": "Product",
+      // A website feature is a build service, not a merchant product (avoids merchant-listing errors).
+      "@type": "Service",
       name,
       description: desc,
-      brand: { "@type": "Brand", name: BRAND },
+      provider: { "@type": "ProfessionalService", name: BRAND, url: "https://www.fastmedia.pro/" },
       offers: {
         "@type": "Offer",
         price: feat.oneTimePrice,
         priceCurrency: "CZK",
-        availability: "https://schema.org/InStock",
         url: `https://www.fastmedia.pro/feature/${id}`,
       },
     },
