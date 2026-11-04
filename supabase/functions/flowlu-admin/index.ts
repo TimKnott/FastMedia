@@ -235,12 +235,36 @@ async function noteInFlowlu(leadId: number, title: string, text: string) {
   await flowlu(`module/crm/lead/update/${leadId}`, { description: (String(lead?.description ?? '') + entry).slice(-60000) }, 'POST');
 }
 
-async function sendLeadEmail(leadId: number, to: string, subject: string, text: string) {
+/** A one-to-one reply is only treated as non-promotional when the lead itself has written to us. */
+async function leadHasContactedUs(leadId: number, to: string): Promise<boolean> {
+  const { data: l } = await sb.from('flowlu_leads').select('contact_email,last_reply_at').eq('id', leadId).maybeSingle();
+  if (!l || String(l.contact_email ?? '').trim().toLowerCase() !== to) return false;
+  if (l.last_reply_at) return true;
+  const { data: inbound } = await sb.from('inbound_emails').select('id').ilike('from_address', `%${to}%`).limit(1);
+  return !!inbound?.length;
+}
+
+async function sendLeadEmail(leadId: number, to: string, subject: string, text: string, mode: 'promotional' | 'reply' = 'promotional') {
   to = to.trim().toLowerCase();
   const { data: suppressed, error: suppressionError } = await sb.from('suppressed_emails').select('id').eq('email', to).maybeSingle();
   const gate = suppressionGate(!!suppressed, !!suppressionError);
   if (gate.blocked) return { sent: false, blocked: true, error: gate.reason, logged: false };
-  // Lead emails are promotional: final legal gate on the exact rendered message, fail closed.
+  if (mode === 'reply') {
+    // Reply to the lead's own message: suppression-checked above, no marketing gate/footer.
+    if (!(await leadHasContactedUs(leadId, to))) mode = 'promotional';
+    else {
+      const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5">${esc(text).replace(/\n/g, '<br>')}</div>`;
+      const sent = await sendViaGmail(to, subject, html, text, {});
+      let logged = false; let logError: string | null = null;
+      if (sent.sent) {
+        try { await noteInFlowlu(leadId, 'Reply sent from FastMedia back office', `To: ${to}\nSubject: ${subject}\n\n${text}`); logged = true; }
+        catch (e) { logError = (e as Error).message; }
+        await sb.from('flowlu_leads').update({ last_contact_at: new Date().toISOString() }).eq('id', leadId);
+      }
+      return { sent: sent.sent, blocked: false, error: sent.error ?? logError, logged };
+    }
+  }
+  // Promotional (or unverified reply): final legal gate on the exact rendered message, fail closed.
   let html: string, fullText: string, headers: Record<string, string>;
   try {
     const f = marketingFooter('cs', await unsubscribeUrlFor(sb, to));
@@ -397,7 +421,7 @@ Deno.serve(async (req) => {
       const subject = String(body.subject ?? '').trim().slice(0, 250);
       const text = String(body.body ?? '').trim().slice(0, 20000);
       if (!leadId || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || !subject || !text) return json({ error: 'Lead, valid recipient, subject and message are required' }, 400);
-      const r = await sendLeadEmail(leadId, to, subject, text);
+      const r = await sendLeadEmail(leadId, to.toLowerCase(), subject, text, 'reply');
       const row = { flowlu_lead_id: leadId, to_email: to, subject, body: text, status: r.sent ? 'sent' : r.blocked ? 'draft' : 'failed', error: r.error, flowlu_logged: r.logged, sent_at: r.sent ? new Date().toISOString() : null };
       if (body.reply_id) await sb.from('flowlu_lead_replies').update(row).eq('id', String(body.reply_id));
       else await sb.from('flowlu_lead_replies').insert(row);
