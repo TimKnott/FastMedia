@@ -28,6 +28,8 @@ export interface RouteSeo {
   /** Route-specific paragraphs for the crawler content block. */
   contentBlocks?: string[];
   language?: string;
+  /** Prerender with robots noindex and keep out of sitemaps/crawler links. */
+  noindex?: boolean;
   alternates?: Array<{ language: string; path: string }>;
 }
 
@@ -62,7 +64,8 @@ const STATIC_ROUTES: RouteSeo[] = [
     jsonLd: { '@context': 'https://schema.org', '@type': 'Service', name: 'Weby pro jezdecké podniky', url: 'https://www.fastmedia.pro/equestrian', provider: { '@id': 'https://www.fastmedia.pro/#organization' } },
   },
   { path: '/launch', title: 'FastMedia launch film and programme | FastMedia.Pro', description: 'Watch the FastMedia launch film and explore the creative programme and official press kit.', contentBlocks: ['Watch the FastMedia launch film and explore the current creative programme.', 'The media kit provides company and press information. Contact us to discuss a website project.'], ogImage: OG_IMG },
-  { path: '/reviews', title: 'Reviews and feedback | FastMedia.Pro', description: 'Read approved feedback where available and submit your experience of FastMedia.Pro. Reviews are moderated before public display.', contentBlocks: ['Read approved feedback where available. Submitted reviews are moderated before public display; no rating or outcome is guaranteed.'], ogImage: OG_IMG },
+  // Hidden from search until real reviews exist (owner decision).
+  { path: '/reviews', title: 'Reviews and feedback | FastMedia.Pro', description: 'Read approved feedback where available and submit your experience of FastMedia.Pro. Reviews are moderated before public display.', contentBlocks: ['Read approved feedback where available. Submitted reviews are moderated before public display; no rating or outcome is guaranteed.'], ogImage: OG_IMG, noindex: true },
   { path: '/partners', title: 'Referral partner programme | FastMedia.Pro', description: 'Learn about the FastMedia.Pro referral partner programme. Registration, rewards and eligibility depend on the published programme rules.', contentBlocks: ['Introduce a business that needs a website through the referral programme when registration is open.', 'Commission rates, eligibility and terms must be confirmed in the programme rules. No reward amount is promised before agreement.'], ogImage: OG_IMG },
 
   {
