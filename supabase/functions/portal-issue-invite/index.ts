@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
       }
       console.log('[portal-issue-invite] dispatching email', {
         project_id,
-        recipient: email,
+        recipient_domain: email.split('@')[1] ?? null,
         idempotencyKey: payload.idempotencyKey,
       })
       try {
@@ -134,14 +134,14 @@ Deno.serve(async (req) => {
           }
           emailError = detail
           console.error('[portal-issue-invite] send-app-email failed', {
-            recipient: email,
+            recipient_domain: email.split('@')[1] ?? null,
             error: detail,
             data: emailData,
           })
         } else {
           emailStatus = 'queued'
           console.log('[portal-issue-invite] send-app-email queued', {
-            recipient: email,
+            recipient_domain: email.split('@')[1] ?? null,
             data: emailData,
           })
         }
@@ -149,12 +149,12 @@ Deno.serve(async (req) => {
         emailStatus = 'error'
         emailError = emailErr instanceof Error ? emailErr.message : String(emailErr)
         console.error('[portal-issue-invite] send-app-email threw', {
-          recipient: email,
+          recipient_domain: email.split('@')[1] ?? null,
           error: emailError,
         })
       }
     } else {
-      console.log('[portal-issue-invite] email suppressed by caller', { recipient: email })
+      console.log('[portal-issue-invite] email suppressed by caller', { recipient_domain: email.split('@')[1] ?? null })
     }
 
     return new Response(JSON.stringify({
