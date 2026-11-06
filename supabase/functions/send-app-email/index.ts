@@ -17,9 +17,7 @@ const corsHeaders = {
 const PUBLIC_TEMPLATES = new Set<string>([
   'newsletter-welcome',
   'admin-newsletter-notification',
-  'intake-received',
   'lead-notification',
-  'booking-confirmation',
   'admin-booking-notification',
 ])
 
@@ -111,14 +109,40 @@ Deno.serve(async (req) => {
     effectiveRecipient = (ALERT_RECIPIENTS as readonly string[]).includes(recipientEmail) ? recipientEmail : ALERT_RECIPIENTS[0]
   }
 
+  const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+  // Anonymous welcome emails may only go to an address that subscribed in the
+  // last 15 minutes and has not already received one, so the endpoint cannot
+  // be used to email arbitrary people.
+  if (!privileged && templateName === 'newsletter-welcome') {
+    const target = String(recipientEmail ?? '').trim().toLowerCase()
+    if (!target) return json({ error: 'recipientEmail is required' }, 400)
+    const since = new Date(Date.now() - 15 * 60 * 1000).toISOString()
+    const { data: sub } = await supabase
+      .from('newsletter_subscribers')
+      .select('id')
+      .ilike('email', target)
+      .gte('subscribed_at', since)
+      .limit(1)
+      .maybeSingle()
+    if (!sub) return json({ error: 'Not authorized to send this template' }, 403)
+    const { count } = await supabase
+      .from('email_send_log')
+      .select('id', { count: 'exact', head: true })
+      .eq('template_name', 'newsletter-welcome')
+      .ilike('recipient_email', target)
+      .in('status', ['sent', 'pending'])
+    if ((count ?? 0) > 0) return json({ success: false, reason: 'already_sent', messageId })
+    effectiveRecipient = target
+    templateData = { email: target }
+  }
+
   if (!effectiveRecipient) {
     return json(
       { error: 'recipientEmail is required (unless the template defines a fixed recipient)' },
       400,
     )
   }
-
-  const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
   const logSend = async (status: string, errorMessage?: string, metadata?: Record<string, unknown>) => {
     const { error } = await supabase.from('email_send_log').insert({

@@ -1,3 +1,4 @@
+import { csvCell } from '@/lib/csvSafe';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, FileText, Database, Loader2, CheckCircle2 } from 'lucide-react';
@@ -65,12 +66,7 @@ const AdminExport = () => {
       const csvRows = [
         headers.join(','),
         ...data.map((row: any) =>
-          headers.map(h => {
-            const val = row[h];
-            if (val === null || val === undefined) return '';
-            const str = typeof val === 'object' ? JSON.stringify(val) : String(val);
-            return `"${str.replace(/"/g, '""')}"`;
-          }).join(',')
+          headers.map(h => (row[h] === null || row[h] === undefined ? '' : csvCell(row[h]))).join(',')
         ),
       ];
       const csv = csvRows.join('\n');

@@ -43,6 +43,17 @@ async function audit(projectId: string, action: string, ip: string, ua: string, 
   })
 }
 
+// Never write recipient addresses to server logs.
+function logSafe(d: { idempotencyKey?: unknown; dispatchMs?: unknown; invokeError?: { name?: unknown; message?: unknown; status?: unknown } | null; logRows?: unknown[]; logQueryError?: unknown }) {
+  return {
+    idempotencyKey: d.idempotencyKey,
+    dispatchMs: d.dispatchMs,
+    invokeError: d.invokeError ? { name: d.invokeError.name, status: d.invokeError.status } : null,
+    logRowCount: Array.isArray(d.logRows) ? d.logRows.length : 0,
+    logQueryError: d.logQueryError ?? null,
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
   if (req.method !== 'POST') {
@@ -285,7 +296,7 @@ Deno.serve(async (req) => {
         }
 
         if (emailErr) {
-          console.error('[portal-access:resend_draft] email_failed', debug)
+          console.error('[portal-access:resend_draft] email_failed', logSafe(debug))
           await audit(projectId, 'draft_email_failed', ip, ua, { recipient: tokenRow.email, debug })
           return new Response(
             JSON.stringify({ error: 'email_failed', debug }),
@@ -295,7 +306,7 @@ Deno.serve(async (req) => {
 
         if (!logRows || logRows.length === 0) {
           // Dispatcher returned ok but no row in email_send_log — surface this.
-          console.error('[portal-access:resend_draft] no_send_log_row', debug)
+          console.error('[portal-access:resend_draft] no_send_log_row', logSafe(debug))
           await audit(projectId, 'draft_email_unverified', ip, ua, { recipient: tokenRow.email, debug })
           return new Response(
             JSON.stringify({
@@ -309,7 +320,7 @@ Deno.serve(async (req) => {
           )
         }
 
-        console.log('[portal-access:resend_draft] queued', debug)
+        console.log('[portal-access:resend_draft] queued', logSafe(debug))
         await audit(projectId, 'draft_email_resent', ip, ua, { recipient: tokenRow.email, debug })
         return new Response(
           JSON.stringify({ ok: true, sent_to: tokenRow.email, debug }),
@@ -422,11 +433,11 @@ Deno.serve(async (req) => {
 
         const queued = !emailErr && (logRows?.length ?? 0) > 0
         if (emailErr) {
-          console.error('[portal-access:rotate_token] email_failed', debug)
+          console.error('[portal-access:rotate_token] email_failed', logSafe(debug))
         } else if (!queued) {
-          console.error('[portal-access:rotate_token] no_send_log_row', debug)
+          console.error('[portal-access:rotate_token] no_send_log_row', logSafe(debug))
         } else {
-          console.log('[portal-access:rotate_token] queued', debug)
+          console.log('[portal-access:rotate_token] queued', logSafe(debug))
         }
 
         await audit(projectId, 'token_rotated', ip, ua, {

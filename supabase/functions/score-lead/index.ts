@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { ALERT_RECIPIENTS } from "../_shared/alert-recipients.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { computeCalculatorQuote } from "../_shared/calculator-pricing.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -96,6 +97,19 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Invalid features." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // Never trust browser-supplied prices or totals: recompute from known feature ids.
+    const verified = computeCalculatorQuote(body.selectedFeatures);
+    body.selectedFeatures = verified.items;
+    body.quoteOneTime = verified.quoteOneTime;
+    body.quoteMonthly = verified.quoteMonthly;
+    body.laborHours = verified.laborHours;
+    if (body.specialRequest != null) body.specialRequest = String(body.specialRequest).slice(0, 1000);
+    if (body.intentSummary != null) body.intentSummary = String(body.intentSummary).slice(0, 2000);
+    if (!Array.isArray(body.intentTranscript)) body.intentTranscript = null;
+    else body.intentTranscript = body.intentTranscript.slice(0, 30).map((t) => ({
+      key: String(t?.key ?? '').slice(0, 60), question: String(t?.question ?? '').slice(0, 300), answer: String(t?.answer ?? '').slice(0, 1000),
+    }));
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -147,7 +161,13 @@ serve(async (req) => {
     // Get AI analysis
     let aiAnalysis = null;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (LOVABLE_API_KEY) {
+    // Paid AI analysis runs at most once per email address per day.
+    const { count: recentForEmail } = await supabaseAdmin
+      .from("leads")
+      .select("id", { count: "exact", head: true })
+      .eq("email", body.email.trim().toLowerCase())
+      .gte("created_at", new Date(Date.now() - 86400_000).toISOString());
+    if (LOVABLE_API_KEY && (recentForEmail ?? 0) === 0) {
       try {
         const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
@@ -506,8 +526,6 @@ This is a working draft — no payment is due until you have approved the final 
         leadId: lead.id,
         score,
         classification,
-        aiAnalysis,
-        autoProjectId,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
