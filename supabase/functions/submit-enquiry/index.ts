@@ -45,7 +45,9 @@ Deno.serve(async (req) => {
   const message = str(body.message, 5000)
 
   const partial = body.partial === true
-  const sessionKey = str(body.sessionKey, 80)
+  // Wizard session keys must be random UUIDs (optionally "gw-" prefixed) so they cannot be guessed.
+  const rawSessionKey = str(body.sessionKey, 80)
+  const sessionKey = rawSessionKey && /^(gw-)?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawSessionKey) ? rawSessionKey : null
 
   if (!partial) {
     if (!name) return json({ error: 'Please enter your name.' }, 400)
@@ -100,6 +102,7 @@ Deno.serve(async (req) => {
       .select('id')
       .eq('kind', kind)
       .eq('details->>Session', sessionKey)
+      .eq('status', 'in_progress')
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
@@ -112,6 +115,7 @@ Deno.serve(async (req) => {
       .from('contact_enquiries')
       .update(row)
       .eq('id', existingId)
+      .eq('status', 'in_progress')
       .select('id')
       .single()
     if (updateError || !updated) {
