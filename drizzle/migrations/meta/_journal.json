@@ -218,6 +218,13 @@
       "when": 1793811557746,
       "tag": "0030_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1793962239035,
+      "tag": "0031_quote_tool_super_admin_only",
+      "breakpoints": true
     }
   ]
 }
