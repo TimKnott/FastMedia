@@ -161,6 +161,27 @@ async function buildCalculatorCart(metadata: Record<string, string> = {}) {
   };
 }
 
+const ALLOWED_RETURN_ORIGINS = new Set([
+  "https://www.fastmedia.pro",
+  "https://fastmedia.pro",
+  "https://fastmedia.lovable.app",
+  "https://id-preview--faf4a9b8-8a61-403f-9d1f-15d5029793d2.lovable.app",
+  "http://localhost:8080",
+]);
+const DEFAULT_RETURN_PATH = "/checkout/success?session_id={CHECKOUT_SESSION_ID}";
+
+function safeReturnUrl(requested: string | undefined, origin: string | null): string {
+  const fallbackOrigin = origin && ALLOWED_RETURN_ORIGINS.has(origin) ? origin : "https://www.fastmedia.pro";
+  if (!requested) return `${fallbackOrigin}${DEFAULT_RETURN_PATH}`;
+  try {
+    const u = new URL(requested.replace("{CHECKOUT_SESSION_ID}", "SESSION_PLACEHOLDER"));
+    if (!ALLOWED_RETURN_ORIGINS.has(u.origin)) return `${fallbackOrigin}${DEFAULT_RETURN_PATH}`;
+    return requested;
+  } catch {
+    return `${fallbackOrigin}${DEFAULT_RETURN_PATH}`;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") {
@@ -170,9 +191,10 @@ Deno.serve(async (req) => {
   try {
     const body: Body = await req.json();
     const env: StripeEnv = body.environment === "live" ? "live" : "sandbox";
-    const returnUrl = body.returnUrl || `${req.headers.get("origin") || ""}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+    const returnUrl = safeReturnUrl(body.returnUrl, req.headers.get("origin"));
     const source = body.source || (body.priceId ? "package" : "eshop_demo");
-    let requestCart = body.cart;
+    // Never trust client-supplied prices: only server-built calculator carts are allowed.
+    let requestCart: CartItem[] | undefined = undefined;
     let verifiedMetadata: Record<string, string> = {};
 
     if (source === "calculator") {
@@ -227,7 +249,7 @@ Deno.serve(async (req) => {
       productDescription = source === "calculator" ? `Website package (${requestCart.length} items)` : `Eshop order (${requestCart.length} items)`;
       useManaged = false;
     } else {
-      throw new Error("Either priceId or cart must be provided");
+      throw new Error("Either priceId or a calculator selection must be provided");
     }
 
     const sessionParams: any = {
