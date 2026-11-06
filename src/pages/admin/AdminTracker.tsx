@@ -1,3 +1,4 @@
+import { csvCell } from '@/lib/csvSafe';
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -233,7 +234,7 @@ export default function AdminTracker() {
 
   const exportCsv = () => {
     const header = ['Title', 'Source', 'Stage', 'Contact', 'Email', 'Phone', 'Owner', 'Value', 'Notes', 'Created'];
-    const escape = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const escape = csvCell;
     const csv = [
       header.join(','),
       ...filtered.map((i) =>

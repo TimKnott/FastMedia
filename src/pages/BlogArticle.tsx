@@ -1,3 +1,4 @@
+import { jsonLdHtml } from '@/lib/jsonLd';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
@@ -234,7 +235,7 @@ const BlogArticle = () => {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
@@ -246,7 +247,7 @@ const BlogArticle = () => {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml({
           '@context': 'https://schema.org',
           '@type': 'BlogPosting',
           mainEntityOfPage: {
