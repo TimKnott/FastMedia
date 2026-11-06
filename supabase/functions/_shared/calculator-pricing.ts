@@ -6,7 +6,7 @@ export const BASE_WEBSITE_PRICE = 4990;
 export const BASE_HOSTING_PRICE = 1500;
 export const LABOR_RATE = 800;
 
-const calculatorFeatureMap: Record<string, CalculatorFeatureDef> = {
+export const calculatorFeatureMap: Record<string, CalculatorFeatureDef> = {
   "contact-form": { name: "Contact Form", oneTimePrice: 1500, monthlyPrice: 0, laborHours: 2 },
   "booking-system": { name: "Booking System", oneTimePrice: 4500, monthlyPrice: 300, laborHours: 6, allowMultiple: true },
   gallery: { name: "Project Gallery", oneTimePrice: 2500, monthlyPrice: 100, laborHours: 3 },
