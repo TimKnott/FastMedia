@@ -1,8 +1,9 @@
 // Public, throttled wrapper that pg_cron calls daily.
 // It forwards to auto-generate-blog using the service role key (server-side only),
 // but refuses to run if a successful generation happened in the last 20 hours.
-// This makes it safe even though it is unauthenticated.
+// Callers must present the scheduled-job token or be an admin.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { isAuthorizedAdminCaller, unauthorizedResponse } from '../_shared/require-admin.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,6 +12,8 @@ const corsHeaders = {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  // Only the scheduled job (x-job-token), the service role or an admin may trigger generation.
+  if (!(await isAuthorizedAdminCaller(req))) return unauthorizedResponse(corsHeaders);
 
   const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
   const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
