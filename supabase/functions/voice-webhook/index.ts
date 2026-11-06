@@ -101,6 +101,32 @@ function playOrSay(url: string | null, text: string): string {
 const GREETING =
   'Dobrý den, tady asistent FastMedia.Pro. / Hello, this is the FastMedia.Pro assistant. / Guten Tag, hier ist der Assistent von FastMedia.Pro. Jak vám mohu pomoct? / How can I help? / Wie kann ich helfen?';
 
+const TWILIO_AUTH_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN') ?? '';
+
+/** Verify Twilio's X-Twilio-Signature (HMAC-SHA1 over public URL + sorted POST params). Fails closed. */
+async function verifyTwilio(req: Request, publicUrl: string, form: FormData): Promise<boolean> {
+  const sig = req.headers.get('X-Twilio-Signature') ?? '';
+  if (!TWILIO_AUTH_TOKEN || !sig) return false;
+  const params: [string, string][] = [];
+  form.forEach((v, k) => params.push([k, String(v)]));
+  params.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+  const data = publicUrl + params.map(([k, v]) => k + v).join('');
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(TWILIO_AUTH_TOKEN), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+  const mac = new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(data)));
+  const expected = btoa(String.fromCharCode(...mac));
+  if (expected.length !== sig.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ sig.charCodeAt(i);
+  return diff === 0;
+}
+
+/** The call id in the URL must belong to the Twilio call making this request. */
+async function callMatches(callId: string, callSid: string): Promise<boolean> {
+  if (!callId || !callSid) return false;
+  const { data } = await sb.from('voice_calls').select('id').eq('id', callId).eq('twilio_call_sid', callSid).maybeSingle();
+  return !!data;
+}
+
 Deno.serve(async (req) => {
   const url = new URL(req.url);
   const action = url.searchParams.get('action') ?? 'inbound';
@@ -108,6 +134,12 @@ Deno.serve(async (req) => {
   const callSid = String(form.get('CallSid') ?? '');
   const from = String(form.get('From') ?? '');
   const to = String(form.get('To') ?? '');
+
+  // Only genuine Twilio requests are processed.
+  const publicUrl = `${SUPABASE_URL}/functions/v1/voice-webhook${url.search}`;
+  if (!(await verifyTwilio(req, publicUrl, form))) {
+    return new Response('Forbidden', { status: 403 });
+  }
 
   const settings = await loadSettings();
 
@@ -149,7 +181,7 @@ Deno.serve(async (req) => {
   if (action === 'gather') {
     const callId = url.searchParams.get('call') ?? '';
     const speech = String(form.get('SpeechResult') ?? '').trim();
-    if (!callId) return twiml('<Hangup/>');
+    if (!callId || !(await callMatches(callId, callSid))) return twiml('<Hangup/>');
     if (!speech) {
       return twiml(`<Gather input="speech" action="${SUPABASE_URL}/functions/v1/voice-webhook?action=gather&amp;call=${callId}" method="POST" speechTimeout="auto" language="cs-CZ"><Say language="en-GB">Sorry, I did not catch that. Could you repeat?</Say></Gather><Hangup/>`);
     }
@@ -181,7 +213,7 @@ Deno.serve(async (req) => {
     const duration = parseInt(String(form.get('CallDuration') ?? '0'), 10) || 0;
     const status = String(form.get('CallStatus') ?? 'completed');
     const recordingUrl = String(form.get('RecordingUrl') ?? '');
-    if (callId) {
+    if (callId && (await callMatches(callId, callSid))) {
       await sb.from('voice_calls').update({
         status: status === 'completed' ? 'completed' : status === 'no-answer' ? 'no_answer' : status === 'failed' ? 'failed' : 'completed',
         duration_seconds: duration,
