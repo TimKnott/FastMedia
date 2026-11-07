@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
       try {
         await fetch(`${url}/functions/v1/notify-admin`, {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-          body: JSON.stringify({ type: 'module_request', data: { trade, summary: result.summary, range: `${result.suggested_min}–${result.suggested_max} CZK`, contact: email ?? 'not given yet' } }),
+          body: JSON.stringify({ type: 'module_request', data: { requestId, trade, summary: result.summary, range: `${result.suggested_min}–${result.suggested_max} CZK`, contact: email ?? 'not given yet' } }),
         });
       } catch { /* notification is best-effort */ }
     }

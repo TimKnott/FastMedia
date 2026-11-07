@@ -1,3 +1,4 @@
+import { formNotification, submitterReplyTo, type FormNotification } from '../_shared/form-notification.ts'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { ALERT_RECIPIENTS } from '../_shared/alert-recipients.ts'
 import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
@@ -144,6 +145,37 @@ Deno.serve(async (req) => {
     )
   }
 
+  // Resolve form provenance from stored rows, never client timestamps/Origin.
+  let sourceRecord: FormNotification | undefined
+  let replyTo: string | undefined
+  let stored: { id: string; created_at?: string; subscribed_at?: string; email?: string; customer_email?: string } | null = null
+  let form = ''
+  if (templateName === 'contact-enquiry') {
+    const { data } = await supabase.from('contact_enquiries').select('id,created_at,email,kind').eq('id', templateData.enquiryId).maybeSingle()
+    stored = data; form = `${data?.kind || 'Contact'} enquiry`
+    // Browser-supplied source details must not compete with trusted provenance.
+    if (templateData.details) {
+      templateData.details = Object.fromEntries(Object.entries(templateData.details).filter(([key]) => key.toLowerCase() !== 'source website'))
+    }
+  } else if (templateName === 'lead-notification' || (templateName === 'client-stage-update' && templateData.audience === 'admin' && templateData.leadId)) {
+    const { data } = await supabase.from('leads').select('id,created_at,email').eq('id', templateData.leadId).maybeSingle()
+    stored = data; form = 'Website calculator intake'
+  } else if (templateName === 'admin-newsletter-notification') {
+    const { data } = await supabase.from('newsletter_subscribers').select('id,subscribed_at,email').ilike('email', String(templateData.subscriberEmail ?? '')).limit(1).maybeSingle()
+    stored = data; form = 'Newsletter subscription'
+    if (data) templateData.subscribedAt = data.subscribed_at
+  } else if (templateName === 'admin-booking-notification') {
+    const bookingId = templateData.bookingId || idempotencyKey.replace(/^admin-booking-notify-/, '')
+    const { data } = await supabase.from('bookings').select('id,created_at,customer_email').eq('id', bookingId).maybeSingle()
+    stored = data; form = 'Booking'
+  }
+  if (form) {
+    const timestamp = stored?.created_at || stored?.subscribed_at
+    if (!stored || !timestamp) return json({ error: 'Stored form reference unavailable' }, 400)
+    sourceRecord = { form, id: stored.id, timestamp }
+    replyTo = submitterReplyTo(stored.email || stored.customer_email)
+  }
+
   const logSend = async (status: string, errorMessage?: string, metadata?: Record<string, unknown>) => {
     const { error } = await supabase.from('email_send_log').insert({
       message_id: messageId,
@@ -161,8 +193,9 @@ Deno.serve(async (req) => {
   const tryGmailFallback = async (primaryError: string) => {
     if (!gmailFallbackAvailable()) return null
     try {
-      const { html, text, subject } = await renderTemplateEmail(templateName, templateData)
-      const result = await sendViaGmail(effectiveRecipient, subject, html, text)
+      let { html, text, subject } = await renderTemplateEmail(templateName, templateData)
+      if (sourceRecord) ({ html, text, subject } = formNotification(subject, html, text, sourceRecord))
+      const result = await sendViaGmail(effectiveRecipient, subject, html, text, replyTo ? { 'Reply-To': replyTo } : {})
       if (!result.sent) {
         console.error('Gmail fallback failed', { templateName, error: result.error })
         return null
@@ -184,6 +217,8 @@ Deno.serve(async (req) => {
     const result = await sendTemplateEmail(templateName, effectiveRecipient, {
       templateData,
       idempotencyKey,
+      replyTo,
+      formNotification: sourceRecord,
     })
 
     if (!result.sent) {

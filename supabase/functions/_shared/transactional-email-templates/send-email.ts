@@ -2,6 +2,7 @@ import * as React from 'npm:react@18.3.1'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { EmailAPIError, sendLovableEmail } from 'npm:@lovable.dev/email-js@0.1.0'
 import { TEMPLATES } from './registry.ts'
+import { formNotification, FORM_SOURCE, type FormNotification } from '../form-notification.ts'
 
 // Server-only: reads LOVABLE_API_KEY. Import from edge functions only — never
 // expose sending to the browser.
@@ -24,6 +25,7 @@ export interface SendTemplateEmailOptions {
   /** Dedupes retries of the same logical send; defaults to a random UUID (no dedupe). */
   idempotencyKey?: string
   replyTo?: string
+  formNotification?: FormNotification
 }
 
 /** Renders a registered template to html/text/subject without sending. */
@@ -38,9 +40,9 @@ export async function renderTemplateEmail(
     )
   }
   const element = React.createElement(template.component, templateData)
-  const html = await renderAsync(element)
-  const text = await renderAsync(element, { plainText: true })
-  const subject =
+  let html = await renderAsync(element)
+  let text = await renderAsync(element, { plainText: true })
+  let subject =
     typeof template.subject === 'function' ? template.subject(templateData) : template.subject
   return { html, text, subject, recipient: template.to }
 }
@@ -79,18 +81,20 @@ export async function sendTemplateEmail(
 
   const templateData = options.templateData ?? {}
   const element = React.createElement(template.component, templateData)
-  const html = await renderAsync(element)
-  const text = await renderAsync(element, { plainText: true })
-  const subject =
+  let html = await renderAsync(element)
+  let text = await renderAsync(element, { plainText: true })
+  let subject =
     typeof template.subject === 'function'
       ? template.subject(templateData)
       : template.subject
+
+  if (options.formNotification) ({ html, text, subject } = formNotification(subject, html, text, options.formNotification))
 
   try {
     await sendLovableEmail(
       {
         to: recipient,
-        from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+        from: `${options.formNotification ? FORM_SOURCE.name : SITE_NAME} <noreply@${FROM_DOMAIN}>`,
         sender_domain: SENDER_DOMAIN,
         subject,
         html,

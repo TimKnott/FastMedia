@@ -1,5 +1,8 @@
 # Roadmap
 
+## Nov 7 — Bounded form notification consistency
+- [x] Add trusted FastMedia.pro source prefix, stored timestamp/reference and submitter Reply-To to enquiry, calculator, module-request, newsletter, booking and visitor alert paths; preserve recipients/transports. No test sends.
+
 ## Nov 1 — Prospecting queue timing
 - [x] Repair queue spacing/caps and prompt next-slot wake: service-only worker lease, conditional message claim, fail-closed counts/settings, approval wake and bounded minute cron with drain unschedule. Retired old five-minute job 111; hourly maintenance remains. 27 regressions passed; live rollback diagnostic verified wake/arm/drain/concurrency with no committed requests or emails. Current queue empty; caps 25/day and 8/hour, 4–7minute gaps, Prague weekday 09:00–16:30.
 

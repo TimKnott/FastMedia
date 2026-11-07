@@ -1,3 +1,5 @@
+import { createClient } from 'npm:@supabase/supabase-js@2';
+import { formNotification, FORM_SOURCE, submitterReplyTo } from '../_shared/form-notification.ts';
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { ALERT_RECIPIENTS } from "../_shared/alert-recipients.ts";
 
@@ -79,6 +81,17 @@ serve(async (req) => {
       }
     }
 
+    let replyTo: string | undefined;
+    // Module advisor is the current form caller; payment/operational alerts remain unchanged.
+    if (type === 'module_request') {
+      const db = createClient(Deno.env.get('SUPABASE_URL') ?? '', serviceRoleKey);
+      const { data: record } = await db.from('module_requests').select('id,created_at,contact_email').eq('id', data.requestId).maybeSingle();
+      if (!record) return new Response(JSON.stringify({ error: 'Stored form reference unavailable' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      const formatted = formNotification(subject, '', body, { form: 'Calculator module request', id: record.id, timestamp: record.created_at });
+      subject = formatted.subject; body = formatted.text;
+      replyTo = submitterReplyTo(record.contact_email);
+    }
+
     // Use Lovable AI to send via a simple webhook-style log
     // For now, log the notification. When Resend is configured, this will send actual emails.
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
@@ -91,7 +104,8 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "FastMedia.Pro <noreply@fastmedia.pro>",
+          from: `${type === "module_request" ? FORM_SOURCE.name : "FastMedia.Pro"} <noreply@fastmedia.pro>`,
+          reply_to: replyTo,
           to: [...ALERT_RECIPIENTS],
           subject,
           text: body,

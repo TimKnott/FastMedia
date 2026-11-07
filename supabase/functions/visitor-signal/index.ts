@@ -1,3 +1,4 @@
+import { formNotification, submitterReplyTo } from '../_shared/form-notification.ts'
 // Public endpoint for on-site conversion safeguards: exit intent, abandoned
 // forms and high-value visitor alerts. Writes with the service role (the table
 // is staff-read-only) and alerts the team for high-value signals.
@@ -123,10 +124,16 @@ Deno.serve(async (req) => {
         `<pre>${esc(JSON.stringify(record.payload).slice(0, 1200))}</pre>`,
         '<p><a href="https://www.fastmedia.pro/admin/prospecting">Open the prospecting desk</a></p>',
       ].join('')
+      const { data: saved } = await supabase.from('visitor_signals').select('id,created_at').eq('id', signalId).single()
+      if (!saved) throw new Error('Stored visitor reference unavailable')
+      const alert = formNotification(`Visitor alert: ${record.name ?? record.email ?? 'anonymous'} on ${record.page_path}`, `<html><body>${lines}</body></html>`, lines.replace(/<[^>]+>/g, ' '), { form: record.form_id || 'Visitor conversion signal', id: saved.id, timestamp: saved.created_at })
+      const replyTo = submitterReplyTo(record.email)
       const sends = await Promise.all(ALERT_RECIPIENTS.map((to) => sendViaGmail(
         to,
-        `Visitor alert: ${String(record.name ?? record.email ?? 'anonymous').replace(/[\r\n]/g, ' ')} on ${record.page_path.replace(/[\r\n]/g, ' ')}`,
-        lines,
+        alert.subject,
+        alert.html,
+        alert.text,
+        replyTo ? { 'Reply-To': replyTo } : {},
       )))
       if (sends.some((a) => a.sent)) {
         await supabase
