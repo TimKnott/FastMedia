@@ -1,5 +1,7 @@
 # Project Architecture Rules
 
+- Website-form alert provenance is resolved from stored submissions and the server-only form-notification configuration; shared formatting covers managed email and Gmail fallback without changing authenticated sender domains.
+
 - Prospect dispatch uses a service-only database worker lease and conditional per-message claim; approval wakes a bounded minute scheduler that unschedules after drain, preserving shared caps/gaps and preventing duplicate provider dispatch.
 
 - Lead Repository tables and validated admin RPCs are isolated from enquiry/prospect sending tables; source CSV fields remain private JSON provenance, global objections write to suppressed_emails, and campaigns/recipients stay constrained to DRY_RUN/HOLD with NULL sent_at so email validity cannot activate sending.

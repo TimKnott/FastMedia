@@ -151,8 +151,12 @@ Deno.serve(async (req) => {
   let stored: { id: string; created_at?: string; subscribed_at?: string; email?: string; customer_email?: string } | null = null
   let form = ''
   if (templateName === 'contact-enquiry') {
-    const { data } = await supabase.from('contact_enquiries').select('id,created_at,email').eq('id', templateData.enquiryId).maybeSingle()
-    stored = data; form = 'Contact / quote / offer enquiry'
+    const { data } = await supabase.from('contact_enquiries').select('id,created_at,email,kind').eq('id', templateData.enquiryId).maybeSingle()
+    stored = data; form = `${data?.kind || 'Contact'} enquiry`
+    // Browser-supplied source details must not compete with trusted provenance.
+    if (templateData.details) {
+      templateData.details = Object.fromEntries(Object.entries(templateData.details).filter(([key]) => key.toLowerCase() !== 'source website'))
+    }
   } else if (templateName === 'lead-notification' || (templateName === 'client-stage-update' && templateData.audience === 'admin' && templateData.leadId)) {
     const { data } = await supabase.from('leads').select('id,created_at,email').eq('id', templateData.leadId).maybeSingle()
     stored = data; form = 'Website calculator intake'
