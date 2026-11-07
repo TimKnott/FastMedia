@@ -365,6 +365,7 @@ serve(async (req) => {
 
     // Always: notify admin a new lead is ready for review
     await sendToAdmins("lead-notification", `lead-notify-${lead.id}`, {
+      leadId: lead.id,
       name: body.name.trim(),
       email: body.email.trim().toLowerCase(),
       trade: body.trade,
@@ -498,6 +499,7 @@ This is a working draft — no payment is due until you have approved the final 
           // Admin: notify the draft is ready for internal review (correct URL)
           await sendToAdmins("client-stage-update", `stage-admin-draft-${project.id}`, {
             audience: "admin",
+            leadId: lead.id,
             stage: "draft_created",
             projectName: project.name,
             clientEmail: body.email.trim().toLowerCase(),
