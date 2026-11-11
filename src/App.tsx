@@ -6,9 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
-import { pathLanguage } from '@/lib/publicLanguage';
+import { pathLanguage } from "@/lib/publicLanguage";
 import { PreviewModeProvider } from "@/contexts/PreviewModeContext";
-import AdminToolbar from "@/components/AdminToolbar";
 import DeferredMount from "./components/DeferredMount";
 const WhatsAppFloat = lazy(() => import("./components/WhatsAppFloat"));
 const AdminQuickBar = lazy(() => import("./components/AdminQuickBar"));
@@ -217,214 +216,524 @@ const PageLoader = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem storageKey="fastmedia-theme" disableTransitionOnChange>
-      <A11yProvider>
-      <LanguageProvider>
-        <PreviewModeProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <LanguageRouteSync />
-          <TrailingSlashRedirect />
-          <PaymentTestModeBanner />
-          <AdminToolbar />
-          <DeferredMount>
-            <CursorFX />
-            <AdminQuickBar />
-            <WhatsAppFloat />
-            <EmbedCodeInjector />
-            <CookieConsentBanner />
-            <AccessibilityToolbar />
-            <ExitIntentOffer />
-            <SuperAdminInboxBadge />
-          </DeferredMount>
-          <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/offer" element={<OfferLanding />} />
-            <Route path="/demos" element={<DemosPage />} />
-            {['cs', 'en', 'de'].map(lang => <Route key={`${lang}-offer`} path={`/${lang}/offer`} element={<OfferLanding />} />)}
-            {['cs', 'en', 'de'].map(lang => <Route key={`${lang}-contact`} path={`/${lang}/contact`} element={<Contact />} />)}
-            <Route path="/grants" element={<GrantGuide />} />
-            <Route path="/grant-wizard" element={<GrantWizard />} />
-            <Route path="/grant-eligibility" element={<GrantEligibility />} />
-            <Route path="/eu-creative-grant" element={<GrantContentPage />} />
-            <Route path="/grant-business-plan" element={<GrantContentPage />} />
-            <Route path="/eu-language-websites" element={<GrantContentPage />} />
-            <Route path="/l/:lang/*" element={<LanguageVersionPage />} />
-            <Route path="/eugrants" element={<GrantHubs />} />
-            <Route path="/grant-hubs" element={<Navigate to="/eugrants" replace />} />
-            <Route path="/grant-process" element={<GrantProcess />} />
-            <Route path="/grant-application" element={<GrantApplication />} />
-            <Route path="/grant-portal" element={<GrantPortal />} />
-            <Route path="/media-kit" element={<MediaKit />} />
-            <Route path="/press" element={<MediaKit />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/courses/:slug" element={<CourseDetail />} />
-            <Route path="/service/:slug" element={<ServiceLanding />} />
-            <Route path="/websites-for/:slug" element={<IndustryLanding />} />
-            <Route path="/equestrian" element={<EquestrianLanding />} />
-            <Route path="/business" element={<BusinessLanding />} />
-            <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/launch" element={<Launch />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogArticle />} />
-            <Route path="/demo/plumbing" element={<PlumbingDemo />} />
-            <Route path="/demo/electrical" element={<ElectricalDemo />} />
-            <Route path="/demo/building" element={<BuildingDemo />} />
-            <Route path="/demo/roofing" element={<RoofingDemo />} />
-            <Route path="/demo/drywall" element={<DrywallDemo />} />
-            <Route path="/demo/wells" element={<WellsDemo />} />
-            <Route path="/demo/heating" element={<HeatingDemo />} />
-            <Route path="/demo/solar" element={<SolarDemo />} />
-            <Route path="/demo/heatpumps" element={<HeatpumpsDemo />} />
-            <Route path="/demo/painting" element={<PaintingDemo />} />
-            <Route path="/demo/interior" element={<InteriorDemo />} />
-            <Route path="/demo/exterior" element={<ExteriorDemo />} />
-            <Route path="/demo/gardening" element={<GardeningDemo />} />
-            <Route path="/demo/cleaning" element={<CleaningDemo />} />
-            <Route path="/demo/locksmith" element={<LocksmithDemo />} />
-            <Route path="/demo/carpentry" element={<CarpentryDemo />} />
-            <Route path="/demo/autorepair" element={<AutoRepairDemo />} />
-            <Route path="/demo/pestcontrol" element={<PestControlDemo />} />
-            <Route path="/demo/photography" element={<PhotographyDemo />} />
-            <Route path="/demo/catering" element={<CateringDemo />} />
-            <Route path="/demo/fitness" element={<FitnessDemo />} />
-            <Route path="/demo/beautysalon" element={<BeautySalonDemo />} />
-            <Route path="/demo/moving" element={<MovingDemo />} />
-            <Route path="/demo/itservices" element={<ITServicesDemo />} />
-            <Route path="/demo/eshop" element={<EshopDemo />} />
-            <Route path="/demo/womeninbusiness" element={<WomenInBusinessDemo />} />
-            <Route path="/demo/virtualassistant" element={<VirtualAssistantDemo />} />
-            <Route path="/demo/weddingplanner" element={<WeddingPlannerDemo />} />
-            <Route path="/demo/florist" element={<FloristDemo />} />
-            <Route path="/demo/bakery" element={<BakeryDemo />} />
-            <Route path="/demo/yoga" element={<YogaDemo />} />
-            <Route path="/demo/nailsalon" element={<NailSalonDemo />} />
-            <Route path="/demo/massage" element={<MassageDemo />} />
-            <Route path="/demo/petgrooming" element={<PetGroomingDemo />} />
-            <Route path="/demo/nutritionist" element={<NutritionistDemo />} />
-            <Route path="/demo/handmade" element={<HandmadeDemo />} />
-            <Route path="/demo/childcare" element={<ChildcareDemo />} />
-            <Route path="/demo/dental" element={<DentalDemo />} />
-            <Route path="/demo/realestate" element={<RealEstateDemo />} />
-            <Route path="/demo/accounting" element={<AccountingDemo />} />
-            <Route path="/demo/veterinary" element={<VeterinaryDemo />} />
-            <Route path="/demo/tattoo" element={<TattooDemo />} />
-            <Route path="/demo/musicschool" element={<MusicSchoolDemo />} />
-            <Route path="/demo/drivingschool" element={<DrivingSchoolDemo />} />
-            <Route path="/demo/laundry" element={<LaundryDemo />} />
-            <Route path="/demo/security" element={<SecurityDemo />} />
-            <Route path="/demo/translation" element={<TranslationDemo />} />
-            {/* Dynamic catch-all for AI-generated custom demos (must be LAST demo route) */}
-            <Route path="/demo/:tradeId" element={<CustomDemoPage />} />
-            <Route path="/consultant/tereza" element={<ConsultantTereza />} />
-            <Route path="/calculator" element={<CalculatorPage />} />
-            <Route path="/install" element={<Install />} />
-            <Route path="/inquiry" element={<Inquiry />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/partners" element={<Partners />} />
-            <Route path="/quote-request" element={<QuoteRequest />} />
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem
+        storageKey="fastmedia-theme"
+        disableTransitionOnChange
+      >
+        <A11yProvider>
+          <LanguageProvider>
+            <PreviewModeProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <LanguageRouteSync />
+                <TrailingSlashRedirect />
+                <PaymentTestModeBanner />
+                <DeferredMount>
+                  <CursorFX />
+                  <AdminQuickBar />
+                  <WhatsAppFloat />
+                  <EmbedCodeInjector />
+                  <CookieConsentBanner />
+                  <AccessibilityToolbar />
+                  <ExitIntentOffer />
+                  <SuperAdminInboxBadge />
+                </DeferredMount>
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/offer" element={<OfferLanding />} />
+                    <Route path="/demos" element={<DemosPage />} />
+                    {["cs", "en", "de"].map((lang) => (
+                      <Route key={`${lang}-offer`} path={`/${lang}/offer`} element={<OfferLanding />} />
+                    ))}
+                    {["cs", "en", "de"].map((lang) => (
+                      <Route key={`${lang}-contact`} path={`/${lang}/contact`} element={<Contact />} />
+                    ))}
+                    <Route path="/grants" element={<GrantGuide />} />
+                    <Route path="/grant-wizard" element={<GrantWizard />} />
+                    <Route path="/grant-eligibility" element={<GrantEligibility />} />
+                    <Route path="/eu-creative-grant" element={<GrantContentPage />} />
+                    <Route path="/grant-business-plan" element={<GrantContentPage />} />
+                    <Route path="/eu-language-websites" element={<GrantContentPage />} />
+                    <Route path="/l/:lang/*" element={<LanguageVersionPage />} />
+                    <Route path="/eugrants" element={<GrantHubs />} />
+                    <Route path="/grant-hubs" element={<Navigate to="/eugrants" replace />} />
+                    <Route path="/grant-process" element={<GrantProcess />} />
+                    <Route path="/grant-application" element={<GrantApplication />} />
+                    <Route path="/grant-portal" element={<GrantPortal />} />
+                    <Route path="/media-kit" element={<MediaKit />} />
+                    <Route path="/press" element={<MediaKit />} />
+                    <Route path="/reviews" element={<Reviews />} />
+                    <Route path="/courses" element={<Courses />} />
+                    <Route path="/courses/:slug" element={<CourseDetail />} />
+                    <Route path="/service/:slug" element={<ServiceLanding />} />
+                    <Route path="/websites-for/:slug" element={<IndustryLanding />} />
+                    <Route path="/equestrian" element={<EquestrianLanding />} />
+                    <Route path="/business" element={<BusinessLanding />} />
+                    <Route path="/case-studies" element={<CaseStudies />} />
+                    <Route path="/launch" element={<Launch />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:slug" element={<BlogArticle />} />
+                    <Route path="/demo/plumbing" element={<PlumbingDemo />} />
+                    <Route path="/demo/electrical" element={<ElectricalDemo />} />
+                    <Route path="/demo/building" element={<BuildingDemo />} />
+                    <Route path="/demo/roofing" element={<RoofingDemo />} />
+                    <Route path="/demo/drywall" element={<DrywallDemo />} />
+                    <Route path="/demo/wells" element={<WellsDemo />} />
+                    <Route path="/demo/heating" element={<HeatingDemo />} />
+                    <Route path="/demo/solar" element={<SolarDemo />} />
+                    <Route path="/demo/heatpumps" element={<HeatpumpsDemo />} />
+                    <Route path="/demo/painting" element={<PaintingDemo />} />
+                    <Route path="/demo/interior" element={<InteriorDemo />} />
+                    <Route path="/demo/exterior" element={<ExteriorDemo />} />
+                    <Route path="/demo/gardening" element={<GardeningDemo />} />
+                    <Route path="/demo/cleaning" element={<CleaningDemo />} />
+                    <Route path="/demo/locksmith" element={<LocksmithDemo />} />
+                    <Route path="/demo/carpentry" element={<CarpentryDemo />} />
+                    <Route path="/demo/autorepair" element={<AutoRepairDemo />} />
+                    <Route path="/demo/pestcontrol" element={<PestControlDemo />} />
+                    <Route path="/demo/photography" element={<PhotographyDemo />} />
+                    <Route path="/demo/catering" element={<CateringDemo />} />
+                    <Route path="/demo/fitness" element={<FitnessDemo />} />
+                    <Route path="/demo/beautysalon" element={<BeautySalonDemo />} />
+                    <Route path="/demo/moving" element={<MovingDemo />} />
+                    <Route path="/demo/itservices" element={<ITServicesDemo />} />
+                    <Route path="/demo/eshop" element={<EshopDemo />} />
+                    <Route path="/demo/womeninbusiness" element={<WomenInBusinessDemo />} />
+                    <Route path="/demo/virtualassistant" element={<VirtualAssistantDemo />} />
+                    <Route path="/demo/weddingplanner" element={<WeddingPlannerDemo />} />
+                    <Route path="/demo/florist" element={<FloristDemo />} />
+                    <Route path="/demo/bakery" element={<BakeryDemo />} />
+                    <Route path="/demo/yoga" element={<YogaDemo />} />
+                    <Route path="/demo/nailsalon" element={<NailSalonDemo />} />
+                    <Route path="/demo/massage" element={<MassageDemo />} />
+                    <Route path="/demo/petgrooming" element={<PetGroomingDemo />} />
+                    <Route path="/demo/nutritionist" element={<NutritionistDemo />} />
+                    <Route path="/demo/handmade" element={<HandmadeDemo />} />
+                    <Route path="/demo/childcare" element={<ChildcareDemo />} />
+                    <Route path="/demo/dental" element={<DentalDemo />} />
+                    <Route path="/demo/realestate" element={<RealEstateDemo />} />
+                    <Route path="/demo/accounting" element={<AccountingDemo />} />
+                    <Route path="/demo/veterinary" element={<VeterinaryDemo />} />
+                    <Route path="/demo/tattoo" element={<TattooDemo />} />
+                    <Route path="/demo/musicschool" element={<MusicSchoolDemo />} />
+                    <Route path="/demo/drivingschool" element={<DrivingSchoolDemo />} />
+                    <Route path="/demo/laundry" element={<LaundryDemo />} />
+                    <Route path="/demo/security" element={<SecurityDemo />} />
+                    <Route path="/demo/translation" element={<TranslationDemo />} />
+                    {/* Dynamic catch-all for AI-generated custom demos (must be LAST demo route) */}
+                    <Route path="/demo/:tradeId" element={<CustomDemoPage />} />
+                    <Route path="/consultant/tereza" element={<ConsultantTereza />} />
+                    <Route path="/calculator" element={<CalculatorPage />} />
+                    <Route path="/install" element={<Install />} />
+                    <Route path="/inquiry" element={<Inquiry />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/partners" element={<Partners />} />
+                    <Route path="/quote-request" element={<QuoteRequest />} />
 
-            <Route path="/feature/:featureId" element={<FeatureDetail />} />
-            <Route path="/package/:slug" element={<PackageDetail />} />
-            <Route path="/legal/:slug" element={<LegalDocument />} />
-            <Route path="/sitemap.xml" element={<SitemapRedirect />} />
-            <Route path="/showcase/:slug" element={<Showcase />} />
-            <Route path="/v/:token" element={<VideoLanding />} />
-            <Route path="/checkout/success" element={<CheckoutSuccess />} />
-            <Route path="/checkout/return" element={<CheckoutSuccess />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/quote-assessment" element={<ProtectedRoute minRole="super_admin"><QuoteAssessment /></ProtectedRoute>} />
-            {/* Private client review portal — branded slug masks the token. Both shapes work. */}
-            <Route path="/portal/:slug/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
-            <Route path="/portal/:token" element={<PortalErrorBoundary><ClientPortal /></PortalErrorBoundary>} />
-            {/* Admin routes */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/reset-password" element={<AdminResetPassword />} />
-            <Route path="/admin" element={<ProtectedRoute minRole="editor"><AdminLayout /></ProtectedRoute>}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="leads" element={<AdminLeads />} />
-              <Route path="leads-hub" element={<ProtectedRoute minRole="admin"><AdminLeadsHub /></ProtectedRoute>} />
-              <Route path="lead-repository" element={<ProtectedRoute minRole="admin"><AdminLeadRepository /></ProtectedRoute>} />
-              <Route path="opportunities" element={<ProtectedRoute minRole="admin"><AdminOpportunities /></ProtectedRoute>} />
-              <Route path="opportunities/:id" element={<ProtectedRoute minRole="admin"><AdminOpportunities /></ProtectedRoute>} />
-              <Route path="quote-settings" element={<ProtectedRoute minRole="admin"><AdminQuoteSettings /></ProtectedRoute>} />
-              <Route path="flowlu-leads" element={<ProtectedRoute minRole="admin"><AdminFlowluLeads /></ProtectedRoute>} />
-              <Route path="pipeline" element={<ProtectedRoute minRole="admin"><AdminPipeline /></ProtectedRoute>} />
-              <Route path="enquiries" element={<ProtectedRoute minRole="admin"><AdminEnquiries /></ProtectedRoute>} />
-              <Route path="quote-requests" element={<ProtectedRoute minRole="admin"><AdminQuoteRequests /></ProtectedRoute>} />
-              <Route path="offer-leads" element={<ProtectedRoute minRole="admin"><AdminOfferLeads /></ProtectedRoute>} />
-              <Route path="grant-follow-up" element={<ProtectedRoute minRole="admin"><AdminGrantFollowUp /></ProtectedRoute>} />
-              <Route path="tracker" element={<ProtectedRoute minRole="admin"><AdminTracker /></ProtectedRoute>} />
-              <Route path="clients" element={<ProtectedRoute minRole="admin"><AdminClients /></ProtectedRoute>} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="audit-logs" element={<AdminAuditLogs />} />
-              <Route path="bookings" element={<AdminBookings />} />
-              <Route path="settings" element={<AdminSettings />} />
-              <Route path="newsletter" element={<AdminNewsletter />} />
-              <Route path="roles" element={<AdminRoles />} />
-              <Route path="landing-page" element={<AdminLandingPage />} />
-              <Route path="demos" element={<AdminDemos />} />
-              <Route path="blog-manage" element={<AdminBlog />} />
-              <Route path="story-studio" element={<ProtectedRoute minRole="admin"><AdminStoryStudio /></ProtectedRoute>} />
-              <Route path="lead-scraper" element={<ProtectedRoute minRole="admin"><AdminLeadScraper /></ProtectedRoute>} />
-              <Route path="finder" element={<ProtectedRoute minRole="admin"><AdminFinder /></ProtectedRoute>} />
-              <Route path="tools" element={<AdminToolsHub />} />
-              <Route path="campaign-studio" element={<ProtectedRoute minRole="admin"><AdminCampaignStudio /></ProtectedRoute>} />
-              <Route path="partners" element={<ProtectedRoute minRole="admin"><AdminPartners /></ProtectedRoute>} />
-              <Route path="design-system" element={<ProtectedRoute minRole="admin"><DesignSystemShowcase /></ProtectedRoute>} />
-              <Route path="directory-finder" element={<Navigate to="/admin/finder" replace />} />
-              <Route path="ad-compliance" element={<ProtectedRoute minRole="admin"><AdminAdCompliance /></ProtectedRoute>} />
-              <Route path="video-studio" element={<ProtectedRoute minRole="admin"><AdminVideoStudio /></ProtectedRoute>} />
-              <Route path="ad-studio" element={<ProtectedRoute minRole="super_admin"><AdminAdStudio /></ProtectedRoute>} />
-              <Route path="modules" element={<ProtectedRoute minRole="admin"><AdminModules /></ProtectedRoute>} />
-              <Route path="module-requests" element={<ProtectedRoute minRole="admin"><AdminModuleRequests /></ProtectedRoute>} />
-              <Route path="tts-test" element={<ProtectedRoute minRole="admin"><AdminTtsTest /></ProtectedRoute>} />
-              <Route path="media" element={<AdminMedia />} />
-              <Route path="sitemap" element={<AdminSitemap />} />
-              <Route path="content-history" element={<AdminContentHistory />} />
-              <Route path="seo" element={<AdminSEO />} />
-              <Route path="seo-insights" element={<AdminSEOInsights />} />
-              <Route path="seo-health" element={<AdminSEOHealth />} />
-              <Route path="geo" element={<AdminGeo />} />
-              <Route path="vbout" element={<AdminVbout />} />
-              <Route path="vbout-debug" element={<ProtectedRoute minRole="admin"><AdminVboutDebug /></ProtectedRoute>} />
-              <Route path="embed-codes" element={<AdminEmbedCodes />} />
-              <Route path="coupons" element={<AdminCoupons />} />
-              <Route path="courses" element={<AdminCourses />} />
-              <Route path="case-studies" element={<AdminCaseStudies />} />
-              <Route path="prospecting" element={<ProtectedRoute minRole="admin"><AdminProspecting /></ProtectedRoute>} />
-              <Route path="voice-agent" element={<ProtectedRoute minRole="admin"><AdminVoiceAgent /></ProtectedRoute>} />
-              <Route path="backlinks" element={<ProtectedRoute minRole="admin"><AdminBacklinks /></ProtectedRoute>} />
-              <Route path="ads" element={<ProtectedRoute minRole="admin"><AdminAds /></ProtectedRoute>} />
-              <Route path="reviews" element={<ProtectedRoute minRole="admin"><AdminReviews /></ProtectedRoute>} />
-              <Route path="flowlu" element={<ProtectedRoute minRole="admin"><AdminFlowlu /></ProtectedRoute>} />
-              <Route path="language-versions" element={<ProtectedRoute minRole="admin"><AdminLanguageVersions /></ProtectedRoute>} />
-              <Route path="accounting" element={<AdminAccounting />} />
-              <Route path="emails" element={<AdminEmails />} />
-              <Route path="inbox" element={<ProtectedRoute minRole="admin"><AdminInboxPage /></ProtectedRoute>} />
-              <Route path="email-queue" element={<ProtectedRoute minRole="admin"><AdminEmailQueue /></ProtectedRoute>} />
-              <Route path="email-deliverability" element={<ProtectedRoute minRole="admin"><AdminEmailDeliverability /></ProtectedRoute>} />
-              <Route path="email-dashboard" element={<ProtectedRoute minRole="admin"><AdminEmailDashboard /></ProtectedRoute>} />
-              <Route path="lead-emails" element={<AdminLeadEmails />} />
-              <Route path="hr" element={<AdminHR />} />
-              <Route path="integrations" element={<AdminIntegrations />} />
-              <Route path="export" element={<AdminExport />} />
-              <Route path="client-projects" element={<AdminClientProjects />} />
-              <Route path="client-projects/:id" element={<AdminClientProjectDetail />} />
-              <Route path="showcase" element={<ProtectedRoute minRole="admin"><AdminShowcase /></ProtectedRoute>} />
-              <Route path="legal" element={<ProtectedRoute minRole="admin"><AdminLegal /></ProtectedRoute>} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          </Suspense>
-        </BrowserRouter>
-        </PreviewModeProvider>
-      </LanguageProvider>
-      </A11yProvider>
+                    <Route path="/feature/:featureId" element={<FeatureDetail />} />
+                    <Route path="/package/:slug" element={<PackageDetail />} />
+                    <Route path="/legal/:slug" element={<LegalDocument />} />
+                    <Route path="/sitemap.xml" element={<SitemapRedirect />} />
+                    <Route path="/showcase/:slug" element={<Showcase />} />
+                    <Route path="/v/:token" element={<VideoLanding />} />
+                    <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                    <Route path="/checkout/return" element={<CheckoutSuccess />} />
+                    <Route path="/account" element={<Account />} />
+                    <Route
+                      path="/quote-assessment"
+                      element={
+                        <ProtectedRoute minRole="super_admin">
+                          <QuoteAssessment />
+                        </ProtectedRoute>
+                      }
+                    />
+                    {/* Private client review portal — branded slug masks the token. Both shapes work. */}
+                    <Route
+                      path="/portal/:slug/:token"
+                      element={
+                        <PortalErrorBoundary>
+                          <ClientPortal />
+                        </PortalErrorBoundary>
+                      }
+                    />
+                    <Route
+                      path="/portal/:token"
+                      element={
+                        <PortalErrorBoundary>
+                          <ClientPortal />
+                        </PortalErrorBoundary>
+                      }
+                    />
+                    {/* Admin routes */}
+                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route path="/reset-password" element={<AdminResetPassword />} />
+                    <Route
+                      path="/admin"
+                      element={
+                        <ProtectedRoute minRole="editor">
+                          <AdminLayout />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route index element={<AdminDashboard />} />
+                      <Route path="leads" element={<AdminLeads />} />
+                      <Route
+                        path="leads-hub"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminLeadsHub />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="lead-repository"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminLeadRepository />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="opportunities"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminOpportunities />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="opportunities/:id"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminOpportunities />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="quote-settings"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminQuoteSettings />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="flowlu-leads"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminFlowluLeads />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="pipeline"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminPipeline />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="enquiries"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminEnquiries />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="quote-requests"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminQuoteRequests />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="offer-leads"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminOfferLeads />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="grant-follow-up"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminGrantFollowUp />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="tracker"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminTracker />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="clients"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminClients />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="users" element={<AdminUsers />} />
+                      <Route path="audit-logs" element={<AdminAuditLogs />} />
+                      <Route path="bookings" element={<AdminBookings />} />
+                      <Route path="settings" element={<AdminSettings />} />
+                      <Route path="newsletter" element={<AdminNewsletter />} />
+                      <Route path="roles" element={<AdminRoles />} />
+                      <Route path="landing-page" element={<AdminLandingPage />} />
+                      <Route path="demos" element={<AdminDemos />} />
+                      <Route path="blog-manage" element={<AdminBlog />} />
+                      <Route
+                        path="story-studio"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminStoryStudio />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="lead-scraper"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminLeadScraper />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="finder"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminFinder />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="tools" element={<AdminToolsHub />} />
+                      <Route
+                        path="campaign-studio"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminCampaignStudio />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="partners"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminPartners />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="design-system"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <DesignSystemShowcase />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="directory-finder" element={<Navigate to="/admin/finder" replace />} />
+                      <Route
+                        path="ad-compliance"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminAdCompliance />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="video-studio"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminVideoStudio />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="ad-studio"
+                        element={
+                          <ProtectedRoute minRole="super_admin">
+                            <AdminAdStudio />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="modules"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminModules />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="module-requests"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminModuleRequests />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="tts-test"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminTtsTest />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="media" element={<AdminMedia />} />
+                      <Route path="sitemap" element={<AdminSitemap />} />
+                      <Route path="content-history" element={<AdminContentHistory />} />
+                      <Route path="seo" element={<AdminSEO />} />
+                      <Route path="seo-insights" element={<AdminSEOInsights />} />
+                      <Route path="seo-health" element={<AdminSEOHealth />} />
+                      <Route path="geo" element={<AdminGeo />} />
+                      <Route path="vbout" element={<AdminVbout />} />
+                      <Route
+                        path="vbout-debug"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminVboutDebug />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="embed-codes" element={<AdminEmbedCodes />} />
+                      <Route path="coupons" element={<AdminCoupons />} />
+                      <Route path="courses" element={<AdminCourses />} />
+                      <Route path="case-studies" element={<AdminCaseStudies />} />
+                      <Route
+                        path="prospecting"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminProspecting />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="voice-agent"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminVoiceAgent />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="backlinks"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminBacklinks />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="ads"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminAds />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="reviews"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminReviews />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="flowlu"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminFlowlu />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="language-versions"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminLanguageVersions />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="accounting" element={<AdminAccounting />} />
+                      <Route path="emails" element={<AdminEmails />} />
+                      <Route
+                        path="inbox"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminInboxPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="email-queue"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminEmailQueue />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="email-deliverability"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminEmailDeliverability />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="email-dashboard"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminEmailDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="lead-emails" element={<AdminLeadEmails />} />
+                      <Route path="hr" element={<AdminHR />} />
+                      <Route path="integrations" element={<AdminIntegrations />} />
+                      <Route path="export" element={<AdminExport />} />
+                      <Route path="client-projects" element={<AdminClientProjects />} />
+                      <Route path="client-projects/:id" element={<AdminClientProjectDetail />} />
+                      <Route
+                        path="showcase"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminShowcase />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="legal"
+                        element={
+                          <ProtectedRoute minRole="admin">
+                            <AdminLegal />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Route>
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </PreviewModeProvider>
+          </LanguageProvider>
+        </A11yProvider>
       </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
