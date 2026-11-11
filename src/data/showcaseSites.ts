@@ -4,8 +4,7 @@ import buddychip from "@/assets/showcase/buddychip.jpg.asset.json";
 import jitty from "@/assets/showcase/jitty.jpg.asset.json";
 import minibric from "@/assets/showcase/minibric.jpg.asset.json";
 import classifieds from "@/assets/showcase/classifieds.jpg.asset.json";
-const telceImage =
-  "https://screenshot2.lovable.dev/lovp_3pm29fa7zm9jvrdy1ty90w8vv5/dbe984a5795ee676503dcc15e6ae172e_1794389982987.png";
+const telceImage = "/images/telce-indoor-arena.svg";
 import growthreport from "@/assets/showcase/growthreport.jpg.asset.json";
 
 export const SHOWCASE_HUB_URL = "https://myname.co.uk";
