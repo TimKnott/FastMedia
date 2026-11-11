@@ -1,10 +1,24 @@
-import { useUserRole, hasMinimumRole } from '@/hooks/useUserRole';
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X, Share2, Download, MessageCircle, Contact, LayoutDashboard, CreditCard, UserCircle2, Loader2, LogOut, Shield, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useUserRole, hasMinimumRole } from "@/hooks/useUserRole";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  Menu,
+  X,
+  Share2,
+  Download,
+  MessageCircle,
+  Contact,
+  LayoutDashboard,
+  CreditCard,
+  UserCircle2,
+  Loader2,
+  LogOut,
+  Shield,
+  ChevronDown,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,25 +26,27 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
-import ThemeToggle from '@/components/ThemeToggle';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import logo from '@/assets/logo.jpeg';
-import { useSiteSetting } from '@/hooks/useSiteSettings';
-import { localizedPath } from '@/lib/publicLanguage';
-import { revealLazySections } from '@/components/LazySection';
+} from "@/components/ui/dropdown-menu";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import AdminToolbar from "@/components/AdminToolbar";
+import ThemeToggle from "@/components/ThemeToggle";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import logo from "@/assets/logo.jpeg";
+import { useSiteSetting } from "@/hooks/useSiteSettings";
+import { localizedPath } from "@/lib/publicLanguage";
+import { revealLazySections } from "@/components/LazySection";
 
-const PAYMENTS_ENV: 'sandbox' | 'live' =
-  (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined)?.startsWith('pk_test_')
-    ? 'sandbox'
-    : 'live';
+const PAYMENTS_ENV: "sandbox" | "live" = (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined)?.startsWith(
+  "pk_test_",
+)
+  ? "sandbox"
+  : "live";
 
 const Navbar = () => {
   const { t, language } = useLanguage();
-  const isEnglish = language === 'en';
-  const { enabled: showPricing } = useSiteSetting('show_pricing');
+  const isEnglish = language === "en";
+  const { enabled: showPricing } = useSiteSetting("show_pricing");
   const navigate = useNavigate();
   const location = useLocation();
   const navBarRef = useRef<HTMLDivElement>(null);
@@ -45,8 +61,8 @@ const Navbar = () => {
     return Math.ceil(bar?.getBoundingClientRect().height ?? 72) + 12;
   };
 
-  const scrollToId = (rawId: string, behavior: ScrollBehavior = 'smooth') => {
-    const id = decodeURIComponent(rawId.replace(/^#/, '').trim());
+  const scrollToId = (rawId: string, behavior: ScrollBehavior = "smooth") => {
+    const id = decodeURIComponent(rawId.replace(/^#/, "").trim());
     const el = document.getElementById(id);
     if (!el) return false;
     const y = el.getBoundingClientRect().top + window.scrollY - getNavOffset();
@@ -60,7 +76,7 @@ const Navbar = () => {
     // Images, dynamic content and menu animations can shift layout after the first scroll.
     // Re-align a few times so the selected section lands exactly under the fixed navbar.
     [350, 800, 1200].forEach((delay) => {
-      window.setTimeout(() => scrollToId(id, 'auto'), delay);
+      window.setTimeout(() => scrollToId(id, "auto"), delay);
     });
 
     return true;
@@ -81,14 +97,11 @@ const Navbar = () => {
     tryScroll();
   }, [location.pathname, location.hash]);
 
-  const handleHashClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-  ) => {
-    if (!href.startsWith('#')) return;
+  const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!href.startsWith("#")) return;
     e.preventDefault();
     const id = href.slice(1);
-    if (location.pathname !== '/') {
+    if (location.pathname !== "/") {
       setIsOpen(false);
       navigate(`/${href}`);
       return;
@@ -98,7 +111,7 @@ const Navbar = () => {
     revealLazySections();
     const scrollNow = (attempt = 0) => {
       if (scrollToIdWithCorrection(id)) {
-        window.history.replaceState(null, '', href);
+        window.history.replaceState(null, "", href);
         return;
       }
       if (attempt < 70) window.setTimeout(() => scrollNow(attempt + 1), 100);
@@ -106,8 +119,6 @@ const Navbar = () => {
     scrollNow();
     setIsOpen(false);
   };
-
-
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -118,17 +129,25 @@ const Navbar = () => {
       setIsAuthed(!!data.session);
       setUserEmail(data.session?.user?.email ?? null);
     });
-    return () => { sub.subscription.unsubscribe(); };
+    return () => {
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const openBillingPortal = async () => {
     if (!userEmail) {
-      toast.error(language === 'de' ? 'Melden Sie sich zuerst an, um Ihre Abrechnung zu verwalten.' : (isEnglish ? 'Sign in first to manage billing.' : 'Pro správu plateb se nejprve přihlaste.'));
+      toast.error(
+        language === "de"
+          ? "Melden Sie sich zuerst an, um Ihre Abrechnung zu verwalten."
+          : isEnglish
+            ? "Sign in first to manage billing."
+            : "Pro správu plateb se nejprve přihlaste.",
+      );
       return;
     }
     setBillingLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('payments-customer-portal', {
+      const { data, error } = await supabase.functions.invoke("payments-customer-portal", {
         body: {
           email: userEmail,
           return_url: `${window.location.origin}/account`,
@@ -137,11 +156,18 @@ const Navbar = () => {
       });
       if (error) throw error;
       const url = (data as { url?: string; error?: string })?.url;
-      if (!url) throw new Error((data as { error?: string })?.error ?? 'No portal URL returned.');
-      window.open(url, '_blank', 'noopener,noreferrer');
+      if (!url) throw new Error((data as { error?: string })?.error ?? "No portal URL returned.");
+      window.open(url, "_blank", "noopener,noreferrer");
     } catch (e) {
-      const msg = e instanceof Error ? e.message : (language === 'de' ? 'Das Abrechnungsportal konnte nicht geöffnet werden.' : (isEnglish ? 'Could not open the billing portal.' : 'Platební portál se nepodařilo otevřít.'));
-      console.error('[Navbar billing]', e);
+      const msg =
+        e instanceof Error
+          ? e.message
+          : language === "de"
+            ? "Das Abrechnungsportal konnte nicht geöffnet werden."
+            : isEnglish
+              ? "Could not open the billing portal."
+              : "Platební portál se nepodařilo otevřít.";
+      console.error("[Navbar billing]", e);
       toast.error(msg);
     } finally {
       setBillingLoading(false);
@@ -153,60 +179,84 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
-
   const { role: userRole } = useUserRole();
   // Campaign landing pages: visible in the menu to real admins only (role read from user_roles; RLS-backed).
-  const campaignLinks = hasMinimumRole(userRole, 'admin') ? [
-    { to: '/business', label: 'Admin: /business' },
-    { to: '/equestrian', label: 'Admin: /equestrian' },
-  ] : [];
-  const L = (cs: string, en: string, de: string) => (language === 'de' ? de : isEnglish ? en : cs);
+  const campaignLinks = hasMinimumRole(userRole, "admin")
+    ? [
+        { to: "/business", label: "Admin: /business" },
+        { to: "/equestrian", label: "Admin: /equestrian" },
+      ]
+    : [];
+  const L = (cs: string, en: string, de: string) => (language === "de" ? de : isEnglish ? en : cs);
   // Grouped main menu (desktop dropdowns + mobile sections). Full link list lives in the footer.
   const menuGroups: { label: string; items: { to: string; label: string }[] }[] = [
-    { label: L('Služby', 'Services', 'Leistungen'), items: [
-      { to: '/offer', label: L('Nabídka', 'Offer', 'Angebot') },
-      { to: '/calculator', label: L('Kalkulačka', 'Calculator', 'Kalkulator') },
-      { to: '/eu-language-websites', label: L('Weby v jazycích EU', 'EU language websites', 'Websites in EU-Sprachen') },
-      { to: '/consultant/tereza', label: t('nav.consultant') },
-      { to: '/inquiry', label: t('nav.inquiry') },
-    ] },
-    { label: L('Reference', 'Our work', 'Referenzen'), items: [
-      { to: '/case-studies', label: L('Případové studie', 'Case studies', 'Projektbeispiele') },
-      { to: '/reviews', label: L('Recenze', 'Reviews', 'Bewertungen') },
-    ] },
-    { label: L('Granty', 'Grants', 'Förderung'), items: [
-      { to: '/grant-wizard', label: L('Žádost o grant', 'Grant wizard', 'Förderanfrage') },
-      { to: '/grant-eligibility', label: L('Podmínky grantu', 'Grant rules', 'Förderbedingungen') },
-      { to: '/eugrants', label: L('Mapa krajů', 'Grant hubs map', 'Regionale Förderstellen') },
-      { to: '/eu-creative-grant', label: L('Kreativní vouchery', 'EU creative grant', 'EU-Kreativförderung') },
-    ] },
-    { label: L('Zdroje', 'Learn', 'Wissen'), items: [
-      { to: '/courses', label: L('Kurzy', 'Courses', 'Kurse') },
-      { to: '/blog', label: 'Blog' },
-    ] },
-    { label: L('Kontakt', 'Contact', 'Kontakt'), items: [{ to: '/contact', label: L('Kontakt', 'Contact', 'Kontakt') }] },
-    ...(campaignLinks.length ? [{ label: 'Admin', items: campaignLinks }] : []),
+    {
+      label: L("Služby", "Services", "Leistungen"),
+      items: [
+        { to: "/offer", label: L("Nabídka", "Offer", "Angebot") },
+        { to: "/calculator", label: L("Kalkulačka", "Calculator", "Kalkulator") },
+        {
+          to: "/eu-language-websites",
+          label: L("Weby v jazycích EU", "EU language websites", "Websites in EU-Sprachen"),
+        },
+        { to: "/consultant/tereza", label: t("nav.consultant") },
+        { to: "/inquiry", label: t("nav.inquiry") },
+      ],
+    },
+    {
+      label: L("Reference", "Our work", "Referenzen"),
+      items: [
+        { to: "/case-studies", label: L("Případové studie", "Case studies", "Projektbeispiele") },
+        { to: "/reviews", label: L("Recenze", "Reviews", "Bewertungen") },
+      ],
+    },
+    {
+      label: L("Granty", "Grants", "Förderung"),
+      items: [
+        { to: "/grant-wizard", label: L("Žádost o grant", "Grant wizard", "Förderanfrage") },
+        { to: "/grant-eligibility", label: L("Podmínky grantu", "Grant rules", "Förderbedingungen") },
+        { to: "/eugrants", label: L("Mapa krajů", "Grant hubs map", "Regionale Förderstellen") },
+        { to: "/eu-creative-grant", label: L("Kreativní vouchery", "EU creative grant", "EU-Kreativförderung") },
+      ],
+    },
+    {
+      label: L("Zdroje", "Learn", "Wissen"),
+      items: [
+        { to: "/courses", label: L("Kurzy", "Courses", "Kurse") },
+        { to: "/blog", label: "Blog" },
+      ],
+    },
+    {
+      label: L("Kontakt", "Contact", "Kontakt"),
+      items: [{ to: "/contact", label: L("Kontakt", "Contact", "Kontakt") }],
+    },
+    ...(campaignLinks.length ? [{ label: "Admin", items: campaignLinks }] : []),
   ];
   const pageAnchors = [
-    { href: '#demos', label: t('nav.demos') },
-    { href: '#services', label: t('nav.services') },
-    { href: '#reviews', label: t('nav.reviews') },
-    ...(showPricing ? [{ href: '#pricing', label: t('nav.pricing') }] : []),
-    { href: '#faq', label: t('nav.faq') },
+    { href: "#demos", label: t("nav.demos") },
+    { href: "#services", label: t("nav.services") },
+    { href: "#reviews", label: t("nav.reviews") },
+    ...(showPricing ? [{ href: "#pricing", label: t("nav.pricing") }] : []),
+    { href: "#faq", label: t("nav.faq") },
   ];
 
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50"
     >
       <div className="container mx-auto px-3 sm:px-6 lg:px-10">
         <div ref={navBarRef} className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <img decoding="async" src={logo} alt="FastMedia.Pro" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow" />
+            <img
+              decoding="async"
+              src={logo}
+              alt="FastMedia.Pro"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover shadow-glow"
+            />
             <span className="hidden min-[420px]:inline font-display font-bold text-lg sm:text-xl text-foreground">
               Fast<span className="text-accent">Media</span>.Pro
             </span>
@@ -237,16 +287,26 @@ const Navbar = () => {
               </a>
             </div>
 
+            <AdminToolbar />
+
             {/* Website Builder shortcut — visible whenever a user is signed in */}
             {isAuthed && (
               <Link to="/admin/client-projects" className="shrink-0">
                 <Button
                   size="sm"
                   className="h-9 px-3 sm:px-4 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-glow border border-accent/40"
-                  title={language === 'de' ? 'Website-Editor öffnen' : (isEnglish ? 'Open the Website Builder' : 'Otevřít tvůrce webu')}
+                  title={
+                    language === "de"
+                      ? "Website-Editor öffnen"
+                      : isEnglish
+                        ? "Open the Website Builder"
+                        : "Otevřít tvůrce webu"
+                  }
                 >
                   <LayoutDashboard className="w-4 h-4 sm:mr-1.5" />
-                  <span className="hidden sm:inline">{language === 'de' ? 'Website-Editor' : (isEnglish ? 'Builder' : 'Tvůrce webu')}</span>
+                  <span className="hidden sm:inline">
+                    {language === "de" ? "Website-Editor" : isEnglish ? "Builder" : "Tvůrce webu"}
+                  </span>
                 </Button>
               </Link>
             )}
@@ -259,17 +319,17 @@ const Navbar = () => {
                     size="sm"
                     variant="outline"
                     className="h-9 px-2 sm:px-3 shrink-0"
-                    title={language === 'de' ? 'Konto' : (isEnglish ? 'Account' : 'Účet')}
-                    aria-label={language === 'de' ? 'Kontomenü' : (isEnglish ? 'Account menu' : 'Nabídka účtu')}
+                    title={language === "de" ? "Konto" : isEnglish ? "Account" : "Účet"}
+                    aria-label={language === "de" ? "Kontomenü" : isEnglish ? "Account menu" : "Nabídka účtu"}
                   >
                     <UserCircle2 className="w-4 h-4 sm:mr-1.5" />
-                    <span className="hidden sm:inline">{language === 'de' ? 'Konto' : (isEnglish ? 'Account' : 'Účet')}</span>
+                    <span className="hidden sm:inline">
+                      {language === "de" ? "Konto" : isEnglish ? "Account" : "Účet"}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-60">
-                  <DropdownMenuLabel className="truncate">
-                    {userEmail ?? 'Signed in'}
-                  </DropdownMenuLabel>
+                  <DropdownMenuLabel className="truncate">{userEmail ?? "Signed in"}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onSelect={(e) => {
@@ -278,23 +338,24 @@ const Navbar = () => {
                     }}
                     disabled={billingLoading}
                   >
-                    {billingLoading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <CreditCard className="w-4 h-4" />
-                    )}
-                     {language === 'de' ? 'Abrechnung verwalten' : (isEnglish ? 'Manage billing' : 'Spravovat platby')}
+                    {billingLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
+                    {language === "de" ? "Abrechnung verwalten" : isEnglish ? "Manage billing" : "Spravovat platby"}
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/account">
                       <UserCircle2 className="w-4 h-4" />
-                       {language === 'de' ? 'Kontoseite' : (isEnglish ? 'Account page' : 'Stránka účtu')}
+                      {language === "de" ? "Kontoseite" : isEnglish ? "Account page" : "Stránka účtu"}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={(e) => { e.preventDefault(); void signOut(); }}>
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      void signOut();
+                    }}
+                  >
                     <LogOut className="w-4 h-4" />
-                     {language === 'de' ? 'Abmelden' : (isEnglish ? 'Sign out' : 'Odhlásit se')}
+                    {language === "de" ? "Abmelden" : isEnglish ? "Sign out" : "Odhlásit se"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -305,10 +366,12 @@ const Navbar = () => {
               <Link
                 to="/admin/login"
                 className="hidden md:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors shrink-0"
-                title={language === 'de' ? 'Admin-Anmeldung' : (isEnglish ? 'Admin sign in' : 'Přihlášení administrátora')}
+                title={
+                  language === "de" ? "Admin-Anmeldung" : isEnglish ? "Admin sign in" : "Přihlášení administrátora"
+                }
               >
                 <Shield className="w-4 h-4" />
-                {language === 'de' ? 'Admin' : (isEnglish ? 'Admin' : 'Administrace')}
+                {language === "de" ? "Admin" : isEnglish ? "Admin" : "Administrace"}
               </Link>
             )}
 
@@ -319,7 +382,7 @@ const Navbar = () => {
             {/* CTA Button - hidden on mobile, visible sm+ */}
             <a href="#contact" onClick={(e) => handleHashClick(e, "#contact")} className="hidden lg:block">
               <Button className="gradient-accent text-accent-foreground font-semibold shadow-glow hover:opacity-90 transition-opacity">
-                {t('nav.book')}
+                {t("nav.book")}
               </Button>
             </a>
 
@@ -327,7 +390,13 @@ const Navbar = () => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 text-foreground shrink-0 rounded-lg hover:bg-muted/50 transition-colors"
-               aria-label={language === 'de' ? 'Menü öffnen oder schließen' : (isEnglish ? 'Toggle menu' : 'Otevřít nebo zavřít nabídku')}
+              aria-label={
+                language === "de"
+                  ? "Menü öffnen oder schließen"
+                  : isEnglish
+                    ? "Toggle menu"
+                    : "Otevřít nebo zavřít nabídku"
+              }
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -336,34 +405,40 @@ const Navbar = () => {
 
         {/* Desktop menu row — grouped into short dropdowns; every page is also in the footer */}
         <div className="hidden md:flex items-center gap-1 pb-2 -mt-1">
-          {menuGroups.map((g) => g.items.length === 1 ? (
-            <Link key={g.label} to={localizedPath(g.items[0].to, language)} className="px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors">
-              {g.label}
-            </Link>
-          ) : (
-            <DropdownMenu key={g.label}>
-              <DropdownMenuTrigger className="flex items-center gap-1 px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors data-[state=open]:text-accent">
-                {g.label}<ChevronDown className="w-3.5 h-3.5" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                {g.items.map((l) => (
-                  <DropdownMenuItem key={l.to} asChild>
-                    <Link to={localizedPath(l.to, language)}>{l.label}</Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ))}
+          {menuGroups.map((g) =>
+            g.items.length === 1 ? (
+              <Link
+                key={g.label}
+                to={localizedPath(g.items[0].to, language)}
+                className="px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors"
+              >
+                {g.label}
+              </Link>
+            ) : (
+              <DropdownMenu key={g.label}>
+                <DropdownMenuTrigger className="flex items-center gap-1 px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-accent rounded-md hover:bg-muted/50 transition-colors data-[state=open]:text-accent">
+                  {g.label}
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  {g.items.map((l) => (
+                    <DropdownMenuItem key={l.to} asChild>
+                      <Link to={localizedPath(l.to, language)}>{l.label}</Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ),
+          )}
         </div>
       </div>
-
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="bg-card border-t border-border"
           >
@@ -376,9 +451,15 @@ const Navbar = () => {
                 >
                   <span className="flex items-center gap-2">
                     <LayoutDashboard className="w-4 h-4" />
-                     {language === 'de' ? 'Website-Editor öffnen' : (isEnglish ? 'Open Website Builder' : 'Otevřít tvůrce webu')}
+                    {language === "de"
+                      ? "Website-Editor öffnen"
+                      : isEnglish
+                        ? "Open Website Builder"
+                        : "Otevřít tvůrce webu"}
                   </span>
-                   <span className="text-[10px] uppercase tracking-wide opacity-80">{language === 'de' ? 'Angemeldet' : (isEnglish ? 'Signed in' : 'Přihlášeno')}</span>
+                  <span className="text-[10px] uppercase tracking-wide opacity-80">
+                    {language === "de" ? "Angemeldet" : isEnglish ? "Signed in" : "Přihlášeno"}
+                  </span>
                 </Link>
               )}
               {isAuthed && (
@@ -390,29 +471,30 @@ const Navbar = () => {
                   disabled={billingLoading}
                   className="w-full flex items-center gap-2 p-3 rounded-lg border border-border text-foreground font-medium hover:bg-muted/50 transition-colors disabled:opacity-60"
                 >
-                  {billingLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <CreditCard className="w-4 h-4" />
-                  )}
-                   {language === 'de' ? 'Abrechnung verwalten' : (isEnglish ? 'Manage billing' : 'Spravovat platby')}
+                  {billingLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
+                  {language === "de" ? "Abrechnung verwalten" : isEnglish ? "Manage billing" : "Spravovat platby"}
                 </button>
               )}
               <div className="flex items-center justify-between gap-3 py-2">
                 <span className="text-sm font-medium text-foreground">
-                  {language === 'de' ? 'Sprache' : (isEnglish ? 'Language' : 'Jazyk')}
+                  {language === "de" ? "Sprache" : isEnglish ? "Language" : "Jazyk"}
                 </span>
                 <LanguageSwitcher />
               </div>
               <div className="flex items-center justify-between gap-3 py-2 sm:hidden">
                 <span className="text-sm font-medium text-foreground">
-                  {language === 'de' ? 'Dunkler Modus' : (isEnglish ? 'Dark mode' : 'Tmavý režim')}
+                  {language === "de" ? "Dunkler Modus" : isEnglish ? "Dark mode" : "Tmavý režim"}
                 </span>
                 <ThemeToggle />
               </div>
               <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-border pt-2">
                 {pageAnchors.map((link) => (
-                  <a key={link.href} href={link.href} onClick={(e) => handleHashClick(e, link.href)} className="py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors">
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={(e) => handleHashClick(e, link.href)}
+                    className="py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors"
+                  >
                     {link.label}
                   </a>
                 ))}
@@ -422,7 +504,12 @@ const Navbar = () => {
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{g.label}</p>
                   <div className="grid grid-cols-2 gap-x-4">
                     {g.items.map((l) => (
-                      <Link key={l.to} to={localizedPath(l.to, language)} onClick={() => setIsOpen(false)} className="block py-2 font-medium text-foreground hover:text-accent transition-colors">
+                      <Link
+                        key={l.to}
+                        to={localizedPath(l.to, language)}
+                        onClick={() => setIsOpen(false)}
+                        className="block py-2 font-medium text-foreground hover:text-accent transition-colors"
+                      >
                         {l.label}
                       </Link>
                     ))}
@@ -430,10 +517,23 @@ const Navbar = () => {
                 </div>
               ))}
               <div className="flex flex-wrap gap-x-4 border-t border-border pt-2">
-                <Link to={localizedPath('/install', language)} onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-accent"><Download className="w-4 h-4" />{t('nav.install')}</Link>
-                <Link to="/admin/login" onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground hover:text-accent"><Shield className="w-4 h-4" />{t('nav.admin')}</Link>
+                <Link
+                  to={localizedPath("/install", language)}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 py-2 text-sm font-medium text-accent"
+                >
+                  <Download className="w-4 h-4" />
+                  {t("nav.install")}
+                </Link>
+                <Link
+                  to="/admin/login"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground hover:text-accent"
+                >
+                  <Shield className="w-4 h-4" />
+                  {t("nav.admin")}
+                </Link>
               </div>
-
 
               {/* Quick actions row */}
               <div className="flex items-center gap-3 pt-2 border-t border-border">
@@ -454,9 +554,9 @@ const Navbar = () => {
                   className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
                 >
                   <Contact className="w-4 h-4" />
-                   {language === 'de' ? 'Kontakt speichern' : (isEnglish ? 'Save Contact' : 'Uložit kontakt')}
+                  {language === "de" ? "Kontakt speichern" : isEnglish ? "Save Contact" : "Uložit kontakt"}
                 </a>
-                {'share' in navigator && (
+                {"share" in navigator && (
                   <button
                     onClick={() => {
                       navigator.share({ title: document.title, url: window.location.href }).catch(() => {});
@@ -465,15 +565,13 @@ const Navbar = () => {
                     className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-accent transition-colors"
                   >
                     <Share2 className="w-4 h-4" />
-                     {language === 'de' ? 'Teilen' : (isEnglish ? 'Share' : 'Sdílet')}
+                    {language === "de" ? "Teilen" : isEnglish ? "Share" : "Sdílet"}
                   </button>
                 )}
               </div>
 
-              <a href="#contact" onClick={(e) => handleHashClick(e, '#contact')}>
-                <Button className="w-full gradient-accent text-accent-foreground font-semibold">
-                  {t('nav.book')}
-                </Button>
+              <a href="#contact" onClick={(e) => handleHashClick(e, "#contact")}>
+                <Button className="w-full gradient-accent text-accent-foreground font-semibold">{t("nav.book")}</Button>
               </a>
             </div>
           </motion.div>
