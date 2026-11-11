@@ -5,7 +5,7 @@ import jitty from "@/assets/showcase/jitty.jpg.asset.json";
 import minibric from "@/assets/showcase/minibric.jpg.asset.json";
 import classifieds from "@/assets/showcase/classifieds.jpg.asset.json";
 const telceImage =
-  "https://screenshot2.lovable.dev/lovp_3pm29fa7zm9jvrdy1ty90w8vv5/cc817e47b7b3ba37d43c56f4aa886aae_1794388185256.png";
+  "https://screenshot2.lovable.dev/lovp_3pm29fa7zm9jvrdy1ty90w8vv5/dbe984a5795ee676503dcc15e6ae172e_1794389982987.png";
 import growthreport from "@/assets/showcase/growthreport.jpg.asset.json";
 
 export const SHOWCASE_HUB_URL = "https://myname.co.uk";
