@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getSignedInUserId } from "../_shared/require-user.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -29,6 +30,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    if (!(await getSignedInUserId(req))) {
+      return new Response(JSON.stringify({ error: "Please sign in to use this assistant." }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     // Rate limit by IP or forwarded header
     const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     if (!checkRateLimit(clientIp)) {

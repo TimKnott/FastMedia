@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getSignedInUserId } from "../_shared/require-user.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -423,6 +424,9 @@ async function aiSummarise(language: string, context: string, history: Turn[]) {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
+    if (!(await getSignedInUserId(req))) {
+      return new Response(JSON.stringify({ error: "Please sign in to use this assistant." }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const body = (await req.json()) as Body;
     const language = body.language === "cs" || body.language === "de" ? body.language : "en";
     const history = Array.isArray(body.history) ? body.history.slice(0, 10) : [];

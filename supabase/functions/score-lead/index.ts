@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { ALERT_RECIPIENTS } from "../_shared/alert-recipients.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { computeCalculatorQuote } from "../_shared/calculator-pricing.ts";
+import { getSignedInUserId } from "../_shared/require-user.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -167,7 +168,9 @@ serve(async (req) => {
       .select("id", { count: "exact", head: true })
       .eq("email", body.email.trim().toLowerCase())
       .gte("created_at", new Date(Date.now() - 86400_000).toISOString());
-    if (LOVABLE_API_KEY && (recentForEmail ?? 0) === 0) {
+    const signedInUser = await getSignedInUserId(req);
+    // Paid AI analysis only runs for signed-in callers; anonymous scoring still works.
+    if (LOVABLE_API_KEY && signedInUser && (recentForEmail ?? 0) === 0) {
       try {
         const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
