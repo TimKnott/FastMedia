@@ -5846,6 +5846,27 @@ export type Database = {
         }
         Relationships: []
       }
+      software_inventory: {
+        Row: {
+          created_at: string
+          entry: Json
+          id: string
+          reviewed_at: string
+        }
+        Insert: {
+          created_at?: string
+          entry: Json
+          id: string
+          reviewed_at?: string
+        }
+        Update: {
+          created_at?: string
+          entry?: Json
+          id?: string
+          reviewed_at?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
