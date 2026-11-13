@@ -3,6 +3,7 @@
 // then writes a summary with a rough, unconfirmed price range and saves it for the admin.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { generateJson } from '../_shared/ai-json.ts';
+import { getSignedInUserId } from "../_shared/require-user.ts";
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -37,6 +38,7 @@ type Msg = { role: 'visitor' | 'advisor'; content: string };
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  if (!(await getSignedInUserId(req))) return json({ error: 'Please sign in to use this assistant.' }, 401);
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   if (limited(ip)) return json({ error: 'Too many requests — please wait a few minutes.' }, 429);
 
