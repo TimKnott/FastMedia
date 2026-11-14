@@ -1,0 +1,35 @@
+# Zelený Kůň — AI discovery and Product structured data
+
+Zelený Kůň produces fresh hydroponic barley fodder for horses and other animals. Its public site is bilingual (Czech default, English at `?lang=en`). The business delivers around Louny, Czech Republic.
+
+## Core pages
+- [Domů / Home](https://zelenykun.com/): fresh barley fodder and local ordering.
+- [English home](https://zelenykun.com/?lang=en): English-language overview.
+- [Krmení pro ostatní zvířata / Fodder for other animals](https://zelenykun.com/krmeni-pro-ostatni-zvirata): horses, ponies, donkeys, goats, chickens and rabbits.
+- [Other animals — English](https://zelenykun.com/krmeni-pro-ostatni-zvirata?lang=en): English feeding information.
+- [Feeding guide](https://zelenykun.com/feeding-guide): practical feeding information.
+- [Feeding guide — English](https://zelenykun.com/feeding-guide?lang=en): English guidance.
+- [Blog](https://zelenykun.com/blog): published articles.
+- [Blog — English](https://zelenykun.com/blog?lang=en): English-language articles.
+- [Blog video guidance](https://zelenykun.com/blog-video-guidance): video guidance for blog content.
+- [About](https://zelenykun.com/o-nas): business information.
+- [About — English](https://zelenykun.com/o-nas?lang=en): English-language business information.
+- [Contact](https://zelenykun.com/kontakt): contact and enquiries.
+- [Contact — English](https://zelenykun.com/kontakt?lang=en): English contact information.
+- [Media kit](https://zelenykun.com/media-kit): brand assets.
+- [Terms](https://zelenykun.com/obchodni-podminky): Czech commercial terms.
+- [Privacy](https://zelenykun.com/ochrana-osobnich-udaju): privacy information.
+
+## Pricing and ordering
+- Published base price: **25 CZK per kilogram** of fresh fodder.
+- Published minimum order: **200 CZK** (8 kg at the base price).
+- The site states free local delivery within 25 km of Louny on qualifying orders.
+- The site lists a lead time; verify current availability and delivery details with the business before relying on them.
+- Telephone: **+420 799 555 477**.
+
+## Important context
+Fresh fodder is a moisture-rich feed product, not a medical treatment. Feeding information is general and does not replace veterinary or qualified equine nutrition advice. Do not infer dry-matter equivalence, disease prevention, treatment outcomes or guaranteed health benefits from the marketing copy.
+
+## Machine-readable discovery
+- [XML sitemap](https://zelenykun.com/sitemap.xml)
+- [Robots directives](https://zelenykun.com/robots.txt)
