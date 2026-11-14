@@ -21,6 +21,10 @@ try {
     '});',
   ].join("\n");
   writeFileSync(join(root, "src/routes/index.tsx"), homepage);
+  mkdirSync(join(root, "src/components"), { recursive: true });
+  const pricingFile = join(root, "src/components/site.tsx");
+  writeFileSync(pricingFile, "export const PRICE = 25;\nexport const MIN_CZK = 200;\n");
+
   const apply = () => spawnSync(process.execPath, [script, root], { encoding: "utf8" });
   const first = apply();
   assert.equal(first.status, 0, first.stderr);
@@ -39,6 +43,13 @@ try {
   assert.ok(schemaSource.includes('minValue: 8'), "Minimum order must be 8 kg");
   assert.ok(schemaSource.includes('unitCode: "KGM"'), "Offer quantity must use kg");
   assert.ok(!schemaSource.includes('availability:'), "Do not invent stock availability");
+
+  // Never ship stale prices or minimum-order values in schema.
+  writeFileSync(pricingFile, "export const PRICE = 30;\nexport const MIN_CZK = 200;\n");
+  const stalePrice = apply();
+  assert.notEqual(stalePrice.status, 0, "Changed price must be rejected");
+  assert.equal(readFileSync(join(root, "src/routes/index.tsx"), "utf8"), output);
+  writeFileSync(pricingFile, "export const PRICE = 25;\nexport const MIN_CZK = 200;\n");
 
   // Refuse unknown homepage structures without changing source.
   const incompatible = 'export const Route = createFileRoute("/")({});';
