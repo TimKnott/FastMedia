@@ -23,8 +23,10 @@ for (let i = 0; i < urls.length; i += 12) {
 const home = await (await fetch(origin + "/", { signal: AbortSignal.timeout(15000) })).text();
 const scripts = [...home.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
 const schemas = scripts.flatMap((match) => {
-  try { const data = JSON.parse(match[1]); return Array.isArray(data) ? data : [data]; }
-  catch { return []; }
+  try {
+    const data = JSON.parse(match[1]);
+    return (Array.isArray(data) ? data : [data]).flatMap((node) => node?.["@graph"] || [node]);
+  } catch { return []; }
 });
 const product = schemas.find((schema) => schema["@type"] === "Product");
 const offer = product?.offers;
