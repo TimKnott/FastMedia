@@ -62,18 +62,29 @@ function ApprovalsPanel() {
   );
 }
 import { Card, CardContent } from '@/components/ui/card';
+import { Share2 } from 'lucide-react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { mainItems, businessToolItems, contentItems, publicPageItems, adminItems, settingsItems, type MenuItem } from '@/components/admin/AdminSidebar';
 
+/** External software shortcuts (link only — no accounts, credentials, tracking or integrations). */
+type ExternalShortcut = { label: string; url: string; icon: typeof Share2; note: string };
+const SOCIAMONIALS: ExternalShortcut = {
+  label: 'Sociamonials — Lifetime',
+  url: 'https://www.sociamonials.com/accounts/account_preferences.php',
+  icon: Share2,
+  note: 'Open Sociamonials account preferences in a new tab (external software, shortcut only)',
+};
+
 /** Department definitions: order = priority. Every card links to an existing sidebar route. */
-const DEPARTMENTS: { name: string; desc: string; accent: string; urls: string[] }[] = [
+const DEPARTMENTS: { name: string; desc: string; accent: string; urls: string[]; external?: ExternalShortcut[] }[] = [
   { name: 'Find work & revenue', desc: 'Opportunities, buying signals and lead discovery', accent: 'border-l-primary',
     urls: ['/admin/opportunities', '/admin/prospecting', '/admin/prospecting?find=1', '/admin/finder', '/admin/lead-scraper', '/admin/lead-repository', '/admin/leads-hub'] },
   { name: 'Pipeline & follow-ups', desc: 'Enquiries, quotes, CRM and clients', accent: 'border-l-accent',
     urls: ['/admin/pipeline', '/admin/flowlu-leads', '/admin/flowlu', '/admin/leads', '/admin/enquiries', '/admin/quote-requests', '/admin/offer-leads', '/admin/grant-follow-up', '/admin/inbox', '/admin/clients', '/admin/client-projects', '/admin/tracker', '/admin/bookings', '/admin/voice-agent'] },
   { name: 'Campaigns & marketing', desc: 'Campaign Studio, ads, email and partners', accent: 'border-l-destructive/60',
-    urls: ['/admin/campaign-studio', '/admin/partners', '/admin/ad-studio', '/admin/ad-compliance', '/admin/video-studio', '/admin/story-studio', '/admin/newsletter', '/admin/vbout', '/admin/emails', '/admin/email-dashboard', '/admin/email-deliverability', '/admin/email-queue', '/admin/lead-emails', '/admin/ads', '/admin/reviews'] },
+    urls: ['/admin/campaign-studio', '/admin/partners', '/admin/ad-studio', '/admin/ad-compliance', '/admin/video-studio', '/admin/story-studio', '/admin/newsletter', '/admin/vbout', '/admin/emails', '/admin/email-dashboard', '/admin/email-deliverability', '/admin/email-queue', '/admin/lead-emails', '/admin/ads', '/admin/reviews'],
+    external: [SOCIAMONIALS] },
   { name: 'SEO & visibility', desc: 'Search, AI visibility and language versions', accent: 'border-l-primary',
     urls: ['/admin/seo', '/admin/seo-insights', '/admin/seo-health', '/admin/geo', '/admin/sitemap', '/admin/backlinks', '/admin/language-versions'] },
   { name: 'Website, content & sales tools', desc: 'Pages, demos, calculator, courses and showcase', accent: 'border-l-accent',
@@ -101,7 +112,8 @@ export default function AdminToolsHub() {
       {hasMinRole('admin') && <><ApprovalsPanel /><HealthPanel /></>}
       {groups.map((g) => {
         const items = g.items.filter((i) => hasMinRole(i.minRole));
-        if (!items.length) return null;
+        const external = g.external ?? [];
+        if (!items.length && !external.length) return null;
         return (
           <section key={g.name} aria-labelledby={`dept-${g.name}`} className="space-y-2">
             <div>
@@ -118,6 +130,16 @@ export default function AdminToolsHub() {
                     </CardContent>
                   </Card>
                 </Link>
+              ))}
+              {external.map((e) => (
+                <a key={e.url} href={e.url} target="_blank" rel="noopener noreferrer" title={e.note} className="rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <Card className={`h-full border-l-4 ${g.accent} transition-colors hover:bg-muted/50`}>
+                    <CardContent className="flex items-center gap-3 p-3">
+                      <e.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="text-sm font-medium">{e.label}</span>
+                    </CardContent>
+                  </Card>
+                </a>
               ))}
             </div>
           </section>
