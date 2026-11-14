@@ -63,7 +63,7 @@ await checkPage("7hourteacher.com", "/help",
 await checkPage("www.theprogenitors.com", "/archive/index.html",
   ["FAQPage", "ItemList", "Frequently asked questions"]);
 await checkPage("zelenykun.com", "/",
-  [/"@type"\\s*:\\s*"Product"/]);
+  [/"@type"\s*:\s*"Product"/]);
 
 const failures = results.filter((site) => site.issues.length);
 console.log(JSON.stringify({ checked: results.length, passing: results.length - failures.length, failures }, null, 2));
