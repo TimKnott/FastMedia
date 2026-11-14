@@ -15,7 +15,14 @@ for (let i = 0; i < urls.length; i += 12) {
       const html = await response.text();
       const canonical = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)?.[1] ||
         html.match(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i)?.[1];
-      return { url, status: response.status, valid: response.status === 200 && canonical === url };
+      const head = html.split("</head>")[0];
+      const alternates = [...head.matchAll(/<link[^>]*rel=["']alternate["'][^>]*>/gi)].map((match) => match[0].toLowerCase());
+      const language = url.includes("lang=en") ? "en" : "cs";
+      const hreflangValid = alternates.some((link) => link.includes('hreflang="' + language + '"'));
+      const titleValid = /<title>[^<]+<\/title>/i.test(head);
+      const descriptionValid = /<meta[^>]*name=["']description["'][^>]*>/i.test(head);
+      return { url, status: response.status, valid: response.status === 200 &&
+        canonical === url && hreflangValid && titleValid && descriptionValid };
     } catch (error) { return { url, valid: false, error: String(error) }; }
   }));
   errors.push(...batch.filter((item) => !item.valid));
