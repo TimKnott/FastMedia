@@ -1,0 +1,29 @@
+name: Network SEO release checks
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/audit-network-seo.mjs'
+      - 'scripts/audit-network-homepage-schema.mjs'
+      - 'scripts/audit-network-critical-pages.mjs'
+      - 'scripts/audit-zelenykun-seo.mjs'
+      - 'seo-integrations/zelenykun/**'
+      - '.github/workflows/network-seo.yml'
+jobs:
+  live-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check homepage metadata and JSON-LD
+        run: node scripts/audit-network-homepage-schema.mjs --strict
+      - name: Check critical page structured data
+        run: node scripts/audit-network-critical-pages.mjs --strict
+      - name: Report all network discovery endpoints
+        run: node scripts/audit-network-seo.mjs
+      - name: Report Zelený Kůň release readiness
+        run: node scripts/audit-zelenykun-seo.mjs
