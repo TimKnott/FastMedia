@@ -4,10 +4,9 @@
  * This module intentionally omits stock availability, ratings, reviews,
  * medical benefits and delivery promises not guaranteed for every order.
  *
- * Integration: in the existing Zelený Kůň homepage route, append a
- * { type: "application/ld+json", children: JSON.stringify(fodderProductSchema(lang)) }
- * entry to the scripts returned by head(), preserving the existing
- * WebPage and LocalBusiness scripts.
+ * Integration: add this Product to the existing homepage LocalBusiness
+ * JSON-LD script as an array, preserving the WebPage script. This avoids
+ * SSR head-script deduplication of separately emitted JSON-LD entries.
  */
 export function fodderProductSchema(lang: "cs" | "en" = "cs") {
   const english = lang === "en";
@@ -29,6 +28,7 @@ export function fodderProductSchema(lang: "cs" | "en" = "cs") {
       url,
       price: "25.00",
       priceCurrency: "CZK",
+      eligibleQuantity: { "@type": "QuantitativeValue", minValue: 8, unitCode: "KGM" },
       priceSpecification: {
         "@type": "UnitPriceSpecification",
         price: "25.00",
