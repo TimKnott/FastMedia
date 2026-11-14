@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify Zelený Kůň source patch without Lovable credits
+        run: node seo-integrations/zelenykun/test-seo-patch.mjs
       - name: Check homepage metadata and JSON-LD
         run: node scripts/audit-network-homepage-schema.mjs --strict
       - name: Check critical page structured data
