@@ -12,7 +12,7 @@ if (!existsSync(homeFile)) throw new Error("Zelený Kůň homepage route not fou
 const original = readFileSync(homeFile, "utf8");
 const importLine = 'import { fodderProductSchema } from "@/lib/fodder-product-schema";';
 const oldReturn = 'return { ...h, scripts: [...h.scripts, { type: "application/ld+json", children: JSON.stringify(local) }] };';
-const newReturn = 'return { ...h, scripts: [...h.scripts, { type: "application/ld+json", children: JSON.stringify(local) }, { type: "application/ld+json", children: JSON.stringify(fodderProductSchema(loaderData?.lang === "en" ? "en" : "cs")) }] };';
+const newReturn = 'return { ...h, scripts: [...h.scripts, { type: "application/ld+json", children: JSON.stringify([local, fodderProductSchema(loaderData?.lang === "en" ? "en" : "cs")]) }] };';
 if (!original.includes(oldReturn) && !original.includes(newReturn))
   throw new Error("Homepage head changed; refusing to apply an unsafe patch");
 let updated = original;
