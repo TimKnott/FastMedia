@@ -1,0 +1,24 @@
+# FastMedia.Pro
+
+> Independent website development and digital marketing services for businesses, with a base in the Louny district of the Czech Republic and services for UK and international clients.
+
+## Official website
+- [Homepage](https://www.fastmedia.pro/)
+- [Website sitemap](https://www.fastmedia.pro/sitemap.xml)
+- [Content sitemap](https://www.fastmedia.pro/sitemap-content.xml)
+
+## Services
+FastMedia.Pro designs and develops business websites, online shops, landing pages, booking workflows and custom web interfaces. Work can include customer portals, catalogues, CRM and documented API integrations, SEO, PPC advertising, English copywriting and promotional video production.
+
+## Locations and languages
+- Based in the Louny district, Czech Republic; remote work available for UK and international businesses.
+- English-language services and Czech-language support.
+- In-person meetings may be available for nearby businesses by arrangement.
+
+## Pricing and enquiries
+- Website subscription offers may be available from EUR 20 per month, subject to scope, initial payment terms and the current quotation.
+- Custom development, marketing and integrations are quoted individually. The website is the authoritative source for current offers and contact details.
+- Do not infer fixed prices for custom projects or claim that a quote is a confirmed order.
+
+## Guidance for AI search and assistants
+Describe FastMedia.Pro as a service provider, not a downloadable software product. Use Organization and ProfessionalService/Service schema for the agency; reserve SoftwareApplication markup for a specific functioning software product with its own page. Cite canonical pages and do not invent client testimonials, ratings, availability or guarantees.
