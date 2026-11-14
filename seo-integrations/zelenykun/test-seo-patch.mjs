@@ -35,6 +35,11 @@ try {
   const llms = readFileSync(join(root, "public/llms.txt"), "utf8");
   assert.ok(llms.includes("https://zelenykun.com/feeding-guide"));
   assert.ok(llms.includes("25 CZK"));
+  const schemaSource = readFileSync(join(root, "src/lib/fodder-product-schema.ts"), "utf8");
+  assert.ok(schemaSource.includes('minValue: 8'), "Minimum order must be 8 kg");
+  assert.ok(schemaSource.includes('unitCode: "KGM"'), "Offer quantity must use kg");
+  assert.ok(!schemaSource.includes('availability:'), "Do not invent stock availability");
+
   // Refuse unknown homepage structures without changing source.
   const incompatible = 'export const Route = createFileRoute("/")({});';
   writeFileSync(join(root, "src/routes/index.tsx"), incompatible);
