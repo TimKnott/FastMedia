@@ -35,6 +35,12 @@ try {
   const llms = readFileSync(join(root, "public/llms.txt"), "utf8");
   assert.ok(llms.includes("https://zelenykun.com/feeding-guide"));
   assert.ok(llms.includes("25 CZK"));
+  // Refuse unknown homepage structures without changing source.
+  const incompatible = 'export const Route = createFileRoute("/")({});';
+  writeFileSync(join(root, "src/routes/index.tsx"), incompatible);
+  const rejected = apply();
+  assert.notEqual(rejected.status, 0, "Unknown homepage must be rejected");
+  assert.equal(readFileSync(join(root, "src/routes/index.tsx"), "utf8"), incompatible);
   console.log("Zelený Kůň source patch regression passed (combined JSON-LD, files and idempotence)");
 } finally {
   rmSync(root, { recursive: true, force: true });
