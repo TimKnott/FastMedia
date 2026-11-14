@@ -39,12 +39,25 @@ const product = schemas.find((schema) => schema["@type"] === "Product");
 const offer = product?.offers;
 const productValid = !!product && offer?.["@type"] === "Offer" &&
   offer.priceCurrency === "CZK" && Number(offer.price) === 25;
+const englishHome = await (await fetch(origin + "/?lang=en", { signal: AbortSignal.timeout(15000) })).text();
+const englishScripts = [...englishHome.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+const englishSchemas = englishScripts.flatMap((match) => {
+  try {
+    const data = JSON.parse(match[1]);
+    return (Array.isArray(data) ? data : [data]).flatMap((node) => node?.["@graph"] || [node]);
+  } catch { return []; }
+});
+const englishProduct = englishSchemas.find((schema) => schema["@type"] === "Product");
+const englishValid = !!englishProduct && englishProduct.inLanguage === "en" &&
+  englishProduct.offers?.priceCurrency === "CZK" &&
+  Number(englishProduct.offers?.price) === 25;
 const llmsResponse = await fetch(origin + "/llms.txt", { signal: AbortSignal.timeout(15000) });
 const llms = await llmsResponse.text();
 const llmsValid = llmsResponse.status === 200 &&
   llms.trimStart().startsWith("#") && llms.includes(origin + "/feeding-guide");
 console.log("Sitemap canonical URLs: " + (urls.length - errors.length) + "/" + urls.length);
-console.log("Product/Offer JSON-LD: " + (productValid ? "PASS" : "MISSING"));
+console.log("Product/Offer JSON-LD (CZ): " + (productValid ? "PASS" : "MISSING"));
+console.log("Product/Offer JSON-LD (EN): " + (englishValid ? "PASS" : "MISSING"));
 console.log("AI discovery llms.txt: " + (llmsValid ? "PASS" : "MISSING"));
 if (errors.length) console.error(JSON.stringify(errors.slice(0, 10), null, 2));
-if ((errors.length || !productValid || !llmsValid) && process.argv.includes("--strict")) process.exitCode = 1;
+if ((errors.length || !productValid || !englishValid || !llmsValid) && process.argv.includes("--strict")) process.exitCode = 1;
