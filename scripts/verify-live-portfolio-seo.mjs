@@ -48,8 +48,8 @@ async function checkPage(domain, path, requirements) {
   try {
     const response = await fetch("https://" + domain + path, { signal: AbortSignal.timeout(12000) });
     const html = await response.text();
-    const missing = requirements.filter((requirement) => !html.includes(requirement));
-    site.checks[path] = { status: response.status, missing };
+    const missing = requirements.filter((requirement) => !(typeof requirement === "string" ? html.includes(requirement) : requirement.test(html)));
+    site.checks[path] = { status: response.status, missing: missing.map(String) };
     if (response.status !== 200 || missing.length)
       site.issues.push(path + ": missing " + missing.join(", "));
   } catch (error) {
@@ -63,7 +63,7 @@ await checkPage("7hourteacher.com", "/help",
 await checkPage("www.theprogenitors.com", "/archive/index.html",
   ["FAQPage", "ItemList", "Frequently asked questions"]);
 await checkPage("zelenykun.com", "/",
-  ['"@type":"Product"']);
+  [/"@type"\\s*:\\s*"Product"/]);
 
 const failures = results.filter((site) => site.issues.length);
 console.log(JSON.stringify({ checked: results.length, passing: results.length - failures.length, failures }, null, 2));
