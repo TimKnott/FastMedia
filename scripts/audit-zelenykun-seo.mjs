@@ -38,7 +38,8 @@ const schemas = scripts.flatMap((match) => {
 const product = schemas.find((schema) => schema["@type"] === "Product");
 const offer = product?.offers;
 const productValid = !!product && offer?.["@type"] === "Offer" &&
-  offer.priceCurrency === "CZK" && Number(offer.price) === 25;
+  offer.priceCurrency === "CZK" && Number(offer.price) === 25 &&
+  offer.eligibleQuantity?.minValue === 8 && offer.eligibleQuantity?.unitCode === "KGM";
 const englishHome = await (await fetch(origin + "/?lang=en", { signal: AbortSignal.timeout(15000) })).text();
 const englishScripts = [...englishHome.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
 const englishSchemas = englishScripts.flatMap((match) => {
@@ -50,7 +51,9 @@ const englishSchemas = englishScripts.flatMap((match) => {
 const englishProduct = englishSchemas.find((schema) => schema["@type"] === "Product");
 const englishValid = !!englishProduct && englishProduct.inLanguage === "en" &&
   englishProduct.offers?.priceCurrency === "CZK" &&
-  Number(englishProduct.offers?.price) === 25;
+  Number(englishProduct.offers?.price) === 25 &&
+  englishProduct.offers?.eligibleQuantity?.minValue === 8 &&
+  englishProduct.offers?.eligibleQuantity?.unitCode === "KGM";
 const llmsResponse = await fetch(origin + "/llms.txt", { signal: AbortSignal.timeout(15000) });
 const llms = await llmsResponse.text();
 const llmsValid = llmsResponse.status === 200 &&
