@@ -112,7 +112,8 @@ export default function AdminToolsHub() {
       {hasMinRole('admin') && <><ApprovalsPanel /><HealthPanel /></>}
       {groups.map((g) => {
         const items = g.items.filter((i) => hasMinRole(i.minRole));
-        if (!items.length) return null;
+        const external = g.external ?? [];
+        if (!items.length && !external.length) return null;
         return (
           <section key={g.name} aria-labelledby={`dept-${g.name}`} className="space-y-2">
             <div>
