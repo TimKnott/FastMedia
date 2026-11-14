@@ -41,6 +41,30 @@ for (const domain of sites) {
   results.push(site);
   console.log(domain + ": " + (site.issues.length ? site.issues.join("; ") : "all smoke checks passed"));
 }
+// Project-specific checks go beyond generic homepage metadata.
+const findSite = (domain) => results.find((site) => site.domain === domain);
+async function checkPage(domain, path, requirements) {
+  const site = findSite(domain);
+  try {
+    const response = await fetch("https://" + domain + path, { signal: AbortSignal.timeout(12000) });
+    const html = await response.text();
+    const missing = requirements.filter((requirement) => !html.includes(requirement));
+    site.checks[path] = { status: response.status, missing };
+    if (response.status !== 200 || missing.length)
+      site.issues.push(path + ": missing " + missing.join(", "));
+  } catch (error) {
+    site.issues.push(path + ": " + String(error));
+  }
+}
+await checkPage("justiceleague.online", "/claims-directory/country/cz/index.html",
+  ["FAQPage", "ItemList", "How to choose a complaint authority"]);
+await checkPage("7hourteacher.com", "/help",
+  ["FAQPage", "Who is 7HourTeacher designed for?"]);
+await checkPage("www.theprogenitors.com", "/archive/index.html",
+  ["FAQPage", "ItemList", "Frequently asked questions"]);
+await checkPage("zelenykun.com", "/",
+  ['"@type":"Product"']);
+
 const failures = results.filter((site) => site.issues.length);
 console.log(JSON.stringify({ checked: results.length, passing: results.length - failures.length, failures }, null, 2));
 if (failures.length) process.exitCode = 1;
