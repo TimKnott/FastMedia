@@ -67,8 +67,17 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { mainItems, businessToolItems, contentItems, publicPageItems, adminItems, settingsItems, type MenuItem } from '@/components/admin/AdminSidebar';
 
+/** External software shortcuts (link only — no accounts, credentials, tracking or integrations). */
+type ExternalShortcut = { label: string; url: string; icon: typeof Share2; note: string };
+const SOCIAMONIALS: ExternalShortcut = {
+  label: 'Sociamonials — Lifetime',
+  url: 'https://www.sociamonials.com/accounts/account_preferences.php',
+  icon: Share2,
+  note: 'Open Sociamonials account preferences in a new tab (external software, shortcut only)',
+};
+
 /** Department definitions: order = priority. Every card links to an existing sidebar route. */
-const DEPARTMENTS: { name: string; desc: string; accent: string; urls: string[] }[] = [
+const DEPARTMENTS: { name: string; desc: string; accent: string; urls: string[]; external?: ExternalShortcut[] }[] = [
   { name: 'Find work & revenue', desc: 'Opportunities, buying signals and lead discovery', accent: 'border-l-primary',
     urls: ['/admin/opportunities', '/admin/prospecting', '/admin/prospecting?find=1', '/admin/finder', '/admin/lead-scraper', '/admin/lead-repository', '/admin/leads-hub'] },
   { name: 'Pipeline & follow-ups', desc: 'Enquiries, quotes, CRM and clients', accent: 'border-l-accent',
