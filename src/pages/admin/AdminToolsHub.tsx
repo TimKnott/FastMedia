@@ -131,6 +131,16 @@ export default function AdminToolsHub() {
                   </Card>
                 </Link>
               ))}
+              {external.map((e) => (
+                <a key={e.url} href={e.url} target="_blank" rel="noopener noreferrer" title={e.note} className="rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <Card className={`h-full border-l-4 ${g.accent} transition-colors hover:bg-muted/50`}>
+                    <CardContent className="flex items-center gap-3 p-3">
+                      <e.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="text-sm font-medium">{e.label}</span>
+                    </CardContent>
+                  </Card>
+                </a>
+              ))}
             </div>
           </section>
         );
