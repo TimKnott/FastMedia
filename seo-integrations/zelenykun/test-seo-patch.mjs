@@ -3,6 +3,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { pathToFileURL } from "node:url";
 import assert from "node:assert/strict";
 
 const root = mkdtempSync(join(tmpdir(), "zelenykun-seo-"));
@@ -43,6 +44,24 @@ try {
   assert.ok(schemaSource.includes('minValue: 8'), "Minimum order must be 8 kg");
   assert.ok(schemaSource.includes('unitCode: "KGM"'), "Offer quantity must use kg");
   assert.ok(!schemaSource.includes('availability:'), "Do not invent stock availability");
+
+  // Execute both translations rather than checking source strings alone.
+  // inLanguage belongs on the existing WebPage, not Product:
+  // https://schema.org/inLanguage and https://schema.org/Product
+  const { fodderProductSchema } = await import(pathToFileURL(join(root, "src/lib/fodder-product-schema.ts")).href);
+  for (const lang of ["cs", "en"]) {
+    const product = fodderProductSchema(lang);
+    assert.equal(product["@type"], "Product");
+    assert.equal(Object.hasOwn(product, "inLanguage"), false, "Product must not use the WebPage language property");
+    assert.equal(product.url, "https://zelenykun.com/" + (lang === "en" ? "?lang=en" : ""));
+    assert.equal(product.name, lang === "en" ? "Fresh hydroponic barley fodder" : "Čerstvé hydroponické ječné krmivo");
+    assert.equal(Number(product.offers.price), 25);
+    assert.equal(product.offers.priceCurrency, "CZK");
+    assert.equal(product.offers.eligibleQuantity.minValue, 8);
+    assert.equal(product.offers.priceSpecification.referenceQuantity.value, 1);
+    assert.equal(product.offers.priceSpecification.referenceQuantity.unitCode, "KGM");
+    assert.equal(Object.hasOwn(product.offers, "availability"), false);
+  }
 
   // Never ship stale prices or minimum-order values in schema.
   writeFileSync(pricingFile, "export const PRICE = 30;\nexport const MIN_CZK = 200;\n");

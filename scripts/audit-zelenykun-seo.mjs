@@ -49,7 +49,11 @@ const englishSchemas = englishScripts.flatMap((match) => {
   } catch { return []; }
 });
 const englishProduct = englishSchemas.find((schema) => schema["@type"] === "Product");
-const englishValid = !!englishProduct && englishProduct.inLanguage === "en" &&
+const englishPage = englishSchemas.find((schema) => schema["@type"] === "WebPage");
+const englishValid = !!englishProduct && englishPage?.inLanguage === "en" &&
+  englishProduct.url === origin + "/?lang=en" &&
+  englishProduct.name === "Fresh hydroponic barley fodder" &&
+  !Object.hasOwn(englishProduct, "inLanguage") &&
   englishProduct.offers?.priceCurrency === "CZK" &&
   Number(englishProduct.offers?.price) === 25 &&
   englishProduct.offers?.eligibleQuantity?.minValue === 8 &&

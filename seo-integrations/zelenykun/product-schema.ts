@@ -20,7 +20,6 @@ export function fodderProductSchema(lang: "cs" | "en" = "cs") {
       ? "Fresh barley shoots and roots grown as a moisture-rich fodder mat for animals. Available for local orders around Louny."
       : "Čerstvé ječné výhonky s kořínky pěstované jako vlhké zelené krmivo pro zvířata. Místní objednávky v okolí Loun.",
     url,
-    inLanguage: lang,
     category: english ? "Animal feed" : "Krmivo pro zvířata",
     brand: { "@type": "Brand", name: "Zelený Kůň" },
     offers: {
