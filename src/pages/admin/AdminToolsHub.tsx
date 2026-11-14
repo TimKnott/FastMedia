@@ -62,6 +62,7 @@ function ApprovalsPanel() {
   );
 }
 import { Card, CardContent } from '@/components/ui/card';
+import { Share2 } from 'lucide-react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { mainItems, businessToolItems, contentItems, publicPageItems, adminItems, settingsItems, type MenuItem } from '@/components/admin/AdminSidebar';
