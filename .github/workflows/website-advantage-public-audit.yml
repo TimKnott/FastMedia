@@ -14,9 +14,13 @@ jobs:
           python-version: '3.12'
       - name: Run bounded public audit
         run: python scripts/website_advantage_public_audit.py --output website-advantage-audit.json
+      - name: Verify approved image files
+        run: python scripts/website_advantage_image_verify.py --output website-advantage-images.json
       - name: Upload evidence report
         uses: actions/upload-artifact@v4
         with:
           name: website-advantage-public-audit
-          path: website-advantage-audit.json
+          path: |
+            website-advantage-audit.json
+            website-advantage-images.json
           retention-days: 14
