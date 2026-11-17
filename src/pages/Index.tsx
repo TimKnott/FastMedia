@@ -42,6 +42,7 @@ const Index = () => {
         description={language === 'de' ? 'Websites für Handwerksbetriebe und Dienstleister. Individuelle Funktionen für Anfragen, Buchungen und Ihr Unternehmen. Projekte aus der Ferne.' : (isEnglish ? 'Conversion-focused websites for trades and services, with AI assistance, online bookings and lead capture. Delivered worldwide.' : 'FastMedia.Pro vytváří konverzní weby pro řemeslníky a servisní firmy. AI asistent, online rezervace a sběr poptávek.')}
         canonical="/"
         ogType="website"
+        ogImage="https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/ced7a393f_fastmedia-social-approved.jpg"
         pagePath="/"
       />
       <HomeJsonLd />
