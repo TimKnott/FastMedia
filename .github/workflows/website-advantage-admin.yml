@@ -1,0 +1,28 @@
+name: Website Advantage Super Admin shell
+on:
+  push:
+    branches:
+      - feature/website-advantage-admin-shell-20261117
+  pull_request:
+    paths:
+      - 'src/pages/admin/AdminWebsiteAdvantage.tsx'
+      - 'src/App.tsx'
+      - 'src/components/admin/AdminSidebar.tsx'
+      - '.github/workflows/website-advantage-admin.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: Build
+        run: bun run build
+      - name: Check route restriction and no external write controls
+        run: |
+          grep -q 'ProtectedRoute minRole="super_admin"' src/App.tsx
+          grep -q 'website-advantage' src/App.tsx
+          grep -q 'Not verified' src/pages/admin/AdminWebsiteAdvantage.tsx
