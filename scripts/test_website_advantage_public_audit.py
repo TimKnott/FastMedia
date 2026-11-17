@@ -27,7 +27,13 @@ class MetadataAuditTests(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(ValueError):
                 handler.redirect_request(request, None, 302, "Found", {}, url)
 
-    def test_www_canonical_redirect_is_allowed(self):\n        handler = audit.LimitedRedirect()\n        request = urllib.request.Request("https://fastmedia.pro/")\n        redirect = handler.redirect_request(request, None, 301, "Moved", {}, "https://www.fastmedia.pro/")\n        self.assertEqual(redirect.full_url, "https://www.fastmedia.pro/")\n\n    def test_eight_unique_https_sites(self):
+    def test_www_canonical_redirect_is_allowed(self):
+        handler = audit.LimitedRedirect()
+        request = urllib.request.Request("https://fastmedia.pro/")
+        redirect = handler.redirect_request(request, None, 301, "Moved", {}, "https://www.fastmedia.pro/")
+        self.assertEqual(redirect.full_url, "https://www.fastmedia.pro/")
+
+    def test_eight_unique_https_sites(self):
         self.assertEqual(len(audit.SITES), 8)
         self.assertEqual(len(set(audit.SITES.values())), 8)
         self.assertTrue(all(x.startswith("https://") for x in audit.SITES.values()))
