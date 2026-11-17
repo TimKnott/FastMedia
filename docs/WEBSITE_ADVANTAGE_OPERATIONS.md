@@ -41,8 +41,17 @@ A portfolio-wide programme for eight websites: FastMedia.Pro, SevenHourTeacher, 
 
 These are source findings, not proof of production readiness.
 
-## Read-only public metadata collector
-The script `scripts/website_advantage_public_audit.py` checks only the eight public homepages and writes JSON. Run locally with `python scripts/website_advantage_public_audit.py` or use the manual GitHub Actions workflow **Website Advantage public metadata audit** after it is available on the default branch. The workflow is **manual only** to avoid surprise compute charges. The output is a 14-day retained evidence artifact; it does not feed the dashboard automatically. A network error is **Unknown**, not a downtime alert.
+## Read-only public audits and onboarding
+
+The programme provides three bounded, public-only checks in the manual GitHub Actions workflow **Website Advantage public metadata audit** (available after the PR is merged to the default branch):
+
+1. `website-advantage-audit.json` — eight homepage HTML metadata fields, with image URL comparison to approved artwork.
+2. `website-advantage-images.json` — HTTP response, MIME type, byte size and JPEG dimensions for the eight approved image files.
+3. `website-advantage-discovery.json` — robots.txt, well-formed XML sitemap with entry counts, and optional llms.txt for each domain.
+
+**Operator walkthrough:** Open GitHub → FastMedia repository → Actions → Website Advantage public metadata audit → Run workflow. Download the evidence ZIP when the run has finished and extract the JSON files. Open the FastMedia Super Admin Website Advantage Programme dashboard and use the two labeled file inputs to load the metadata and discovery reports. The files are parsed entirely in the browser: they are not stored in Supabase, uploaded to FastMedia or sent to another service. Use the timestamp as the evidence date and clear a report when finished.
+
+The manual workflow has no recurring schedule; evidence artifacts are retained for 14 days. A network error is **Unknown**, not proof of downtime. A metadata field being present does not prove an image loads. A sitemap entry count does not establish Google indexing. An optional llms.txt is **not** a guarantee of AI search visibility. Future server-side reporting requires dedicated authenticated Super Admin permission checks.
 
 ## Deployment SOP
 1. Verify that GitHub main corresponds to the live Lovable project and that the target release mechanism is known.
