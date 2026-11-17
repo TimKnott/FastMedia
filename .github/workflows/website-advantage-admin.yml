@@ -21,7 +21,7 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Build
         run: bun run build
-      - name: Check route restriction and no external write controls
+      - name: Verify onboarding and quality gates\n        run: |\n          grep -q 'Getting started' src/pages/admin/AdminWebsiteAdvantage.tsx\n          grep -q 'Professional release checklist' src/pages/admin/AdminWebsiteAdvantage.tsx\n          grep -q 'aria-expanded' src/pages/admin/AdminWebsiteAdvantage.tsx\n          grep -q 'Not verified' src/pages/admin/AdminWebsiteAdvantage.tsx\n      - name: Check route restriction and no external write controls
         run: |
           grep -q 'ProtectedRoute minRole="super_admin"' src/App.tsx
           grep -q 'website-advantage' src/App.tsx
