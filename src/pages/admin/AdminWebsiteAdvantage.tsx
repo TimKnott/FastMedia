@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Activity, ArrowRight, BarChart3, BookOpen, CheckCircle2, ChevronDown, ChevronUp, ClipboardCheck, ExternalLink, Globe2, History, Image, Info, LockKeyhole, Search, ShieldCheck } from "lucide-react";
+import { Activity, BarChart3, BookOpen, ChevronDown, ChevronUp, ClipboardCheck, ExternalLink, Globe2, History, Image, Info, LockKeyhole, Search, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
