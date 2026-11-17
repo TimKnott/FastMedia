@@ -94,6 +94,22 @@ def fetch(url, timeout=12, max_bytes=524288):
         data = resp.read(max_bytes)
         return resp.status, final_url, data.decode("utf-8", errors="replace")
 
+def compare_image_url(actual, approved):
+    """Identify exact matches and Base44-generated resize variants separately."""
+    if not actual:
+        return "missing"
+    if actual == approved:
+        return "match"
+    approved_parsed = urllib.parse.urlsplit(approved)
+    actual_parsed = urllib.parse.urlsplit(actual)
+    if (approved_parsed.scheme == "https"
+            and approved_parsed.hostname == "media.base44.com"
+            and actual_parsed.scheme == "https"
+            and actual_parsed.hostname == approved_parsed.hostname
+            and actual_parsed.path.startswith(approved_parsed.path + "/v1/fill/")):
+        return "platform_resized"
+    return "different"
+
 def audit(name, url, approved_image_url):
     result = {"name": name, "url": url, "state": "unknown", "checks": {},
               "approved_image_url": approved_image_url, "approved_image_match": "unknown"}
@@ -113,10 +129,7 @@ def audit(name, url, approved_image_url):
             "twitter_image": bool(parser.meta.get("twitter:image")),
         }
         result["og_image_url"] = parser.meta.get("og:image")
-        result["approved_image_match"] = (
-            "match" if result["og_image_url"] == approved_image_url
-            else "different" if result["og_image_url"] else "missing"
-        )
+        result["approved_image_match"] = compare_image_url(result["og_image_url"], approved_image_url)
         result["canonical_url"] = parser.canonical
         result["state"] = "pass" if status == 200 and all(result["checks"].values()) else "needs_review"
         # This state covers only the seven listed HTML metadata fields, not
