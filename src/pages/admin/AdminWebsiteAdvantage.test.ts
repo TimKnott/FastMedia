@@ -22,7 +22,7 @@ describe("Website Advantage Super Admin release gates", () => {
 
   it("includes all eight portfolio domains", () => {
     for (const domain of [
-      "fastmedia.pro", "sevenhourteacher.com", "koneastaje.com",
+      "fastmedia.pro", "7hourteacher.com", "koneastaje.com",
       "zelenykun.com", "standatoys.com", "theprogenitors.com",
       "calcurly.com", "justiceleague.online",
     ]) expect(dashboard).toContain(domain);
