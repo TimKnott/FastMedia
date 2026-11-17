@@ -19,6 +19,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
+      - name: Static release regression tests
+        run: bunx vitest run src/pages/admin/AdminWebsiteAdvantage.test.ts
       - name: Build
         run: bun run build
       - name: Verify onboarding and quality gates
