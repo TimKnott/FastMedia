@@ -96,6 +96,8 @@ def audit(name, url):
         result["og_image_url"] = parser.meta.get("og:image")
         result["canonical_url"] = parser.canonical
         result["state"] = "pass" if status == 200 and all(result["checks"].values()) else "needs_review"
+        # This state covers only the seven listed HTML metadata fields, not
+        # actual social image availability, indexing or website health.
     except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
         result["error"] = type(exc).__name__
         result["state"] = "unknown"
