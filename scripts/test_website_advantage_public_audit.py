@@ -2,6 +2,7 @@
 import importlib.util
 import pathlib
 import unittest
+from unittest import mock
 import urllib.request
 
 PATH = pathlib.Path(__file__).with_name("website_advantage_public_audit.py")
@@ -32,6 +33,29 @@ class MetadataAuditTests(unittest.TestCase):
         request = urllib.request.Request("https://fastmedia.pro/")
         redirect = handler.redirect_request(request, None, 301, "Moved", {}, "https://www.fastmedia.pro/")
         self.assertEqual(redirect.full_url, "https://www.fastmedia.pro/")
+
+    def test_approved_image_registry_matches_eight_sites(self):
+        targets = audit.approved_social_targets()
+        self.assertEqual(set(targets), set(audit.SITES))
+        self.assertTrue(all(x.startswith("https://media.base44.com/") for x in targets.values()))
+
+    def test_social_image_match_and_different_are_distinguished(self):
+        approved = audit.approved_social_targets()["FastMedia.Pro"]
+        page = ('<html><head><title>Example</title><meta name="description" content="ok">'
+                '<meta property="og:title" content="Example">'
+                '<meta property="og:description" content="ok">'
+                '<meta property="og:image" content="' + approved + '">'
+                '<meta name="twitter:image" content="' + approved + '">'
+                '<link rel="canonical" href="https://fastmedia.pro/"></head></html>')
+        with mock.patch.object(audit, "fetch", return_value=(200, "https://fastmedia.pro/", page)):
+            result = audit.audit("FastMedia.Pro", "https://fastmedia.pro/", approved)
+        self.assertEqual(result["approved_image_match"], "match")
+        self.assertEqual(result["state"], "pass")
+        different = page.replace(approved, "https://example.net/other.jpg")
+        with mock.patch.object(audit, "fetch", return_value=(200, "https://fastmedia.pro/", different)):
+            result = audit.audit("FastMedia.Pro", "https://fastmedia.pro/", approved)
+        self.assertEqual(result["approved_image_match"], "different")
+        self.assertEqual(result["state"], "pass")
 
     def test_eight_unique_https_sites(self):
         self.assertEqual(len(audit.SITES), 8)
