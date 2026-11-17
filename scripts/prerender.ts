@@ -26,7 +26,7 @@ export function buildHead(route: RouteSeo): string {
   const url = `${BASE_URL}${route.path === "/" ? "/" : canonicalPath(route.path)}`;
   const canonical = route.path === "/" ? `${BASE_URL}/` : url;
   const ogType = route.ogType ?? "website";
-  const ogImage = route.ogImage ?? `${BASE_URL}/og-image.jpg`;
+  const ogImage = route.ogImage ?? "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/ced7a393f_fastmedia-social-approved.jpg";
   const lines = [
     `<title data-rh="true">${escText(route.title)}</title>`,
     `<meta data-rh="true" name="description" content="${escAttr(route.description)}" />`,
