@@ -95,6 +95,7 @@ const AdminLeadScraper = lazy(() => import("./pages/admin/AdminLeadScraper"));
 const AdminFinder = lazy(() => import("./pages/admin/AdminFinder"));
 const AdminToolsHub = lazy(() => import("./pages/admin/AdminToolsHub"));
 const AdminCampaignStudio = lazy(() => import("./pages/admin/AdminCampaignStudio"));
+const AdminPinterestFactory = lazy(() => import("./pages/admin/AdminPinterestFactory"));
 const AdminPartners = lazy(() => import("./pages/admin/AdminPartners"));
 const Partners = lazy(() => import("./pages/Partners"));
 const DesignSystemShowcase = lazy(() => import("./pages/admin/DesignSystemShowcase"));
@@ -524,6 +525,7 @@ const App = () => (
                         }
                       />
                       <Route path="tools" element={<AdminToolsHub />} />
+                      <Route path="pinterest-factory" element={<ProtectedRoute minRole="admin"><AdminPinterestFactory /></ProtectedRoute>} />
                       <Route
                         path="campaign-studio"
                         element={
