@@ -25,6 +25,19 @@ const websites = [
   { name: "JusticeLeague", url: "https://justiceleague.online", platform: "Base44" },
 ] as const;
 
+// Historical evidence only: first bounded public HTML audit, 17 Nov 2026 08:52 UTC.
+// This does NOT assert current health, image accessibility or social cache status.
+const metadataSnapshot: Record<string, "metadata_present" | "unknown"> = {
+  "FastMedia.Pro": "metadata_present",
+  "SevenHourTeacher": "unknown",
+  "Koně a Stáje": "metadata_present",
+  "Zelený Kůň": "metadata_present",
+  "StandaToys": "metadata_present",
+  "The Progenitors": "metadata_present",
+  "Calcurly": "metadata_present",
+  "JusticeLeague": "metadata_present",
+};
+
 const workstreams = [
   { label: "Social previews", icon: Image, detail: "Open Graph images, titles and sharing cards" },
   { label: "SEO and schema", icon: Search, detail: "Canonical links, structured data and indexing" },
@@ -136,6 +149,11 @@ export default function AdminWebsiteAdvantage() {
           <h2 id="portfolio-heading" className="text-xl font-semibold">Website portfolio</h2>
           <Badge variant="outline">All checks awaiting verification</Badge>
         </div>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Historical sample: 17 Nov 2026, 08:52 UTC. Seven sites contained the seven checked HTML metadata fields;
+          one could not be reached by the runner. Some live OG images differ from approved artwork.
+          These are not uptime or current-health ratings.
+        </p>
         <div className="grid gap-3 md:grid-cols-2">
           {websites.map((site) => (
             <Card key={site.url}>
@@ -145,7 +163,8 @@ export default function AdminWebsiteAdvantage() {
                   <p className="break-all text-xs text-muted-foreground">{site.url}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{site.platform}</Badge>
-                    <Badge variant="outline">Not verified</Badge>
+                    <Badge variant="outline">{metadataSnapshot[site.name] === "metadata_present" ? "HTML metadata present · 17 Nov" : "Audit unknown · 17 Nov"}</Badge>
+                    <Badge variant="outline">Current health not verified</Badge>
                   </div>
                 </div>
                 <a href={site.url} target="_blank" rel="noopener noreferrer"
