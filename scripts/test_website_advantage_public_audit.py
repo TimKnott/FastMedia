@@ -57,6 +57,15 @@ class MetadataAuditTests(unittest.TestCase):
         self.assertEqual(result["approved_image_match"], "different")
         self.assertEqual(result["state"], "pass")
 
+    def test_base44_resized_approved_image_is_distinguished(self):
+        approved = audit.approved_social_targets()["JusticeLeague"]
+        transformed = approved + "/v1/fill/w_1200,h_630/approved.jpg"
+        self.assertEqual(audit.compare_image_url(approved, approved), "match")
+        self.assertEqual(audit.compare_image_url(transformed, approved), "platform_resized")
+        self.assertEqual(audit.compare_image_url("https://example.com/other.jpg", approved), "different")
+        self.assertEqual(audit.compare_image_url(None, approved), "missing")
+        self.assertEqual(audit.compare_image_url(approved + ".attacker.example/v1/fill/a", approved), "different")
+
     def test_eight_unique_https_sites(self):
         self.assertEqual(len(audit.SITES), 8)
         self.assertEqual(len(set(audit.SITES.values())), 8)
