@@ -12,10 +12,25 @@ import pathlib
 import urllib.error
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
 from website_advantage_public_audit import SITES, LimitedRedirect
 
 PATHS = ("robots.txt", "sitemap.xml", "llms.txt")
-MAX_BYTES = 256 * 1024
+MAX_TEXT_BYTES = 256 * 1024
+MAX_SITEMAP_BYTES = 5 * 1024 * 1024
+
+def inspect_sitemap_xml(data):
+    """Read only root structure and count immediate URLs/sitemap children."""
+    try:
+        root = ET.fromstring(data)
+    except ET.ParseError:
+        return None
+    kind = root.tag.rsplit("}", 1)[-1].lower()
+    if kind not in ("urlset", "sitemapindex"):
+        return None
+    expected = "url" if kind == "urlset" else "sitemap"
+    count = sum(child.tag.rsplit("}", 1)[-1].lower() == expected for child in root)
+    return {"kind": kind, "entries": count}
 
 def fetch_public_file(site_url, filename):
     url = site_url.rstrip("/") + "/" + filename
@@ -27,12 +42,13 @@ def fetch_public_file(site_url, filename):
     try:
         opener = urllib.request.build_opener(LimitedRedirect)
         with opener.open(req, timeout=12) as response:
-            data = response.read(MAX_BYTES + 1)
+            limit = MAX_SITEMAP_BYTES if filename == "sitemap.xml" else MAX_TEXT_BYTES
+            data = response.read(limit + 1)
             result["status_code"] = response.status
             result["final_url"] = response.geturl()
             result["content_type"] = response.headers.get("Content-Type", "").split(";")[0]
-            if len(data) > MAX_BYTES:
-                result.update(state="needs_review", detail="response exceeds 256 KiB inspection limit")
+            if len(data) > limit:
+                result.update(state="needs_review", detail="response exceeds bounded inspection limit")
                 return result
             text = data.decode("utf-8", errors="replace")
             if filename == "robots.txt":
@@ -44,7 +60,11 @@ def fetch_public_file(site_url, filename):
                 result["robots_excerpt"] = "\n".join(lines[:100])[:4000]
                 valid = bool(any(line.lower().startswith("user-agent:") for line in lines))
             elif filename == "sitemap.xml":
-                valid = "<urlset" in text.lower() or "<sitemapindex" in text.lower()
+                sitemap = inspect_sitemap_xml(data)
+                valid = sitemap is not None
+                if sitemap:
+                    result["sitemap_kind"] = sitemap["kind"]
+                    result["entry_count"] = sitemap["entries"]
             else:
                 valid = text.lstrip().startswith("#") or text.lstrip().startswith(">")
             result["state"] = "present" if response.status == 200 and valid else "needs_review"
