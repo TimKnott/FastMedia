@@ -52,6 +52,13 @@ describe("Website Advantage Super Admin release gates", () => {
     expect(Object.keys(targets.targets)).toHaveLength(8);
   });
 
+  it("provides a read-only local discovery report import", () => {
+    expect(dashboard).toContain("Search and AI discovery files");
+    expect(dashboard).toContain("parseDiscoveryAudit");
+    expect(dashboard).toContain("sitemap.xml");
+    expect(dashboard).toContain("website-advantage-discovery-file");
+  });
+
   it("labels the historical audit as evidence, not live health", () => {
     expect(dashboard).toContain("Historical sample: 17 Nov 2026");
     expect(dashboard).toContain("Current health not verified");
