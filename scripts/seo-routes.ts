@@ -37,7 +37,7 @@ export interface RouteSeo {
 }
 
 const BRAND = "FastMedia.Pro";
-const OG_IMG = "https://www.fastmedia.pro/og-image.jpg";
+const OG_IMG = "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/ced7a393f_fastmedia-social-approved.jpg";
 
 export const orgJsonLd = {
   "@context": "https://schema.org",
