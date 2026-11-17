@@ -26,6 +26,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
 // Lazy-loaded pages
+const Pinterest = lazy(() => import("./pages/Pinterest"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const ConsultantTereza = lazy(() => import("./pages/ConsultantTereza"));
@@ -277,6 +278,7 @@ const App = () => (
                     <Route path="/business" element={<BusinessLanding />} />
                     <Route path="/case-studies" element={<CaseStudies />} />
                     <Route path="/launch" element={<Launch />} />
+                    <Route path="/pinterest" element={<Pinterest />} />
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/blog/:slug" element={<BlogArticle />} />
                     <Route path="/demo/plumbing" element={<PlumbingDemo />} />
