@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { imageStatusLabel, parsePublicMetadataAudit, type MetadataAuditReport } from "@/lib/websiteAdvantageAudit";
+import { discoveryStatusLabel, parseDiscoveryAudit, type DiscoveryReport } from "@/lib/websiteAdvantageDiscovery";
 import approvedSocialImages from "../../../config/website-advantage-social-image-targets.json";
 
 /**
@@ -71,6 +72,22 @@ export default function AdminWebsiteAdvantage() {
   const [releaseOpen, setReleaseOpen] = useState(false);
   const [auditReport, setAuditReport] = useState<MetadataAuditReport | null>(null);
   const [auditError, setAuditError] = useState<string | null>(null);
+  const [discoveryReport, setDiscoveryReport] = useState<DiscoveryReport | null>(null);
+  const [discoveryError, setDiscoveryError] = useState<string | null>(null);
+  const importDiscovery = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    if (!file) return;
+    setDiscoveryError(null);
+    try {
+      if (file.size > 1024 * 1024) throw new Error("Report exceeds the 1 MB import limit.");
+      if (!file.name.toLowerCase().endsWith(".json")) throw new Error("Please choose a .json report.");
+      setDiscoveryReport(parseDiscoveryAudit(await file.text()));
+    } catch (error) {
+      setDiscoveryReport(null);
+      setDiscoveryError(error instanceof Error ? error.message : "Could not read the discovery report.");
+    }
+    event.currentTarget.value = "";
+  };
   const importAudit = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
     if (!file) return;
@@ -255,6 +272,73 @@ export default function AdminWebsiteAdvantage() {
             </Card>
           );})}
         </div>
+      </section>
+
+      <section aria-labelledby="discovery-heading">
+        <Card>
+          <CardHeader>
+            <CardTitle id="discovery-heading">Search and AI discovery files</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Load the separate public discovery JSON report to review robots.txt, XML sitemaps and optional
+              llms.txt for all eight websites. Presence does not prove indexing or AI citations.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <label htmlFor="website-advantage-discovery-file" className="block text-sm font-medium">
+              Choose discovery audit JSON (maximum 1 MB)
+            </label>
+            <input id="website-advantage-discovery-file" type="file" accept=".json,application/json"
+              onChange={importDiscovery}
+              className="block w-full max-w-xl cursor-pointer rounded-md border border-input p-2 text-sm
+                         file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2
+                         file:text-primary-foreground focus-visible:outline focus-visible:outline-2
+                         focus-visible:outline-offset-2 focus-visible:outline-ring" />
+            {discoveryError && <p role="alert" className="text-sm text-destructive">{discoveryError}</p>}
+            {discoveryReport ? (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-xs text-muted-foreground">
+                    Public discovery file check: {new Date(discoveryReport.checked_at_utc).toLocaleString()}
+                  </p>
+                  <Button type="button" variant="outline" size="sm"
+                    onClick={() => { setDiscoveryReport(null); setDiscoveryError(null); }}>Clear discovery report</Button>
+                </div>
+                <div className="overflow-x-auto rounded-md border">
+                  <table className="w-full min-w-[520px] border-collapse text-left text-sm">
+                    <thead className="bg-muted/60">
+                      <tr>
+                        <th scope="col" className="p-3 font-medium">Website</th>
+                        <th scope="col" className="p-3 font-medium">Robots.txt</th>
+                        <th scope="col" className="p-3 font-medium">Sitemap</th>
+                        <th scope="col" className="p-3 font-medium">Optional AI guidance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {discoveryReport.sites.map(site => (
+                        <tr key={site.name} className="border-t">
+                          <th scope="row" className="p-3 font-medium">{site.name}</th>
+                          <td className="p-3">{discoveryStatusLabel(site.resources["robots.txt"].state)}</td>
+                          <td className="p-3">
+                            {discoveryStatusLabel(site.resources["sitemap.xml"].state)}
+                            {typeof site.resources["sitemap.xml"].entry_count === "number"
+                              ? ` · ${site.resources["sitemap.xml"].entry_count} entries` : ""}
+                          </td>
+                          <td className="p-3">{discoveryStatusLabel(site.resources["llms.txt"].state)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  These are point-in-time public file checks. A missing optional llms.txt is not a search failure.
+                  Confirm indexing and actual crawler behavior separately.
+                </p>
+              </>
+            ) : (
+              <p className="text-xs text-muted-foreground">No discovery report loaded. Run the manual GitHub audit and import its JSON file here.</p>
+            )}
+          </CardContent>
+        </Card>
       </section>
 
       <section aria-labelledby="workstreams-heading">
