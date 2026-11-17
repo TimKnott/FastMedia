@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import { Activity, BarChart3, BookOpen, ChevronDown, ChevronUp, ClipboardCheck, ExternalLink, Globe2, History, Image, Info, LockKeyhole, Search, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { imageStatusLabel, parsePublicMetadataAudit, type MetadataAuditReport } from "@/lib/websiteAdvantageAudit";
 
 /**
  * FastMedia Website Advantage Programme — release candidate (read-only).
@@ -67,6 +68,23 @@ const qualityGates = [
 export default function AdminWebsiteAdvantage() {
   const [onboardingOpen, setOnboardingOpen] = useState(true);
   const [releaseOpen, setReleaseOpen] = useState(false);
+  const [auditReport, setAuditReport] = useState<MetadataAuditReport | null>(null);
+  const [auditError, setAuditError] = useState<string | null>(null);
+  const importAudit = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    if (!file) return;
+    setAuditError(null);
+    try {
+      if (file.size > 1024 * 1024) throw new Error("Report exceeds the 1 MB import limit.");
+      if (!file.name.toLowerCase().endsWith(".json")) throw new Error("Please choose a .json report.");
+      const parsed = parsePublicMetadataAudit(await file.text());
+      setAuditReport(parsed);
+    } catch (error) {
+      setAuditReport(null);
+      setAuditError(error instanceof Error ? error.message : "Could not read the report.");
+    }
+    event.currentTarget.value = "";
+  };
   return (
     <div className="mx-auto max-w-7xl space-y-6 pb-12" data-testid="website-advantage-admin">
       <header className="rounded-xl border bg-card p-5 md:p-7">
@@ -97,7 +115,7 @@ export default function AdminWebsiteAdvantage() {
         {[
           { label: "Portfolio websites", value: String(websites.length), help: "Listed in the programme", icon: Globe2 },
           { label: "Quality workstreams", value: String(workstreams.length), help: "Checks planned", icon: ClipboardCheck },
-          { label: "Live checks verified", value: "0", help: "Not connected yet", icon: Info },
+          { label: "Local audit imported", value: auditReport ? "Yes" : "No", help: "No backend connection", icon: Info },
         ].map(({ label, value, help, icon: Icon }) => (
           <Card key={label}>
             <CardContent className="p-4">
@@ -144,6 +162,51 @@ export default function AdminWebsiteAdvantage() {
         </Card>
       </section>
 
+      <section aria-labelledby="audit-import-heading">
+        <Card>
+          <CardHeader>
+            <CardTitle id="audit-import-heading">Import public audit evidence</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Run the manual Website Advantage public metadata workflow in GitHub, download its JSON report,
+              then load it here. Reports are processed only in this browser session.
+              No customer records or credentials are uploaded.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <label htmlFor="website-advantage-audit-file" className="block text-sm font-medium">
+              Choose a metadata audit JSON file (maximum 1 MB)
+            </label>
+            <input id="website-advantage-audit-file" type="file" accept=".json,application/json"
+              onChange={importAudit}
+              className="block w-full max-w-xl cursor-pointer rounded-md border border-input p-2 text-sm
+                         file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2
+                         file:text-primary-foreground focus-visible:outline focus-visible:outline-2
+                         focus-visible:outline-offset-2 focus-visible:outline-ring" />
+            {auditError && <p role="alert" className="text-sm text-destructive">{auditError}</p>}
+            {auditReport ? (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-3">
+                <div>
+                  <p className="text-sm font-medium">Report loaded — 8 sites</p>
+                  <p className="text-xs text-muted-foreground">
+                    Audit timestamp: {new Date(auditReport.checked_at_utc).toLocaleString()}
+                    {" · "}Public homepage HTML metadata only
+                  </p>
+                </div>
+                <Button type="button" variant="outline" size="sm"
+                  onClick={() => { setAuditReport(null); setAuditError(null); }}>
+                  Clear report
+                </Button>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                A historical snapshot is shown below until you import a new report.
+                Importing does not certify current uptime, search indexing, security, or social cache freshness.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
       <section aria-labelledby="portfolio-heading">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h2 id="portfolio-heading" className="text-xl font-semibold">Website portfolio</h2>
@@ -155,7 +218,9 @@ export default function AdminWebsiteAdvantage() {
           These are not uptime or current-health ratings.
         </p>
         <div className="grid gap-3 md:grid-cols-2">
-          {websites.map((site) => (
+          {websites.map((site) => {
+            const result = auditReport?.sites.find(item => item.name === site.name);
+            return (
             <Card key={site.url}>
               <CardContent className="flex items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
@@ -163,7 +228,12 @@ export default function AdminWebsiteAdvantage() {
                   <p className="break-all text-xs text-muted-foreground">{site.url}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{site.platform}</Badge>
-                    <Badge variant="outline">{metadataSnapshot[site.name] === "metadata_present" ? "HTML metadata present · 17 Nov" : "Audit unknown · 17 Nov"}</Badge>
+                    <Badge variant="outline">
+                      {result
+                        ? result.state === "pass" ? "Metadata fields present" : result.state === "unknown" ? "Audit unknown" : "Metadata needs review"
+                        : metadataSnapshot[site.name] === "metadata_present" ? "HTML metadata present · 17 Nov" : "Audit unknown · 17 Nov"}
+                    </Badge>
+                    {result && <Badge variant="outline">{imageStatusLabel(result.approved_image_match)}</Badge>}
                     <Badge variant="outline">Current health not verified</Badge>
                   </div>
                 </div>
@@ -174,7 +244,7 @@ export default function AdminWebsiteAdvantage() {
                 </a>
               </CardContent>
             </Card>
-          ))}
+          );})}
         </div>
       </section>
 
