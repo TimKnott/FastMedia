@@ -131,6 +131,7 @@ export const contentItems: MenuItem[] = [
 ];
 
 export const businessToolItems: MenuItem[] = [
+  { titleKey: 'Pinterest Content Factory', url: '/admin/pinterest-factory', icon: ImageIcon, minRole: 'admin' },
   { titleKey: 'Campaign Studio (1–5)', url: '/admin/campaign-studio', icon: Sparkles, minRole: 'admin' },
   { titleKey: '2C Partner Manager', url: '/admin/partners', icon: Users, minRole: 'admin' },
   { titleKey: 'Ad Studio', url: '/admin/ad-studio', icon: TicketPercent, minRole: 'super_admin' },
