@@ -14,7 +14,8 @@ import urllib.error
 import urllib.request
 from website_advantage_public_audit import SITES, LimitedRedirect
 
-LIMIT = 140 * 1024
+MAX_HTML_BYTES = 1024 * 1024
+MAX_MANIFEST_BYTES = 140 * 1024
 
 class ManifestLinkParser(html.parser.HTMLParser):
     def __init__(self):
@@ -41,22 +42,22 @@ def safe_manifest_url(site_url, href):
         return None
     return url
 
-def fetch_small(url, accept):
+def fetch_small(url, accept, limit=MAX_MANIFEST_BYTES):
     req = urllib.request.Request(url, headers={
         "User-Agent": "FastMedia-WebsiteAdvantagePWAInspector/1.0",
         "Accept": accept,
     })
     with urllib.request.build_opener(LimitedRedirect).open(req, timeout=15) as resp:
-        b = resp.read(LIMIT + 1)
-        if len(b) > LIMIT:
-            raise ValueError("Response exceeds bounded 140 KiB audit limit")
+        b = resp.read(limit + 1)
+        if len(b) > limit:
+            raise ValueError("Response exceeds bounded audit size limit")
         return resp.status, resp.geturl(), b.decode("utf-8", errors="replace")
 
 def inspect_site(name, site_url):
     result = {"name":name, "url":site_url, "state":"unknown",
               "manifest_linked":False, "service_worker":"not_tested"}
     try:
-        status, final_url, raw = fetch_small(site_url, "text/html")
+        status, final_url, raw = fetch_small(site_url, "text/html", limit=MAX_HTML_BYTES)
         parser = ManifestLinkParser()
         parser.feed(raw)
         result.update(http_status=status, final_url=final_url,
