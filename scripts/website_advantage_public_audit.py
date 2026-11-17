@@ -51,8 +51,17 @@ class MetaParser(html.parser.HTMLParser):
         if self._in_title:
             self.title = (self.title or "") + data
 
+ALLOWED_HOSTS = frozenset(urllib.parse.urlsplit(url).hostname for url in SITES.values())
+
 class LimitedRedirect(urllib.request.HTTPRedirectHandler):
     max_redirections = 4
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        parsed = urllib.parse.urlsplit(newurl)
+        # Never follow a redirect to localhost, private networks, or unlisted hosts.
+        if parsed.scheme != "https" or parsed.hostname not in ALLOWED_HOSTS:
+            raise ValueError("redirect target is outside the audited host allowlist")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 def fetch(url, timeout=12, max_bytes=524288):
     req = urllib.request.Request(url, headers={
