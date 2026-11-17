@@ -87,6 +87,13 @@ describe("Website Advantage Super Admin release gates", () => {
     expect(dashboard).toContain('"SevenHourTeacher": "unknown"');
   });
 
+  it("links eight existing SEO projects without creating new trackers", () => {
+    expect(dashboard).toContain("SEO workspaces and Google Search Console");
+    expect(dashboard).toContain("websiteAdvantageSeoProjects.map");
+    expect(dashboard).toContain("Matching verified Search Console property not available");
+    expect(dashboard).toContain("No additional trackers or paid AI-search checks have been enabled");
+  });
+
   it("does not introduce cross-site credentials or write actions", () => {
     expect(dashboard).not.toMatch(/supabase\.functions\.invoke|fetch\(|axios\.|service_role|secret_key|localStorage\.setItem/);
   });
