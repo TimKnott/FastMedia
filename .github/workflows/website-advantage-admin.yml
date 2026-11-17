@@ -20,29 +20,13 @@ jobs:
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
       - name: Static release regression tests
-        run: bunx vitest run src/pages/admin/AdminWebsiteAdvantage.test.ts
+        run: bunx vitest run src/pages/admin/AdminWebsiteAdvantage.test.ts src/lib/websiteAdvantageAudit.test.ts
       - name: Validate public audit Python syntax
         run: python -m py_compile scripts/website_advantage_public_audit.py
       - name: Offline public audit security tests
         run: python -m unittest discover -s scripts -p 'test_website_advantage_public_audit.py'
       - name: Offline approved image verification tests
         run: python -m unittest discover -s scripts -p 'test_website_advantage_image_verify.py'
-      - name: One-time approved artwork verification
-        run: python scripts/website_advantage_image_verify.py --output website-advantage-images.json
-      - name: Upload image verification evidence
-        uses: actions/upload-artifact@v4
-        with:
-          name: website-advantage-images-once
-          path: website-advantage-images.json
-          retention-days: 14
-      - name: One-time public metadata comparison after Base44 social image update
-        run: python scripts/website_advantage_public_audit.py --output website-advantage-metadata-compare.json
-      - name: Upload public metadata comparison evidence
-        uses: actions/upload-artifact@v4
-        with:
-          name: website-advantage-metadata-compare
-          path: website-advantage-metadata-compare.json
-          retention-days: 14
       - name: Build
         run: bun run build
       - name: Verify onboarding and quality gates
