@@ -135,6 +135,7 @@ const AdminEmailDeliverability = lazy(() => import("./pages/admin/AdminEmailDeli
 const AdminLeadEmails = lazy(() => import("./pages/admin/AdminLeadEmails"));
 const AdminHR = lazy(() => import("./pages/admin/AdminHR"));
 const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
+const AdminWebsiteAdvantage = lazy(() => import("./pages/admin/AdminWebsiteAdvantage"));
 const AdminExport = lazy(() => import("./pages/admin/AdminExport"));
 const AdminClientProjects = lazy(() => import("./pages/admin/AdminClientProjects"));
 const AdminClientProjectDetail = lazy(() => import("./pages/admin/AdminClientProjectDetail"));
@@ -707,6 +708,7 @@ const App = () => (
                       <Route path="lead-emails" element={<AdminLeadEmails />} />
                       <Route path="hr" element={<AdminHR />} />
                       <Route path="integrations" element={<AdminIntegrations />} />
+                      <Route path="website-advantage" element={<ProtectedRoute minRole="super_admin"><AdminWebsiteAdvantage /></ProtectedRoute>} />
                       <Route path="export" element={<AdminExport />} />
                       <Route path="client-projects" element={<AdminClientProjects />} />
                       <Route path="client-projects/:id" element={<AdminClientProjectDetail />} />

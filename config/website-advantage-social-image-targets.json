@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "meaning": "Expected user-approved homepage social-sharing artwork. File is a public, read-only configuration; URLs currently depend on Base44 asset hosting.",
+  "governance": "Do not overwrite a live site's OG metadata or republish without verified rollback and smoke tests.",
+  "targets": {
+    "FastMedia.Pro": "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/ced7a393f_fastmedia-social-approved.jpg",
+    "SevenHourTeacher": "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/9c95634b3_sevenhourteacher-social-approved.jpg",
+    "Koně a Stáje": "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/f4d0713fa_koneastaje-social-approved.jpg",
+    "Zelený Kůň": "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/c6152c148_zelenykun-social-approved.jpg",
+    "StandaToys": "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/06da62ec0_standatoys-social-approved.jpg",
+    "The Progenitors": "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/9d525bae8_progenitors-social-approved.jpg",
+    "Calcurly": "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/9963da63f_calcurly-social-approved.jpg",
+    "JusticeLeague": "https://media.base44.com/images/public/69d0e77418c203da4e5de602/3f7973809_justiceleague-social-approved.jpg"
+  }
+}

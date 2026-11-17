@@ -1,0 +1,28 @@
+{
+  "programme": "FastMedia Website Advantage Programme",
+  "version": 1,
+  "generated_for": "release-candidate",
+  "sites": [
+    {"id":"fastmedia","name":"FastMedia.Pro","url":"https://fastmedia.pro/","platform":"Lovable","priority":"high","features_to_reuse":["SEO health monitor","quote tool","admin role hierarchy"]},
+    {"id":"sevenhourteacher","name":"SevenHourTeacher","url":"https://sevenhourteacher.com/","platform":"Lovable","priority":"high","features_to_reuse":["SEO operations","content studio"]},
+    {"id":"koneastaje","name":"Koně a Stáje","url":"https://koneastaje.com/","platform":"Lovable","priority":"high","features_to_reuse":["localeMeta","listing sitemap","directory coverage"],"release_blocker":"draft PR 26 must be verified and deployed"},
+    {"id":"zelenykun","name":"Zelený Kůň","url":"https://zelenykun.com/","platform":"Lovable","priority":"medium","features_to_reuse":["animal SEO plan"]},
+    {"id":"standatoys","name":"StandaToys","url":"https://standatoys.com/","platform":"Base44","priority":"medium","features_to_reuse":["homepage OG image","hreflang"]},
+    {"id":"progenitors","name":"The Progenitors","url":"https://theprogenitors.com/","platform":"Lovable","priority":"medium","domain_verification":"pending","features_to_reuse":["PWA manifest","structured data workflow"]},
+    {"id":"calcurly","name":"Calcurly","url":"https://calcurly.com/","platform":"Lovable","priority":"high","release_blocker":"homepage OG image missing","features_to_reuse":["first-party analytics","embeddable calculators"]},
+    {"id":"justiceleague","name":"JusticeLeague","url":"https://justiceleague.online/","platform":"Base44","priority":"medium","features_to_reuse":["homepage OG image"]}
+  ],
+  "workstreams": [
+    "social_previews","seo_schema","conversions","health_performance",
+    "security_privacy","releases_rollback","pwa_mobile",
+    "multilingual","crm_followup","ai_assistants","interactive_tools","qr_codes"
+  ],
+  "quality_state_enum": ["not_verified","pass","needs_review","unknown","blocked"],
+  "release_policy": {
+    "default": "read_only",
+    "requires_known_good_restore": true,
+    "requires_build_and_smoke_test": true,
+    "requires_super_admin_for_private_data": true,
+    "no_automatic_production_write": true
+  }
+}
