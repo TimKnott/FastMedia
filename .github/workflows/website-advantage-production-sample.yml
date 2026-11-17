@@ -1,0 +1,31 @@
+name: Website Advantage production read-only verification
+on:
+  push:
+    branches:
+      - audit/website-advantage-live-release-20261117
+permissions:
+  contents: read
+jobs:
+  public-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Public homepage metadata and image comparisons
+        run: python scripts/website_advantage_public_audit.py --output website-advantage-live-metadata.json
+      - name: Approved image HTTP and dimension verification
+        run: python scripts/website_advantage_image_verify.py --output website-advantage-live-images.json
+      - name: Robots sitemap and optional AI guidance
+        run: python scripts/website_advantage_discovery_audit.py --output website-advantage-live-discovery.json
+      - name: Upload read-only evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-advantage-production-audit-20261117
+          path: |
+            website-advantage-live-metadata.json
+            website-advantage-live-images.json
+            website-advantage-live-discovery.json
+          retention-days: 14
