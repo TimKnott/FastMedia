@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { act } from "react-dom/test-utils";
+import { createRoot } from "react-dom/client";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -9,12 +10,10 @@ const auth = vi.hoisted(() => ({ userId: null as string | null, role: null as st
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: {
-      getSession: async () => ({ data: {
-        session: auth.userId ? { user: { id: auth.userId } } : null,
-      } }),
-      onAuthStateChange: () => ({ data: {
-        subscription: { unsubscribe: () => {} },
-      } }),
+      getSession: async () => ({
+        data: { session: auth.userId ? { user: { id: auth.userId } } : null },
+      }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
     },
     from: () => ({
       select: () => ({
@@ -26,51 +25,49 @@ vi.mock("@/integrations/supabase/client", () => ({
   },
 }));
 
-afterEach(() => {
-  cleanup();
-  auth.userId = null;
-  auth.role = null;
-});
-
-function mount() {
-  render(
-    <MemoryRouter initialEntries={["/admin/website-advantage"]}>
-      <Routes>
-        <Route path="/admin/login" element={<p>Login required</p>} />
-        <Route path="/admin/website-advantage" element={
-          <ProtectedRoute minRole="super_admin"><p>Super Admin content</p></ProtectedRoute>
-        } />
-      </Routes>
-    </MemoryRouter>,
-  );
+async function renderedText(userId: string | null, role: string | null): Promise<string> {
+  auth.userId = userId;
+  auth.role = role;
+  const container = document.createElement("div");
+  document.body.appendChild(container);
+  const root = createRoot(container);
+  try {
+    await act(async () => {
+      root.render(
+        <MemoryRouter initialEntries={["/admin/website-advantage"]}>
+          <Routes>
+            <Route path="/admin/login" element={<p>Login required</p>} />
+            <Route path="/admin/website-advantage" element={
+              <ProtectedRoute minRole="super_admin"><p>Super Admin content</p></ProtectedRoute>
+            } />
+          </Routes>
+        </MemoryRouter>,
+      );
+      await Promise.resolve();
+    });
+    return container.textContent || "";
+  } finally {
+    await act(async () => { root.unmount(); });
+    container.remove();
+    auth.userId = null;
+    auth.role = null;
+  }
 }
 
-describe("Website Advantage route authorization (UI guard)", () => {
+describe("Website Advantage route authorization (mocked UI guard)", () => {
   it("redirects signed-out visitors", async () => {
-    mount();
-    expect(await screen.findByText("Login required")).toBeTruthy();
-    expect(screen.queryByText("Super Admin content")).toBeNull();
+    expect(await renderedText(null, null)).toContain("Login required");
   });
-  it.each(["user", "editor", "moderator", "admin"])("redirects an authenticated %s", async role => {
-    auth.userId = "test-user";
-    auth.role = role;
-    mount();
-    expect(await screen.findByText("Login required")).toBeTruthy();
-    expect(screen.queryByText("Super Admin content")).toBeNull();
+  it.each(["user", "editor", "moderator", "admin"])("redirects authenticated %s", async role => {
+    expect(await renderedText("test-user", role)).toContain("Login required");
   });
-  it("permits a verified super_admin role", async () => {
-    auth.userId = "test-superadmin";
-    auth.role = "super_admin";
-    mount();
-    expect(await screen.findByText("Super Admin content")).toBeTruthy();
+  it("permits the assigned super_admin role", async () => {
+    expect(await renderedText("test-superadmin", "super_admin")).toContain("Super Admin content");
   });
   it("denies a signed-in user without an assigned role", async () => {
-    auth.userId = "test-no-role";
-    auth.role = null;
-    mount();
-    expect(await screen.findByText("Login required")).toBeTruthy();
+    expect(await renderedText("test-no-role", null)).toContain("Login required");
   });
 });
 
-/* This verifies the existing client-side route guard only. Backend data
-   endpoints must separately enforce RLS and super_admin server-side. */
+/* These are simulated UI tests, not production authentication/RLS verification.
+   Any future private API must separately enforce super_admin on the server. */
