@@ -21,6 +21,8 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Static release regression tests
         run: bunx vitest run src/pages/admin/AdminWebsiteAdvantage.test.ts
+      - name: Validate public audit Python syntax
+        run: python -m py_compile scripts/website_advantage_public_audit.py
       - name: Build
         run: bun run build
       - name: Verify onboarding and quality gates
