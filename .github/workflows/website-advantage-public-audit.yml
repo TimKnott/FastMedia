@@ -1,11 +1,6 @@
 name: Website Advantage public metadata audit
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feature/website-advantage-admin-shell-20261117
-    paths:
-      - '.github/workflows/website-advantage-public-audit.yml'
 permissions:
   contents: read
 jobs:
