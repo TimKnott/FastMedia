@@ -27,6 +27,10 @@ jobs:
         run: python -m unittest discover -s scripts -p 'test_website_advantage_public_audit.py'
       - name: Offline approved image verification tests
         run: python -m unittest discover -s scripts -p 'test_website_advantage_image_verify.py'
+      - name: Discovery audit offline tests and syntax
+        run: |
+          python -m py_compile scripts/website_advantage_discovery_audit.py
+          python -m unittest discover -s scripts -p 'test_website_advantage_discovery_audit.py'
       - name: Build
         run: bun run build
       - name: Verify onboarding and quality gates
