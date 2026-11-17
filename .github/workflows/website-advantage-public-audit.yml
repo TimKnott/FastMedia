@@ -1,0 +1,22 @@
+name: Website Advantage public metadata audit
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run bounded public audit
+        run: python scripts/website_advantage_public_audit.py --output website-advantage-audit.json
+      - name: Upload evidence report
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-advantage-public-audit
+          path: website-advantage-audit.json
+          retention-days: 14
