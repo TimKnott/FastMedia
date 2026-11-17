@@ -44,6 +44,12 @@ describe("Website Advantage Super Admin release gates", () => {
     expect(registry.release_policy.no_automatic_production_write).toBe(true);
   });
 
+  it("labels the historical audit as evidence, not live health", () => {
+    expect(dashboard).toContain("Historical sample: 17 Nov 2026");
+    expect(dashboard).toContain("Current health not verified");
+    expect(dashboard).toContain('"SevenHourTeacher": "unknown"');
+  });
+
   it("does not introduce cross-site credentials or write actions", () => {
     expect(dashboard).not.toMatch(/supabase\.functions\.invoke|fetch\(|axios\.|service_role|secret_key|localStorage\.setItem/);
   });
