@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent } from "react";
-import { Activity, BarChart3, BookOpen, ChevronDown, ChevronUp, ClipboardCheck, ExternalLink, Globe2, History, Image, Info, LockKeyhole, Search, ShieldCheck } from "lucide-react";
+import { Activity, BarChart3, BookOpen, Bot, Calculator, CalendarCheck, ChevronDown, ChevronUp, ClipboardCheck, ExternalLink, Globe2, History, Image, Info, Languages, LockKeyhole, QrCode, Search, ShieldCheck, Smartphone, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,16 +42,22 @@ const metadataSnapshot: Record<string, "metadata_present" | "unknown"> = {
 };
 
 const workstreams = [
-  { label: "Social previews", icon: Image, detail: "Open Graph images, titles and sharing cards" },
-  { label: "SEO and schema", icon: Search, detail: "Canonical links, structured data and indexing" },
-  { label: "Conversions", icon: BarChart3, detail: "Enquiries, bookings and campaign attribution" },
-  { label: "Site health", icon: Activity, detail: "Uptime, mobile performance and forms" },
-  { label: "Security and access", icon: ShieldCheck, detail: "Role enforcement, privacy and integrations" },
-  { label: "Changes and rollback", icon: History, detail: "Version baselines, tests and restore evidence" },
+  { label: "Structured data", icon: Search, detail: "Schema.org markup, eligible rich results and factual business signals" },
+  { label: "Installable web apps", icon: Smartphone, detail: "PWA manifests, offline behavior and home-screen installation" },
+  { label: "Interactive lead tools", icon: Calculator, detail: "Quotations, calculators and useful customer self-service" },
+  { label: "AI site assistants", icon: Bot, detail: "Accurate guidance, safe hand-off and enquiry qualification" },
+  { label: "Branded QR campaigns", icon: QrCode, detail: "Trackable page links for print, listings and campaigns" },
+  { label: "Multilingual SEO", icon: Languages, detail: "Localized pages, canonical URLs and hreflang where relevant" },
+  { label: "One-click contact and booking", icon: CalendarCheck, detail: "Accessible enquiry, booking, email and phone actions" },
+  { label: "Page-specific sharing images", icon: Image, detail: "Approved Open Graph artwork for homepage, products and stories" },
+  { label: "Conversion tracking", icon: BarChart3, detail: "Verified enquiries, bookings and source attribution" },
+  { label: "Mobile performance", icon: Zap, detail: "Core Web Vitals, image efficiency and responsive usability" },
+  { label: "CRM enquiry follow-up", icon: ClipboardCheck, detail: "Acknowledgements, lead routing and response reliability" },
+  { label: "Website health monitoring", icon: Activity, detail: "Availability, broken forms, sitemaps and regression detection" },
 ] as const;
 
 const onboarding = [
-  { title: "Understand the programme", detail: "Review the scope, eight websites and the six quality checks." },
+  { title: "Understand the programme", detail: "Review the scope, eight websites and the twelve website improvement workstreams." },
   { title: "Confirm the existing baseline", detail: "Check current features and record the last known-good release before editing." },
   { title: "Run safe verification", detail: "Verify a test or build result; never assume an untested website has passed." },
   { title: "Release with a rollback plan", detail: "Publish one small tested change at a time and retain its restore reference." },
