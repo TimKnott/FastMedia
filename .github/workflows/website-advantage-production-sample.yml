@@ -23,6 +23,8 @@ jobs:
         run: python scripts/website_advantage_image_verify.py --output website-advantage-live-images.json
       - name: Robots sitemap and optional AI guidance
         run: python scripts/website_advantage_discovery_audit.py --output website-advantage-live-discovery.json
+      - name: SevenHourTeacher public DNS and HTTPS diagnostics
+        run: python scripts/website_advantage_sevenhourteacher_diagnostic.py
       - name: Check anonymous admin route in headless Chrome
         shell: bash
         run: |
@@ -54,5 +56,6 @@ jobs:
             website-advantage-live-images.json
             website-advantage-live-discovery.json
             anonymous-admin-status.txt
+            sevenhourteacher-domain-diagnostic.json
             anonymous-admin.html
           retention-days: 14
