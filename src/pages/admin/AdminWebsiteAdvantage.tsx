@@ -19,7 +19,7 @@ const RELEASE_REGISTER_URL = "https://chatgpt.com/space/page_6afc0f21d4408191bd1
 
 const websites = [
   { name: "FastMedia.Pro", url: "https://fastmedia.pro", platform: "Lovable" },
-  { name: "SevenHourTeacher", url: "https://sevenhourteacher.com", platform: "Lovable" },
+  { name: "SevenHourTeacher", url: "https://7hourteacher.com", platform: "Lovable" },
   { name: "Koně a Stáje", url: "https://koneastaje.com", platform: "Lovable" },
   { name: "Zelený Kůň", url: "https://zelenykun.com", platform: "Lovable" },
   { name: "StandaToys", url: "https://standatoys.com", platform: "Base44" },
