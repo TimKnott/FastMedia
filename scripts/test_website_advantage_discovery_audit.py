@@ -13,6 +13,23 @@ discovery = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(discovery)
 
 class DiscoveryTests(unittest.TestCase):
+    def test_sitemap_xml_parses_namespaces_and_counts_urls(self):
+        xml = ('<?xml version="1.0"?>'
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+               '<url><loc>https://example.com/1</loc></url>'
+               '<url><loc>https://example.com/2</loc></url>'
+               '</urlset>')
+        self.assertEqual(discovery.inspect_sitemap_xml(xml.encode("utf-8")),
+                         {"kind": "urlset", "entries": 2})
+
+    def test_sitemap_xml_rejects_html_and_malformed_xml(self):
+        self.assertIsNone(discovery.inspect_sitemap_xml(b"<html><body>fallback</body></html>"))
+        self.assertIsNone(discovery.inspect_sitemap_xml(b"<urlset><url></urlset>"))
+
+    def test_sitemap_index_counts_child_sitemaps(self):
+        xml = b'<sitemapindex><sitemap/><sitemap/></sitemapindex>'
+        self.assertEqual(discovery.inspect_sitemap_xml(xml), {"kind": "sitemapindex", "entries": 2})
+
     def test_only_expected_public_resources(self):
         self.assertEqual(discovery.PATHS, ("robots.txt", "sitemap.xml", "llms.txt"))
         self.assertEqual(len(discovery.SITES), 8)
