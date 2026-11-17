@@ -4,6 +4,7 @@ import datetime as dt
 import json
 import socket
 import urllib.error
+import urllib.parse
 import urllib.request
 
 HOSTS = (
@@ -26,7 +27,7 @@ for host in HOSTS:
         with urllib.request.urlopen(req, timeout=12) as response:
             response.read(512)
             row["http_status"] = response.status
-            row["final_host"] = urllib.request.urlparse(response.geturl()).hostname
+            row["final_host"] = urllib.parse.urlparse(response.geturl()).hostname
     except urllib.error.HTTPError as exc:
         row["http_status"] = exc.code
     except Exception as exc:
