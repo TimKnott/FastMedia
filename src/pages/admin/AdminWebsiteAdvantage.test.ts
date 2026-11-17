@@ -44,6 +44,20 @@ describe("Website Advantage Super Admin release gates", () => {
     expect(teacher?.url).toBe("https://7hourteacher.com/");
   });
 
+  it("covers the twelve originally approved website improvements", () => {
+    const registry = JSON.parse(readFileSync(resolve(root, "config/website-advantage-portfolio.json"), "utf8"));
+    expect(registry.version).toBe(2);
+    expect(registry.workstreams).toHaveLength(12);
+    expect(new Set(registry.workstreams).size).toBe(12);
+    for (const label of [
+      "Structured data", "Installable web apps", "Interactive lead tools",
+      "AI site assistants", "Branded QR campaigns", "Multilingual SEO",
+      "One-click contact and booking", "Page-specific sharing images",
+      "Conversion tracking", "Mobile performance", "CRM enquiry follow-up",
+      "Website health monitoring",
+    ]) expect(dashboard).toContain(label);
+  });
+
   it("keeps the versioned portfolio registry aligned with the dashboard", () => {
     const registry = JSON.parse(readFileSync(resolve(root, "config/website-advantage-portfolio.json"), "utf8"));
     expect(registry.sites).toHaveLength(8);
