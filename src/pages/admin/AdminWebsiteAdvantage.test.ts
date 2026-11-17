@@ -22,7 +22,7 @@ describe("Website Advantage Super Admin release gates", () => {
 
   it("includes all eight portfolio domains", () => {
     for (const domain of [
-      "fastmedia.pro", "sevenhourteacher.com", "koneastaje.com",
+      "fastmedia.pro", "7hourteacher.com", "koneastaje.com",
       "zelenykun.com", "standatoys.com", "theprogenitors.com",
       "calcurly.com", "justiceleague.online",
     ]) expect(dashboard).toContain(domain);
@@ -35,6 +35,14 @@ describe("Website Advantage Super Admin release gates", () => {
     expect(dashboard).toContain("Not verified");
   });
 
+
+  it("uses the verified teacher production domain rather than the non-resolving alternative", () => {
+    expect(dashboard).toContain("https://7hourteacher.com");
+    expect(dashboard).not.toContain("sevenhourteacher.com");
+    const registry = JSON.parse(readFileSync(resolve(root, "config/website-advantage-portfolio.json"), "utf8"));
+    const teacher = registry.sites.find((site: { id: string }) => site.id === "sevenhourteacher");
+    expect(teacher?.url).toBe("https://7hourteacher.com/");
+  });
 
   it("keeps the versioned portfolio registry aligned with the dashboard", () => {
     const registry = JSON.parse(readFileSync(resolve(root, "config/website-advantage-portfolio.json"), "utf8"));

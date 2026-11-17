@@ -16,7 +16,7 @@ import urllib.request
 
 SITES = {
     "FastMedia.Pro": "https://fastmedia.pro/",
-    "SevenHourTeacher": "https://sevenhourteacher.com/",
+    "SevenHourTeacher": "https://7hourteacher.com/",
     "Koně a Stáje": "https://koneastaje.com/",
     "Zelený Kůň": "https://zelenykun.com/",
     "StandaToys": "https://standatoys.com/",
