@@ -51,7 +51,7 @@ class MetaParser(html.parser.HTMLParser):
         if self._in_title:
             self.title = (self.title or "") + data
 
-ALLOWED_HOSTS = frozenset(urllib.parse.urlsplit(url).hostname for url in SITES.values())
+ALLOWED_HOSTS = frozenset(\n    host\n    for url in SITES.values()\n    for host in (urllib.parse.urlsplit(url).hostname, "www." + urllib.parse.urlsplit(url).hostname)\n)
 
 class LimitedRedirect(urllib.request.HTTPRedirectHandler):
     max_redirections = 4
