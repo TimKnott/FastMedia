@@ -35,6 +35,15 @@ describe("Website Advantage Super Admin release gates", () => {
     expect(dashboard).toContain("Not verified");
   });
 
+
+  it("keeps the versioned portfolio registry aligned with the dashboard", () => {
+    const registry = JSON.parse(readFileSync(resolve(root, "config/website-advantage-portfolio.json"), "utf8"));
+    expect(registry.sites).toHaveLength(8);
+    for (const site of registry.sites) expect(dashboard).toContain(site.url.replace(/\\/$/, ""));
+    expect(registry.release_policy.requires_super_admin_for_private_data).toBe(true);
+    expect(registry.release_policy.no_automatic_production_write).toBe(true);
+  });
+
   it("does not introduce cross-site credentials or write actions", () => {
     expect(dashboard).not.toMatch(/supabase\.functions\.invoke|fetch\(|axios\.|service_role|secret_key|localStorage\.setItem/);
   });
