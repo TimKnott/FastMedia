@@ -44,6 +44,14 @@ describe("Website Advantage Super Admin release gates", () => {
     expect(registry.release_policy.no_automatic_production_write).toBe(true);
   });
 
+  it("renders approved social artwork only within the protected admin page", () => {
+    expect(dashboard).toContain("approvedSocialImages.targets[site.name]");
+    expect(dashboard).toContain('alt={`Approved social-sharing artwork for ${site.name}`}');
+    expect(dashboard).toContain('loading="lazy"');
+    const targets = JSON.parse(readFileSync(resolve(root, "config/website-advantage-social-image-targets.json"), "utf8"));
+    expect(Object.keys(targets.targets)).toHaveLength(8);
+  });
+
   it("labels the historical audit as evidence, not live health", () => {
     expect(dashboard).toContain("Historical sample: 17 Nov 2026");
     expect(dashboard).toContain("Current health not verified");
