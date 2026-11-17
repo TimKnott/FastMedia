@@ -212,3 +212,5 @@
 - [ ] Live market-benchmark research per opportunity — needs real records; enter sourced benchmarks per item (no rates assumed).
 - [x] Admin tools hub: read-only tool health + "Needs your approval" list.
 - [ ] Central "Update everything" orchestrator + run ledger — deferred (no safely testable per-module update contract; several module jobs spend AI credits or contact people).
+
+- [x] Homepage share image swapped to approved 1200x630 banner (awaiting publish)
