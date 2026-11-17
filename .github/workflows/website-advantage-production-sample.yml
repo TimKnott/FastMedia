@@ -23,6 +23,28 @@ jobs:
         run: python scripts/website_advantage_image_verify.py --output website-advantage-live-images.json
       - name: Robots sitemap and optional AI guidance
         run: python scripts/website_advantage_discovery_audit.py --output website-advantage-live-discovery.json
+      - name: Check anonymous admin route in headless Chrome
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "Chrome unavailable; anonymous browser check NOT VERIFIED"
+            echo "unavailable" > anonymous-admin-status.txt
+          else
+            timeout 70 "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --disable-extensions --incognito --window-size=1365,900 \
+              --virtual-time-budget=12000 --dump-dom \
+              https://www.fastmedia.pro/admin/website-advantage \
+              > anonymous-admin.html 2> chrome-stderr.txt || true
+            if grep -q 'data-testid="website-advantage-admin"' anonymous-admin.html; then
+              echo "FAIL: Super Admin dashboard rendered anonymously"
+              echo "anonymous-visible" > anonymous-admin-status.txt
+              exit 1
+            fi
+            echo "Anonymous dashboard content not rendered (login/loading state needs visual review)"
+            echo "not-rendered" > anonymous-admin-status.txt
+          fi
       - name: Upload read-only evidence
         uses: actions/upload-artifact@v4
         with:
@@ -31,4 +53,6 @@ jobs:
             website-advantage-live-metadata.json
             website-advantage-live-images.json
             website-advantage-live-discovery.json
+            anonymous-admin-status.txt
+            anonymous-admin.html
           retention-days: 14
