@@ -9,6 +9,7 @@ import argparse
 import datetime as dt
 import html.parser
 import json
+import pathlib
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -23,6 +24,16 @@ SITES = {
     "Calcurly": "https://calcurly.com/",
     "JusticeLeague": "https://justiceleague.online/",
 }
+
+TARGETS_FILE = pathlib.Path(__file__).resolve().parent.parent / "config" / "website-advantage-social-image-targets.json"
+
+def approved_social_targets():
+    with TARGETS_FILE.open(encoding="utf-8") as file:
+        data = json.load(file)
+    names = set(SITES)
+    if data.get("schema_version") != 1 or set(data.get("targets", {})) != names:
+        raise ValueError("Approved image registry does not contain exactly the eight portfolio sites")
+    return data["targets"]
 
 class MetaParser(html.parser.HTMLParser):
     def __init__(self):
@@ -83,8 +94,9 @@ def fetch(url, timeout=12, max_bytes=524288):
         data = resp.read(max_bytes)
         return resp.status, final_url, data.decode("utf-8", errors="replace")
 
-def audit(name, url):
-    result = {"name": name, "url": url, "state": "unknown", "checks": {}}
+def audit(name, url, approved_image_url):
+    result = {"name": name, "url": url, "state": "unknown", "checks": {},
+              "approved_image_url": approved_image_url, "approved_image_match": "unknown"}
     try:
         status, final_url, page = fetch(url)
         result["http_status"] = status
@@ -101,6 +113,10 @@ def audit(name, url):
             "twitter_image": bool(parser.meta.get("twitter:image")),
         }
         result["og_image_url"] = parser.meta.get("og:image")
+        result["approved_image_match"] = (
+            "match" if result["og_image_url"] == approved_image_url
+            else "different" if result["og_image_url"] else "missing"
+        )
         result["canonical_url"] = parser.canonical
         result["state"] = "pass" if status == 200 and all(result["checks"].values()) else "needs_review"
         # This state covers only the seven listed HTML metadata fields, not
@@ -114,8 +130,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--output", default="website-advantage-audit.json")
     args = p.parse_args()
+    targets = approved_social_targets()
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "checked_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "scope": "public homepage HTML metadata only",
         "limitations": [
@@ -123,8 +140,9 @@ def main():
             "Does not verify image HTTP response or WhatsApp cache",
             "A network error is unknown, not proof of outage",
             "Dynamic JavaScript-inserted tags may not appear in raw HTML",
+            "Approved image match compares URL strings only; it does not prove the image loads",
         ],
-        "sites": [audit(name, url) for name, url in SITES.items()],
+        "sites": [audit(name, url, targets[name]) for name, url in SITES.items()],
     }
     with open(args.output, "w", encoding="utf-8") as file:
         json.dump(report, file, indent=2, ensure_ascii=False)
