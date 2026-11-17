@@ -35,6 +35,14 @@ jobs:
           name: website-advantage-images-once
           path: website-advantage-images.json
           retention-days: 14
+      - name: One-time public metadata comparison after Base44 social image update
+        run: python scripts/website_advantage_public_audit.py --output website-advantage-metadata-compare.json
+      - name: Upload public metadata comparison evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-advantage-metadata-compare
+          path: website-advantage-metadata-compare.json
+          retention-days: 14
       - name: Build
         run: bun run build
       - name: Verify onboarding and quality gates
