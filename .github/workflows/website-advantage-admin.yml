@@ -20,7 +20,7 @@ jobs:
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
       - name: Static release regression tests
-        run: bunx vitest run src/pages/admin/AdminWebsiteAdvantage.test.ts src/lib/websiteAdvantageAudit.test.ts src/components/admin/ProtectedRoute.test.tsx src/lib/websiteAdvantageDiscovery.test.ts
+        run: bunx vitest run src/pages/admin/AdminWebsiteAdvantage.test.ts src/lib/websiteAdvantageAudit.test.ts src/components/admin/ProtectedRoute.test.tsx src/lib/websiteAdvantageDiscovery.test.ts src/lib/websiteAdvantageSeoProjects.test.ts
       - name: Validate public audit Python syntax
         run: python -m py_compile scripts/website_advantage_public_audit.py
       - name: Offline public audit security tests

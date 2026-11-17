@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { imageStatusLabel, parsePublicMetadataAudit, type MetadataAuditReport } from "@/lib/websiteAdvantageAudit";
 import { discoveryStatusLabel, parseDiscoveryAudit, type DiscoveryReport } from "@/lib/websiteAdvantageDiscovery";
 import approvedSocialImages from "../../../config/website-advantage-social-image-targets.json";
+import { websiteAdvantageSeoProjects } from "@/lib/websiteAdvantageSeoProjects";
 
 /**
  * FastMedia Website Advantage Programme — release candidate (read-only).
@@ -343,6 +344,45 @@ export default function AdminWebsiteAdvantage() {
             ) : (
               <p className="text-xs text-muted-foreground">No discovery report loaded. Run the manual GitHub audit and import its JSON file here.</p>
             )}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section aria-labelledby="seo-workspaces-heading">
+        <Card>
+          <CardHeader>
+            <CardTitle id="seo-workspaces-heading">SEO workspaces and Google Search Console</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Open the existing SEO project for each website. These external reports require your own OpenSEO login.
+              Connection status was checked on 17 November 2026; this is not a live sync.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {websiteAdvantageSeoProjects.map(item => (
+                <div key={item.site} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
+                  <div className="min-w-0">
+                    <p className="font-medium">{item.site}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {item.gscStatus === "selected"
+                        ? "Matching Search Console property selected"
+                        : "Matching verified Search Console property not available"}
+                    </p>
+                  </div>
+                  <a href={item.projectUrl} target="_blank" rel="noopener noreferrer"
+                    aria-label={`Open ${item.site} SEO project in a new tab`}
+                    className="inline-flex min-h-10 shrink-0 items-center gap-1 rounded-md border px-3 py-2 text-sm text-primary
+                               hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+                    Open SEO <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              FastMedia.Pro and StandaToys currently need matching Google Search Console property verification.
+              Do not connect an unrelated property to make this status appear complete. OpenSEO manages its own data access.
+              No additional trackers or paid AI-search checks have been enabled.
+            </p>
           </CardContent>
         </Card>
       </section>
