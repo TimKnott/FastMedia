@@ -1,0 +1,41 @@
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+/**
+ * Static release gates complement (but do not replace) authenticated
+ * browser tests, server-side RLS tests and production smoke tests.
+ */
+const root = process.cwd();
+const app = readFileSync(resolve(root, "src/App.tsx"), "utf8");
+const sidebar = readFileSync(resolve(root, "src/components/admin/AdminSidebar.tsx"), "utf8");
+const dashboard = readFileSync(resolve(root, "src/pages/admin/AdminWebsiteAdvantage.tsx"), "utf8");
+
+describe("Website Advantage Super Admin release gates", () => {
+  it("requires the super_admin role for the dashboard route", () => {
+    expect(app).toMatch(/path="website-advantage"[^\n]*ProtectedRoute minRole="super_admin"/);
+  });
+
+  it("restricts the sidebar entry to super_admin", () => {
+    expect(sidebar).toMatch(/url: '\/admin\/website-advantage'[^\n]*minRole: 'super_admin'/);
+  });
+
+  it("includes all eight portfolio domains", () => {
+    for (const domain of [
+      "fastmedia.pro", "sevenhourteacher.com", "koneastaje.com",
+      "zelenykun.com", "standatoys.com", "theprogenitors.com",
+      "calcurly.com", "justiceleague.online",
+    ]) expect(dashboard).toContain(domain);
+  });
+
+  it("includes onboarding and explicit release evidence requirements", () => {
+    expect(dashboard).toContain("Getting started");
+    expect(dashboard).toContain("Professional release checklist");
+    expect(dashboard).toContain("rollback");
+    expect(dashboard).toContain("Not verified");
+  });
+
+  it("does not introduce cross-site credentials or write actions", () => {
+    expect(dashboard).not.toMatch(/supabase\.functions\.invoke|fetch\(|axios\.|service_role|secret_key|localStorage\.setItem/);
+  });
+});
