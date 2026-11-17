@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { imageStatusLabel, parsePublicMetadataAudit, type MetadataAuditReport } from "@/lib/websiteAdvantageAudit";
+import approvedSocialImages from "../../../config/website-advantage-social-image-targets.json";
 
 /**
  * FastMedia Website Advantage Programme — release candidate (read-only).
@@ -222,7 +223,14 @@ export default function AdminWebsiteAdvantage() {
             const result = auditReport?.sites.find(item => item.name === site.name);
             return (
             <Card key={site.url}>
-              <CardContent className="flex items-center justify-between gap-3 p-4">
+              <CardContent className="p-4">
+                <div className="mb-3 overflow-hidden rounded-lg border bg-muted">
+                  <img src={approvedSocialImages.targets[site.name]}
+                    alt={`Approved social-sharing artwork for ${site.name}`}
+                    width={1200} height={630} loading="lazy"
+                    className="aspect-[1200/630] w-full object-cover" />
+                </div>
+                <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-semibold">{site.name}</p>
                   <p className="break-all text-xs text-muted-foreground">{site.url}</p>
@@ -242,6 +250,7 @@ export default function AdminWebsiteAdvantage() {
                   className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border text-primary hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
+                </div>
               </CardContent>
             </Card>
           );})}
