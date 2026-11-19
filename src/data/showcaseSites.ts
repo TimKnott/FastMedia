@@ -11,17 +11,17 @@ export const SHOWCASE_HUB_URL = "https://myname.co.uk";
 export interface ShowcaseSite {
   name: string;
   image: string;
-  /** The site's live address. Switch to its myname.co.uk showcase page once that page exists. */
-  url: string;
+  /** Only a verified first-party domain that has been opened and checked. Omit to show a static, non-clickable card. */
+  url?: string;
 }
 
 /** Approved, published sites shown in the homepage carousel. Add new entries after approval. */
 export const showcaseSites: ShowcaseSite[] = [
-  { name: "Calcurly calculators", image: calcurly.url, url: "https://convert-and-calculate.lovable.app" },
-  { name: "Expat Help Online", image: expathelp.url, url: "https://expathelp.lovable.app" },
-  { name: "BuddyChip Reimagined", image: buddychip.url, url: "https://find-my-buddy-magic.lovable.app" },
-  { name: "English Ride With Jitty", image: jitty.url, url: "https://englishridewithjitty.lovable.app" },
-  { name: "MiniBRIC Connect", image: minibric.url, url: "https://minibrick-connect-africa.lovable.app" },
-  { name: "AI classifieds", image: classifieds.url, url: "https://aiclassifiedseu.lovable.app" },
-  { name: "Sportovní stáj Telce — koncept", image: telceImage, url: "https://stable-heart-of-nature.lovable.app" },
+  { name: "Calcurly calculators", image: calcurly.url, url: "https://calcurly.com/" },
+  { name: "Expat Help Online", image: expathelp.url, url: "https://expathelp.online/" },
+  { name: "BuddyChip Reimagined", image: buddychip.url },
+  { name: "English Ride With Jitty", image: jitty.url, url: "https://www.englishridewithjitty.com/" },
+  { name: "MiniBRIC Connect", image: minibric.url, url: "https://www.minibrics.com/" },
+  { name: "AI classifieds", image: classifieds.url, url: "https://aiclassifieds.eu/" },
+  { name: "Sportovní stáj Telce — koncept", image: telceImage },
 ];

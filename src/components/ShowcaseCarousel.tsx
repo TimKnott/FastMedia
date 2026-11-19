@@ -30,18 +30,27 @@ const ShowcaseCarousel = () => {
         <ul className="showcase-track flex w-max gap-5 group-hover:[animation-play-state:paused]">
           {loop.map((site, i) => (
             <li key={`${site.name}-${i}`} aria-hidden={i >= showcaseSites.length} className="w-64 shrink-0 sm:w-72">
-              <a
-                href={site.url}
-                target="_blank"
-                rel="noopener"
-                tabIndex={i >= showcaseSites.length ? -1 : 0}
-                className="block overflow-hidden rounded-xl border border-border bg-card shadow-card transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <div className="aspect-video overflow-hidden bg-muted">
-                  <img src={site.image} alt={site.name} loading="lazy" decoding="async" className="h-full w-full object-cover object-top" />
+              {site.url ? (
+                <a
+                  href={site.url}
+                  target="_blank"
+                  rel="noopener"
+                  tabIndex={i >= showcaseSites.length ? -1 : 0}
+                  className="block overflow-hidden rounded-xl border border-border bg-card shadow-card transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="aspect-video overflow-hidden bg-muted">
+                    <img src={site.image} alt={site.name} loading="lazy" decoding="async" className="h-full w-full object-cover object-top" />
+                  </div>
+                  <p className="px-4 py-3 text-sm font-medium text-card-foreground">{site.name}</p>
+                </a>
+              ) : (
+                <div className="block overflow-hidden rounded-xl border border-border bg-card shadow-card">
+                  <div className="aspect-video overflow-hidden bg-muted">
+                    <img src={site.image} alt={site.name} loading="lazy" decoding="async" className="h-full w-full object-cover object-top" />
+                  </div>
+                  <p className="px-4 py-3 text-sm font-medium text-card-foreground">{site.name}</p>
                 </div>
-                <p className="px-4 py-3 text-sm font-medium text-card-foreground">{site.name}</p>
-              </a>
+              )}
             </li>
           ))}
         </ul>
