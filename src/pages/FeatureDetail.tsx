@@ -1,3 +1,4 @@
+import NotFound from '@/pages/NotFound';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Star, TrendingUp, HelpCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -25,18 +26,7 @@ const FeatureDetail = () => {
   const nameKey = `name${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'nameCs' | 'nameEn' | 'nameDe';
   const descKey = `desc${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as 'descCs' | 'descEn' | 'descDe';
 
-  if (!feature || !detail) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="container mx-auto px-4 py-24 text-center">
-          <h1 className="text-2xl font-bold mb-4">Feature not found</h1>
-          <Link to="/calculator"><Button><ArrowLeft className="w-4 h-4 mr-2" /> Back to Calculator</Button></Link>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  if (!feature || !detail) return <NotFound />;
 
   const detailsKey = `details${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as keyof typeof detail;
   const benefitsKey = `benefits${lang.charAt(0).toUpperCase()}${lang.slice(1)}` as keyof typeof detail;

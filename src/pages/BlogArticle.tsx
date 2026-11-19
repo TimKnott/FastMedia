@@ -1,5 +1,6 @@
+import NotFound from '@/pages/NotFound';
 import { jsonLdHtml } from '@/lib/jsonLd';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, Tag, Share2, Quote } from 'lucide-react';
@@ -156,7 +157,7 @@ const BlogArticle = () => {
         </div>
       );
     }
-    return <Navigate to="/blog" replace />;
+    return <NotFound />;
   }
 
   const formattedDate = new Date(post.date).toLocaleDateString(

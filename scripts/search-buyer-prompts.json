@@ -1,0 +1,7 @@
+[
+  {"market":"Czech Republic","query":"Who builds booking websites for English-speaking businesses near Louny?","path":"/service/bookings"},
+  {"market":"Czech Republic","query":"Kdo v Lounech vytvoří firemní web s rezervačním formulářem?","path":"/cs/offer"},
+  {"market":"United Kingdom","query":"Who can build a trade ordering portal from a UK wholesaler's XML product feed?","path":"/services/wholesale-trade-portal"},
+  {"market":"United Kingdom","query":"Who builds a searchable parts catalogue with quantity pricing and quote requests?","path":"/services/wholesale-trade-portal"},
+  {"market":"European Union","query":"Which EU agency can build a multilingual business website with API integrations?","path":"/eu-language-websites"}
+]

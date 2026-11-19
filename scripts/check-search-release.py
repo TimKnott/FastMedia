@@ -1,4 +1,5 @@
 """Check both production sitemap exports after prerender. Pass --live to test the host too."""
+import json
 import sys
 import uuid
 from html.parser import HTMLParser
@@ -42,6 +43,10 @@ for url in sorted(urls):
         issues.append(f'{path}: wrong canonical {head.canonicals}')
     if any('noindex' in directive for directive in head.directives) or not robots.can_fetch('Googlebot', url):
         issues.append(f'{path}: sitemap advertises an excluded page')
+
+for prompt in json.loads(Path('scripts/search-buyer-prompts.json').read_text()):
+    if origin + prompt['path'] not in urls:
+        issues.append(f"Missing buyer landing page: {prompt['path']}")
 
 if '--live' in sys.argv:
     class NoRedirect(request.HTTPRedirectHandler):
