@@ -5,7 +5,6 @@ import jitty from "@/assets/showcase/jitty.jpg.asset.json";
 import minibric from "@/assets/showcase/minibric.jpg.asset.json";
 import classifieds from "@/assets/showcase/classifieds.jpg.asset.json";
 const telceImage = "/images/telce-indoor-arena.svg";
-import growthreport from "@/assets/showcase/growthreport.jpg.asset.json";
 
 export const SHOWCASE_HUB_URL = "https://myname.co.uk";
 
@@ -25,5 +24,4 @@ export const showcaseSites: ShowcaseSite[] = [
   { name: "MiniBRIC Connect", image: minibric.url, url: "https://minibrick-connect-africa.lovable.app" },
   { name: "AI classifieds", image: classifieds.url, url: "https://aiclassifiedseu.lovable.app" },
   { name: "Sportovní stáj Telce — koncept", image: telceImage, url: "https://stable-heart-of-nature.lovable.app" },
-  { name: "Growth Report Pro", image: growthreport.url, url: "https://emerald-edge-advisor.lovable.app" },
 ];
