@@ -57,6 +57,129 @@ const jittySections = [
   ]
 ];
 
+const teacherChapters = [
+  [
+    "Practice between lessons",
+    [
+      "Word Match",
+      "Give vocabulary a time limit",
+      "The learner chooses a level from A1 to C2 and types answers against the clock. Time, score and streak give immediate feedback. A teacher could use a short round as a warm-up, then ask the learner to use three of the words in conversation.",
+      "Choose a level|Play a timed round|Review the vocabulary"
+    ],
+    [
+      "Idiom of the day",
+      "Bring a phrase to class",
+      "A learner can save an idiom for later or take it into booking. The booking notes can arrive with the expression and its meaning already filled in. That gives the teacher a specific starting point for the next lesson.",
+      "Discover an expression|Save it for later|Bring it into booking"
+    ]
+  ],
+  [
+    "Plan and build a lesson",
+    [
+      "Teacher workspace",
+      "Start with a teaching brief",
+      "Enter the CEFR level, target language, duration and a description. For example, a B1 airport lesson can ask for check-in vocabulary and a role-play. The generation function uses that brief to produce teaching material for the teacher to review.",
+      "Set the level|Describe the situation|Choose a duration"
+    ],
+    [
+      "Lesson material",
+      "Decide how to practise",
+      "The builder organises objectives, a warm-up, vocabulary and comprehension questions. The teacher can request matching or gap-fill activities, an end quiz and images. Homework gives the learner another opportunity to use the language after class.",
+      "Warm-up and vocabulary|Practice and quiz|Homework"
+    ]
+  ],
+  [
+    "Run the teaching calendar",
+    [
+      "Booking desk",
+      "Prepare for the next session",
+      "The teacher sees the service, lesson time, price and level together in the bookings view. A level carried over from the test can guide the opening exercise. The learner-facing calendar and the teacher's booking desk draw on the same booking records.",
+      "Review the appointment|Check the level|Plan the opening task"
+    ],
+    [
+      "Attendance",
+      "Record what happened",
+      "Attendance options include scheduled, completed, no-show and cancelled. Recording the outcome helps distinguish a lesson that actually took place from a time that was reserved. Booking status and attendance are shown separately in the teacher's view.",
+      "Scheduled|Completed or missed|Review the record"
+    ]
+  ],
+  [
+    "Follow a learner’s progress",
+    [
+      "Teacher review",
+      "Combine evidence with judgement",
+      "The progress view brings the current CEFR level, last test and lesson count together. After listening to a learner speak, the teacher can update the level and add a short note visible to the learner. The update also creates a progress event.",
+      "Review test evidence|Set the current level|Explain the decision"
+    ],
+    [
+      "Student account",
+      "Give the learner continuity",
+      "My Lessons gathers completed learning from lesson and course records. The wishlist holds saved idioms and lessons. A teacher can ask a returning learner to pick one saved expression and use it to describe something that happened that week.",
+      "Revisit completed work|Open saved material|Choose a discussion topic"
+    ]
+  ],
+  [
+    "Conversations and follow-up",
+    [
+      "Messages",
+      "Keep a conversation together",
+      "The teacher selects a conversation and replies from the messages inbox. The implementation stores threads and their messages separately, so replies can be read in context. A practical use is a learner asking about homework between two appointments.",
+      "Open the thread|Read the question|Reply in context"
+    ],
+    [
+      "Teaching operations",
+      "Give follow-up work an owner",
+      "The Kanban board lets staff assign a card, set its priority, add notes and move it between columns. For example, a teacher can assign preparation of a revision activity, then move the card as the work progresses.",
+      "Create a task|Assign responsibility|Move the card"
+    ]
+  ],
+  [
+    "Offer additional language services",
+    [
+      "Interpretation",
+      "Estimate the time required",
+      "The booking widget also handles interpretation. A character count suggests a duration in hours. The availability check then uses that duration, allowing a longer language-service appointment to fit alongside ordinary English lessons.",
+      "Enter character count|Estimate hours|Find a suitable interval"
+    ],
+    [
+      "Language jobs",
+      "Turn an enquiry into a quote",
+      "The teacher can review a translation or interpretation request, enter a price in Czech crowns, set a delivery date and add client-facing notes. Job status tracks the request through delivery. This gives language-service work its own workflow alongside teaching.",
+      "Review the request|Set price and delivery|Track the job"
+    ]
+  ],
+  [
+    "Maintain the public website",
+    [
+      "Content management",
+      "Update a section in place",
+      "The editor groups content blocks by page and section. Short text, formatted copy and image URLs serve different purposes. Editors can preview a block and control publication, making it practical to revise a lesson description or homepage headline.",
+      "Choose the section|Edit and preview|Publish the block"
+    ],
+    [
+      "Audience management",
+      "Understand subscriber records",
+      "The newsletter workspace shows signup date, source, language and status. A filter helps an operator locate a subscriber or review where signups came from. This is a separate activity from a student's lesson history or private messages.",
+      "Review signup source|Check language and status|Manage the record"
+    ]
+  ],
+  [
+    "How the platform fits together",
+    [
+      "Application architecture",
+      "From screen to stored record",
+      "React handles the interactive screens. Supabase supplies database queries and server functions. In booking, the screen proposes starts that fit the duration and the server checks for conflicts at submission. In placement, the server receives the answer history and requests the next question.",
+      "React interface|Supabase function|Database record"
+    ],
+    [
+      "Teacher reporting",
+      "See where interest becomes action",
+      "The analytics view brings pageviews, signups and bookings together, with separate measures for test attempts and lesson completions in the underlying queries. A teacher can use those signals to decide which part of the journey deserves closer attention.",
+      "Website visits|Learning activity|Bookings and completions"
+    ]
+  ]
+] as const;
+
 async function buildJittyPdf() {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
   const font = await useUnicodeFont(doc);
@@ -64,7 +187,7 @@ async function buildJittyPdf() {
   if (shots.some(shot => !shot)) throw new Error('Website screenshots could not be loaded');
   const width = doc.internal.pageSize.getWidth();
   const centre = width / 2;
-  for (let page = 0; page < 2; page++) {
+  for (let page = 0; page < 2 + teacherChapters.length; page++) {
     if (page) doc.addPage();
     doc.setFillColor(249,247,242);
     doc.rect(0,0,width,596,'F');
@@ -76,11 +199,13 @@ async function buildJittyPdf() {
     doc.text('FASTMEDIA.PRO   /   BUSINESS IN A BOX',32,28);
     doc.setTextColor(255);
     doc.setFontSize(25);
-    doc.text(page ? 'From assessment to appointment' : 'English Ride With Jitty',32,66);
+    doc.text(page >= 2 ? teacherChapters[page-2][0] : page ? 'From assessment to appointment' : 'English Ride With Jitty',32,66);
     const start = page * 2;
     for (let k = 0; k < 2; k++) {
       const i = start + k;
-      const [label, title, body] = jittySections[i];
+      const chapter = page >= 2 ? teacherChapters[page-2] : undefined;
+      const section = chapter ? (k === 0 ? chapter[1] : chapter[2]) : jittySections[i];
+      const [label, title, body] = section;
       const shot = shots[i]!;
       const top = 115 + k * 222;
       const imageX = k ? centre + 34 : 32;
@@ -93,6 +218,23 @@ async function buildJittyPdf() {
       doc.setFontSize(10);
       doc.setTextColor(255);
       doc.text(String(i+1),centre,top+76,{align:'center'});
+      if (chapter) {
+        doc.setTextColor(...MUTED);
+        doc.setFont(font,'bold');
+        doc.setFontSize(9);
+        doc.text('WORKFLOW  /  '+label.toUpperCase(),imageX,top+24);
+        section[3].split('|').forEach((step, index) => {
+          const y = top + 38 + index * 44;
+          doc.setFillColor(229,237,233);
+          doc.roundedRect(imageX,y,boxW,36,4,4,'F');
+          doc.setTextColor(...MUTED);
+          doc.setFontSize(10);
+          doc.text(String(index+1).padStart(2,'0'),imageX+12,y+22);
+          doc.setTextColor(...NAVY);
+          doc.setFontSize(13);
+          doc.text(step,imageX+46,y+22);
+        });
+      } else {
       const scale = Math.min(boxW/shot.w,175/shot.h);
       const w = shot.w*scale, h = shot.h*scale;
       const x = imageX + (boxW-w)/2, y = top + (175-h)/2;
@@ -102,6 +244,7 @@ async function buildJittyPdf() {
       doc.setTextColor(...MUTED);
       doc.setFontSize(9);
       doc.text(label+'  /  English Ride With Jitty',imageX,top+193);
+      }
       doc.setFont(font,'bold');
       doc.setFontSize(10);
       doc.text(label.toUpperCase(),textX,top+26);
@@ -109,13 +252,13 @@ async function buildJittyPdf() {
       doc.setTextColor(...NAVY);
       doc.text(title,textX,top+58);
       doc.setFont(font,'normal');
-      doc.setFontSize(12);
-      doc.text(doc.splitTextToSize(body,boxW),textX,top+84,{lineHeightFactor:1.45});
+      doc.setFontSize(11.5);
+      doc.text(doc.splitTextToSize(body,boxW),textX,top+84,{lineHeightFactor:1.32});
     }
     doc.setFontSize(9);
     doc.setTextColor(...MUTED);
     doc.text('FastMedia.Pro  /  support@fastmedia.pro',32,577);
-    doc.text(String(page+1)+' / 2',width-32,577,{align:'right'});
+    doc.text(String(page+1)+' / '+String(2+teacherChapters.length),width-32,577,{align:'right'});
   }
   return doc;
 }
