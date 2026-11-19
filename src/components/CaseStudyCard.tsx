@@ -21,13 +21,14 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
   const isEnglish = language !== 'cs';
   const [busy, setBusy] = useState(false);
 
+  const isJitty = /jitty/i.test(item.slug + ' ' + item.brand);
   const openPdf = async (download: boolean) => {
     // Open the tab synchronously inside the click so popup blockers allow it.
     const tab = download ? null : window.open('', '_blank');
     if (tab) tab.document.title = item.brand;
     setBusy(true);
     try {
-      const url = await resolvePdfUrl(item);
+      const url = isJitty ? '/case-studies/english-ride-with-jitty.pdf' : await resolvePdfUrl(item);
       let blobUrl: string;
       if (url) {
         if (!download && tab) { tab.location.href = url; return; }
@@ -59,6 +60,11 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
 
   return (
     <Card className="overflow-hidden flex flex-col h-full">
+      {isJitty && !compact && <header className="bg-slate-900 px-5 py-5 text-white">
+        <p className="text-sm font-medium text-orange-200">Teaching business in a box</p>
+        <h3 className="mt-1 text-2xl font-bold">{item.brand}</h3>
+        <p className="mt-2 text-sm">From an English level check to a lesson booked at the right time.</p>
+      </header>}
       {(item.thumbnail_url || item.gallery_images[0]?.url) && (
         <div className={compact ? 'aspect-[16/10] overflow-hidden' : 'aspect-[16/9] overflow-hidden'}>
           <img
@@ -73,7 +79,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
         {caseField(item, 'tag', language) && (
           <Badge variant="secondary" className="w-fit">{caseField(item, 'tag', language)}</Badge>
         )}
-        <h3 className={compact ? 'text-lg font-bold' : 'text-xl font-bold'}>{item.brand}</h3>
+        {(!isJitty || compact) && <h3 className={compact ? 'text-lg font-bold' : 'text-xl font-bold'}>{item.brand}</h3>
         {language === 'de' && <p className="text-xs text-muted-foreground">Projektbeschreibung und PDF in der verfügbaren Originalsprache.</p>}
         <p className="text-sm text-muted-foreground">{caseField(item, 'summary', language)}</p>
 
@@ -81,6 +87,10 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
           <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{caseField(item, 'body', language)}</p>
         )}
 
+        {isJitty && !compact && <dl className="grid gap-4 rounded-xl bg-muted p-4 sm:grid-cols-2">
+          <div><dt className="font-semibold">What's your English level?</dt><dd className="mt-1 text-sm">The test generates fresh questions and adjusts the difficulty after each answer. Learners receive an estimated A1–C2 level, an explanation and a route into booking.</dd></div>
+          <div><dt className="font-semibold">Which lesson times fit?</dt><dd className="mt-1 text-sm">Choose 30, 45 or 60 minutes. The calendar filters starts by the full lesson length and checks availability again when the learner submits.</dd></div>
+        </dl>}
         {!compact && item.gallery_images.length > 1 && (
           <CaseStudyGallery images={item.gallery_images} brand={item.brand} />
         )}
