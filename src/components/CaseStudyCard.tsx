@@ -28,7 +28,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
     if (tab) tab.document.title = item.brand;
     setBusy(true);
     try {
-      const url = isJitty ? '/case-studies/english-ride-with-jitty.pdf' : await resolvePdfUrl(item);
+      const url = isJitty ? null : await resolvePdfUrl(item);
       let blobUrl: string;
       if (url) {
         if (!download && tab) { tab.location.href = url; return; }
@@ -53,6 +53,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
       setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
     } catch {
       tab?.close();
+      if (isJitty) window.alert('The case study could not load. Please try again.');
     } finally {
       setBusy(false);
     }
