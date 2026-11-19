@@ -17,6 +17,8 @@ const CaseStudyGallery = ({ images, brand, max }: Props) => {
   if (!images.length) return null;
   const shown = max ? images.slice(0, max) : images;
   const current = index !== null ? images[index] : null;
+  const imageLabel = (image: CaseStudyImage, position: number) =>
+    image.alt?.trim() || image.caption?.trim() || `${brand} website screenshot ${position + 1}`;
   const step = (d: number) =>
     setIndex((i) => (i === null ? i : (i + d + images.length) % images.length));
 
@@ -29,9 +31,9 @@ const CaseStudyGallery = ({ images, brand, max }: Props) => {
               type="button"
               onClick={() => setIndex(i)}
               className="block w-full aspect-[4/3] overflow-hidden rounded-md border border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              aria-label={`View screenshot: ${img.alt}`}
+              aria-label={`View screenshot: ${imageLabel(img, i)}`}
             >
-              <img src={img.url} alt={img.alt} loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
+              <img src={img.url} alt={imageLabel(img, i)} loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
             </button>
           </li>
         ))}
@@ -45,7 +47,7 @@ const CaseStudyGallery = ({ images, brand, max }: Props) => {
                 {brand} — {index! + 1} / {images.length}
               </DialogTitle>
               <DialogDescription>{current.caption || current.alt}</DialogDescription>
-              <img src={current.url} alt={current.alt} className="w-full max-h-[75vh] object-contain rounded-md bg-muted" />
+              <img src={current.url} alt={imageLabel(current, index!)} className="w-full max-h-[75vh] object-contain rounded-md bg-muted" />
               {images.length > 1 && (
                 <div className="flex justify-between">
                   <Button variant="outline" size="sm" onClick={() => step(-1)}>

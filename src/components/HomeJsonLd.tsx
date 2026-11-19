@@ -1,4 +1,4 @@
-import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '@/lib/orgSchema';
+import { orgJsonLd } from '@/lib/orgSchema';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAllSiteSettings } from '@/hooks/useSiteSettings';
 
@@ -15,25 +15,7 @@ const HomeJsonLd = () => {
     },
   }));
 
-  const organizationSchema = { ...{
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "@id": "https://www.fastmedia.pro/#organization",
-    name: "FastMedia.Pro",
-    url: "https://www.fastmedia.pro/",
-    logo: "https://www.fastmedia.pro/favicon.jpeg",
-    image: "https://www.fastmedia.pro/pwa-512x512.png",
-    email: "support@fastmedia.pro",
-    telephone: "+420797864432",
-    founder: { "@type": "Person", name: "Timothy Knott" },
-    taxID: "17308551",
-    identifier: { "@type": "PropertyValue", propertyID: "IČO", value: "17308551" },
-    address: { "@type": "PostalAddress", addressLocality: "Louny", postalCode: "440 01", addressRegion: "Ústecký kraj", addressCountry: "CZ" },
-    areaServed: ORG_AREA_SERVED,
-  subjectOf: ORG_PORTFOLIO,
-    knowsLanguage: ["bg","hr","cs","da","nl","en","et","fi","fr","de","el","hu","ga","it","lv","lt","mt","pl","pt","ro","sk","sl","es","sv"],
-    contactPoint: { "@type": "ContactPoint", telephone: "+420797864432", email: "support@fastmedia.pro", contactType: "sales", availableLanguage: ["cs", "en"] },
-  }, description: t('hero.subtitle') };
+  const organizationSchema = { ...orgJsonLd, description: t('hero.subtitle') };
 
   const faqSchema = {
     '@context': 'https://schema.org',

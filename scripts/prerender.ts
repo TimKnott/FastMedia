@@ -7,7 +7,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from 'node:url';
-import { getAllRoutes, type RouteSeo } from "./seo-routes.ts";
+import { getAllRoutes, orgJsonLd, type RouteSeo } from "./seo-routes.ts";
 import { buildCrawlBody, applyToTemplate, canonicalPath, breadcrumbSchema, isIndexablePath } from "./seo-html.ts";
 
 const BASE_URL = "https://www.fastmedia.pro";
@@ -46,8 +46,9 @@ export function buildHead(route: RouteSeo): string {
     ...(route.alternates ?? []).map(alternate => `<link data-rh="true" rel="alternate" hreflang="${escAttr(alternate.language)}" href="${BASE_URL}${escAttr(alternate.path)}" />`),
   ];
   if (route.path !== "/") lines.push(`<script data-seo-static type="application/ld+json">${JSON.stringify(breadcrumbSchema(route)).replace(/</g, "\\u003c")}</script>`);
-  if (route.jsonLd) {
-    const items = Array.isArray(route.jsonLd) ? route.jsonLd : [route.jsonLd];
+  {
+    const items = route.jsonLd ? [route.jsonLd].flat() : [];
+    if (!route.noindex && !items.some(item => item["@id"] === orgJsonLd["@id"])) items.push(orgJsonLd);
     for (const item of items) {
       lines.push(`<script data-seo-static type="application/ld+json">${JSON.stringify(item).replace(/</g, "\\u003c")}</script>`);
     }
@@ -72,7 +73,6 @@ function build404(template: string): string {
     `<meta data-rh="true" name="robots" content="noindex, nofollow" />`,
     `<meta data-rh="true" name="prerender-status-code" content="404" />`,
     `<meta http-equiv="Status" content="404 Not Found" />`,
-    `<link data-rh="true" rel="canonical" href="${BASE_URL}/404" />`,
   ].join("\n    ");
   return applyToTemplate(template, head, "");
 }

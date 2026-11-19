@@ -1,4 +1,4 @@
-import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '@/lib/orgSchema';
+import { orgJsonLd } from '@/lib/orgSchema';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -19,24 +19,7 @@ const About = () => {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     url: 'https://www.fastmedia.pro/about',
-    mainEntity: {
-      '@type': 'ProfessionalService',
-      name: 'FastMedia.Pro',
-      url: 'https://www.fastmedia.pro',
-      email: 'support@fastmedia.pro',
-      telephone: '+420797864432',
-      founder: { '@type': 'Person', name: 'Timothy Knott', jobTitle: 'Founder' },
-      identifier: { '@type': 'PropertyValue', propertyID: 'IČO', value: '17308551' },
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Louny',
-        postalCode: '440 01',
-        addressRegion: 'Ústecký kraj',
-        addressCountry: 'CZ',
-      },
-      areaServed: ORG_AREA_SERVED,
-      subjectOf: ORG_PORTFOLIO,
-    },
+    mainEntity: orgJsonLd,
   };
 
   const facts = [

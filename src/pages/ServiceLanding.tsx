@@ -1,4 +1,5 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import NotFound from '@/pages/NotFound';
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight, Bot, CalendarCheck, CheckCircle2, Gauge, Globe2, Megaphone, ShieldCheck, Sparkles,
@@ -48,7 +49,7 @@ const ServiceLanding = () => {
   const lang = language === 'en' ? 'en' : 'cs';
   const service = getServiceLanding(slug);
 
-  if (!service) return <Navigate to="/" replace />;
+  if (!service) return <NotFound />;
 
   const c = service[lang];
   const t = ui[lang];
@@ -188,6 +189,7 @@ const ServiceLanding = () => {
         </section>
       </main>
 
+      <div className="container mx-auto px-4 py-6"><Link lang="en" className="underline" to="/services/wholesale-trade-portal">Wholesale trade portals and product feeds (English)</Link></div>
       <Footer />
     </div>
   );

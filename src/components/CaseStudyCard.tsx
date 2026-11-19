@@ -80,7 +80,7 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
         {caseField(item, 'tag', language) && (
           <Badge variant="secondary" className="w-fit">{caseField(item, 'tag', language)}</Badge>
         )}
-        {(!isJitty || compact) && <h3 className={compact ? 'text-lg font-bold' : 'text-xl font-bold'}>{item.brand}</h3>
+        {(!isJitty || compact) && <h3 className={compact ? 'text-lg font-bold' : 'text-xl font-bold'}>{item.brand}</h3>}
         {language === 'de' && <p className="text-xs text-muted-foreground">Projektbeschreibung und PDF in der verfügbaren Originalsprache.</p>}
         <p className="text-sm text-muted-foreground">{caseField(item, 'summary', language)}</p>
 

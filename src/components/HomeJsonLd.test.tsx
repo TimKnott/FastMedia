@@ -15,7 +15,7 @@ describe('homepage structured data', () => {
     const schemas = [...html.matchAll(/<script[^>]*>(.*?)<\/script>/g)]
       .map(match => JSON.parse(match[1]));
     expect(schemas.map(schema => schema['@type'])).toEqual([
-      'ProfessionalService', 'WebSite', 'FAQPage', 'WebPage',
+      ['Organization', 'ProfessionalService'], 'WebSite', 'FAQPage', 'WebPage',
     ]);
     expect(JSON.stringify(schemas)).not.toContain('"@type":"Product"');
     expect(JSON.stringify(schemas)).not.toContain('"@type":"Offer"');

@@ -22,7 +22,6 @@ const NotFound = () => {
         <meta name="robots" content="noindex, nofollow" />
         <meta name="prerender-status-code" content="404" />
         <meta httpEquiv="Status" content="404 Not Found" />
-        <link rel="canonical" href="https://www.fastmedia.pro/404" />
       </Helmet>
       <Navbar />
       <div className="flex flex-1 items-center justify-center">

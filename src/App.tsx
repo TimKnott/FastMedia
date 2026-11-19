@@ -63,6 +63,7 @@ const Reviews = lazy(() => import("./pages/Reviews"));
 const AdminReviews = lazy(() => import("./pages/admin/AdminReviews"));
 const Courses = lazy(() => import("./pages/Courses"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
+const WholesalePortal = lazy(() => import("./pages/WholesalePortal"));
 const ServiceLanding = lazy(() => import("./pages/ServiceLanding"));
 const IndustryLanding = lazy(() => import("./pages/IndustryLanding"));
 const EquestrianLanding = lazy(() => import("./pages/EquestrianLanding"));
@@ -273,6 +274,7 @@ const App = () => (
                     <Route path="/reviews" element={<Reviews />} />
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/courses/:slug" element={<CourseDetail />} />
+                    <Route path="/services/wholesale-trade-portal" element={<WholesalePortal />} />
                     <Route path="/service/:slug" element={<ServiceLanding />} />
                     <Route path="/websites-for/:slug" element={<IndustryLanding />} />
                     <Route path="/equestrian" element={<EquestrianLanding />} />

@@ -1,5 +1,6 @@
+import NotFound from '@/pages/NotFound';
 import { useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCustomDemo } from '@/hooks/useCustomDemos';
 import { registerCustomTradeImages } from '@/data/tradeImages';
@@ -23,7 +24,7 @@ const CustomDemoPage = () => {
   }, [demo]);
 
   if (loading) return <PageLoader />;
-  if (!demo) return <Navigate to="/" replace />;
+  if (!demo) return <NotFound />;
 
   return (
     <DemoLayout

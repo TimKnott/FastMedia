@@ -1,4 +1,5 @@
-import { useParams, Link, useNavigate, Navigate } from 'react-router-dom';
+import NotFound from '@/pages/NotFound';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Check, Star, Sparkles, ShieldCheck, Zap, MessageCircle, ShoppingCart, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -234,7 +235,7 @@ const PackageDetail = () => {
   const sourcePkg = slug ? PACKAGES[slug] : undefined;
   const pkg = sourcePkg && !en ? { ...sourcePkg, ...CZECH_PACKAGES[sourcePkg.slug] } as PackageData : sourcePkg;
 
-  if (!pkg) return <Navigate to="/" replace />;
+  if (!pkg) return <NotFound />;
 
   const buyNow = () => navigate(`/calculator?package=${pkg.slug}`);
   const bookConsult = () => navigate('/consultant/tereza');

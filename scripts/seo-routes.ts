@@ -1,6 +1,7 @@
+import { wholesalePortal } from '../src/data/wholesalePortal.ts';
 import { seoTitleOverride } from '../src/data/seoTitleOverrides.ts';
 import { fitTitle } from '../src/lib/seoTitle.ts';
-import { ORG_AREA_SERVED, ORG_PORTFOLIO } from '../src/lib/orgSchema.ts';
+import { orgJsonLd } from '../src/lib/orgSchema.ts';
 // Single source of truth for routes the prerender script writes per-page HTML for.
 // Dynamic routes (blog articles, legal docs, custom demos) are fetched at
 // build time via the anon Supabase key.
@@ -39,27 +40,10 @@ export interface RouteSeo {
 const BRAND = "FastMedia.Pro";
 const OG_IMG = "https://media.base44.com/images/public/69df8fa5a94d72ab00654daf/ced7a393f_fastmedia-social-approved.jpg";
 
-export const orgJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "@id": "https://www.fastmedia.pro/#organization",
-  name: "FastMedia.Pro",
-  url: "https://www.fastmedia.pro/",
-  logo: "https://www.fastmedia.pro/favicon.jpeg",
-  image: "https://www.fastmedia.pro/pwa-512x512.png",
-  email: "support@fastmedia.pro",
-  telephone: "+420797864432",
-  founder: { "@type": "Person", name: "Timothy Knott" },
-  taxID: "17308551",
-  identifier: { "@type": "PropertyValue", propertyID: "IČO", value: "17308551" },
-  address: { "@type": "PostalAddress", addressLocality: "Louny", postalCode: "440 01", addressRegion: "Ústecký kraj", addressCountry: "CZ" },
-  areaServed: ORG_AREA_SERVED,
-  subjectOf: ORG_PORTFOLIO,
-  knowsLanguage: ["bg","hr","cs","da","nl","en","et","fi","fr","de","el","hu","ga","it","lv","lt","mt","pl","pt","ro","sk","sl","es","sv"],
-  contactPoint: { "@type": "ContactPoint", telephone: "+420797864432", email: "support@fastmedia.pro", contactType: "sales", availableLanguage: ["cs", "en"] },
-};
+export { orgJsonLd };
 
 const STATIC_ROUTES: RouteSeo[] = [
+  wholesalePortal,
   {
     path: '/equestrian', language: 'cs-CZ', title: 'Weby pro stáje a jezdecké podniky | FastMedia.Pro',
     description: 'Weby na míru pro stáje, jezdecké školy a ubytování. Ilustrativní rezervace a kapacity, plánování funkcí a nezávazná poptávka.',
@@ -120,6 +104,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/inquiry",
+    contentBlocks: ["Tell us who will use your website and what they need to do. A booking request, a product enquiry and a trade order each need different information from the customer.", "For an integration, include the name of your existing system and describe where the enquiry should go. A sample catalogue or public API documentation can help define the work. Keep passwords and customer records out of the enquiry."],
     title: "Start your project — Get a tailored proposal | FastMedia.Pro",
     description:
       "Tell us about your business and we'll send a detailed proposal, timeline and fixed quote within 24 hours.",
@@ -129,6 +114,7 @@ const STATIC_ROUTES: RouteSeo[] = [
   },
   {
     path: "/about",
+    contentBlocks: ["Timothy Knott runs FastMedia.Pro from the Louny district. Businesses can discuss their project in English or Czech, meet locally or work with us remotely.", "The case-study collection shows how individual website features work. Look for the project description alongside each example to distinguish a demonstration from work delivered for a client."],
     title: "About FastMedia.Pro — Timothy Knott, Louny, Czech Republic",
     description:
       "FastMedia.Pro is run by Timothy Knott (IČO 17308551) from Louny, Czech Republic, serving businesses across the Czech Republic and the EU.",
@@ -415,7 +401,7 @@ function featureRoute(id: string): RouteSeo | null {
   const details = detail.detailsEn;
   const shortDesc = `${desc}. ${details.split(".")[0]}.`.slice(0, 158);
   const benefits = detail.benefitsEn.slice(0, 4);
-  const firstFaq = detail.faqEn[0];
+  const questions = detail.faqEn.map(({ q, a }) => `${q} ${a}`);
   return {
     path: `/feature/${id}`,
     title: `${name} — Website feature | FastMedia.Pro`,
@@ -428,9 +414,7 @@ function featureRoute(id: string): RouteSeo | null {
     contentBlocks: [
       details,
       `Key benefits: ${benefits.join("; ")}.`,
-      firstFaq
-        ? `${firstFaq.q} ${firstFaq.a}`
-        : `Add ${name.toLowerCase()} to your project through the FastMedia.Pro AI website calculator — you'll see a live one-off price and, where relevant, a monthly cost before you commit.`,
+      ...(questions.length ? questions : [`Add ${name.toLowerCase()} to your project through the FastMedia.Pro AI website calculator — you'll see a live one-off price and, where relevant, a monthly cost before you commit.`]),
       `Pricing starts at ${feat.oneTimePrice.toLocaleString("en-GB")} CZK one-off${feat.monthlyPrice ? ` plus ${feat.monthlyPrice.toLocaleString("en-GB")} CZK per month` : ""}, delivered by FastMedia.Pro in about ${feat.laborHours} hours of build time. Open the calculator to add this feature to your quote, or contact our team at support@fastmedia.pro or +420 797 864 432 to discuss custom requirements.`,
     ],
     jsonLd: {
@@ -488,7 +472,7 @@ export async function getAllRoutes(): Promise<RouteSeo[]> {
     changefreq: "monthly",
     priority: "0.8",
     h1: i.en.headline,
-    contentBlocks: [i.en.intro, `Features: ${i.en.features.join("; ")}.`, ...i.en.faq.map((f) => `${f.q} ${f.a}`)],
+    contentBlocks: [i.en.intro, ...i.en.problems, `Features: ${i.en.features.join("; ")}.`, ...i.en.faq.map((f) => `${f.q} ${f.a}`)],
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "FAQPage",

@@ -9,7 +9,7 @@ export function escapeHtml(value: string): string {
 /** Public content only: never export account, authentication or parameter URLs. */
 export function isIndexablePath(path: string): boolean {
   return path.startsWith('/') && !/[?#]|undefined/.test(path) &&
-    !/^\/(admin|portal|account|auth|oauth|login|signup|logout|reset-password|checkout|grant-portal|showcase|404|not-found|api|lovable)(\/|$)/.test(path);
+    !/^\/(admin|portal|account|auth|oauth|login|signup|logout|reset-password|checkout|grant-portal|quote-assessment|showcase|404|not-found|api|lovable)(\/|$)/.test(path);
 }
 
 export function canonicalPath(path: string): string {
@@ -39,7 +39,7 @@ export function buildCrawlBody(route: RouteSeo, allRoutes: RouteSeo[]): string {
     if (route.path.startsWith('/demo/')) return r.path.startsWith('/demo/');
     return ['/', '/calculator', '/cs/offer', '/cs/contact', '/about', '/case-studies', '/blog', '/courses', '/inquiry'].includes(r.path) || (route.path.startsWith('/l/') && r.path.startsWith('/l/'));
   });
-  const paragraphs = route.contentBlocks?.length ? route.contentBlocks : [route.description];
+  const paragraphs = route.contentBlocks?.length ? route.contentBlocks : [];
   return `<main data-prerender="fallback" class="container mx-auto max-w-4xl px-6 py-12 bg-background text-foreground">
     <nav aria-label="${cs ? 'Drobečková navigace' : de ? 'Brotkrümelnavigation' : 'Breadcrumb'}"><a href="/">FastMedia.Pro</a> / ${escapeHtml(route.h1 ?? route.title)}</nav>
     <h1 class="font-display text-3xl font-bold my-6">${escapeHtml(route.h1 ?? route.title)}</h1>

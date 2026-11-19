@@ -1,4 +1,5 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import NotFound from '@/pages/NotFound';
+import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ArrowRight, CheckCircle2, Phone, Mail, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,7 @@ const IndustryLanding = () => {
   const { language } = useLanguage();
   const lang = language === 'en' ? 'en' : 'cs';
   const page = getIndustryLanding(slug);
-  if (!page) return <Navigate to="/" replace />;
+  if (!page) return <NotFound />;
   const c = page[lang];
   const t = ui[lang];
   const calcHref = page.trade ? `/calculator?trade=${page.trade}` : '/calculator';
