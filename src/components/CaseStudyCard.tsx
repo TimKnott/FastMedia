@@ -22,6 +22,10 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
   const [busy, setBusy] = useState(false);
 
   const isJitty = /jitty/i.test(item.slug + ' ' + item.brand);
+  // Same-origin published PDFs support native open, save and copy-link actions.
+  const siteOrigin = 'https://www.fastmedia.pro';
+  const publicPdf = !item.pdf_path && item.pdf_url?.startsWith(siteOrigin + '/case-studies/')
+    && item.pdf_url.endsWith('.pdf') ? item.pdf_url.slice(siteOrigin.length) : null;
   const openPdf = async (download: boolean) => {
     // Open the tab synchronously inside the click so popup blockers allow it.
     const tab = download ? null : window.open('', '_blank');
@@ -117,14 +121,26 @@ const CaseStudyCard = ({ item, compact = false, canEdit = false, onEdit }: Props
               </a>
             </Button>
           )}
-          <Button size="sm" variant="default" disabled={busy} onClick={() => openPdf(false)}>
-            <FileText className="w-4 h-4" />
-            {language === 'de' ? 'PDF öffnen' : isEnglish ? 'Open PDF' : 'Otevřít PDF'}
-          </Button>
-          <Button size="sm" variant="outline" disabled={busy} onClick={() => openPdf(true)}>
-            <Download className="w-4 h-4" />
-            {language === 'de' ? 'Herunterladen' : isEnglish ? 'Download' : 'Stáhnout'}
-          </Button>
+          {([false, true] as const).map((download) => {
+            const label = download
+              ? language === 'de' ? 'Herunterladen' : isEnglish ? 'Download' : 'Stáhnout'
+              : language === 'de' ? 'PDF öffnen' : isEnglish ? 'Open PDF' : 'Otevřít PDF';
+            const Icon = download ? Download : FileText;
+            const content = <><Icon className="w-4 h-4" />{label}</>;
+            const variant = download ? 'outline' : 'default';
+            return publicPdf ? (
+              <Button key={label} size="sm" variant={variant} asChild>
+                <a href={publicPdf} download={download ? caseStudyPdfFilename(item) : undefined}
+                  target={download ? undefined : '_blank'} rel={download ? undefined : 'noopener noreferrer'}>
+                  {content}
+                </a>
+              </Button>
+            ) : (
+              <Button key={label} size="sm" variant={variant} disabled={busy} onClick={() => openPdf(download)}>
+                {content}
+              </Button>
+            );
+          })}
           {canEdit && (
             <Button size="sm" variant="ghost" onClick={() => onEdit?.(item)}>
               <Pencil className="w-4 h-4" />
