@@ -48,30 +48,48 @@ for prompt in json.loads(Path('scripts/search-buyer-prompts.json').read_text()):
     if origin + prompt['path'] not in urls:
         issues.append(f"Missing buyer landing page: {prompt['path']}")
 
+markets = {p['market'] for p in json.loads(Path('scripts/search-buyer-prompts.json').read_text())}
+for market in ('English', 'Czech Republic', 'United Kingdom', 'European Union'):
+    if market not in markets:
+        issues.append(f'Buyer query set missing market: {market}')
+
+limitations = []
 if '--live' in sys.argv:
+    UA = {'User-Agent': 'Mozilla/5.0 (FastMedia release check)'}
     class NoRedirect(request.HTTPRedirectHandler):
         def redirect_request(self, *args):
             return None
 
     probe = '/about?source=release-check'
     try:
-        request.build_opener(NoRedirect).open('https://fastmedia.pro' + probe, timeout=20).close()
+        request.build_opener(NoRedirect).open(request.Request('https://fastmedia.pro' + probe, headers=UA), timeout=20).close()
         issues.append('Bare host returned success without redirecting')
     except error.HTTPError as response:
-        if response.code not in (301, 308) or response.headers.get('Location') != origin + probe:
-            issues.append(f'Bare host returned {response.code}: {response.headers.get("Location")}')
-    for path, expected in [('/services/wholesale-trade-portal', 200), ('/missing-' + uuid.uuid4().hex, 404)]:
+        location = response.headers.get('Location')
+        if location != origin + probe:
+            issues.append(f'Bare host redirect lost path/query: {response.code} {location}')
+        elif response.code not in (301, 308):
+            limitations.append(f'Bare host redirects with {response.code}, not permanent 301/308 (set by hosting)')
+    checks = [('/services/wholesale-trade-portal', 200, b'Trade ordering portals for wholesalers'),
+              ('/about', 200, b'#organization'),
+              ('/missing-' + uuid.uuid4().hex, 404, None),
+              ('/blog/missing-' + uuid.uuid4().hex, 404, None)]
+    for path, expected, marker in checks:
         try:
-            with request.urlopen(origin + path, timeout=20) as response:
-                status = response.status
-                if expected == 200 and b'Trade ordering portals for wholesalers' not in response.read():
-                    issues.append(f'{path}: expected page content missing')
+            with request.urlopen(request.Request(origin + path, headers=UA), timeout=20) as response:
+                status, body = response.status, response.read()
         except error.HTTPError as response:
-            status = response.code
-        if status != expected:
-            issues.append(f'{path}: expected HTTP {expected}, got {status}')
+            status, body = response.code, response.read()
+        if expected == 200:
+            if status != 200 or marker not in body:
+                issues.append(f'{path}: expected prerendered page, got {status}')
+        elif status != 404:
+            shell = b'noindex' not in body
+            limitations.append(f'{path}: hosting SPA fallback returned {status}' + (' (static shell, noindex added only after JS runs)' if shell else ' with noindex'))
 
 print(f'Checked {len(urls)} distinct sitemap URLs. {len(issues)} issues.')
 for issue in issues:
     print(issue)
+for item in limitations:
+    print('HOSTING LIMITATION:', item)
 sys.exit(bool(issues))

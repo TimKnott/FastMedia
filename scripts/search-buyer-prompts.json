@@ -1,7 +1,14 @@
 [
-  {"market":"Czech Republic","query":"Who builds booking websites for English-speaking businesses near Louny?","path":"/service/bookings"},
+  {"market":"English","query":"Who builds a website with online booking for a small service business?","path":"/service/bookings"},
+  {"market":"English","query":"Web design agency that shows example demo websites for trades","path":"/demos"},
+  {"market":"English","query":"Website cost calculator for a small business site","path":"/calculator"},
   {"market":"Czech Republic","query":"Kdo v Lounech vytvoří firemní web s rezervačním formulářem?","path":"/cs/offer"},
+  {"market":"Czech Republic","query":"Who builds booking websites for English-speaking businesses near Louny?","path":"/service/bookings"},
+  {"market":"Czech Republic","query":"Kolik stojí webové stránky pro živnostníka?","path":"/calculator"},
   {"market":"United Kingdom","query":"Who can build a trade ordering portal from a UK wholesaler's XML product feed?","path":"/services/wholesale-trade-portal"},
   {"market":"United Kingdom","query":"Who builds a searchable parts catalogue with quantity pricing and quote requests?","path":"/services/wholesale-trade-portal"},
-  {"market":"European Union","query":"Which EU agency can build a multilingual business website with API integrations?","path":"/eu-language-websites"}
+  {"market":"United Kingdom","query":"Web developer case studies for small UK businesses","path":"/case-studies"},
+  {"market":"European Union","query":"Which EU agency can build a multilingual business website with API integrations?","path":"/eu-language-websites"},
+  {"market":"European Union","query":"EU grant funding for a small business website","path":"/eugrants"},
+  {"market":"European Union","query":"Request a website quote from a Czech web developer","path":"/quote-request"}
 ]
