@@ -1,0 +1,43 @@
+.fm-global-map { color: #eff6ff; background: #0d2038; }
+.fm-map-chart {
+  padding: clamp(12px, 1.6vw, 24px) 2% 0;
+  background: radial-gradient(ellipse at 48% 38%, #193e67 0%, #112e50 40%, #0b1c32 91%);
+}
+.fm-map-track, .fm-map-pulse { fill: none; stroke-linecap: round; }
+.fm-map-track { stroke: #7cc8fc; stroke-width: 1.6; opacity: .89; }
+.fm-map-pulse {
+  opacity: 0;
+  stroke: #ffe3bc;
+  stroke-width: 3.05;
+  stroke-dasharray: 6 115;
+  filter: drop-shadow(0 0 2px #ff9d55);
+  animation: fm-map-travel 14.4s linear infinite paused;
+}
+.fm-global-map[data-playing="true"] .fm-map-pulse { animation-play-state: running; }
+@keyframes fm-map-travel {
+  0% { stroke-dashoffset: 7; opacity: 0; }
+  3%, 20% { opacity: 1; }
+  24%, 100% { stroke-dashoffset: -101; opacity: 0; }
+}
+.fm-map-city { font-size: 15px; font-weight: 620; fill: #f3f8ff; stroke: #142e4b; stroke-width: 3.5px; stroke-linejoin: round; paint-order: stroke; }
+.fm-map-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 60px; padding: 8px 20px; border-top: 1px solid #344a61; background: #0d213a;
+}
+.fm-map-legend { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; font-size: .875rem; color: #d9e8f5; }
+.fm-map-legend span, .fm-map-button { display: inline-flex; align-items: center; gap: 8px; }
+.fm-map-key-home { width: 12px; height: 12px; border-radius: 50%; background: #ff996c; border: 1px solid #ffb98c; box-shadow: inset 0 0 0 3px #18314b; }
+.fm-map-key-route { width: 25px; border-top: 2px solid #80cdff; }
+.fm-map-button { border: 1px solid #657b93; border-radius: .5rem; padding: 0 .75rem; min-height: 44px; font-size: .875rem; font-weight: 550; }
+.fm-map-button:hover { background: #203d5a; }
+.fm-map-button:focus-visible { outline: 3px solid #ffb78f; outline-offset: 3px; }
+@media (max-width: 760px) {
+  .fm-map-chart { padding: 9px 0 0; }
+  .fm-map-footer { padding-inline: 12px; }
+}
+@media (max-width: 550px) {
+  .fm-map-legend { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .fm-map-city { font-size: 25px; }
+  .fm-map-origin { transform: translate(13px,-50px) scale(1.35); }
+  .fm-map-button { flex-shrink: 0; font-size: .8125rem; }
+}
