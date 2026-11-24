@@ -1,26 +1,23 @@
-# FastMedia Web Development with Inovation
+# FastMedia.Pro
 
-Make a website called www.FastMedia.Pro The website should showcase lots of different fully functioning styles of websites It's a website resellers website so make sure you add all of the trades and all of the other types of services for example plumbing electrical building roofing stud walls working with wells warming up solar panels heat pumps painting decorating inside and outside Make sure you make sure all of the sites work to an extent so somebody can click on it and realise that this could be their website by exploring the sample It's a lot of programming but I want you to do something extensive so I don't need to add more and more features just do the whole thing for me Make it look very presentable with animations add some sample reviews at least 20 and feel free to add anything I forgot to mention including a booking form for people to have a chat with me to discuss their needs all of the websites should be the primary language of the Czech Republic and then English is an option or German as an option
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://fastmedia.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/faf4a9b8-8a61-403f-9d1f-15d5029793d2).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+[FastMedia.Pro](https://fastmedia.pro) showcases the agency’s websites and e-commerce work, CRM and API integrations, booking flows, and SEO and PPC services. This repository contains the public site, portfolio and administration tools.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+The frontend uses React, TypeScript and Vite. Use Bun so the build can run the prerender step and dependency installation uses the committed Bun lockfile.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install --frozen-lockfile
+bun run dev
+bun run lint
+bun run test
+bun run build
 ```
+
+Use the project’s authorised secret store for managed backend and integration credentials. Read `AGENTS.md` before changing application behaviour.
+
+## Release checks
+
+The production build includes SEO prerendering. Run `bun run seo:live` to check the live portfolio SEO output. Use the [production acceptance issue](https://github.com/TimKnott/FastMedia/issues/2) for the outstanding lead capture, CRM, email and mobile checks.
+
+[Lovable project](https://lovable.dev/projects/faf4a9b8-8a61-403f-9d1f-15d5029793d2) · [Portfolio tracker](https://github.com/TimKnott/FastMedia/issues/11)
