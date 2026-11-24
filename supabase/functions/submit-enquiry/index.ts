@@ -162,9 +162,10 @@ Deno.serve(async (req) => {
         }),
       })
       const result = await res.json().catch(() => ({}))
-      if (res.ok && result?.success !== false) {
-        if (emailStatus !== 'failed') emailStatus = 'queued'
-        emailMessageId = result?.messageId ?? result?.message_id ?? null
+      if (res.ok && result?.success === true) {
+        const recipientStatus = result.sent === true ? 'sent' : 'queued'
+        if (emailStatus !== 'failed' && emailStatus !== 'queued') emailStatus = recipientStatus
+        emailMessageId = result.messageId ?? result.message_id ?? emailMessageId
       } else {
         emailStatus = 'failed'
         console.error('Enquiry notification failed', res.status, result)
@@ -175,10 +176,11 @@ Deno.serve(async (req) => {
     }
   }
 
-  await supabase
+  const { error: statusError } = await supabase
     .from('contact_enquiries')
     .update({ email_status: emailStatus, email_message_id: emailMessageId })
     .eq('id', inserted.id)
+  if (statusError) console.error('Could not record enquiry notification status', statusError.message)
 
   return json({ success: true, id: inserted.id, emailStatus, messageId: emailMessageId })
 })
